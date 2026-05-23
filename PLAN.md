@@ -89,7 +89,7 @@ Core changes in `engines/scumm/`:
 ├── ScummVM/                         # Game install (target binary)
 │   ├── scummvm.exe
 │   └── monkey3/
-├── scummvm-fork/                    # ScummVM source repo clone
+├── scummvm-fork/ -> /c/Users/go75bel/scummvm-fork  # ScummVM source (localhost)
 ├── CMI UPSCALED/                    # Extracted + upscaled assets
 │   ├── extracted/                   # Original PNGs (38,689 files)
 │   ├── upscaled/                    # AI-upscaled 4x PNGs

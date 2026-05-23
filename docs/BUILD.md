@@ -27,10 +27,16 @@ pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake \
 
 ## Clone
 
+The ScummVM repo is ~800MB with 23K+ files. Clone locally (not on NAS),
+then reference from the project.
+
 ```bash
-cd /z/Projekte/COMI-Upscaled
-git clone https://github.com/scummvm/scummvm.git scummvm-fork
-cd scummvm-fork
+# Clone to local SSD (fast)
+git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git \
+  /c/Users/go75bel/scummvm-fork
+
+# Navigate to work
+cd /c/Users/go75bel/scummvm-fork
 ```
 
 ## Configure

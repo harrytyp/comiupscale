@@ -78,7 +78,7 @@ Z:\Projekte\COMI-Upscaled\
 ├── nutcracker-Windows_X64/
 │   └── nutcracker.exe            # Prebuilt Windows binary
 │
-├── scummvm-fork/                 # Future ScummVM source code clone
+├── scummvm-fork/ -> /c/Users/go75bel/scummvm-fork  # ScummVM source (localhost clone)
 │
 ├── ScummVM/
 │   ├── scummvm.exe               # Stock ScummVM binary
