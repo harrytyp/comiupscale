@@ -1,0 +1,50 @@
+# Game data (original + ScummVM runtime)
+ScummVM/
+COMI/
+
+# Extracted PNG assets — 38K+ files, not part of source
+CMI UPSCALED/extracted/
+CMI UPSCALED/upscaled/
+CMI UPSCALED/hd/
+CMI UPSCALED/demo/
+CMI UPSCALED/demo_stage/
+CMI UPSCALED/repackaged/
+
+# Third-party tool source
+nutcracker/
+nutcracker-Windows_X64/
+MMUCS/
+scummvm-tools/
+scummeditor/
+
+# Downloaded binary tools
+tools/
+
+# Old planning / session artifacts
+initial_prompt.txt
+next_steps.md
+session*.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Windows
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# OS
+.DS_Store
+.Directory
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Git
+.gitattributes
