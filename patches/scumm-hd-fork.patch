@@ -1,5 +1,5 @@
 diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
-index fb78f408..afc02d07 100644
+index fb78f408..13f51417 100644
 --- a/engines/scumm/gfx.cpp
 +++ b/engines/scumm/gfx.cpp
 @@ -30,6 +30,7 @@
@@ -38,7 +38,7 @@ index fb78f408..afc02d07 100644
 +				}
 +			}
 +			_system->unlockScreen();
-+			warning("HD overlay: blitted %dx%d with palette conversion", screen->w, screen->h);
++			debug(2, "HD overlay: blitted %dx%d with palette conversion", screen->w, screen->h);
 +		}
 +	}
  }
@@ -57,7 +57,7 @@ index c3fadf55..0676991e 100644
  	he/resource_he.o \
  	he/script_v60he.o \
 diff --git a/engines/scumm/room.cpp b/engines/scumm/room.cpp
-index e6a6109e..ad3b94de 100644
+index e6a6109e..dc23edd9 100644
 --- a/engines/scumm/room.cpp
 +++ b/engines/scumm/room.cpp
 @@ -26,6 +26,7 @@
@@ -78,7 +78,7 @@ index e6a6109e..ad3b94de 100644
 +	if (_hdScale > 1 && _hdAssetManager->hasBackground(room)) {
 +		if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 +			_hdCurrentRoom = room;
-+			warning("Loaded HD background for room %d (%dx%d)", room,
++			debug(2, "Loaded HD background for room %d (%dx%d)", room,
 +				_hdBackgroundSurface.w, _hdBackgroundSurface.h);
 +		}
 +	}
