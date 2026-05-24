@@ -83,7 +83,7 @@ index e6a6109e..ad3b94de 100644
  
  /**
 diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
-index 1b65e51c..b55696c9 100644
+index 1b65e51c..989d6567 100644
 --- a/engines/scumm/scumm.cpp
 +++ b/engines/scumm/scumm.cpp
 @@ -47,6 +47,7 @@
@@ -110,12 +110,16 @@ index 1b65e51c..b55696c9 100644
  	delete _gdi;
  }
  
-@@ -981,6 +984,15 @@ Common::Error ScummEngine::init() {
+@@ -981,6 +984,19 @@ Common::Error ScummEngine::init() {
  
  	const Common::FSNode gameDataDir(ConfMan.getPath("path"));
  
 +	// Initialize HD asset path
-+	Common::String hdPath = gameDataDir.getPath().toString() + "/hd";
++	Common::String hdPath = gameDataDir.getPath().toString();
++	// Ensure no double slash
++	if (hdPath.lastChar() != '/' && hdPath.lastChar() != '\\')
++		hdPath += '/';
++	hdPath += "hd";
 +	_hdAssetManager->setHDPath(hdPath);
 +	// Check if the HD directory was found (setHDPath will clear _hdPath if not)
 +	if (_hdAssetManager->isEnabled()) {
