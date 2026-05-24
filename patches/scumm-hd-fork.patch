@@ -1,0 +1,154 @@
+diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
+index fb78f408..bd0bbf96 100644
+--- a/engines/scumm/gfx.cpp
++++ b/engines/scumm/gfx.cpp
+@@ -30,6 +30,7 @@
+ #include "scumm/scumm_v5.h"
+ #include "scumm/scumm_v6.h"
+ #include "scumm/usage_bits.h"
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/he/wiz_he.h"
+ #include "scumm/util.h"
+ 
+@@ -542,6 +543,29 @@ void ScummEngine::drawDirtyScreenParts() {
+ 	} else {
+ 		updateDirtyScreen(kMainVirtScreen);
+ 	}
++
++	// HD background overlay: draw the high-res PNG over the screen
++	if (_hdCurrentRoom >= 0 && _hdBackgroundSurface.getPixels()) {
++		// The HD image is at 4x resolution. We downscale it to fit the screen.
++		Graphics::Surface *screen = _system->lockScreen();
++		if (screen) {
++			// Simple nearest-neighbor downscale from HD to screen size
++			uint32 hdW = _hdBackgroundSurface.w;
++			uint32 hdH = _hdBackgroundSurface.h;
++			float scaleX = (float)hdW / screen->w;
++			float scaleY = (float)hdH / screen->h;
++
++			for (int y = 0; y < screen->h && y < (int)hdH / scaleY; y++) {
++				for (int x = 0; x < screen->w && x < (int)hdW / scaleX; x++) {
++					uint32 hdX = (uint32)(x * scaleX);
++					uint32 hdY = (uint32)(y * scaleY);
++					uint32 pixel = *(const uint32 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
++					*(uint32 *)screen->getBasePtr(x, y) = pixel;
++				}
++			}
++			_system->unlockScreen();
++		}
++	}
+ }
+ 
+ void ScummEngine_v6::drawDirtyScreenParts() {
+diff --git a/engines/scumm/module.mk b/engines/scumm/module.mk
+index c3fadf55..0676991e 100644
+--- a/engines/scumm/module.mk
++++ b/engines/scumm/module.mk
+@@ -22,6 +22,7 @@ MODULE_OBJS := \
+ 	gfx_nes.o \
+ 	gfx_towns.o \
+ 	gfx.o \
++	hd_asset_manager.o \
+ 	he/mixer_he.o \
+ 	he/resource_he.o \
+ 	he/script_v60he.o \
+diff --git a/engines/scumm/room.cpp b/engines/scumm/room.cpp
+index e6a6109e..22aaafef 100644
+--- a/engines/scumm/room.cpp
++++ b/engines/scumm/room.cpp
+@@ -26,6 +26,7 @@
+ #ifdef ENABLE_HE
+ #include "scumm/he/intern_he.h"
+ #endif
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/object.h"
+ #include "scumm/resource.h"
+ #include "scumm/scumm_v3.h"
+@@ -298,6 +299,18 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
+ 			_system->setFeatureState(OSystem::kFeatureVirtualKeyboard, true);
+ 	}
+ 
++	// Try to load the HD background for this room
++	_hdBackgroundSurface.free();
++	_hdCurrentRoom = -1;
++	if (_hdScale > 1 && _hdAssetManager->hasBackground(room)) {
++		if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
++			_hdCurrentRoom = room;
++			debug(1, "Loaded HD background for room %d (%dx%d) fmt=%d", room,
++				_hdBackgroundSurface.w, _hdBackgroundSurface.h,
++				_hdBackgroundSurface.format.bytesPerPixel);
++		}
++	}
++
+ }
+ 
+ /**
+diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
+index 1b65e51c..f1e3ed33 100644
+--- a/engines/scumm/scumm.cpp
++++ b/engines/scumm/scumm.cpp
+@@ -47,6 +47,7 @@
+ #include "scumm/dialogs.h"
+ #include "scumm/file.h"
+ #include "scumm/file_nes.h"
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/imuse/imuse.h"
+ #include "scumm/imuse_digi/dimuse_engine.h"
+ #include "scumm/smush/smush_player.h"
+@@ -155,6 +156,7 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
+ 		_gdi = new Gdi(this);
+ 	}
+ 	_res = new ResourceManager(this);
++	_hdAssetManager = new HDAssetManager(this);
+ 
+ 	// Convert MD5 checksum back into a digest
+ 	for (int i = 0; i < 16; ++i) {
+@@ -537,6 +539,7 @@ ScummEngine::~ScummEngine() {
+ #endif
+ 
+ 	delete _res;
++	delete _hdAssetManager;
+ 	delete _gdi;
+ }
+ 
+@@ -981,6 +984,15 @@ Common::Error ScummEngine::init() {
+ 
+ 	const Common::FSNode gameDataDir(ConfMan.getPath("path"));
+ 
++	// Initialize HD asset path
++	Common::String hdPath = gameDataDir.getPath().toString() + "/hd";
++	_hdAssetManager->setHDPath(hdPath);
++	// Check if the HD directory was found (setHDPath will clear _hdPath if not)
++	if (_hdAssetManager->isEnabled()) {
++		_hdScale = _hdAssetManager->getScale();
++		debug(1, "HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
++	}
++
+ 	for (uint i = 0; ruScummPatcherTable[i].patcherName; i++) {
+ 		if (ruScummPatcherTable[i].gameid == _game.id && (_game.variant == nullptr || strcmp(_game.variant, ruScummPatcherTable[i].variant) == 0)) {
+ 			Common::File *f = new Common::File();
+diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
+index 928cebd9..95095096 100644
+--- a/engines/scumm/scumm.h
++++ b/engines/scumm/scumm.h
+@@ -100,6 +100,7 @@ class ScummDebugger;
+ class Sound;
+ class Localizer;
+ class GlyphRenderer_v7;
++class HDAssetManager;
+ 
+ struct Box;
+ struct BoxCoords;
+@@ -545,6 +546,12 @@ public:
+ 	/** Graphics manager */
+ 	Gdi *_gdi = nullptr;
+ 
++	/** HD asset manager (for upscaled external textures) */
++	HDAssetManager *_hdAssetManager = nullptr;
++	int _hdScale = 1;
++	Graphics::Surface _hdBackgroundSurface;
++	int _hdCurrentRoom = -1;
++
+ 	/** Central resource data. */
+ 	ResourceManager *_res = nullptr;
+ 	int _insideCreateResource = 0; // Counter for HE sound
