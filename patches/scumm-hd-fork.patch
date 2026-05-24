@@ -1,5 +1,49 @@
+diff --git a/backends/graphics/opengl/opengl-graphics.cpp b/backends/graphics/opengl/opengl-graphics.cpp
+index 888e9b53..09c7f44d 100644
+--- a/backends/graphics/opengl/opengl-graphics.cpp
++++ b/backends/graphics/opengl/opengl-graphics.cpp
+@@ -1443,7 +1443,10 @@ void OpenGLGraphicsManager::displayActivityIconOnOSD(const Graphics::Surface *ic
+ 
+ void OpenGLGraphicsManager::setPalette(const byte *colors, uint start, uint num) {
+ 	assert(_gameScreen);
+-	assert(_gameScreen->hasPalette());
++
++	// In true-color mode (4K HD), palette operations are not needed
++	if (!_gameScreen->hasPalette())
++		return;
+ 
+ 	memcpy(_gamePalette + start * 3, colors, num * 3);
+ 	_gameScreen->setPalette(start, num, colors);
+diff --git a/backends/graphics/surfacesdl/surfacesdl-graphics.cpp b/backends/graphics/surfacesdl/surfacesdl-graphics.cpp
+index 184fd87b..4cc2464c 100644
+--- a/backends/graphics/surfacesdl/surfacesdl-graphics.cpp
++++ b/backends/graphics/surfacesdl/surfacesdl-graphics.cpp
+@@ -1870,7 +1870,10 @@ int16 SurfaceSdlGraphicsManager::getWidth() const {
+ 
+ void SurfaceSdlGraphicsManager::setPalette(const byte *colors, uint start, uint num) {
+ 	assert(colors);
+-	assert(_screenFormat.bytesPerPixel == 1);
++
++	// In non-paletted (true color) modes, palette is not used
++	if (_screenFormat.bytesPerPixel != 1)
++		return;
+ 
+ 	// Setting the palette before _screen is created is allowed - for now -
+ 	// since we don't actually set the palette until the screen is updated.
+@@ -1904,7 +1907,10 @@ void SurfaceSdlGraphicsManager::setPalette(const byte *colors, uint start, uint
+ 
+ void SurfaceSdlGraphicsManager::grabPalette(byte *colors, uint start, uint num) const {
+ 	assert(colors);
+-	assert(_screenFormat.bytesPerPixel == 1);
++
++	// In non-paletted (true color) modes, palette is not used
++	if (_screenFormat.bytesPerPixel != 1)
++		return;
+ 
+ 	const SDL_Color *base = _currentPalette + start;
+ 
 diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
-index fb78f408..418a402c 100644
+index fb78f408..6a46a936 100644
 --- a/engines/scumm/gfx.cpp
 +++ b/engines/scumm/gfx.cpp
 @@ -30,6 +30,7 @@
@@ -10,13 +54,21 @@ index fb78f408..418a402c 100644
  #include "scumm/he/wiz_he.h"
  #include "scumm/util.h"
  
-@@ -542,6 +543,17 @@ void ScummEngine::drawDirtyScreenParts() {
+@@ -535,13 +536,24 @@ void ScummEngine::drawDirtyScreenParts() {
+ 
+ 	// Update game area ("stage")
+ 	if (camera._last.x != camera._cur.x || (_game.version >= 7 && (camera._cur.y != camera._last.y))) {
+-		// Camera moved: redraw everything
+ 		VirtScreen *vs = &_virtscr[kMainVirtScreen];
+ 		drawStripToScreen(vs, 0, vs->w, 0, vs->h);
+ 		vs->setDirtyRange(vs->h, 0);
  	} else {
  		updateDirtyScreen(kMainVirtScreen);
  	}
 +
-+	// HD: blit the 4K background image directly at native resolution
-+	if (_hdBackgroundSurface.getPixels()) {
++	// HD 4K background: blit directly at native resolution (2560x1920 32-bit)
++	// This runs every frame. The HD surface is 32-bit RGBA matching the display format.
++	if (_hdBackgroundSurface.getPixels() && _hdBackgroundSurface.format.bytesPerPixel == 4) {
 +		_system->copyRectToScreen(
 +			_hdBackgroundSurface.getPixels(),
 +			_hdBackgroundSurface.pitch,
@@ -28,30 +80,72 @@ index fb78f408..418a402c 100644
  }
  
  void ScummEngine_v6::drawDirtyScreenParts() {
-@@ -1179,6 +1191,27 @@ void ScummEngine::redrawBGStrip(int start, int num) {
+@@ -1179,6 +1191,69 @@ void ScummEngine::redrawBGStrip(int start, int num) {
  		room = getResourceAddress(rtRoom, _roomResource);
  
  	_gdi->drawBitmap(room + _IM00_offs, &_virtscr[kMainVirtScreen], s, 0, _roomWidth, _virtscr[kMainVirtScreen].h, s, num, 0);
 +
-+	// HD background: overwrite the rendered strips with HD data
++	// HD background: overwrite the rendered strips with HD data (dithering)
 +	if (_hdCurrentRoom >= 0 && _hdBackgroundSurface.getPixels()) {
 +		VirtScreen *vs = &_virtscr[kMainVirtScreen];
 +		float scaleX = (float)_hdBackgroundSurface.w / _roomWidth;
 +		float scaleY = (float)_hdBackgroundSurface.h / vs->h;
 +
-+		for (int i = 0; i < num; i++) {
-+			int stripIdx = s + i;
-+			int stripX = stripIdx * 8;
-+			for (int y = 0; y < vs->h; y++) {
-+				uint32 hdY = (uint32)(y * scaleY);
-+				for (int x = 0; x < 8 && (stripX + x) < vs->w; x++) {
-+					uint32 hdX = (uint32)((stripX + x) * scaleX);
-+					const uint8 *p = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
-+					uint32 idx = findClosestPaletteColor(_currentPalette, 256, p[0], p[1], p[2]);
-+					*(byte *)vs->getBasePtr(stripX + x, y) = (byte)idx;
++		// Floyd-Steinberg dithering buffer (one extra row for error propagation)
++		int16 *errors = (int16 *)calloc(vs->w * 3 + 3, sizeof(int16));
++		int16 *errNext = (int16 *)calloc(vs->w * 3 + 3, sizeof(int16));
++
++		for (int y = 0; y < vs->h; y++) {
++			uint32 hdY = (uint32)(y * scaleY);
++			for (int x = 0; x < vs->w; x++) {
++				uint32 hdX = (uint32)(x * scaleX);
++				const uint8 *p = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
++				int r = p[0] + errNext[x * 3 + 0];
++				int g = p[1] + errNext[x * 3 + 1];
++				int b = p[2] + errNext[x * 3 + 2];
++				CLIP(r, 0, 255); CLIP(g, 0, 255); CLIP(b, 0, 255);
++
++				uint32 idx = findClosestPaletteColor(_currentPalette, 256, r, g, b);
++
++				// Compute quantization error
++				int dr = r - _currentPalette[idx * 3 + 0];
++				int dg = g - _currentPalette[idx * 3 + 1];
++				int db = b - _currentPalette[idx * 3 + 2];
++
++				// Distribute error (Floyd-Steinberg)
++				// right: 7/16
++				if (x + 1 < vs->w) {
++					errNext[(x + 1) * 3 + 0] += dr * 7 / 16;
++					errNext[(x + 1) * 3 + 1] += dg * 7 / 16;
++					errNext[(x + 1) * 3 + 2] += db * 7 / 16;
 +				}
++				// down-left: 3/16
++				if (x > 0 && y + 1 < vs->h) {
++					errors[(x - 1) * 3 + 0] += dr * 3 / 16;
++					errors[(x - 1) * 3 + 1] += dg * 3 / 16;
++					errors[(x - 1) * 3 + 2] += db * 3 / 16;
++				}
++				// down: 5/16
++				if (y + 1 < vs->h) {
++					errors[x * 3 + 0] += dr * 5 / 16;
++					errors[x * 3 + 1] += dg * 5 / 16;
++					errors[x * 3 + 2] += db * 5 / 16;
++				}
++				// down-right: 1/16
++				if (x + 1 < vs->w && y + 1 < vs->h) {
++					errors[(x + 1) * 3 + 0] += dr * 1 / 16;
++					errors[(x + 1) * 3 + 1] += dg * 1 / 16;
++					errors[(x + 1) * 3 + 2] += db * 1 / 16;
++				}
++
++				*(byte *)vs->getBasePtr(x, y) = (byte)idx;
 +			}
++			// Swap error buffers
++			int16 *tmp = errors; errors = errNext; errNext = tmp;
++			memset(errNext, 0, (vs->w * 3 + 3) * sizeof(int16));
 +		}
++		free(errors);
++		free(errNext);
 +	}
  }
  
@@ -99,7 +193,7 @@ index e6a6109e..dc23edd9 100644
  
  /**
 diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
-index 1b65e51c..4a18b493 100644
+index 1b65e51c..12aad828 100644
 --- a/engines/scumm/scumm.cpp
 +++ b/engines/scumm/scumm.cpp
 @@ -47,6 +47,7 @@
@@ -158,12 +252,12 @@ index 1b65e51c..4a18b493 100644
  
  	_outputPixelFormat = _system->getScreenFormat();
  
-+	// If HD mode is active, resize display to 4K for true HD rendering
++	// If HD mode is active, resize display to 4K 32-bit true color
 +	if (_hdScale > 1) {
 +		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 24, 16, 8, 0);
 +		initGraphics(2560, 1920, &rgbaFmt);
 +		_outputPixelFormat = _system->getScreenFormat();
-+		warning("HD: display set to %dx%dx%dbpp (true 4K)",
++		warning("HD: 4K display at %dx%dx%dbpp",
 +			2560, 1920, _outputPixelFormat.bytesPerPixel * 8);
 +	}
 +
