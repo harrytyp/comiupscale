@@ -1,5 +1,5 @@
 diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
-index fb78f408..bd0bbf96 100644
+index fb78f408..afc02d07 100644
 --- a/engines/scumm/gfx.cpp
 +++ b/engines/scumm/gfx.cpp
 @@ -30,6 +30,7 @@
@@ -10,31 +10,35 @@ index fb78f408..bd0bbf96 100644
  #include "scumm/he/wiz_he.h"
  #include "scumm/util.h"
  
-@@ -542,6 +543,29 @@ void ScummEngine::drawDirtyScreenParts() {
+@@ -542,6 +543,33 @@ void ScummEngine::drawDirtyScreenParts() {
  	} else {
  		updateDirtyScreen(kMainVirtScreen);
  	}
 +
 +	// HD background overlay: draw the high-res PNG over the screen
 +	if (_hdCurrentRoom >= 0 && _hdBackgroundSurface.getPixels()) {
-+		// The HD image is at 4x resolution. We downscale it to fit the screen.
 +		Graphics::Surface *screen = _system->lockScreen();
 +		if (screen) {
-+			// Simple nearest-neighbor downscale from HD to screen size
-+			uint32 hdW = _hdBackgroundSurface.w;
-+			uint32 hdH = _hdBackgroundSurface.h;
-+			float scaleX = (float)hdW / screen->w;
-+			float scaleY = (float)hdH / screen->h;
++			// Convert HD RGBA pixels to 8-bit palette indices and write to screen
++			float scaleX = (float)_hdBackgroundSurface.w / screen->w;
++			float scaleY = (float)_hdBackgroundSurface.h / screen->h;
 +
-+			for (int y = 0; y < screen->h && y < (int)hdH / scaleY; y++) {
-+				for (int x = 0; x < screen->w && x < (int)hdW / scaleX; x++) {
++			for (int y = 0; y < screen->h; y++) {
++				uint32 hdY = (uint32)(y * scaleY);
++				for (int x = 0; x < screen->w; x++) {
 +					uint32 hdX = (uint32)(x * scaleX);
-+					uint32 hdY = (uint32)(y * scaleY);
-+					uint32 pixel = *(const uint32 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
-+					*(uint32 *)screen->getBasePtr(x, y) = pixel;
++					const uint8 *hdPixel = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
++					// RGB from the HD surface (24bpp RGB or 32bpp RGBA)
++					byte r = hdPixel[0];
++					byte g = hdPixel[1];
++					byte b = hdPixel[2];
++					// Find closest palette color
++					uint32 idx = findClosestPaletteColor(_currentPalette, 256, r, g, b);
++					*(byte *)screen->getBasePtr(x, y) = (byte)idx;
 +				}
 +			}
 +			_system->unlockScreen();
++			warning("HD overlay: blitted %dx%d with palette conversion", screen->w, screen->h);
 +		}
 +	}
  }
