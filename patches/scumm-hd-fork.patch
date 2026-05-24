@@ -87,7 +87,7 @@ index e6a6109e..ad3b94de 100644
  
  /**
 diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
-index 1b65e51c..ff5e38a7 100644
+index 1b65e51c..4868bb7c 100644
 --- a/engines/scumm/scumm.cpp
 +++ b/engines/scumm/scumm.cpp
 @@ -47,6 +47,7 @@
@@ -114,7 +114,7 @@ index 1b65e51c..ff5e38a7 100644
  	delete _gdi;
  }
  
-@@ -981,6 +984,48 @@ Common::Error ScummEngine::init() {
+@@ -981,6 +984,27 @@ Common::Error ScummEngine::init() {
  
  	const Common::FSNode gameDataDir(ConfMan.getPath("path"));
  
@@ -130,33 +130,12 @@ index 1b65e51c..ff5e38a7 100644
 +		_hdScale = _hdAssetManager->getScale();
 +		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
 +
-+		// Force-load room 19 (the stage) for testing
++		// Preload room 87 (difficulty select) for testing overlay
 +		_hdBackgroundSurface.free();
-+		if (_hdAssetManager->loadBackground(19, _hdBackgroundSurface)) {
-+			_hdCurrentRoom = 19;
-+			warning("HD: preloaded room 19 bg (%dx%d)",
++		if (_hdAssetManager->loadBackground(87, _hdBackgroundSurface)) {
++			_hdCurrentRoom = 87;
++			warning("HD: preloaded room 87 bg (%dx%d)",
 +				_hdBackgroundSurface.w, _hdBackgroundSurface.h);
-+
-+			// Immediate blit test — paint directly on the screen
-+			Graphics::Surface *s = _system->lockScreen();
-+			if (s && s->getPixels()) {
-+				warning("HD: screen=%dx%dx%dbpp, blitting...",
-+					s->w, s->h, s->format.bytesPerPixel * 8);
-+				int stepX = MAX(1, _hdBackgroundSurface.w / s->w);
-+				int stepY = MAX(1, _hdBackgroundSurface.h / s->h);
-+				for (int y = 0; y < s->h; y++) {
-+					int hdY = y * stepY;
-+					for (int x = 0; x < s->w; x++) {
-+						int hdX = x * stepX;
-+						const uint8 *p = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
-+						uint32 idx = findClosestPaletteColor(_currentPalette, 256, p[0], p[1], p[2]);
-+						*(byte *)s->getBasePtr(x, y) = (byte)idx;
-+					}
-+				}
-+				_system->unlockScreen();
-+				_system->updateScreen();
-+				warning("HD: blit complete");
-+			}
 +		}
 +	}
 +
