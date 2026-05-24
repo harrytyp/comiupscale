@@ -97,6 +97,25 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	}
 
 	surf.copyFrom(*pngSurf);
+
+	// Convert 24-bit RGB to 32-bit RGBA if needed
+	if (surf.format.bytesPerPixel == 3) {
+		Graphics::Surface *conv = new Graphics::Surface();
+		conv->create(surf.w, surf.h, Graphics::PixelFormat(4, 8, 8, 8, 8, 24, 16, 8, 0));
+		const byte *src = (const byte *)surf.getPixels();
+		byte *dst = (byte *)conv->getPixels();
+		for (int i = 0; i < surf.w * surf.h; i++) {
+			dst[i * 4 + 0] = src[i * 3 + 0];
+			dst[i * 4 + 1] = src[i * 3 + 1];
+			dst[i * 4 + 2] = src[i * 3 + 2];
+			dst[i * 4 + 3] = 0xFF;
+		}
+		surf.free();
+		surf.copyFrom(*conv);
+		conv->free();
+		delete conv;
+	}
+
 	png.destroy();
 
 	debug(1, "HDAssetManager: Loaded HD background for room %d: %dx%d (%s)",

@@ -1,5 +1,5 @@
 diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
-index fb78f408..13f51417 100644
+index fb78f408..418a402c 100644
 --- a/engines/scumm/gfx.cpp
 +++ b/engines/scumm/gfx.cpp
 @@ -30,6 +30,7 @@
@@ -10,40 +10,52 @@ index fb78f408..13f51417 100644
  #include "scumm/he/wiz_he.h"
  #include "scumm/util.h"
  
-@@ -542,6 +543,33 @@ void ScummEngine::drawDirtyScreenParts() {
+@@ -542,6 +543,17 @@ void ScummEngine::drawDirtyScreenParts() {
  	} else {
  		updateDirtyScreen(kMainVirtScreen);
  	}
 +
-+	// HD background overlay: draw the high-res PNG over the screen
-+	if (_hdCurrentRoom >= 0 && _hdBackgroundSurface.getPixels()) {
-+		Graphics::Surface *screen = _system->lockScreen();
-+		if (screen) {
-+			// Convert HD RGBA pixels to 8-bit palette indices and write to screen
-+			float scaleX = (float)_hdBackgroundSurface.w / screen->w;
-+			float scaleY = (float)_hdBackgroundSurface.h / screen->h;
-+
-+			for (int y = 0; y < screen->h; y++) {
-+				uint32 hdY = (uint32)(y * scaleY);
-+				for (int x = 0; x < screen->w; x++) {
-+					uint32 hdX = (uint32)(x * scaleX);
-+					const uint8 *hdPixel = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
-+					// RGB from the HD surface (24bpp RGB or 32bpp RGBA)
-+					byte r = hdPixel[0];
-+					byte g = hdPixel[1];
-+					byte b = hdPixel[2];
-+					// Find closest palette color
-+					uint32 idx = findClosestPaletteColor(_currentPalette, 256, r, g, b);
-+					*(byte *)screen->getBasePtr(x, y) = (byte)idx;
-+				}
-+			}
-+			_system->unlockScreen();
-+			debug(2, "HD overlay: blitted %dx%d with palette conversion", screen->w, screen->h);
-+		}
++	// HD: blit the 4K background image directly at native resolution
++	if (_hdBackgroundSurface.getPixels()) {
++		_system->copyRectToScreen(
++			_hdBackgroundSurface.getPixels(),
++			_hdBackgroundSurface.pitch,
++			0, 0,
++			_hdBackgroundSurface.w,
++			_hdBackgroundSurface.h
++		);
 +	}
  }
  
  void ScummEngine_v6::drawDirtyScreenParts() {
+@@ -1179,6 +1191,27 @@ void ScummEngine::redrawBGStrip(int start, int num) {
+ 		room = getResourceAddress(rtRoom, _roomResource);
+ 
+ 	_gdi->drawBitmap(room + _IM00_offs, &_virtscr[kMainVirtScreen], s, 0, _roomWidth, _virtscr[kMainVirtScreen].h, s, num, 0);
++
++	// HD background: overwrite the rendered strips with HD data
++	if (_hdCurrentRoom >= 0 && _hdBackgroundSurface.getPixels()) {
++		VirtScreen *vs = &_virtscr[kMainVirtScreen];
++		float scaleX = (float)_hdBackgroundSurface.w / _roomWidth;
++		float scaleY = (float)_hdBackgroundSurface.h / vs->h;
++
++		for (int i = 0; i < num; i++) {
++			int stripIdx = s + i;
++			int stripX = stripIdx * 8;
++			for (int y = 0; y < vs->h; y++) {
++				uint32 hdY = (uint32)(y * scaleY);
++				for (int x = 0; x < 8 && (stripX + x) < vs->w; x++) {
++					uint32 hdX = (uint32)((stripX + x) * scaleX);
++					const uint8 *p = (const uint8 *)_hdBackgroundSurface.getBasePtr(hdX, hdY);
++					uint32 idx = findClosestPaletteColor(_currentPalette, 256, p[0], p[1], p[2]);
++					*(byte *)vs->getBasePtr(stripX + x, y) = (byte)idx;
++				}
++			}
++		}
++	}
+ }
+ 
+ void ScummEngine::restoreBackground(Common::Rect rect, byte backColor) {
 diff --git a/engines/scumm/module.mk b/engines/scumm/module.mk
 index c3fadf55..0676991e 100644
 --- a/engines/scumm/module.mk
@@ -87,7 +99,7 @@ index e6a6109e..dc23edd9 100644
  
  /**
 diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
-index 1b65e51c..4868bb7c 100644
+index 1b65e51c..4a18b493 100644
 --- a/engines/scumm/scumm.cpp
 +++ b/engines/scumm/scumm.cpp
 @@ -47,6 +47,7 @@
@@ -142,6 +154,22 @@ index 1b65e51c..4868bb7c 100644
  	for (uint i = 0; ruScummPatcherTable[i].patcherName; i++) {
  		if (ruScummPatcherTable[i].gameid == _game.id && (_game.variant == nullptr || strcmp(_game.variant, ruScummPatcherTable[i].variant) == 0)) {
  			Common::File *f = new Common::File();
+@@ -1502,6 +1526,15 @@ Common::Error ScummEngine::init() {
+ 
+ 	_outputPixelFormat = _system->getScreenFormat();
+ 
++	// If HD mode is active, resize display to 4K for true HD rendering
++	if (_hdScale > 1) {
++		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 24, 16, 8, 0);
++		initGraphics(2560, 1920, &rgbaFmt);
++		_outputPixelFormat = _system->getScreenFormat();
++		warning("HD: display set to %dx%dx%dbpp (true 4K)",
++			2560, 1920, _outputPixelFormat.bytesPerPixel * 8);
++	}
++
+ 	setupScumm(macResourceFile);
+ 
+ 	readIndexFile();
 diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
 index 928cebd9..95095096 100644
 --- a/engines/scumm/scumm.h
