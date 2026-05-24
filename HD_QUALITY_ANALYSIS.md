@@ -1,109 +1,158 @@
 # HD Background Quality Analysis
 
 ## Problem
-The 2560×1920 RealESRGAN-upscaled PNG backgrounds look noticeably worse when
-displayed in our ScummVM fork compared to viewing the same PNG in Windows
-Photo Viewer. The image appears "limited at the resolution" — blocky and
-lacking detail — despite the PNG loading at full 2560×1920 × 24-bit RGB.
+The 2560×1920 RealESRGAN-upscaled PNG backgrounds look worse when displayed
+in our ScummVM fork compared to viewing the same PNG in Windows Photo Viewer.
+The image appears "blocky" / "oversharpened at edges" / lacking detail.
 
-## What We've Verified (Works Correctly)
-- PNG loads at 2560×1920 × 24-bit RGB via libpng (verified via `file` command)
-- Conversion to 32-bit RGBA8888 with correct [R, G, B, A] byte order (R/G/B test patches)
-- SDL display initialized at 2560×1920 × 32bpp (reported by `_system->getScreenFormat()`)
-- Smooth color gradient — NO banding, full 24-bit color depth works
-- Nearest-neighbor and linear scaling both tried — minimal visible difference
-- HD surface is 2560×1920 with pitch=10240 (verified)
-- SDL texture format: SDL_PIXELFORMAT_RGBA32 (set explicitly, not 16-bit)
-- Red, green, blue test patches render as pure correct colors
+## What We've Verified (Proven Correct)
 
-## NEW KEY FINDING — `loadGFXMode()` is NEVER Called
-Despite extensive debugging with `warning()` calls placed at the entry of
-`loadGFXMode()`, those warnings NEVER appear in the console output. This
-means the `initGraphics(2560, 1920)` call in `setupScumm()` does NOT trigger
-a full graphics mode reload — even though `initSize()` is called (the size
-change is detected) and `endGFXTransaction()` runs.
+### 1. `_hdBackgroundSurface` is 100% Pixel-Perfect
+We dumped `_hdBackgroundSurface` to a raw file and compared it pixel-by-pixel
+with the original PNG. **100% match** — every pixel at full 2560×1920 RGBA
+matches the original source PNG. The PNG decode + RGBA8888 conversion in
+`hd_asset_manager.cpp` is flawless.
 
-The `loadGFXMode()` function is what calls `initGraphicsSurface()`, which
-creates the `_hwScreen` (window surface), and the scaler surfaces. Without
-this call, the window and surfaces from the FIRST `initGraphics(640, 480)`
-call remain in place. The SECOND call only sets `_videoMode.screenWidth`
-and `_videoMode.screenHeight` to 2560×1920 but never re-creates the actual
-surfaces at the new size.
+### 2. R/G/B Byte Order is Correct
+Test patches (pure R, G, B blocks) render with correct color — no channel
+swapping.
 
-**Implication**: The `_screen` surface is still 640×480 (the original game
-resolution) even though `_system->getWidth()` returns 2560. The `copyRectToScreen()`
-calls for the 2560×1920 HD background MAY write beyond the 640×480 surface,
-causing memory corruption or clipping.
+### 3. Smooth Gradient Shows No Banding
+Full 24-bit color precision is maintained through the pipeline.
 
-**Root cause**: The `initGraphicsAny()` function at `engines/engine.cpp:427`
-calls `g_system->endGFXTransaction()`, but our `initGraphics(2560, 1920)` call
-in `setupScumm()` may be issuing a different transaction type that doesn't
-trigger `loadGFXMode()`.
+### 4. OpenGL Backend is Active (NOT SurfaceSDL)
+Confirmed via `OGL-CR: w=2560 h=1920` debug output from
+`OpenGLGraphicsManager::copyRectToScreen`. The SurfaceSDL backend patches
+(HD texture bypass, scaler bypass) are in the WRONG code path — they don't
+execute because the OpenGL backend is used instead.
 
-### Why This Explains the Quality Gap
-If `_screen` is only 640×480, then every `copyRectToScreen()` for the
-2560×1920 HD background writes well beyond the surface bounds. The buffer
-might wrap, truncate, or alias — explaining the "lower resolution" look.
-The 640×480 surface has only 307,200 pixels. Writing 4,915,200 pixels
-(2560×1920) will overflow significantly.
+### 5. GL_NEAREST Texture Filtering is Active
+The OpenGL texture filter defaults to `GL_NEAREST` (line 40 of
+`graphics/opengl/texture.cpp`). No linear filtering is applied unless
+explicitly enabled via `kFeatureFilteringMode`.
 
-## Revised Root Cause Guesses
+### 6. OpenGL Pipeline Bypasses the Scaler
+The OpenGL backend copies pixels directly to a texture via
+`_gameScreen->copyRectToTexture()`. No intermediate `_hwScreen`, no scaler,
+no `_tmpscreen`. The data goes straight: engine → CPU texture → OpenGL texture.
 
-### Guess 1 (Most Likely): `_screen` Surface Never Resized
-`loadGFXMode()` is not triggered by our second `initGraphics()` call.
-The `_screen` surface remains at the original 640×480 size. Our 2560×1920
-`copyRectToScreen()` calls overflow the surface, causing truncation or
-memory corruption that manifests as reduced visual quality.
+### 7. Texture Upload is Correct
+`glTexSubImage2D` uploads the full 2560×1920 RGBA data to the OpenGL texture.
+`Graphics::Surface::copyRectToTexture()` uses a single `memcpy` when pitch matches.
 
-**Fix**: Force a hardware mode reload. Instead of calling `initGraphics()`,
-call `g_system->beginGFXTransaction()` + `g_system->initSize()`
-+ `g_system->endGFXTransaction()` directly, OR call `loadGFXMode()` explicitly.
+## Root Cause Not Yet Found
 
-### Guess 2: Transaction Failure Fallback
-The second `initGraphics()` might create a transaction that FAILS (because
-2560×1920 with 32-bit RGBA isn't supported by the GPU/driver on this laptop).
-The failure triggers a fallback to CLUT8 (8-bit palette), and the
-`initGraphicsAny()` returns the fallback mode. `_screen` is then recreated
-at 640×480 in 8-bit mode. Our 32-bit `copyRectToScreen` data is interpreted
-as 8-bit paletted, causing terrible quality.
+Despite all the above being verified, the visual quality still doesn't match
+Windows Photo Viewer. Here's what we've learned about the gap:
 
-**Fix**: Check the return value of `initGraphics()` and verify that
-`_outputPixelFormat` matches our requested format.
+### Window Size vs Texture Size Mismatch (Important Clue)
+- On a 2560×1440 display: quality is subpar
+- On a 1280×800 laptop display: quality looks the SAME (same level of blockiness)
+- When STRETCHED across two displays (larger window): quality IMPROVES
+- **Quality is independent of display resolution** — same at any screen size
+- Quality ONLY improves when the window is LARGER than the intended render size
 
-### Guess 3: Scaler Processing Even at 1x
-Even if `loadGFXMode()` IS called (we couldn't verify due to logging issues),
-the scaler at lines 1440-1458 of `internUpdateScreen()` processes every pixel
-from `_tmpscreen` → `_hwScreen`. The scaler might be doing format conversion
-even at factor=1, reducing 32-bit to 16-bit internally.
+This contradicts a simple "DWM scales the window" theory — if DWM were scaling,
+quality would vary by display size. The CONSTANT quality at all display sizes
+suggests a FIXED processing step in the pipeline that always produces the same
+output.
 
-**Fix**: Add the HD background as a separate SDL texture bypassing the scaler
-entirely. Use `SDL_RenderCopy()` directly.
+### Gamma Correction (Most Likely Remaining Cause)
+Windows Photo Viewer uses WIC (Windows Imaging Component) which properly
+handles sRGB gamma. The PNG files are sRGB-encoded. Photo Viewer decodes
+the gamma curve before display, making colors richer and edges smoother.
 
-### Guess 4: libpng sRGB/Gamma Mismatch
-libpng reads sRGB-encoded PNG data. If ScummVM's default decoding applies
-gamma correction while Windows Photo Viewer uses WIC's color-managed pipeline,
-the pixel values would differ. This manifests as "flat" or "dark" appearance —
-which matches "lower quality" perception.
+ScummVM / OpenGL renders raw pixel values WITHOUT gamma correction. The
+linear display of sRGB-encoded data makes midtones darker and contrast edges
+harsher — matching the "oversharpened edges" and "blockiness" description.
 
-**Fix**: Apply `png_set_gamma()` or manually correct after decoding.
+**Fix**: Apply gamma correction in the OpenGL shader or in `hd_asset_manager.cpp`
+after decoding the PNG:
+- Option A: `png_set_gamma(pngPtr, 2.2, 0.45455)` in PNG decoder
+- Option B: Gamma LUT after RGBA conversion in `loadBackground()`
+- Option C: sRGB framebuffer or shader correction in OpenGL pipeline
 
-### Guess 5: HW Surface Format
-The `initGraphicsSurface()` function uses `SDL_SetVideoMode(... , 16, ...)` 
-— hardcoded to 16 bpp (line 954). For SDL2, the wrapper overrides this,
-but if the wrapper isn't called (because `loadGFXMode()` isn't triggered),
-the original SDL1.2 `SDL_SetVideoMode` might create a 16-bit surface.
+### RealESRGAN Upscale Artifacts
+The RealESRGAN upscaler may produce ringing/sharpening artifacts around
+high-contrast edges. These artifacts are inherent in the source PNG and
+would be visible at 100% zoom in any viewer. Photo Viewer's fit-to-window
+downsampling smooths them out; the game's nearest-neighbor display preserves
+them. This is likely a contributor to the perceived quality gap.
 
-**Fix**: We already changed `16 → 32` in `initGraphicsSurface()`. But if
-`loadGFXMode()` is never called, this change never takes effect.
+### OpenGL Framebuffer Resolution
+On a 1280×800 laptop, `glReadPixels` from the default framebuffer returned
+813×480 pixels — far smaller than the requested 2560×1920. This suggests
+the OpenGL window/surface may not actually be created at the requested
+resolution when the hardware can't support it. The window creation might
+be silently downscaled by the driver, and then the 2560×1920 texture is
+drawn into this smaller viewport with nearest-neighbor sampling — causing
+non-uniform texel selection that looks blocky.
 
-## Next Steps
-1. **Force `loadGFXMode()`**: Add `g_system->setFeatureState(...)` or call
-   the resize path explicitly after our `initGraphics()` override.
-2. **Verify surface dimensions**: Add debug that dumps `_screen->w/h` and
-   `_hwScreen->w/h` to confirm they're 2560×1920.
-3. **Check transaction return**: After `initGraphics(2560, 1920)`, check
-   if the transaction succeeded by verifying format matches.
-4. **Bypass transaction**: Directly call `g_system->beginGFXTransaction()`,
-   `initSize()`, `initGraphicsSurface()` to force a clean setup.
-5. **Gamma fix**: Apply `png_set_gamma()` in hd_asset_manager if all else
-   fails.
+## Key Files Modified (as of last session)
+
+### engine/scumm/scumm.cpp — `init()` override
+- Changed `initGraphics(2560, 1920, &rgbaFmt)` to direct backend transaction
+
+### engine/scumm/hd_asset_manager.h
+- Added `setTargetSize(w, h)` method (for future display-size matching)
+
+### engine/scumm/input.cpp
+- Added `Ctrl+Shift+T` — loads test pattern `bg_0000.png`
+- Added `Ctrl+Shift+D` — dumps `_hdBackgroundSurface` to `hd_surface_dump.raw`
+
+### engine/scumm/gfx.cpp
+- `drawDirtyScreenParts()` renders HD background via `copyRectToScreen`
+
+### backends/graphics/surfacesdl/surfacesdl-graphics.cpp
+- Added `uploadHDTexture()` — direct texture upload bypassing scaler
+- `SDL_UpdateRects()` renders HD texture if active (no blend, no filter)
+- `copyRectToScreen()` detects HD-sized copies and triggers HD texture upload
+
+### backends/graphics/opengl/opengl-graphics.cpp
+- Added framebuffer dump (`glReadPixels`) for pixel-level analysis
+
+## Test Infrastructure
+
+### scripts/generate_test_pattern.py
+Creates `test_pattern_2560x1920.png` with:
+- 1px, 2px, 4px, 8px checkerboard (tests resolution fidelity)
+- 7 color bars (R, G, B, Y, C, M, W — tests byte order)
+- Smooth gradient (tests color depth)
+- 1px vertical RGB lines (tests pixel-level precision)
+- Alternating pixel columns (128/192 gray — ultimate resolution test)
+
+### scripts/analyze_dump.py
+Compares a raw RGBA dump against the original PNG pixel-by-pixel.
+Reports unique color counts, channel check, pixel match percentage.
+
+### scripts/analyze_framebuffer.py
+Attempts to parse a `glReadPixels` framebuffer dump — tries to determine
+actual window dimensions and compare with original.
+
+## Files to Check Next Session
+1. `graphics/opengl/texture.cpp` — texture creation, GL filtering params
+2. `backends/graphics/opengl/opengl-graphics.cpp` — updateScreen pipeline
+3. `backends/graphics/opengl/pipelines/libretro.cpp` — shader pipeline
+4. `backends/graphics/opengl/pipelines/pipeline.h` — drawTexture interface
+5. `graphics/opengl/texture.cpp` — glTexImage2D, glTexSubImage2D calls
+6. `backends/graphics/opengl/framebuffer.cpp` — projection matrix setup
+7. `backends/graphics/openglsdl/openglsdl-graphics.cpp` — SDL→OpenGL bridge
+
+## Next Steps to Try
+
+1. **Gamma correction**: Apply sRGB→linear conversion in `loadBackground()`
+   using a simple lookup table. This is the most likely remaining cause.
+   
+2. **Force SurfaceSDL backend**: Set `gfx_mode=normal` in scummvm.ini or
+   `ConfMan` to use the SurfaceSDL renderer, which has the HD texture
+   bypass already implemented.
+
+3. **Verify actual window size**: `_windowWidth` / `_windowHeight` in the
+   OpenGL backend. The frame 5 dump showed 813×480 on a 1280×800 laptop
+   — this needs investigation.
+
+4. **Compare side-by-side**: Take a photo/screenshot of the game window and
+   the PNG in Photo Viewer to visually compare.
+
+5. **Try fullscreen exclusive mode**: `SDL_WINDOW_FULLSCREEN` (not
+   `SDL_WINDOW_FULLSCREEN_DESKTOP`) to bypass DWM composition.
