@@ -76,6 +76,11 @@ Core changes in `engines/scumm/`:
 ├── RESEARCH.md                      # Research findings
 ├── PATH_A_ANALYSIS.md               # Binary format analysis
 ├── requirements.txt                 # Python deps
+├── patches/                       # ScummVM HD fork patches (reproducible build)
+│   ├── scumm-hd-fork.patch        # Git patch for 5 modified engine files
+│   ├── hd_asset_manager.h         # New HD asset manager header
+│   └── hd_asset_manager.cpp       # New HD asset manager implementation
+│
 ├── scripts/                         # Utility scripts
 │   ├── export_all.sh                # Full asset export
 │   ├── demo_upscale.py              # Lanczos demo

@@ -57,10 +57,15 @@ Z:\Projekte\COMI-Upscaled\
 ├── RESEARCH.md                   # Research findings
 ├── requirements.txt              # Python deps (numpy, pillow, typer)
 │
+├── patches/                      # ScummVM HD fork patches
+│   ├── scumm-hd-fork.patch       # Git patch for 5 modified engine files
+│   ├── hd_asset_manager.h        # New HD asset manager header
+│   └── hd_asset_manager.cpp      # New HD asset manager implementation
+│
 ├── docs/
 │   ├── FORK_PLAN.md              # Detailed ScummVM fork tech plan
 │   ├── HD_MANIFEST_SPEC.md       # hd_manifest.json format
-│   └── BUILD.md                  # ScummVM fork build instructions
+│   └── BUILD.md                  # ScummVM fork build instructions (reproducible)
 │
 ├── scripts/
 │   ├── export_all.sh             # Automated export (chmod +x)
@@ -147,24 +152,32 @@ Z:\Projekte\COMI-Upscaled\
 
 ---
 
-## Quick-Start (HD Pipeline)
+## Quick-Start (Reproducible Build)
 
 ```bash
-cd /z/Projekte/COMI-Upscaled
+# 1. Clone ScummVM
+git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git
+cd scummvm
 
-# 1. Batch upscale all 40 backgrounds
-bash hd_config/batch_upscale.sh
+# 2. Download the HD fork patches from this repo
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/scumm-hd-fork.patch
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.h
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.cpp
 
-# 2. Generate manifest
-python scripts/hd_manifest_gen.py
+# 3. Apply
+git apply scumm-hd-fork.patch
+mv hd_asset_manager.h hd_asset_manager.cpp engines/scumm/
 
-# 3. Build ScummVM fork (see docs/BUILD.md)
-cd scummvm-fork
-./configure --backend=sdl
-make -j$(nproc)
+# 4. Configure and build (see docs/BUILD.md for details)
+./configure --host=mingw64 --backend=sdl --disable-all-engines --enable-engine=scumm
+mingw32-make -j12
 
-# 4. Run with HD assets
-./scummvm.exe --path=/z/Projekte/COMI-Upscaled/ScummVM/monkey3
+# 5. Place HD backgrounds in game directory
+mkdir -p /path/to/monkey3/hd/
+cp bg_XXXX.png /path/to/monkey3/hd/
+
+# 6. Run
+./scummvm.exe --path=/path/to/monkey3
 ```
 
 ---
