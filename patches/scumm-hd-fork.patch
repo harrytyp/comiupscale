@@ -43,7 +43,7 @@ index 184fd87b..4cc2464c 100644
  	const SDL_Color *base = _currentPalette + start;
  
 diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
-index fb78f408..6a46a936 100644
+index fb78f408..26e4d689 100644
 --- a/engines/scumm/gfx.cpp
 +++ b/engines/scumm/gfx.cpp
 @@ -30,6 +30,7 @@
@@ -54,7 +54,7 @@ index fb78f408..6a46a936 100644
  #include "scumm/he/wiz_he.h"
  #include "scumm/util.h"
  
-@@ -535,13 +536,24 @@ void ScummEngine::drawDirtyScreenParts() {
+@@ -535,13 +536,50 @@ void ScummEngine::drawDirtyScreenParts() {
  
  	// Update game area ("stage")
  	if (camera._last.x != camera._cur.x || (_game.version >= 7 && (camera._cur.y != camera._last.y))) {
@@ -67,7 +67,6 @@ index fb78f408..6a46a936 100644
  	}
 +
 +	// HD 4K background: blit directly at native resolution (2560x1920 32-bit)
-+	// This runs every frame. The HD surface is 32-bit RGBA matching the display format.
 +	if (_hdBackgroundSurface.getPixels() && _hdBackgroundSurface.format.bytesPerPixel == 4) {
 +		_system->copyRectToScreen(
 +			_hdBackgroundSurface.getPixels(),
@@ -77,10 +76,37 @@ index fb78f408..6a46a936 100644
 +			_hdBackgroundSurface.h
 +		);
 +	}
++
++	// Composite game rendering (8-bit) on top of the 4K background:
++	// Convert the main virt screen to 32-bit RGBA and upscale to 2560x1920,
++	// then blit it on top so actors/UI are visible.
++	if (_hdBackgroundSurface.getPixels()) {
++		VirtScreen *vs = &_virtscr[kMainVirtScreen];
++		if (vs->getPixels(0, 0)) {
++			// Upscale 640x480 8-bit → 2560x1920 32-bit via nearest-neighbor
++			uint32 dstW = 2560, dstH = 1920;
++			uint32 *rowBuf = (uint32 *)malloc(dstW * 4);
++			for (int y = 0; y < dstH; y++) {
++				int srcY = y * vs->h / dstH;
++				const byte *srcRow = (const byte *)vs->getBasePtr(0, srcY);
++				for (int x = 0; x < dstW; x++) {
++					int srcX = x * vs->w / dstW;
++					byte idx = srcRow[srcX];
++					byte r = _currentPalette[idx * 3 + 0];
++					byte g = _currentPalette[idx * 3 + 1];
++					byte b = _currentPalette[idx * 3 + 2];
++					// RGBA8888 on LE: bytes = A,B,G,R
++					rowBuf[x] = (r << 24) | (g << 16) | (b << 8) | 0xFF;
++				}
++				_system->copyRectToScreen(rowBuf, dstW * 4, 0, y, dstW, 1);
++			}
++			free(rowBuf);
++		}
++	}
  }
  
  void ScummEngine_v6::drawDirtyScreenParts() {
-@@ -1179,6 +1191,69 @@ void ScummEngine::redrawBGStrip(int start, int num) {
+@@ -1179,6 +1217,69 @@ void ScummEngine::redrawBGStrip(int start, int num) {
  		room = getResourceAddress(rtRoom, _roomResource);
  
  	_gdi->drawBitmap(room + _IM00_offs, &_virtscr[kMainVirtScreen], s, 0, _roomWidth, _virtscr[kMainVirtScreen].h, s, num, 0);
