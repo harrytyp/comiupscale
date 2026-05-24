@@ -53,7 +53,7 @@ index c3fadf55..0676991e 100644
  	he/resource_he.o \
  	he/script_v60he.o \
 diff --git a/engines/scumm/room.cpp b/engines/scumm/room.cpp
-index e6a6109e..22aaafef 100644
+index e6a6109e..ad3b94de 100644
 --- a/engines/scumm/room.cpp
 +++ b/engines/scumm/room.cpp
 @@ -26,6 +26,7 @@
@@ -64,7 +64,7 @@ index e6a6109e..22aaafef 100644
  #include "scumm/object.h"
  #include "scumm/resource.h"
  #include "scumm/scumm_v3.h"
-@@ -298,6 +299,18 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
+@@ -298,6 +299,17 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
  			_system->setFeatureState(OSystem::kFeatureVirtualKeyboard, true);
  	}
  
@@ -74,9 +74,8 @@ index e6a6109e..22aaafef 100644
 +	if (_hdScale > 1 && _hdAssetManager->hasBackground(room)) {
 +		if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 +			_hdCurrentRoom = room;
-+			debug(1, "Loaded HD background for room %d (%dx%d) fmt=%d", room,
-+				_hdBackgroundSurface.w, _hdBackgroundSurface.h,
-+				_hdBackgroundSurface.format.bytesPerPixel);
++			warning("Loaded HD background for room %d (%dx%d)", room,
++				_hdBackgroundSurface.w, _hdBackgroundSurface.h);
 +		}
 +	}
 +
@@ -84,7 +83,7 @@ index e6a6109e..22aaafef 100644
  
  /**
 diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
-index 1b65e51c..f1e3ed33 100644
+index 1b65e51c..b55696c9 100644
 --- a/engines/scumm/scumm.cpp
 +++ b/engines/scumm/scumm.cpp
 @@ -47,6 +47,7 @@
@@ -121,7 +120,7 @@ index 1b65e51c..f1e3ed33 100644
 +	// Check if the HD directory was found (setHDPath will clear _hdPath if not)
 +	if (_hdAssetManager->isEnabled()) {
 +		_hdScale = _hdAssetManager->getScale();
-+		debug(1, "HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
++		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
 +	}
 +
  	for (uint i = 0; ruScummPatcherTable[i].patcherName; i++) {

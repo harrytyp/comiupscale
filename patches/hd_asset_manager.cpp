@@ -47,6 +47,8 @@ void HDAssetManager::setHDPath(const Common::String &path) {
 	if (!dir.exists() || !dir.isDirectory()) {
 		debug(1, "HDAssetManager: HD directory not found, HD mode disabled");
 		_hdPath.clear();
+	} else {
+		warning("HDAssetManager: HD mode ENABLED at %s", _hdPath.c_str());
 	}
 }
 
