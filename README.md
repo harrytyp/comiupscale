@@ -67,8 +67,10 @@ Z:\Projekte\COMI-Upscaled\
 │   ├── HD_MANIFEST_SPEC.md       # hd_manifest.json format
 │   └── BUILD.md                  # ScummVM fork build instructions (reproducible)
 │
+├── setup.sh                       # Quick setup script (download + run)
 ├── scripts/
 │   ├── export_all.sh             # Automated export (chmod +x)
+│   ├── full_pipeline.sh          # Extract → upscale → build → play
 │   ├── demo_upscale.py           # Lanczos upscale demo
 │   ├── demo_upscale_stage.py     # Stage room demo
 │   └── hd_manifest_gen.py        # hd_manifest.json generator
@@ -152,33 +154,89 @@ Z:\Projekte\COMI-Upscaled\
 
 ---
 
-## Quick-Start (Reproducible Build)
+## Quick Start (Fast Path — Pre-built Binary + HD Assets)
+
+**You need:** Your own copy of Curse of Monkey Island (COMI.LA0/1/2).
 
 ```bash
-# 1. Clone ScummVM
+# 1. Clone this repo
+git clone https://github.com/harrytyp/comiupscale.git
+cd comiupscale
+
+# 2. Download the pre-built ScummVM HD binary and HD backgrounds
+#    (from the GitHub Releases page — see below)
+#    
+#    OR build from source + upscale yourself:
+bash setup.sh --game /path/to/your/COMI
+```
+
+### How to get assets
+
+| Asset | Where to get it |
+|-------|----------------|
+| **Game files** (`COMI.LA0/1/2`) | Your original game disc or GOG/Steam install |
+| **ScummVM HD binary** (`scummvm-hd.exe`) | [GitHub Releases](https://github.com/harrytyp/comiupscale/releases) |
+| **HD backgrounds** (`hd/bg_XXXX.png`) | [GitHub Releases](https://github.com/harrytyp/comiupscale/releases) or run `scripts/full_pipeline.sh` to upscale yourself |
+| **HD cutscene videos** | [archive.org — COMI_4k](https://archive.org/details/COMI_4k) (download and place in `monkey3/hd/videos/`) |
+
+### Creating a GitHub Release
+
+To make the fast path work for others, create a Release on GitHub:
+
+1. Go to https://github.com/harrytyp/comiupscale/releases
+2. Click **"Create a new release"**
+3. Tag: `v1.0.0` 
+4. Title: `v1.0.0 — Initial HD release`
+5. Attach these files:
+   - `scummvm-hd.exe` — the pre-built binary from your local build
+   - `hd-backgrounds.zip` — the HD backgrounds package
+6. Publish release
+
+Then `setup.sh` will download these automatically.
+
+### Build from Source (No Binary)
+
+If you prefer to build everything yourself:
+
+```bash
+# Build the ScummVM fork
 git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git
 cd scummvm
 
-# 2. Download the HD fork patches from this repo
+# Apply HD fork patches
 curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/scumm-hd-fork.patch
 curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.h
 curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.cpp
 
-# 3. Apply
 git apply scumm-hd-fork.patch
 mv hd_asset_manager.h hd_asset_manager.cpp engines/scumm/
 
-# 4. Configure and build (see docs/BUILD.md for details)
-./configure --host=mingw64 --backend=sdl --disable-all-engines --enable-engine=scumm
-mingw32-make -j12
+# Configure and build
+./configure --host=mingw64 --backend=opengl --disable-all-engines --enable-engine=scumm
+mingw32-make -j$(nproc)
 
-# 5. Place HD backgrounds in game directory
+# Prepare game directory
 mkdir -p /path/to/monkey3/hd/
-cp bg_XXXX.png /path/to/monkey3/hd/
+# Copy COMI.LA0/1/2 into monkey3/
+# Copy HD background PNGs from hd-backgrounds.zip into monkey3/hd/
 
-# 6. Run
-./scummvm.exe --path=/path/to/monkey3
+# Run
+./scummvm.exe --path=/path/to/monkey3 scumm:comi
 ```
+
+### Generate HD Backgrounds from Game Files
+
+To extract and upscale backgrounds yourself (requires RealESRGAN):
+
+```bash
+bash scripts/full_pipeline.sh --game /path/to/COMI
+```
+
+This will:
+1. Extract original 640×480 backgrounds from COMI.LA0 using NUTcracker
+2. Upscale 4× using RealESRGAN (takes ~30 min on a GPU)
+3. Place HD PNGs in `monkey3/hd/`
+4. Optionally build the ScummVM fork
 
 ---
 
@@ -337,9 +395,9 @@ directory; falls back to default bilinear filtering otherwise).
 
 ### Not Working
 - **Video cutscenes (SMUSH/SAN)** — the original game videos play at 640×480
-  and don't display over the HD framebuffer. The video player renders to the
-  8-bit virtual screen, which our compositing pipeline can process, but the
-  video frames need to be intercepted and converted before compositing.
+  and don't display over the HD framebuffer. **Upscaled videos** are available from
+  [archive.org](https://archive.org/details/COMI_4k) — place them in `monkey3/hd/videos/`.
+  The fork doesn't yet intercept video playback to use these HD replacements.
 - **HD objects/costumes** — only backgrounds have HD replacements so far.
   The compositing pipeline works with original-resolution objects.
 

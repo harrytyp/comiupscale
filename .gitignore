@@ -42,6 +42,7 @@ Desktop.ini
 # Build artifacts
 *.exe
 *.raw
+*.zip
 
 # IDE / editor
 .idea/
