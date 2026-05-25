@@ -49,7 +49,10 @@ public:
 	/** Set the base path for HD assets (usually game path + "/hd"). */
 	void setHDPath(const Common::String &path);
 
-	/** Get the global scale factor (typically 4). */
+	/** Set the global scale factor. */
+	void setScale(int s) { _scale = s; }
+
+	/** Get the global scale factor (HD texture width / game width when loaded). */
 	int getScale() const { return _scale; }
 
 	/** Returns true if HD mode is active (directory was found). */

@@ -101,14 +101,16 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	// Convert 24-bit RGB to 32-bit RGBA if needed
 	if (surf.format.bytesPerPixel == 3) {
 		Graphics::Surface *conv = new Graphics::Surface();
-		conv->create(surf.w, surf.h, Graphics::PixelFormat(4, 8, 8, 8, 8, 24, 16, 8, 0));
+		conv->create(surf.w, surf.h, Graphics::PixelFormat(4, 8, 8, 8, 8, 0, 8, 16, 24));
 		const byte *src = (const byte *)surf.getPixels();
 		byte *dst = (byte *)conv->getPixels();
+		// PNG 24-bit RGB: bytes in memory are [R, G, B] (LE, createFormatRGB24).
+		// SDL RGBA8888 expects bytes [R, G, B, A] in memory.
 		for (int i = 0; i < surf.w * surf.h; i++) {
-			dst[i * 4 + 0] = src[i * 3 + 0];
-			dst[i * 4 + 1] = src[i * 3 + 1];
-			dst[i * 4 + 2] = src[i * 3 + 2];
-			dst[i * 4 + 3] = 0xFF;
+			dst[i * 4 + 0] = src[i * 3 + 0];  // R
+			dst[i * 4 + 1] = src[i * 3 + 1];  // G
+			dst[i * 4 + 2] = src[i * 3 + 2];  // B
+			dst[i * 4 + 3] = 0xFF;            // A
 		}
 		surf.free();
 		surf.copyFrom(*conv);

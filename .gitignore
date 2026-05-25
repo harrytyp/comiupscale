@@ -39,6 +39,10 @@ Desktop.ini
 .DS_Store
 .Directory
 
+# Build artifacts
+*.exe
+*.raw
+
 # IDE / editor
 .idea/
 .vscode/

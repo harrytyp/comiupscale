@@ -190,3 +190,208 @@ cp bg_XXXX.png /path/to/monkey3/hd/
 4. **Shell is Git Bash** — POSIX syntax, NOT PowerShell
 5. **ScummVM fork approach** replaces the old reimport plan — coordinate patching
    is handled at runtime in C++, not in the asset files
+
+---
+
+## HD Rendering Pipeline (How It Works)
+
+The ScummVM fork uses the **OpenGL backend** (not SurfaceSDL). HD backgrounds are loaded
+at 2560×1920 32-bit RGBA from the `hd/` directory. Here's every technique used:
+
+### 1. Screen Setup — `scumm.cpp:init()`
+
+After the engine initializes the game at 640×480 (the original resolution), the HD
+init block detects upscaled backgrounds in `game-dir/hd/`, computes the scale factor
+(4× = 2560×1920 for COMI), and reinitializes the graphics system:
+
+```cpp
+_system->beginGFXTransaction();
+_system->initSize(2560, 1920, &rgbaFormat);  // 32-bit RGBA
+_system->endGFXTransaction();
+```
+
+This makes the OGL backend's virtual screen 2560×1920 RGBA32 instead of the original
+640×480 CLUT8. The engine's internal coordinate system stays 640×480.
+
+### 2. Background Loading — `room.cpp:startScene()`
+
+When a room loads, `HDAssetManager::loadBackground()` loads the matching
+`hd/bg_{room:04d}.png` at its native HD resolution (no downscaling).
+
+### 3. Composite Rendering — `gfx.cpp:drawDirtyScreenParts()`
+
+The game engine renders to the 8-bit virtual screen (`_virtscr[kMainVirtScreen]`)
+at 640×480 as usual. After each frame, the HD compositing function:
+
+1. Copies the HD background as-is (2560×1920 RGBA) to the composite buffer
+2. For each 640×480 virtual-screen pixel, determines if it's "foreground" (actor,
+   object, UI element) by comparing against the saved clean background
+3. **Foreground pixels** are palette-converted (8-bit index → 32-bit RGBA via
+   `_currentPalette`) and placed at 4× coordinates in the composite buffer
+4. **Background pixels** (unchanged from clean) keep the HD background color
+5. The composite buffer is `copyRectToScreen`'d to the OGL backend
+
+This **diff-against-clean** technique separates game content from the original 8-bit
+background, letting the HD background show through everywhere the game hasn't drawn.
+
+### 4. Clean Background — `redrawBGStrip()`
+
+When the engine draws a background strip (via `_gdi->drawBitmap`), the result is
+saved as the "clean" reference for that strip before any actors/objects are drawn.
+Pixels that differ from clean are composited as foreground on the HD background.
+
+### 5. Palette — `opengl-graphics.cpp:setPalette()`
+
+**Critical fix:** In RGBA32 mode, `_gameScreen->hasPalette()` returns false. The
+original ScummVM code would skip palette updates, breaking 8-bit→32-bit conversion
+for both the compositing pipeline AND the cursor. The fix ALWAYS updates the
+`_gamePalette` copy and ALWAYS calls `updateCursorPalette()`, regardless of screen
+format:
+
+```cpp
+void OpenGLGraphicsManager::setPalette(...) {
+    memcpy(_gamePalette + start * 3, colors, num * 3);  // always
+    if (_gameScreen->hasPalette())
+        _gameScreen->setPalette(start, num, colors);
+    updateCursorPalette();  // always
+}
+```
+
+### 6. Mouse Coordinates — `input.cpp`
+
+The OGL backend delivers mouse coordinates in 2560×1920 space (because
+`initSize` set those dimensions). But all game logic expects 640×480. The fix
+rescales at the input layer:
+
+```cpp
+if (HD mode active) {
+    mouse.x = mouse.x * 640 / hdBackground.w;
+    mouse.y = mouse.y * 480 / hdBackground.h;
+}
+```
+
+### 7. Cursor Rendering — `opengl-graphics.cpp`
+
+Three issues had to be solved to get the cursor working at HD resolution:
+
+**a) Cursor Format (the big one):** The SCUMM engine calls
+`CursorMan.replaceCursor()` with 8-bit CLUT8 cursor data, but passes
+`_system->getScreenFormat()` (which returns RGBA32 after HD init) as the pixel
+format. The OpenGL backend would interpret 8-bit indices as 32-bit RGBA pixels,
+producing garbage. **Fix:** In `setMouseCursor()`, override the format to CLUT8
+when the reported format has >1 byte per pixel:
+
+```cpp
+if (inputFormat.bytesPerPixel != 1)
+    inputFormat = Graphics::PixelFormat::createFormatCLUT8();
+```
+
+**b) Cursor Palette:** Because `setPalette()` was skipping palette updates in
+RGBA32 mode (fixed in #5), the cursor texture never got the correct palette
+colors. The cursor `updateCursorPalette()` is now called unconditionally.
+
+**c) Cursor Size:** The cursor at 2560×1920 is tiny (20×20 pixels) without
+scaling. The `recalculateCursorScaling()` method computes the scale factor
+from `_gameDrawRect` / `_gameScreen->getWidth()`, both of which are 2560
+(scale = 1.0). **Fix:** After standard scaling, multiply cursor dimensions by
+the ratio of game screen width to 640 (the original game width):
+
+```cpp
+if (_gameScreen && _gameScreen->getWidth() > 640) {
+    int hdScale = _gameScreen->getWidth() / 640;  // = 4
+    _cursorHotspotXScaled *= hdScale;
+    _cursorWidthScaled    *= hdScale;
+    // ... same for Y
+}
+```
+
+### 8. Cursor Texture Recreation (Anti-pattern removed)
+
+An earlier attempt deleted and recreated the cursor in `endGFXTransaction()` when
+the game screen format changed to RGBA32. This was WRONG — it made the cursor null
+until the engine next called `setMouseCursor()`. The `TextureSurfaceCLUT8GPU` and
+`FakeTextureSurface` classes already handle CLUT8→RGBA conversion via palette
+lookup during texture upload; no recreation is needed.
+
+### 9. High-Quality Display (Lanczos Shader)
+
+The `LibRetroPipeline` constructor initializes its `_inputPipeline` with the
+`kLanczos` shader for high-quality area sampling. This is applied automatically
+when scaling passes are active (requires `shaders.dat` in the executable
+directory; falls back to default bilinear filtering otherwise).
+
+---
+
+## Current Status
+
+### Working
+- **HD backgrounds** — 40 rooms with 2560×1920 32-bit RGBA backgrounds load
+  and display correctly
+- **Game compositing** — actors, objects, UI elements render on top of HD
+  backgrounds via diff-against-clean compositing
+- **Palette handling** — 8-bit→32-bit conversion works correctly with the
+  per-frame palette synced to the OpenGL backend
+- **Mouse interaction** — all click targets work at correct positions
+  (coordinates rescaled from 2560×1920 to 640×480)
+- **Cursor** — rendered at correct size (4× scaled) with proper palette colors
+
+### Not Working
+- **Video cutscenes (SMUSH/SAN)** — the original game videos play at 640×480
+  and don't display over the HD framebuffer. The video player renders to the
+  8-bit virtual screen, which our compositing pipeline can process, but the
+  video frames need to be intercepted and converted before compositing.
+- **HD objects/costumes** — only backgrounds have HD replacements so far.
+  The compositing pipeline works with original-resolution objects.
+
+### Remaining Work
+- SMUSH/SAN video rendering support through the HD pipeline
+- HD costume/object/sprite loading and display
+- Cutscene frame upscaling pipeline
+- Performance optimization (Lanczos on Intel UHD)
+
+---
+
+## Build Instructions
+
+### Prerequisites
+- MSYS2 MinGW64 with: `gcc`, `make`, `SDL2-devel`, `libpng-devel`, `zlib-devel`
+- ScummVM source (shallow clone recommended)
+
+### Build Steps
+
+```bash
+git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git
+cd scummvm
+
+# Apply HD fork patches
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/scumm-hd-fork.patch
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.h
+curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.cpp
+
+git apply scumm-hd-fork.patch
+mv hd_asset_manager.h hd_asset_manager.cpp engines/scumm/
+
+# Configure (SCUMM engine only, OpenGL backend)
+./configure --host=mingw64 --backend=opengl --disable-all-engines --enable-engine=scumm
+mingw32-make -j$(nproc)
+
+# Prepare game data
+mkdir -p /path/to/monkey3/hd/
+# Copy HD background PNGs (bg_XXXX.png, 2560×1920) into hd/
+# Game data: COMI.LA0, COMI.LA1, COMI.LA2 in monkey3/
+
+# Run
+./scummvm.exe --path=/path/to/monkey3 scumm:comi
+```
+
+### Debug Dumps
+
+The fork can write per-frame debug dumps for compositing analysis. Set
+`hd_dump_frame=N` in `scummvm.ini` under `[comi]` to trigger a dump at a
+specific frame number (e.g., `hd_dump_frame=4` for room 4). This writes:
+- `hd_dump_N_composite.raw` — final 2560×1920 RGBA output
+- `hd_dump_N_hdcomposite.raw` — HD composite before copy to screen
+- `hd_dump_N_virtscr.raw` — 640×480 8-bit virtual screen
+- `hd_dump_N_clean.raw` — 640×480 8-bit clean background reference
+- `hd_dump_N_valid.raw` — per-pixel valid mask (1 = clean available)
+- `hd_dump_N_state.txt` — engine state at dump frame
