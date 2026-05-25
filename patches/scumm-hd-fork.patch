@@ -623,14 +623,15 @@ index ecef09cf..93147261 100644
  			_mouse.x -= (kHercWidth - _screenWidth * 2) / 2;
  			_mouse.x >>= 1;
 diff --git a/engines/scumm/module.mk b/engines/scumm/module.mk
-index c3fadf55..0676991e 100644
+index c3fadf55..64d0281c 100644
 --- a/engines/scumm/module.mk
 +++ b/engines/scumm/module.mk
-@@ -22,6 +22,7 @@ MODULE_OBJS := \
+@@ -22,6 +22,8 @@ MODULE_OBJS := \
  	gfx_nes.o \
  	gfx_towns.o \
  	gfx.o \
 +	hd_asset_manager.o \
++	hd_video_player.o \
  	he/mixer_he.o \
  	he/resource_he.o \
  	he/script_v60he.o \
@@ -761,7 +762,7 @@ index 1b65e51c..3af92ab1 100644
  	setDebugger(new ScummDebugger(this));
  
 diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
-index 928cebd9..ea586670 100644
+index 928cebd9..235d1b43 100644
 --- a/engines/scumm/scumm.h
 +++ b/engines/scumm/scumm.h
 @@ -100,6 +100,7 @@ class ScummDebugger;
@@ -772,7 +773,7 @@ index 928cebd9..ea586670 100644
  
  struct Box;
  struct BoxCoords;
-@@ -545,6 +546,19 @@ public:
+@@ -545,6 +546,20 @@ public:
  	/** Graphics manager */
  	Gdi *_gdi = nullptr;
  
@@ -788,11 +789,12 @@ index 928cebd9..ea586670 100644
 +	int _hdFrameCount = 0;
 +	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
 +	bool _hdScreenshotDone = false;
++	bool _hdVideoPlaying = false; // true when HD video replaces SMUSH cutscene
 +
  	/** Central resource data. */
  	ResourceManager *_res = nullptr;
  	int _insideCreateResource = 0; // Counter for HE sound
-@@ -1420,6 +1434,11 @@ protected:
+@@ -1420,6 +1435,11 @@ protected:
  
  	void restoreBackground(Common::Rect rect, byte backcolor = 0);
  	void redrawBGStrip(int start, int num);
@@ -804,3 +806,143 @@ index 928cebd9..ea586670 100644
  	virtual void redrawBGAreas();
  
  	void cameraMoved();
+diff --git a/engines/scumm/smush/smush_player.cpp b/engines/scumm/smush/smush_player.cpp
+index 31c322a7..a0613070 100644
+--- a/engines/scumm/smush/smush_player.cpp
++++ b/engines/scumm/smush/smush_player.cpp
+@@ -40,6 +40,7 @@
+ #include "scumm/smush/codec37.h"
+ #include "scumm/smush/codec47.h"
+ #include "scumm/smush/smush_font.h"
++#include "scumm/hd_video_player.h"
+ #include "scumm/smush/smush_player.h"
+ 
+ #include "scumm/insane/insane.h"
+@@ -223,6 +224,9 @@ SmushPlayer::SmushPlayer(ScummEngine_v7 *scumm, IMuseDigital *imuseDigital, Insa
+ 	_imuseDigital = imuseDigital;
+ 	_insane = insane;
+ 	_nbframes = 0;
++	_hdVideo = nullptr;
++	_hdVideoActive = false;
++	_hdFrameBuffer = nullptr;
+ 	_deltaBlocksCodec = 0;
+ 	_deltaGlyphsCodec = 0;
+ 	_strings = nullptr;
+@@ -343,6 +347,12 @@ void SmushPlayer::release() {
+ 	_deltaBlocksCodec = 0;
+ 	delete _deltaGlyphsCodec;
+ 	_deltaGlyphsCodec = 0;
++
++	delete _hdVideo;
++	_hdVideo = nullptr;
++	_hdVideoActive = false;
++	free(_hdFrameBuffer);
++	_hdFrameBuffer = nullptr;
+ }
+ 
+ void SmushPlayer::handleStore(int32 subSize, Common::SeekableReadStream &b) {
+@@ -1207,6 +1217,45 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
+ 	file->close();
+ 	delete file;
+ 
++	// Check for HD video replacement
++	_hdVideo = new HdVideoPlayer();
++	if (_hdVideo->hasVideo(filename)) {
++		// Build path to MP4 with case-insensitive filename handling
++		Common::FSNode gameDataDir(ConfMan.getPath("path"));
++		Common::String mp4Path = gameDataDir.getPath().toString();
++		if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
++			mp4Path += '/';
++		mp4Path += "hd/videos/";
++
++		Common::String baseName = filename;
++		int dotPos = baseName.findLastOf('.');
++		if (dotPos > 0)
++			baseName.erase(dotPos);
++
++		// Apply filename mapping (SAN → MP4 name differences)
++		if (baseName.equalsIgnoreCase("SINKSHP"))
++			baseName = "SINKSHIP";
++
++		// Try exact case first, then uppercase (for archive.org videos)
++		Common::FSNode videoDir = gameDataDir.getChild("hd").getChild("videos");
++		Common::String mp4Filename = baseName + ".mp4";
++		if (!videoDir.getChild(mp4Filename).exists()) {
++			Common::String upper = baseName;
++			upper.toUppercase();
++			mp4Filename = upper + ".mp4";
++		}
++		mp4Path += mp4Filename;
++		if (_hdVideo->open(mp4Path, 2880, 2160)) {
++			warning("HD video: playing %s at %dx%d", mp4Path.c_str(),
++				_hdVideo->getWidth(), _hdVideo->getHeight());
++			_hdVideoActive = true;
++			_hdFrameBuffer = (byte *)malloc(_hdVideo->getFrameSize());
++		} else {
++			delete _hdVideo;
++			_hdVideo = nullptr;
++		}
++	}
++
+ 	_updateNeeded = false;
+ 	_warpNeeded = false;
+ 	_palDirtyMin = 256;
+@@ -1316,15 +1365,26 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
+ 				skipped = 0;
+ 			if (_updateNeeded) {
+ 				if (!skipFrame) {
+-					// WORKAROUND for bug #2415: "FT DEMO: assertion triggered
+-					// when playing movie". Some frames there are 384 x 224
+-					int frameWidth = MIN(_width, _vm->_screenWidth);
+-					int frameHeight = MIN(_height, _vm->_screenHeight);
+-
+-					if (_vm->_macScreen) {
+-						_vm->mac_drawBufferToScreen(_dst, frameWidth, 0, 0, frameWidth, frameHeight);
++					if (_hdVideoActive && _hdFrameBuffer) {
++						// Render HD video frame from ffmpeg pipe
++						if (_hdVideo->readFrame(_hdFrameBuffer)) {
++							_vm->_system->copyRectToScreen(_hdFrameBuffer,
++								_hdVideo->getWidth() * 4, 0, 0,
++								_hdVideo->getWidth(), _hdVideo->getHeight());
++						} else {
++							// HD video ended
++							_endOfFile = true;
++						}
+ 					} else {
+-						_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
++						// Original SMUSH rendering
++						int frameWidth = MIN(_width, _vm->_screenWidth);
++						int frameHeight = MIN(_height, _vm->_screenHeight);
++
++						if (_vm->_macScreen) {
++							_vm->mac_drawBufferToScreen(_dst, frameWidth, 0, 0, frameWidth, frameHeight);
++						} else {
++							_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
++						}
+ 					}
+ 
+ 					_vm->_system->updateScreen();
+diff --git a/engines/scumm/smush/smush_player.h b/engines/scumm/smush/smush_player.h
+index 557203d9..7ffb79f1 100644
+--- a/engines/scumm/smush/smush_player.h
++++ b/engines/scumm/smush/smush_player.h
+@@ -87,6 +87,7 @@ class SmushDeltaBlocksDecoder;
+ class SmushDeltaGlyphsDecoder;
+ class IMuseDigital;
+ class Insane;
++class HdVideoPlayer;
+ 
+ class SmushPlayer {
+ 	friend class Insane;
+@@ -175,6 +176,11 @@ private:
+ 	SmushAudioTrack _smushTracks[SMUSH_MAX_TRACKS];
+ 	SmushAudioDispatch _smushDispatch[SMUSH_MAX_TRACKS];
+ 
++	/** HD video player for MP4 cutscene replacement. */
++	HdVideoPlayer *_hdVideo;
++	bool _hdVideoActive;
++	byte *_hdFrameBuffer;
++
+ 	int _smushMaxFrames[SMUSH_MAX_TRACKS];
+ 	int _smushTrackIds[SMUSH_MAX_TRACKS];
+ 	int _smushTrackIdxs[SMUSH_MAX_TRACKS];
