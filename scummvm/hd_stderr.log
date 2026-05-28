@@ -1,0 +1,18 @@
+WARNING: You are missing a valid 'translations.dat' file. GUI translation will not be available!
+WARNING: generateZipSet: Could not find 'shaders.dat'!
+WARNING: generateZipSet: Could not find 'shaders.dat'!
+WARNING: generateZipSet: Could not find 'gui-icons.dat'!
+WARNING: HDAssetManager: HD mode ENABLED at Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd!
+WARNING: HD mode enabled, scale=4, path=Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd!
+WARNING: HD debug dump enabled at frame 90!
+WARNING: HD: preloaded test pattern bg_0000 (2560x1920) scale=4!
+WARNING: generateZipSet: Could not find 'shaders.dat'!
+WARNING: generateZipSet: Could not find 'shaders.dat'!
+WARNING: HD: init at 2560x1920 fmt=32 bpp err=0!
+WARNING: HD: loaded bg for room 87 (2560x1920) scale=4!
+WARNING: HD DEBUG: composite saved to hd_dump_90_composite.raw (2560x1920)!
+WARNING: HD DEBUG: hdcomposite saved to hd_dump_90_hdcomposite.raw (2560x1920)!
+WARNING: HD DEBUG: clean saved to hd_dump_90_clean.raw (640x480)!
+WARNING: HD DEBUG: valid mask saved to hd_dump_90_valid.raw (307200 bytes)!
+WARNING: HD DEBUG: virtscr saved to hd_dump_90_virtscr.raw!
+WARNING: HD DEBUG: state saved to hd_dump_90_state.txt!

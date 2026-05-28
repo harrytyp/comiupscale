@@ -1,0 +1,5 @@
+achievements.dat FILE "dists/engine-data/achievements.dat"
+classicmacfonts.dat FILE "dists/engine-data/classicmacfonts.dat"
+encoding.dat FILE "dists/engine-data/encoding.dat"
+helpdialog.zip FILE "dists/engine-data/helpdialog.zip"
+macgui.dat FILE "dists/engine-data/macgui.dat"

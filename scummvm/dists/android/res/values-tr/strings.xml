@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="ok">Tamam</string>
+  <string name="customkeyboardview_keycode_cancel">İptal</string>
+  <string name="customkeyboardview_keycode_delete">Sil</string>
+</resources>
