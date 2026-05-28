@@ -1,5 +1,8 @@
 # Game data (original + ScummVM runtime)
-ScummVM/
+# monkey3/ lives either at root level (D:\) or under ScummVM/ (Z:\)
+# We match both locations
+ScummVM/monkey3/
+/monkey3/
 COMI/
 
 # Extracted PNG assets — 38K+ files, not part of source
