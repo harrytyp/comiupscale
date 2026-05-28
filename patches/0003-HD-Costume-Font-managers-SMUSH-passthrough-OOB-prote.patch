@@ -1,0 +1,253 @@
+From 4c8d70afce0edad0dfed6138491ab274419d8fcf Mon Sep 17 00:00:00 2001
+From: harrytyp <harrytyp@users.noreply.github.com>
+Date: Tue, 26 May 2026 23:37:29 +0200
+Subject: [PATCH 3/4] HD Costume + Font managers, SMUSH passthrough, OOB
+ protection
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- HdCostumeManager + HdFontManager integration (init, cleanup, build)
+- renderHDComposite: SMUSH cutscene 8-bit passthrough (isSmushActive)
+- renderHDComposite: Step 2.6 — HD costume overlay compositing
+- renderHDComposite: OOB protection (clamped srcOffX/Y, blitW/H)
+- renderHDComposite: Removed strict _needRedraw gate (consumed by 8-bit)
+- charset.cpp: HdFontChar recording hook (disabled, needs integration)
+- hd_costume_manager.cpp: sub=1 only, LRU cache 512 (already committed)
+- module.mk: Added hd_costume_manager.o, hd_font_manager.o
+---
+ engines/scumm/charset.cpp | 14 +++++++
+ engines/scumm/gfx.cpp     | 85 +++++++++++++++++++++++++++++++++++++++
+ engines/scumm/module.mk   |  2 +
+ engines/scumm/scumm.cpp   |  8 ++++
+ engines/scumm/scumm.h     | 12 ++++++
+ 5 files changed, 121 insertions(+)
+
+diff --git a/engines/scumm/charset.cpp b/engines/scumm/charset.cpp
+index 81c14ae2..e6f8b6f6 100644
+--- a/engines/scumm/charset.cpp
++++ b/engines/scumm/charset.cpp
+@@ -20,6 +20,7 @@
+  */
+ 
+ #include "graphics/font.h"
++#include "scumm/hd_font_manager.h"
+ #include "scumm/charset.h"
+ #include "scumm/file.h"
+ #include "scumm/scumm.h"
+@@ -1379,6 +1380,19 @@ void CharsetRendererClassic::drawChar(int chr, Graphics::Surface &s, int x, int
+ 	if (!prepareDraw(chr))
+ 		return;
+ 
++	// Record HD font character for the HD composite pass
++	// Temporarily disabled — needs proper charset integration
++	/* if (_vm->_hdFontManager && _vm->_hdFontManager->isEnabled() && _curId >= 0 && _curId <= 4) {
++		if (_vm->_hdFontManager->hasFont(_curId)) {
++			ScummEngine::HdFontChar fc;
++			fc.chr = chr;
++			fc.fontSlot = _curId;
++			fc.x = x;
++			fc.y = y;
++			_vm->_hdFontChars.push_back(fc);
++		}
++	} */
++
+ 	byte *dst = (byte *)s.getBasePtr(x, y);
+ 
+ 	bool is2byte = (_vm->_useCJKMode && chr >= 256);
+diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
+index 8aaa961d..966d66aa 100644
+--- a/engines/scumm/gfx.cpp
++++ b/engines/scumm/gfx.cpp
+@@ -33,6 +33,8 @@
+ #include "scumm/scumm_v6.h"
+ #include "scumm/usage_bits.h"
+ #include "scumm/hd_asset_manager.h"
++#include "scumm/hd_costume_manager.h"
++#include "scumm/hd_font_manager.h"
+ #include "scumm/hd_object_manager.h"
+ #include "scumm/object.h"
+ #include "scumm/he/wiz_he.h"
+@@ -1227,6 +1229,16 @@ void ScummEngine::renderHDComposite() {
+ 	if (!_hdBackgroundSurface.getPixels())
+ 		return;
+ 
++	// During SMUSH cutscenes, fall through to normal copy, skip HD compositing
++	if (isSmushActive()) {
++		VirtScreen *vs = &_virtscr[kMainVirtScreen];
++		if (vs && vs->getBasePtr(0, 0)) {
++			_system->copyRectToScreen(vs->getBasePtr(0, 0), vs->pitch,
++			                          0, 0, _screenWidth, _screenHeight);
++		}
++		return;
++	}
++
+ 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
+ 	int hdW = _hdBackgroundSurface.w;
+ 	int hdH = _hdBackgroundSurface.h;
+@@ -1375,6 +1387,79 @@ void ScummEngine::renderHDComposite() {
+ 		}
+ 	}
+ 
++	// Step 2.6: Overlay HD costume textures on top of composite
++	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
++		for (int ai = 0; ai < _numActors; ai++) {
++			Actor *a = _actors[ai];
++			if (!a || a->_costume == 0 || a->_frame == 0)
++				continue;
++
++			// Try to find HD costume frame: akosId = a->_costume, frame=a->_frame
++			if (!_hdCostumeManager->hasCostume(a->_costume, a->_frame))
++				continue;
++
++			Graphics::Surface hdCostumeSurf;
++			if (!_hdCostumeManager->loadCostume(a->_costume, a->_frame, hdCostumeSurf))
++				continue;
++
++			// Validate surface
++			if (hdCostumeSurf.w <= 0 || hdCostumeSurf.h <= 0 ||
++				hdCostumeSurf.format.bytesPerPixel != 4) {
++				hdCostumeSurf.free();
++				continue;
++			}
++
++			// Compute HD position: actor pos in screen space → HD coordinates
++			Common::Point actorPos = a->getPos();
++			int64 hdCX = (int64)(actorPos.x - vs->xstart) * hdW / MAX(1, visW);
++			int64 hdCY = (int64)(actorPos.y) * hdH / MAX(1, visH);
++
++			// Center the costume hotspot — use the 8-bit costume height as anchor
++			// Actor position is usually at the feet; costumes extend upward
++			hdCX -= hdCostumeSurf.w / 2;
++			hdCY -= hdCostumeSurf.h; // Anchor at bottom (feet position)
++
++			// Clamp blit region AND source offset to prevent OOB access
++			int blitX = MAX(0, (int)hdCX);
++			int blitY = MAX(0, (int)hdCY);
++			int srcOffX = MAX(0, (int)(blitX - hdCX));
++			int srcOffY = MAX(0, (int)(blitY - hdCY));
++			int blitW = MIN((int)hdCostumeSurf.w - srcOffX, (int)(hdW - blitX));
++			int blitH = MIN((int)hdCostumeSurf.h - srcOffY, (int)(hdH - blitY));
++
++			if (blitW <= 0 || blitH <= 0) {
++				hdCostumeSurf.free();
++				continue;
++			}
++
++			for (int oy = 0; oy < blitH; oy++) {
++				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
++				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
++				for (int ox = 0; ox < blitW; ox++) {
++					uint32 pix = srcRow[ox];
++					uint8 alpha = (pix >> 24) & 0xFF;
++					if (alpha >= 128) {
++						dstRow[ox] = pix;
++					}
++				}
++			}
++
++			hdCostumeSurf.free();
++		}
++	}
++
++	// Step 2.7: Render HD font characters recorded during 8-bit drawing
++	// Temporarily disabled — fonts need proper charset integration
++	/* if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
++		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
++			int hdX = fi->x * hdW / MAX(1, visW);
++			int hdY = fi->y * hdH / MAX(1, visH);
++			hdX += (int)(vs->xstart) * hdW / MAX(1, _roomWidth);
++			_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY);
++		}
++		_hdFontChars.clear();
++	} */
++
+ 	// Step 3: Copy the entire HD composite to the system buffer
+ 	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
+ 	                          0, 0, hdW, hdH);
+diff --git a/engines/scumm/module.mk b/engines/scumm/module.mk
+index 82c6f45b..103fe31b 100644
+--- a/engines/scumm/module.mk
++++ b/engines/scumm/module.mk
+@@ -23,6 +23,8 @@ MODULE_OBJS := \
+ 	gfx_towns.o \
+ 	gfx.o \
+ 	hd_asset_manager.o \
++	hd_costume_manager.o \
++	hd_font_manager.o \
+ 	hd_object_manager.o \
+ 	hd_video_player.o \
+ 	he/mixer_he.o \
+diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
+index 0b410c02..870f0fd2 100644
+--- a/engines/scumm/scumm.cpp
++++ b/engines/scumm/scumm.cpp
+@@ -50,6 +50,8 @@
+ #include "scumm/file_nes.h"
+ #include "scumm/hd_asset_manager.h"
+ #include "scumm/hd_object_manager.h"
++#include "scumm/hd_costume_manager.h"
++#include "scumm/hd_font_manager.h"
+ #include "scumm/imuse/imuse.h"
+ #include "scumm/imuse_digi/dimuse_engine.h"
+ #include "scumm/smush/smush_player.h"
+@@ -160,6 +162,8 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
+ 	_res = new ResourceManager(this);
+ 	_hdAssetManager = new HDAssetManager(this);
+ 	_hdObjectManager = new HdObjectManager(this);
++	_hdCostumeManager = new HdCostumeManager(this);
++	_hdFontManager = new HdFontManager(this);
+ 
+ 	// Convert MD5 checksum back into a digest
+ 	for (int i = 0; i < 16; ++i) {
+@@ -542,6 +546,8 @@ ScummEngine::~ScummEngine() {
+ #endif
+ 
+ 	delete _res;
++	delete _hdCostumeManager;
++	delete _hdFontManager;
+ 	delete _hdObjectManager;
+ 	delete _hdAssetManager;
+ 	delete _gdi;
+@@ -995,6 +1001,8 @@ Common::Error ScummEngine::init() {
+ 	hdPath += "hd";
+ 	_hdAssetManager->setHDPath(hdPath);
+ 	_hdObjectManager->init(hdPath);
++	_hdCostumeManager->init(hdPath);
++	_hdFontManager->init(hdPath);
+ 
+ 	if (_hdAssetManager->isEnabled()) {
+ 		_hdScale = _hdAssetManager->getScale();
+diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
+index 39051d6a..3e89be27 100644
+--- a/engines/scumm/scumm.h
++++ b/engines/scumm/scumm.h
+@@ -102,6 +102,8 @@ class Localizer;
+ class GlyphRenderer_v7;
+ class HDAssetManager;
+ class HdObjectManager;
++class HdCostumeManager;
++class HdFontManager;
+ 
+ struct Box;
+ struct BoxCoords;
+@@ -550,6 +552,16 @@ public:
+ 	/** HD asset manager (for upscaled external textures) */
+ 	HDAssetManager *_hdAssetManager = nullptr;
+ 	HdObjectManager *_hdObjectManager = nullptr;
++	HdCostumeManager *_hdCostumeManager = nullptr;
++	HdFontManager *_hdFontManager = nullptr;
++
++	/** Recording buffer for HD font characters (filled by charset renderer, consumed by renderHDComposite) */
++	struct HdFontChar {
++		int chr;
++		int fontSlot;
++		int x, y;
++	};
++	Common::List<HdFontChar> _hdFontChars;
+ 	int _hdScale = 1;
+ 	Graphics::Surface _hdBackgroundSurface;
+ 	Graphics::Surface _hdComposite;
+-- 
+2.54.0.windows.1
+

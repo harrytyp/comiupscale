@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "engine": "scumm",
+  "game": "monkey3",
+  "scale": 4,
+  "asset_dirs": {
+    "backgrounds": "CMI UPSCALED/hd/backgrounds",
+    "objects": "CMI UPSCALED/hd/objects",
+    "costumes": "CMI UPSCALED/hd/costumes",
+    "fonts": "CMI UPSCALED/hd/fonts",
+    "cutscenes": "CMI UPSCALED/hd/cutscenes"
+  },
+  "backgrounds": {
+    "0001": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0001.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0002": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0002.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0004": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0004.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0005": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0005.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0006": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0006.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0009": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0009.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0010": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0010.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0011": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0011.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0012": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0012.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0013": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0013.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0014": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0014.png",
+      "w": 5984,
+      "h": 1920
+    },
+    "0015": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0015.png",
+      "w": 8384,
+      "h": 1920
+    },
+    "0016": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0016.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0017": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0017.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0018": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0018.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0019": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0019.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0020": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0020.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0021": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0021.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0022": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0022.png",
+      "w": 4288,
+      "h": 1920
+    },
+    "0023": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0023.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0024": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0024.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0025": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0025.png",
+      "w": 5120,
+      "h": 1920
+    },
+    "0026": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0026.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0027": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0027.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0028": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0028.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0029": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0029.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0030": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0030.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0031": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0031.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0032": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0032.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0033": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0033.png",
+      "w": 4800,
+      "h": 1920
+    },
+    "0034": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0034.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0035": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0035.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0036": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0036.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0037": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0037.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0038": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0038.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0072": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0072.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0087": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0087.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0089": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0089.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0090": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0090.png",
+      "w": 2560,
+      "h": 1920
+    },
+    "0091": {
+      "file": "CMI UPSCALED/hd/backgrounds/bg_0091.png",
+      "w": 2560,
+      "h": 1920
+    }
+  },
+  "metadata": {
+    "upscale_model": "realesrgan-x4plus-anime",
+    "upscale_by": "RealESRGAN-NCNN-Vulkan v0.2.0",
+    "created": "2026-05-23",
+    "source_game": "Curse of Monkey Island (COMI.LA0/1/2)",
+    "total_rooms": 40
+  }
+}

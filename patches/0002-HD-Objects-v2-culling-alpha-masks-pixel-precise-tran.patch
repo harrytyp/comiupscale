@@ -1,0 +1,160 @@
+From 7d9454cf1e5d9ed7abadf994bb9b891de06f2e67 Mon Sep 17 00:00:00 2001
+From: Kolja Knodel <harrytyp@users.noreply.github.com>
+Date: Tue, 26 May 2026 16:07:13 +0200
+Subject: [PATCH 2/4] HD Objects v2: culling, alpha masks, pixel-precise
+ transparency
+
+- Foreground pixel culling: skip HD render for invisible objects (<2 pixels diff from clean)
+- Step 2.5 compositing: HD objects overlay after 8-bit compositing
+- Owner check removed (doesn't help with room-scoped object visibility)
+- hd_object_mask removed (was blocking actor pixels)
+- _hdTestRoom auto-warp mechanism (temporary, gated behind config)
+- Pixel-precise alpha masks via add_object_alpha_v4.py (LANCZOS upscaled from orig)
+- Improved alpha v3: distance-based chroma-key with edge fallback (overflows fixed)
+- Alpha v2: border pixel detection for non-index-0 transparency
+---
+ engines/scumm/gfx.cpp   | 45 +++++++++++++++++++++++++++++++----------
+ engines/scumm/scumm.cpp |  1 +
+ engines/scumm/scumm.h   |  3 +++
+ 3 files changed, 38 insertions(+), 11 deletions(-)
+
+diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
+index d796ffe8..8aaa961d 100644
+--- a/engines/scumm/gfx.cpp
++++ b/engines/scumm/gfx.cpp
+@@ -1272,8 +1272,6 @@ void ScummEngine::renderHDComposite() {
+ 
+ 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
+ 	// Diff against clean background to only overlay foreground pixels.
+-	// Clean background is populated per-strip in redrawBGStrip (room image only).
+-	// Pixels that haven't been covered by a strip yet are treated as foreground.
+ 	for (int dy = 0; dy < hdH; dy++) {
+ 		int sy = dy * visH / hdH;
+ 		sy = CLIP(sy, 0, visH - 1);
+@@ -1282,10 +1280,8 @@ void ScummEngine::renderHDComposite() {
+ 			int sx = dx * visW / hdW;
+ 			sx = CLIP(sx, 0, visW - 1);
+ 
+-			// Read current game pixel (8-bit palette index) at visible screen position
+ 			uint8 curPix = *(const uint8 *)vs->getBasePtr(vs->xstart + sx, sy);
+ 
+-			// Foreground if clean pixel not yet available, or differs from current
+ 			bool isForeground = true;
+ 			if (_hdCleanValid && sy < _hdCleanValidSize / visW) {
+ 				int pos = sy * visW + sx;
+@@ -1296,18 +1292,16 @@ void ScummEngine::renderHDComposite() {
+ 			}
+ 
+ 			if (isForeground) {
+-				// Convert 8-bit palette index to 32-bit RGBA
+ 				uint8 r = _currentPalette[curPix * 3 + 0];
+ 				uint8 g = _currentPalette[curPix * 3 + 1];
+ 				uint8 b = _currentPalette[curPix * 3 + 2];
+ 				*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
+ 					r | (g << 8) | (b << 16) | (0xFF << 24);
+ 			}
+-			// else: background pixel → HD background shows through (already in composit)
+ 		}
+ 	}
+ 
+-	// Step 2.5: Overlay HD object textures on top of composite
++	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
+ 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
+ 		for (int oi = 1; oi < _numLocalObjects; oi++) {
+ 			ObjectData &od = _objs[oi];
+@@ -1316,7 +1310,7 @@ void ScummEngine::renderHDComposite() {
+ 			if (od.fl_object_index)
+ 				continue;
+ 
+-			int objState = getState(od.obj_nr) - 1;
++			int objState = getState(od.obj_nr);
+ 			if (objState < 0) objState = 0;
+ 
+ 			if (!_hdObjectManager->hasObject(od.obj_nr, _currentRoom, objState))
+@@ -1326,7 +1320,7 @@ void ScummEngine::renderHDComposite() {
+ 			if (!_hdObjectManager->loadObject(od.obj_nr, _currentRoom, objState, hdObjSurf))
+ 				continue;
+ 
+-			// Skip textures that are full background size (pre-composited layers)
++			// Skip full-HD textures (pre-composited layer files)
+ 			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH) {
+ 				hdObjSurf.free();
+ 				continue;
+@@ -1337,14 +1331,43 @@ void ScummEngine::renderHDComposite() {
+ 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
+ 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+ 
++			// CULL: only render HD object if the 8-bit screen has visible
++			// foreground pixels in this area. If the object is invisible
++			// (hidden behind other elements or inactive), skip it.
++			{
++				int sx = od.x_pos;
++				int sy = od.y_pos;
++				int sw = MIN<int>(od.width, visW - sx);
++				int sh = MIN<int>(od.height, visH - sy);
++				int visiblePixels = 0;
++				if (sw > 0 && sh > 0 && _hdCleanValid) {
++					for (int row = 0; row < sh; row++) {
++						for (int col = 0; col < sw; col++) {
++							int pos = (sy + row) * visW + (sx + col);
++							if (_hdCleanValid[pos]) {
++								byte curPix = *(const byte *)vs->getBasePtr(vs->xstart + sx + col, sy + row);
++								byte cleanPix = *(const byte *)_hdCleanBackground.getBasePtr(sx + col, sy + row);
++								if (curPix != cleanPix)
++									visiblePixels++;
++							}
++						}
++					}
++				}
++				if (visiblePixels < 2) { // no significant foreground content
++					hdObjSurf.free();
++					continue;
++				}
++			}
++
++			// Blit HD object with alpha transparency
+ 			for (int oy = 0; oy < hdObjH; oy++) {
+ 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+ 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+ 				for (int ox = 0; ox < hdObjW; ox++) {
+ 					uint32 pix = srcRow[ox];
+-					if ((pix >> 24) >= 0x80) {
++					uint8 alpha = (pix >> 24) & 0xFF;
++					if (alpha >= 128)
+ 						dstRow[ox] = pix;
+-					}
+ 				}
+ 			}
+ 
+diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
+index d27dce6e..0b410c02 100644
+--- a/engines/scumm/scumm.cpp
++++ b/engines/scumm/scumm.cpp
+@@ -995,6 +995,7 @@ Common::Error ScummEngine::init() {
+ 	hdPath += "hd";
+ 	_hdAssetManager->setHDPath(hdPath);
+ 	_hdObjectManager->init(hdPath);
++
+ 	if (_hdAssetManager->isEnabled()) {
+ 		_hdScale = _hdAssetManager->getScale();
+ 		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
+diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
+index 04687501..39051d6a 100644
+--- a/engines/scumm/scumm.h
++++ b/engines/scumm/scumm.h
+@@ -556,9 +556,12 @@ public:
+ 	Graphics::Surface _hdCleanBackground;
+ 	byte *_hdCleanValid = nullptr; // 640×480 byte array: 1 = pixel has clean data
+ 	int _hdCleanValidSize = 0;
++	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
++	int _hdObjectMaskSize = 0;
+ 	int _hdCurrentRoom = -1;
+ 	int _hdFrameCount = 0;
+ 	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
++	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
+ 	bool _hdScreenshotDone = false;
+ 
+ 	/** Central resource data. */
+-- 
+2.54.0.windows.1
+
