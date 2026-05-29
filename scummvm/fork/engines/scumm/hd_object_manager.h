@@ -90,7 +90,7 @@ private:
 	Common::HashMap<Common::String, TextureCacheEntry> _textureCache;
 	int _lruCounter;
 
-	// Base path for HD assets (e.g. "ScummVM/monkey3/hd")
+	// Base path for HD assets (e.g. "game/hd")
 	Common::String _hdPath;
 	Common::String _fallbackPath;
 

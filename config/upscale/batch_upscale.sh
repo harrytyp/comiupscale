@@ -2,7 +2,7 @@
 # Batch upscale all 40 COMI backgrounds with RealESRGAN
 # Place upscaled output in the HD directory for the ScummVM fork
 #
-# Usage: bash hd_config/batch_upscale.sh
+# Usage: bash config/upscale/batch_upscale.sh
 
 set -e
 

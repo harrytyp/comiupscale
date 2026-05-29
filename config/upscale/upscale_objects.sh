@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Batch upscale objects and object layers with RealESRGAN
-# Usage: bash hd_config/upscale_objects.sh
+# Usage: bash config/upscale/upscale_objects.sh
 #
 # Input:  assets/extracted/COMI/IMAGES/objects/  (600 PNGs)
 #         assets/extracted/COMI/IMAGES/objects_layers/  (234 PNGs)

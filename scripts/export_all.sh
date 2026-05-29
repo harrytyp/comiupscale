@@ -9,14 +9,14 @@
 #   - Costume/character sprites from 457 AKOS entries (via Python decoder)
 #
 # Usage:
-#   cd /z/Projekte/COMI-Upscaled
+#   cd <project-root>   # e.g. D:\COMI-Upscaled or wherever you cloned
 #   bash scripts/export_all.sh
 #
 # Requires:
 #   - NUTcracker binary: nutcracker-Windows_X64/nutcracker.exe
 #   - NUTcracker Python source: nutcracker/src/
 #   - Python 3.11+ with numpy, pillow, typer (pip install -r requirements.txt)
-#   - Game files under ScummVM/monkey3/ (see README.md)
+#   - Game files under game/ (COMI.LA0/1/2)
 # ============================================================================
 
 set -euo pipefail

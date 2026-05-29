@@ -14,7 +14,7 @@ This script:
 5. Saves as RGBA PNG
 
 Run:
-  cd /z/Projekte/COMI-Upscaled
+  cd <project-root>   # same level as scripts/, config/, game/, assets/
   python scripts/add_object_alpha.py
 """
 

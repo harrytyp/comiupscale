@@ -74,7 +74,7 @@ if best_dim:
     print(f"Pixel (w//2,h//2): {img_rgb.getpixel((w//2,h//2))}")
     
     # Save as PNG for visual inspection
-    img.save("/z/Projekte/COMI-Upscaled/hd_fb_dump_parsed.png")
+    img.save("hd_fb_dump_parsed.png")
     print(f"\nSaved to hd_fb_dump_parsed.png")
     
     # Compare with original if sizes match

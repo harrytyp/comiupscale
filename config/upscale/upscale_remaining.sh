@@ -6,7 +6,7 @@
 # pipeline, then deploys to the ScummVM HD directory and runs alpha fixup.
 #
 # Usage:
-#   bash hd_config/upscale_remaining.sh
+#   bash config/upscale/upscale_remaining.sh
 #
 # Flags:
 #   --skip-upscale   Skip AI upscaling (just deploy existing + alpha fixup)
