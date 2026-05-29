@@ -42,6 +42,7 @@ comiupscale/
 │   └── hd/                       ← HD deploy target (generated)
 ├── dumps/                         ← Raw COMI resource dumps (untracked)
 ├── README.md
+├── requirements.txt               ← Python deps (numpy, pillow, typer)
 └── .gitignore
 ```
 
@@ -57,6 +58,7 @@ comiupscale/
 | `docs/` | All project documentation |
 | `setup_wizard/` + `setup.py` | MI3-themed setup wizard |
 | `setup.sh` | Quick-start entry point |
+| `requirements.txt` | Python dependencies (numpy, pillow, typer) |
 | `tests/` | Test files |
 | `tools/` | Third-party tool wrappers |
 | `.gitignore` | Ignore user-generated content |
