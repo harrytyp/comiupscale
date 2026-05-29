@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# ScummVM COMI Upscaled - Build Environment Setup for GPU Computer
+# ScummVM COMI Upscaled - Build Environment Setup
 #
-# Step 1: Install MSYS2
-#   Download from https://www.msys2.org/ and run the installer
-#   Use defaults (install to C:\msys64)
+# Sets up MSYS2 for building the ScummVM HD fork.
+# Run this in an "MSYS2 MinGW64" terminal.
 #
-# Step 2: Open "MSYS2 MinGW64" from Start Menu
-#   Then paste and run the commands below:
+# Usage:
+#   bash scripts/setup_build_env.sh
 #
-# ============================================================================
+# After setup:
+#   cd scummvm/fork
+#   bash build.sh
+#
 
 set -e
 
@@ -18,7 +20,7 @@ pacman -Syu --noconfirm
 echo "=== Installing MinGW64 toolchain ==="
 pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-make
 
-echo "=== Installing ScummVM libraries ==="
+echo "=== Installing ScummVM build dependencies ==="
 pacman -S --noconfirm \
   mingw-w64-x86_64-SDL2 \
   mingw-w64-x86_64-libpng \
@@ -29,20 +31,19 @@ pacman -S --noconfirm \
   mingw-w64-x86_64-flac \
   mingw-w64-x86_64-libmad \
   mingw-w64-x86_64-libtheora \
-  mingw-w64-x86_64-faad2
+  mingw-w64-x86_64-faad2 \
+  mingw-w64-x86_64-curl \
+  mingw-w64-x86_64-fluidsynth \
+  mingw-w64-x86_64-fribidi
 
 echo ""
 echo "=== DONE ==="
 echo ""
-echo "Now extract the fork and build:"
+echo "Build the fork:"
+echo "  cd <repo>/scummvm/fork"
+echo "  bash build.sh"
 echo ""
-echo "  cd /c/Users/<yourname>"
-echo '  tar xzf "scummvm-fork.tar.gz"'
-echo '  cd scummvm/fork'
-echo '  mingw32-make -j$(nproc)'
+echo "Run the game:"
+echo "  export PATH=/mingw64/bin:/usr/bin:\$PATH"
+echo "  ./scummvm.exe --path=../../game"
 echo ""
-echo "  # Build (from MSYS2 MinGW64 terminal):"
-echo '  PATH="/mingw64/bin:/usr/bin:$PATH" mingw32-make -j$(nproc)'
-echo ""
-echo "  # Run:"
-echo '  PATH="/mingw64/bin:/usr/bin:$PATH" ./scummvm.exe --path=game'

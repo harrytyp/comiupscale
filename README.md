@@ -418,28 +418,28 @@ directory; falls back to default bilinear filtering otherwise).
 ### Build Steps
 
 ```bash
-git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git
-cd scummvm
+# 1. Install MSYS2 (https://www.msys2.org/) — default install to C:\msys64
+#    Then open "MSYS2 MinGW64" from Start Menu and run:
+#    pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-make \
+#      mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libpng mingw-w64-x86_64-zlib \
+#      mingw-w64-x86_64-freetype mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg \
+#      mingw-w64-x86_64-flac mingw-w64-x86_64-libmad mingw-w64-x86_64-libtheora \
+#      mingw-w64-x86_64-faad2 mingw-w64-x86_64-curl mingw-w64-x86_64-fluidsynth \
+#      mingw-w64-x86_64-fribidi
 
-# Apply HD fork patches
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/scumm-hd-fork.patch
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.h
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.cpp
+# 2. Clone the repo
+git clone git@github.com:harrytyp/comiupscale.git
+cd comiupscale/scummvm/fork
 
-git apply scumm-hd-fork.patch
-mv hd_asset_manager.h hd_asset_manager.cpp engines/scumm/
+# 3. Build (config is pre-configured, no ./configure needed)
+bash build.sh
 
-# Configure (SCUMM engine only, OpenGL backend)
-./configure --host=mingw64 --backend=opengl --disable-all-engines --enable-engine=scumm
-mingw32-make -j$(nproc)
+# 4. Prepare game data
+mkdir -p ../../game
+# Copy COMI.LA0/1/2 + RESOURCE/ from your game install into ../../game/
 
-# Prepare game data
-mkdir -p /path/to/monkey3/hd/
-# Copy HD background PNGs (bg_XXXX.png, 2560×1920) into hd/
-# Game data: COMI.LA0, COMI.LA1, COMI.LA2 in monkey3/
-
-# Run
-./scummvm.exe --path=/path/to/monkey3 scumm:comi
+# 5. Run
+bash launch.cmd
 ```
 
 ### Debug Dumps
