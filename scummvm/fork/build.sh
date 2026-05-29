@@ -13,6 +13,11 @@ set -e
 # Ensure MinGW64 tools are in PATH
 export PATH="/mingw64/bin:/usr/bin:$PATH"
 
+# MSYS2 temp directory fix (prevents "Cannot create temporary file in C:\WINDOWS\")
+export TMP="/tmp"
+export TEMP="/tmp"
+mkdir -p /tmp
+
 echo "=== Building ScummVM HD Fork ==="
 
 # Workaround for MSYS2 sed 4.9 bug (crashes on Makefile.common sed patterns)
