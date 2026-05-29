@@ -1464,12 +1464,15 @@ void ScummEngine::hdDebugDump() {
 	Common::DumpFile df;
 	char path[256];
 
-	// Write dumps to <project>/logs/ (resolved from hd_path parent)
+	// Write dumps to <project>/logs/ (resolve from hd_path up to project root)
 	Common::String dumpDir;
 	if (_hdAssetManager->isEnabled()) {
 		Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
-		Common::FSNode parent = hdNode.getParent();
-		dumpDir = parent.getPath().toString('/') + "/logs";
+		Common::FSNode project = hdNode.getParent().getParent();
+		dumpDir = project.getPath().toString('/');
+		while (dumpDir.size() > 0 && (dumpDir.lastChar() == '/' || dumpDir.lastChar() == '\\'))
+			dumpDir.deleteLastChar();
+		dumpDir += "/logs";
 	} else {
 		dumpDir = ".";
 	}

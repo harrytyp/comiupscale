@@ -15,7 +15,8 @@ cd "$(dirname "$0")/.."
 PROJECT_DIR="$(pwd)"
 LOG_DIR="$PROJECT_DIR/logs"
 FORK_DIR="$PROJECT_DIR/scummvm/fork"
-SCUMMVM_INI="$HOME/AppData/Roaming/ScummVM/scummvm.ini"
+DUMP_DIR="$PROJECT_DIR/logs"
+SCUMMVM_INI="C:/Users/$(whoami)/AppData/Roaming/ScummVM/scummvm.ini"
 
 mkdir -p "$LOG_DIR"
 
@@ -61,7 +62,7 @@ WAIT_MAX=30
 WAITED=0
 DUMP_FOUND=0
 while [ $WAITED -lt $WAIT_MAX ]; do
-  DUMPS=$(ls "$LOG_DIR"/hd_dump_*.raw 2>/dev/null | wc -l)
+  DUMPS=$(ls "$DUMP_DIR"/hd_dump_*.raw 2>/dev/null | wc -l)
   if [ "$DUMPS" -gt 0 ]; then
     echo "  Dump files found after ${WAITED}s ($DUMPS files)"
     DUMP_FOUND=1
@@ -99,7 +100,7 @@ fi
 
 # ── Step 5: Analyze dump files ──
 echo "[5/5] Analyzing dump files..."
-python scripts/check_hd_dumps.py "$LOG_DIR"
+python scripts/check_hd_dumps.py "$DUMP_DIR"
 echo ""
 
 echo "=== Test complete ==="

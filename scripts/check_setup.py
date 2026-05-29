@@ -26,9 +26,9 @@ CYAN   = "\033[96m"
 BOLD   = "\033[1m"
 RESET  = "\033[0m"
 
-def ok(msg):    print(f"  {GREEN}✓{RESET} {msg}")
-def warn(msg):  print(f"  {YELLOW}⚠{RESET} {msg}")
-def err(msg):   print(f"  {RED}✗{RESET} {msg}")
+def ok(msg):    print(f"  {GREEN}OK{RESET} {msg}")
+def warn(msg):  print(f"  {YELLOW}WARN{RESET} {msg}")
+def err(msg):   print(f"  {RED}MISS{RESET} {msg}")
 def info(msg):  print(f"  {CYAN}i{RESET} {msg}")
 
 
@@ -69,7 +69,7 @@ def check(label, required, optional=None):
                     ok(f"{name}: {path}")
 
     if passed == total and not VERBOSE:
-        print(f"  {GREEN}✓{RESET} {passed}/{total} ok")
+        print(f"  {GREEN}OK{RESET} {passed}/{total} ok")
 
 
 def check_python():
@@ -87,7 +87,7 @@ def check_python():
             err(f"{mod} — not found, run: pip install {mod}")
             ERRORS += 1
     if ok_count == 3 and not VERBOSE:
-        print(f"  {GREEN}✓{RESET} 3/3 ok")
+        print(f"  {GREEN}OK{RESET} 3/3 ok")
 
 
 # ── Main ─────────────────────────────────────────────
@@ -105,7 +105,7 @@ def main():
             if attr.isupper() and not attr.startswith("_"):
                 val = getattr(paths, attr)
                 if isinstance(val, str) and val:
-                    exists = "✓" if os.path.exists(val) else "✗"
+                    exists = "OK" if os.path.exists(val) else "MISS"
                     print(f"  {exists} {attr:<30s} {val}")
 
     # ── Project root ──

@@ -19,13 +19,13 @@ import struct
 def analyze_dump(path, label, expected_w, expected_h, bpp):
     """Check a raw dump file for basic sanity."""
     if not os.path.exists(path):
-        return f"  ✗ {label}: NOT FOUND at {path}"
+        return f"  MISS {label}: NOT FOUND at {path}"
 
     size = os.path.getsize(path)
     expected_size = expected_w * expected_h * bpp
 
     if size == 0:
-        return f"  ✗ {label}: EMPTY file"
+        return f"  MISS {label}: EMPTY file"
 
     issues = []
     if size != expected_size:
@@ -46,7 +46,7 @@ def analyze_dump(path, label, expected_w, expected_h, bpp):
     if non_zero == 0:
         issues.append("all zeros (no content)")
 
-    status = "✓" if not issues else "⚠"
+    status = "OK" if not issues else "WARN"
     details = ", ".join(issues) if issues else f"{expected_w}x{expected_h} {size} bytes OK"
     return f"  {status} {label}: {details}"
 
@@ -134,11 +134,11 @@ def main():
                     issues.append(f"Room {room}: composite is all zeros")
 
     if issues:
-        print("⚠  Issues found:")
+        print("WARN  Issues found:")
         for i in issues:
             print(f"    {i}")
     else:
-        print("✓  All dumps look healthy")
+        print("OK  All dumps look healthy")
 
 
 if __name__ == "__main__":
