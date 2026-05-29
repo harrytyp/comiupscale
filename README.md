@@ -474,3 +474,28 @@ hd_trace: OK   game/hd/costumes/LFLF_0001_AKOS_0001_aframe_0.png
 
 Use this to debug missing assets, wrong paths, or unexpected fallback to
 8-bit rendering. Works for backgrounds, objects, costumes, fonts, and videos.
+
+### Diagnostics Suite
+
+Run these tools to check if HD rendering is working correctly:
+
+```bash
+# 1. Validate that all project paths and dependencies are correct
+python scripts/check_setup.py
+python scripts/check_setup.py --debug   # show every resolved path
+
+# 2. Check HD dump files after the game writes them
+python scripts/check_hd_dumps.py /path/to/dump/dir
+
+# 3. Trace HD asset access during gameplay (requires hd_trace=true in config)
+#    The trace output appears in the ScummVM console/log.
+
+# 4. Full validation pipeline
+bash scripts/full_pipeline.sh
+```
+
+The dump analyzer checks:
+- Raw file sizes match expected HD (2560×1920) or SD (640×480) dimensions
+- Whether pixel data is all zeros (no content) or all the same (clipping)
+- State info per room (scale factor, room IDs)
+
