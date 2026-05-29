@@ -350,7 +350,7 @@ def run(cfg):
     ui.title_screen()
     ui.panel(
         "Ship's Log",
-        f"Mode: {cfg['mode']}\n{__import__('comi_upscaled.config').fmt(cfg)}",
+        f"Mode: {cfg['mode']}\\n{__import__('setup_wizard.config').fmt(cfg)}",
         border_style=ui.WOOD,
     )
 

@@ -29,7 +29,7 @@ set -euo pipefail
 
 # ---- Configuration ---------------------------------------------------------
 PROJECT_ROOT=""
-BASE="$PROJECT_ROOT/CMI UPSCALED"
+BASE="$PROJECT_ROOT/assets"
 
 REALESRGAN="$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
 MODEL="realesrgan-x4plus-anime"

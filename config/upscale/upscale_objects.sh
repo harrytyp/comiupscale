@@ -9,10 +9,10 @@
 
 set -e
 
-REALESRGAN="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
+REALESRGAN="tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
 MODEL="realesrgan-x4plus-anime"
-MODELS_DIR="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
-BASE="/CMI UPSCALED"
+MODELS_DIR="tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
+BASE="assets"
 
 upscale_dir() {
     local SRC="$1"
