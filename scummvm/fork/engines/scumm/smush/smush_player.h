@@ -247,6 +247,10 @@ private:
 	void handleNewPalette(int32 subSize, Common::SeekableReadStream &);
 	void handleZlibFrameObject(int32 subSize, Common::SeekableReadStream &b);
 	void handleFrameObject(int32 subSize, Common::SeekableReadStream &);
+
+	/** Reusable buffer for scaling SMUSH frames to HD resolution. */
+	uint32 *_hdScaleBuffer;
+	int _hdScaleBufferSize; // in uint32 elements
 	void handleSAUDChunk(uint8 *srcBuf, uint32 size, int groupId, int vol, int pan, int16 flags, int trkId, int index, int maxFrames);
 	void handleStore(int32 subSize, Common::SeekableReadStream &);
 	void handleFetch(int32 subSize, Common::SeekableReadStream &);

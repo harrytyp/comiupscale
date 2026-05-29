@@ -227,6 +227,8 @@ SmushPlayer::SmushPlayer(ScummEngine_v7 *scumm, IMuseDigital *imuseDigital, Insa
 	_hdVideo = nullptr;
 	_hdVideoActive = false;
 	_hdFrameBuffer = nullptr;
+	_hdScaleBuffer = nullptr;
+	_hdScaleBufferSize = 0;
 	_deltaBlocksCodec = 0;
 	_deltaGlyphsCodec = 0;
 	_strings = nullptr;
@@ -281,6 +283,9 @@ SmushPlayer::SmushPlayer(ScummEngine_v7 *scumm, IMuseDigital *imuseDigital, Insa
 SmushPlayer::~SmushPlayer() {
 	delete _IACTchannel;
 	delete _compressedFileSoundHandle;
+	free(_hdScaleBuffer);
+	_hdScaleBuffer = nullptr;
+	_hdScaleBufferSize = 0;
 	terminateAudio();
 }
 
@@ -1390,6 +1395,34 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 
 						if (_vm->_macScreen) {
 							_vm->mac_drawBufferToScreen(_dst, frameWidth, 0, 0, frameWidth, frameHeight);
+						} else if (_vm->_hdScale > 1) {
+							// HD mode: scale the SMUSH frame to fill the HD screen
+							int hdW = _vm->_screenWidth * _vm->_hdScale;
+							int hdH = _vm->_screenHeight * _vm->_hdScale;
+							int needed = hdW * hdH;
+							if (!_hdScaleBuffer || _hdScaleBufferSize < needed) {
+								_hdScaleBuffer = (uint32 *)realloc(_hdScaleBuffer, needed * 4);
+								_hdScaleBufferSize = _hdScaleBuffer ? needed : 0;
+							}
+							if (_hdScaleBuffer) {
+								for (int dy = 0; dy < hdH; dy++) {
+									int sy = dy * frameHeight / hdH;
+									sy = CLIP(sy, 0, frameHeight - 1);
+									uint32 *dstRow = _hdScaleBuffer + dy * hdW;
+									for (int dx = 0; dx < hdW; dx++) {
+										int sx = dx * frameWidth / hdW;
+										sx = CLIP(sx, 0, frameWidth - 1);
+										uint8 p = _dst[sy * _width + sx];
+										uint8 r = _pal[p * 3 + 0];
+										uint8 g = _pal[p * 3 + 1];
+										uint8 b = _pal[p * 3 + 2];
+										dstRow[dx] = r | (g << 8) | (b << 16) | (0xFF << 24);
+									}
+								}
+								_vm->_system->copyRectToScreen(_hdScaleBuffer, hdW * 4, 0, 0, hdW, hdH);
+							} else {
+								_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
+							}
 						} else {
 							_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
 						}
