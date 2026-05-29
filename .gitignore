@@ -76,6 +76,11 @@ hd_fb_dump.raw
 # Git
 .gitattributes
 
-# Fork source directories (too large for git)
+# Fork source build artifacts
+scummvm/fork/**/*.o
+scummvm/fork/**/*.a
+scummvm/fork/dists/scummvm.o
+scummvm/fork/dists/*.rh
+scummvm/fork/scummvm.exe
 /scummvm-fork/
 /scummvm-src/
