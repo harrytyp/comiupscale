@@ -121,7 +121,7 @@ bool HdVideoPlayer::open(const Common::String &mp4Path, int width, int height) {
 		ffmpegPath = ConfMan.get("ffmpeg_path", "comi");
 
 	Common::String cmd = Common::String::format(
-		"%s -i \"%s\" -vf crop=2560:1920:160:120 -f rawvideo -pix_fmt rgba -an -loglevel error -",
+		"%s -i \"%s\" -vf scale=2560:1920:flags=bilinear -f rawvideo -pix_fmt rgba -an -loglevel error -",
 		ffmpegPath.c_str(), mp4Path.c_str());
 
 	// Set up pipe for reading ffmpeg stdout
