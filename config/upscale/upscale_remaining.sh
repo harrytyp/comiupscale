@@ -28,7 +28,7 @@
 set -euo pipefail
 
 # ---- Configuration ---------------------------------------------------------
-PROJECT_ROOT="/z/Projekte/COMI-Upscaled"
+PROJECT_ROOT=""
 BASE="$PROJECT_ROOT/CMI UPSCALED"
 
 REALESRGAN="$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
@@ -39,7 +39,7 @@ EXTRACTED_COSTUMES="$BASE/extracted/COMI/costumes"
 EXTRACTED_FONTS="$BASE/extracted/COMI/fonts"
 UPSCALED_COSTUMES="$BASE/upscaled/costumes"
 UPSCALED_FONTS="$BASE/upscaled/fonts"
-HD_DIR="$PROJECT_ROOT/ScummVM/monkey3/hd"
+HD_DIR="$PROJECT_ROOT/game/hd"
 HD_COSTUMES="$HD_DIR/costumes"
 HD_FONTS="$HD_DIR/fonts"
 
@@ -206,7 +206,7 @@ print_summary() {
         # Quick count via Python (much faster than bash glob on NAS)
         COST_COUNT=$($PYTHON -c "
 import os; c=0
-with os.scandir('ScummVM/monkey3/hd/costumes') as it:
+with os.scandir('game/hd/costumes') as it:
     for e in it:
         if e.name.endswith('.png') and e.is_file(): c+=1
 print(c)
@@ -242,4 +242,4 @@ echo "=== All done! ==="
 print_summary
 echo ""
 echo "Next step after this: generate hd_manifest.json"
-echo "  python scripts/hd_manifest_gen.py --hd-dir CMI UPSCALED/upscaled"
+echo "  python scripts/hd_manifest_gen.py --hd-dir assets/upscaled"

@@ -16,7 +16,7 @@ except ImportError:
 
 # ── Default config (all keys, no surprises) ──────────
 DEFAULT_CONFIG = {
-    "game": {"path": "", "id": "monkey3"},
+    "game": {"path": "", "id": "game"},
     "mode": "express",
     "upscale": {
         "enabled": True,

@@ -11,7 +11,7 @@ import subprocess
 import shutil
 from pathlib import Path
 
-from comi_upscaled import ui
+from setup_wizard import ui
 
 # ── Path helpers ─────────────────────────────────────
 
@@ -60,7 +60,7 @@ def step_find_game(cfg, progress):
 
     # Auto-discover common locations
     candidates = [
-        "./ScummVM/monkey3",
+        "./game",
         "./Monkey3",
         "./COMI",
         "../COMI",
@@ -128,10 +128,10 @@ def step_upscale(cfg, progress):
 
     # ── Backgrounds ──
     task_bg = progress.add_task("  [bold]Backgrounds[/]", total=40)
-    bg_script = _p("hd_config", "batch_upscale.sh")
+    bg_script = _p("config", "upscale", "batch_upscale.sh")
     if os.path.exists(bg_script):
         subprocess.run(["bash", bg_script], cwd=ROOT, capture_output=True, timeout=600)
-        done_bg = len(os.listdir(_p("CMI UPSCALED", "upscaled", "backgrounds")))
+        done_bg = len(os.listdir(_p("assets", "upscaled", "backgrounds")))
         progress.update(task_bg, completed=done_bg)
         ui.success(f"Backgrounds: {done_bg} upscaled")
     else:
@@ -139,11 +139,11 @@ def step_upscale(cfg, progress):
 
     # ── Objects + layers ──
     task_ob = progress.add_task("  [bold]Objects + Layers[/]", total=834)
-    obj_script = _p("hd_config", "upscale_objects.sh")
+    obj_script = _p("config", "upscale", "upscale_objects.sh")
     if os.path.exists(obj_script):
         subprocess.run(["bash", obj_script], cwd=ROOT, capture_output=True, timeout=600)
-        for d in ["objects", "objects_layers"]:
-            p = _p("CMI UPSCALED", "upscaled", d)
+        for d in ("objects", "objects_layers"):
+            p = _p("assets", "upscaled", d)
             if os.path.isdir(p):
                 progress.update(task_ob, advance=len(os.listdir(p)))
     else:
@@ -152,9 +152,9 @@ def step_upscale(cfg, progress):
     # ── Costumes (batch RealESRGAN) ──
     task_co = progress.add_task("  [bold]Costumes[/]", total=25_304)
     esrgan = _p("tools", "realesrgan-ncnn-vulkan-v0.2.0-windows", "realesrgan-ncnn-vulkan.exe")
-    models_dir = _p("tools", "realesrgan-ncnn-vulkan-v0.2.0-windows", "models")
-    src = _p("CMI UPSCALED", "extracted", "COMI", "costumes")
-    dst = _p("CMI UPSCALED", "upscaled", "costumes")
+    task_co = progress.add_task("  [bold]Costumes[/]", total=25304)
+    src = _p("assets", "extracted", "COMI", "costumes")
+    dst = _p("assets", "upscaled", "costumes")
 
     if os.path.exists(esrgan) and os.path.isdir(src):
         os.makedirs(dst, exist_ok=True)
@@ -207,8 +207,8 @@ def step_deploy(cfg, progress):
     deploy_script = _p("scripts", "deploy_hd.py")
     if os.path.exists(deploy_script):
         for label, src_dir, dst_dir in [
-            ("Costumes", "CMI UPSCALED/upscaled/costumes", "ScummVM/monkey3/hd/costumes"),
-            ("Fonts", "CMI UPSCALED/upscaled/fonts", "ScummVM/monkey3/hd/fonts"),
+            ("Costumes", "assets/upscaled/costumes", "game/hd/costumes"),
+            ("Fonts", "assets/upscaled/fonts", "game/hd/fonts"),
         ]:
             full_src = _p(src_dir)
             full_dst = _p(dst_dir)
@@ -221,8 +221,8 @@ def step_deploy(cfg, progress):
                 ui.success(f"{label} deployed")
 
     # Also copy backgrounds if they exist at root level
-    hd_root = _p("ScummVM", "monkey3", "hd")
-    bg_src = _p("CMI UPSCALED", "upscaled", "backgrounds")
+    hd_root = _p("game", "hd")
+    bg_src = _p("assets", "upscaled", "backgrounds")
     if os.path.isdir(bg_src):
         for f in os.listdir(bg_src):
             if f.endswith(".png") and not os.path.exists(os.path.join(hd_root, f"bg_{f}")):

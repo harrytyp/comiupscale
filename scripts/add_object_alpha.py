@@ -23,10 +23,10 @@ import sys
 from PIL import Image
 import numpy as np
 
-SRC_DIR = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects'
-SRC_LAYERS_DIR = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects_layers'
-HD_DIR = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects'
-HD_LAYERS_DIR = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects_layers'
+SRC_DIR = 'assets/extracted/COMI/IMAGES/objects'
+SRC_LAYERS_DIR = 'assets/extracted/COMI/IMAGES/objects_layers'
+HD_DIR = 'game/hd/objects'
+HD_LAYERS_DIR = 'game/hd/objects_layers'
 
 
 def process_object(src_path, hd_path):

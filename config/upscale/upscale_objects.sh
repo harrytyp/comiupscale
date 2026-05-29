@@ -2,17 +2,17 @@
 # Batch upscale objects and object layers with RealESRGAN
 # Usage: bash hd_config/upscale_objects.sh
 #
-# Input:  CMI UPSCALED/extracted/COMI/IMAGES/objects/  (600 PNGs)
-#         CMI UPSCALED/extracted/COMI/IMAGES/objects_layers/  (234 PNGs)
-# Output: CMI UPSCALED/upscaled/objects/
-#         CMI UPSCALED/upscaled/objects_layers/
+# Input:  assets/extracted/COMI/IMAGES/objects/  (600 PNGs)
+#         assets/extracted/COMI/IMAGES/objects_layers/  (234 PNGs)
+# Output: assets/upscaled/objects/
+#         assets/upscaled/objects_layers/
 
 set -e
 
-REALESRGAN="/z/Projekte/COMI-Upscaled/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
+REALESRGAN="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
 MODEL="realesrgan-x4plus-anime"
-MODELS_DIR="/z/Projekte/COMI-Upscaled/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
-BASE="/z/Projekte/COMI-Upscaled/CMI UPSCALED"
+MODELS_DIR="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
+BASE="/CMI UPSCALED"
 
 upscale_dir() {
     local SRC="$1"
@@ -52,4 +52,4 @@ upscale_dir "$BASE/extracted/COMI/IMAGES/objects_layers" \
             "Object layers"
 
 echo "=== All done! ==="
-echo "Next step: copy upscaled PNGs to ScummVM/monkey3/hd/objects/ and hd/objects_layers/"
+echo "Next step: copy upscaled PNGs to game/hd/objects/ and hd/objects_layers/"

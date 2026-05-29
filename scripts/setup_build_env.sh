@@ -37,11 +37,12 @@ echo ""
 echo "Now extract the fork and build:"
 echo ""
 echo "  cd /c/Users/<yourname>"
-echo '  tar xzf "Z:/Projekte/COMI-Upscaled/scummvm-fork.tar.gz"'
-echo "  cd scummvm-fork"
+echo '  tar xzf "scummvm-fork.tar.gz"'
+echo '  cd scummvm/fork'
+echo '  mingw32-make -j$(nproc)'
 echo ""
 echo "  # Build (from MSYS2 MinGW64 terminal):"
 echo '  PATH="/mingw64/bin:/usr/bin:$PATH" mingw32-make -j$(nproc)'
 echo ""
 echo "  # Run:"
-echo '  PATH="/mingw64/bin:/usr/bin:$PATH" ./scummvm.exe -F -g opengl -p "Z:/Projekte/COMI-Upscaled/ScummVM/monkey3" scumm:comi'
+echo '  PATH="/mingw64/bin:/usr/bin:$PATH" ./scummvm.exe --path=game'

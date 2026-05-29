@@ -1,8 +1,8 @@
 from PIL import Image, ImageFilter
 import os
 
-src = "Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/backgrounds/0019_stage.png"
-out = "Z:/Projekte/COMI-Upscaled/CMI UPSCALED/demo_stage"
+src = "assets/extracted/COMI/IMAGES/backgrounds/0019_stage.png"
+out = "assets/demo_stage"
 os.makedirs(out, exist_ok=True)
 
 im = Image.open(src)

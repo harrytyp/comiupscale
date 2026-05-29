@@ -15,6 +15,10 @@ import subprocess
 import sys
 import argparse
 
+# Use paths.py for default directories
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+import paths
+
 
 def _robocopy(src, dst, pattern="*.png"):
     """Use Windows robocopy — single process, multi-threaded I/O, NAS-friendly."""
@@ -61,8 +65,8 @@ def _shutil_copy(src, dst):
 
 def main():
     parser = argparse.ArgumentParser(description='Deploy HD assets')
-    parser.add_argument('--src', default='Z:/Projekte/COMI-Upscaled/CMI UPSCALED/upscaled/costumes')
-    parser.add_argument('--dst', default='Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/costumes')
+    parser.add_argument('--src', default=paths.UPSCALED_COSTUMES)
+    parser.add_argument('--dst', default=paths.HD_COSTUMES)
     args = parser.parse_args()
 
     if not os.path.isdir(args.src):

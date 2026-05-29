@@ -14,6 +14,11 @@ import json
 import os
 import re
 
+# Use paths.py for default directories
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+import paths
+
 def extract_room_id(filename):
     """Extract room ID from filename like '0001_logo.png' → '0001'"""
     m = re.match(r'(\d+)_', filename)
@@ -21,11 +26,11 @@ def extract_room_id(filename):
 
 def main():
     parser = argparse.ArgumentParser(description='Generate HD manifest for COMI ScummVM fork')
-    parser.add_argument('--bg-dir', default='CMI UPSCALED/extracted/COMI/IMAGES/backgrounds',
+    parser.add_argument('--bg-dir', default=paths.EXTRACTED_BACKGROUNDS,
                         help='Source background directory (original PNGs)')
-    parser.add_argument('--hd-dir', default='CMI UPSCALED/hd/backgrounds',
+    parser.add_argument('--hd-dir', default=paths.UPSCALED_BACKGROUNDS,
                         help='Target HD background directory (4x PNGs)')
-    parser.add_argument('--output', default='hd_manifest.json',
+    parser.add_argument('--output', default=paths.HD_MANIFEST,
                         help='Output manifest path')
     args = parser.parse_args()
 
@@ -54,14 +59,14 @@ def main():
     manifest = {
         "version": 1,
         "engine": "scumm",
-        "game": "monkey3",
+        "game": "game",
         "scale": 4,
         "asset_dirs": {
             "backgrounds": hd_dir,
-            "objects": "CMI UPSCALED/hd/objects",
-            "costumes": "CMI UPSCALED/hd/costumes",
-            "fonts": "CMI UPSCALED/hd/fonts",
-            "cutscenes": "CMI UPSCALED/hd/cutscenes"
+            "objects": "assets/upscaled/objects",
+            "costumes": "assets/upscaled/costumes",
+            "fonts": "assets/upscaled/fonts",
+            "cutscenes": "assets/upscaled/cutscenes"
         },
         "backgrounds": backgrounds,
         "metadata": {

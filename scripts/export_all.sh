@@ -22,12 +22,12 @@
 set -euo pipefail
 
 # ---- Configuration ---------------------------------------------------------
-PROJECT_ROOT="/z/Projekte/COMI-Upscaled"
-GAME_DIR="$PROJECT_ROOT/ScummVM/monkey3"
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+GAME_DIR="$PROJECT_ROOT/game"
 RESOURCE_DIR="$GAME_DIR/RESOURCE"
-NUTCRACKER="$PROJECT_ROOT/nutcracker-Windows_X64/nutcracker.exe"
-NUTCRACKER_SRC="$PROJECT_ROOT/nutcracker/src"
-OUTPUT_BASE="$PROJECT_ROOT/CMI UPSCALED/extracted/COMI"
+NUTCRACKER="$PROJECT_ROOT/tools/nutcracker-Windows_X64/nutcracker.exe"
+NUTCRACKER_SRC="$PROJECT_ROOT/tools/nutcracker/src"
+OUTPUT_BASE="$PROJECT_ROOT/assets/extracted/COMI"
 PYTHON=""
 VERBOSE=false
 

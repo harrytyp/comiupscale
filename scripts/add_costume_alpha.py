@@ -25,8 +25,8 @@ from PIL import Image
 import numpy as np
 from tqdm import tqdm
 
-SRC = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/costumes'
-HD = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/costumes'
+SRC = 'assets/extracted/COMI/costumes'
+HD = 'assets/upscaled/costumes'
 
 
 # ── Phase 1: Scan originals → binary masks ──────────

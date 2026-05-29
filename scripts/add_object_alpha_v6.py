@@ -16,10 +16,10 @@ from PIL import Image
 import numpy as np
 from tqdm import tqdm
 
-SRC = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects'
-HD = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects'
-SRC_L = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects_layers'
-HD_L = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects_layers'
+SRC = 'assets/extracted/COMI/IMAGES/objects'
+HD = 'game/hd/objects'
+SRC_L = 'assets/extracted/COMI/IMAGES/objects_layers'
+HD_L = 'game/hd/objects_layers'
 
 
 def process_file(fname, src_dir, hd_dir):

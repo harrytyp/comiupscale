@@ -7,10 +7,10 @@ The ScummVM engine uses obj_nr (numeric ID).
 The DOBJ resource in COMI.LA0 maps obj_name ↔ obj_nr.
 
 This script reads DOBJ via NUTcracker, walks extracted PNGs, and outputs:
-  hd/object_map.json  — mapping for runtime engine use
+  config/object_map.json  — mapping for runtime engine use
 
 Usage:
-  cd /z/Projekte/COMI-Upscaled
+  cd <project-root>
   python scripts/build_object_map.py
 """
 
@@ -18,8 +18,9 @@ import json
 import os
 import sys
 
-NUTCRACKER_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'nutcracker', 'src')
-sys.path.insert(0, NUTCRACKER_SRC)
+# Use paths.py for all directory references
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+import paths
 
 from nutcracker.sputm.resource import load_resource
 from nutcracker.sputm.index import read_dobj_v8
@@ -45,10 +46,10 @@ def find_dobj_in_elements(elements):
 
 
 def build_maps():
-    project_root = 'Z:/Projekte/COMI-Upscaled'
-    game_file = os.path.join(project_root, 'ScummVM', 'monkey3', 'COMI.LA0')
-    extracted_base = os.path.join(project_root, 'CMI UPSCALED', 'extracted', 'COMI', 'IMAGES')
-    hd_dir = os.path.join(project_root, 'ScummVM', 'monkey3', 'hd')
+    sys.path.insert(0, paths.NUTCRACKER_SRC)
+    game_file = os.path.join(paths.GAME_DIR, 'COMI.LA0')
+    extracted_base = os.path.join(paths.ASSETS_EXTRACTED, 'IMAGES')
+    hd_dir = paths.CONFIG_DIR
 
     if not os.path.exists(game_file):
         print(f"ERROR: Game file not found: {game_file}")

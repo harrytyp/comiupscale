@@ -10,12 +10,12 @@ import os
 from PIL import Image
 import numpy as np
 
-SRC = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects'
-HD = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects'
+SRC = 'assets/extracted/COMI/IMAGES/objects'
+HD = 'game/hd/objects'
 
 # Also process layers
-SRC_L = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects_layers'
-HD_L = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects_layers'
+SRC_L = 'assets/extracted/COMI/IMAGES/objects_layers'
+HD_L = 'game/hd/objects_layers'
 
 THRESHOLD = 40  # color distance threshold for full transparency
 SOFTEN = 20     # additional distance range for alpha fade

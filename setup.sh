@@ -41,7 +41,7 @@ fi
 # Resolve paths
 GAME_DIR="$(realpath "$GAME_DIR")"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-OUTPUT_DIR="$SCRIPT_DIR/ScummVM/monkey3"
+OUTPUT_DIR="$SCRIPT_DIR/game"
 
 echo "=== COMI Upscaled Setup ==="
 echo "Game files:  $GAME_DIR"

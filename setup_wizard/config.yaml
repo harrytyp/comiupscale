@@ -4,7 +4,7 @@
 # ── Game ─────────────────────────────────────────────
 game:
   path: ""              # Path to your Monkey Island 3 game folder (COMI.LA0/1/2)
-  id: "monkey3"
+  id: "game"
 
 # ── Pipeline mode ────────────────────────────────────
 # express:         Download pre-upscaled assets, skip upscaling

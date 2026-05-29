@@ -6,12 +6,12 @@
 
 set -e
 
-REALESRGAN="/z/Projekte/COMI-Upscaled/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
+REALESRGAN="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
 MODEL="realesrgan-x4plus-anime"
-MODELS_DIR="/z/Projekte/COMI-Upscaled/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
+MODELS_DIR="/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
 
-BG_SRC="/z/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/backgrounds"
-HD_OUT="/z/Projekte/COMI-Upscaled/CMI UPSCALED/upscaled/backgrounds"
+BG_SRC="/assets/extracted/COMI/IMAGES/backgrounds"
+HD_OUT="/assets/upscaled/backgrounds"
 
 mkdir -p "$HD_OUT"
 

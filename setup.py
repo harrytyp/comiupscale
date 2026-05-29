@@ -20,7 +20,7 @@ import argparse
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from comi_upscaled import ui, config, pipeline
+from setup_wizard import ui, config, pipeline
 
 
 def wizard_mode(cfg):
@@ -106,8 +106,8 @@ def main():
 
     # ── Version ──
     if args.version:
-        import comi_upscaled
-        print(f"COMI Upscaled v{comi_upscaled.__version__}")
+        import setup_wizard
+        print(f"COMI Upscaled v{setup_wizard.__version__}")
         return
 
     # ── Load config, apply CLI overrides ──

@@ -8,8 +8,8 @@ import os, sys
 from PIL import Image
 import numpy as np
 
-SRC_DIR = 'Z:/Projekte/COMI-Upscaled/CMI UPSCALED/extracted/COMI/IMAGES/objects'
-HD_DIR = 'Z:/Projekte/COMI-Upscaled/ScummVM/monkey3/hd/objects'
+SRC_DIR = 'assets/extracted/COMI/IMAGES/objects'
+HD_DIR = 'game/hd/objects'
 
 def process_object(src_path, hd_path):
     if not os.path.exists(hd_path):

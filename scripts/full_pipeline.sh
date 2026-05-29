@@ -46,7 +46,7 @@ ESRGAN_MODELS="$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
 SCRATCH="$PROJECT_ROOT/.pipeline"
 ORIGINAL_DIR="$SCRATCH/original"
 UPSCALED_DIR="$SCRATCH/upscaled"
-HD_DIR="$PROJECT_ROOT/ScummVM/monkey3/hd"
+HD_DIR="$PROJECT_ROOT/game/hd"
 
 # --- Parse args ---
 while [[ $# -gt 0 ]]; do
@@ -176,15 +176,15 @@ if [ "$SKIP_BUILD" = false ]; then
     mingw32-make -j$(nproc) 2>&1 | tail -5
     
     # Copy binary to game dir
-    cp scummvm.exe "$PROJECT_ROOT/ScummVM/monkey3/scummvm-hd.exe"
-    echo "  ✓ Build complete"
+    cp scummvm.exe "$PROJECT_ROOT/game/scummvm-hd.exe"
+    echo "  Binary deployed to $PROJECT_ROOT/game/scummvm-hd.exe"
 fi
 
 echo ""
-echo "=== Pipeline complete! ==="
-echo ""
-echo "To play:"
-echo "  cd $PROJECT_ROOT/ScummVM/monkey3"
+echo "=== All done! ==="
+echo "  Run: cd $PROJECT_ROOT/game"
+echo "  Run: ./scummvm-hd.exe --path=."
+echo "  cd $PROJECT_ROOT/game"
 echo "  ./scummvm-hd.exe --path=. scumm:comi"
 echo ""
 echo "For quick download of pre-upscaled assets instead, use:"
