@@ -1410,26 +1410,24 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
-	// Step 2.6: (disabled) HD costume overlay — positioning needs AKOS offset integration
-	// The SD actor costumes are already composited at 4x via Step 2.
-	// Cel tracking via _hdCurrentCel works; position integration pending.
-#if 0
+// Step 2.6: Overlay HD costume textures on top of composite
+// Step 2.6: Overlay HD costume textures on top of composite
+	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
-			if (!a || a->_costume == 0)
+			if (!a || a->_costume == 0 || !a->_visible)
 				continue;
 
 			int cel = a->_hdCurrentCel;
 			if (cel < 0)
 				continue;
 
-			// Try to find HD costume frame for this cel
 			if (!_hdCostumeManager->hasCostume(a->_costume, cel))
 				continue;
 
 			Graphics::Surface hdCostumeSurf;
-			if (!_hdCostumeManager->loadCostume(a->_costume, a->_frame, hdCostumeSurf))
+			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeSurf))
 				continue;
 
 			// Validate surface
@@ -1439,14 +1437,16 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			// Compute HD position: actor pos in screen space → HD coordinates
-			// Don't center — place at the raw actor position scaled to HD.
-			// The AKOS internal offsets (relX/relY from cel info) are already
-			// baked into the extracted PNG dimensions.
+			// Use the actor's screen position (getPos) plus AKOS relX/relY offset.
 			Common::Point actorPos = a->getPos();
-			int64 hdCX = (int64)actorPos.x * hdW / MAX(1, _screenWidth);
-			int64 hdCY = (int64)actorPos.y * hdH / MAX(1, _screenHeight);
-			// Remove the centering — actor position is already the foot position.
+			int64 hdCX = (int64)(actorPos.x + a->_hdRelX) * hdW / MAX(1, _screenWidth);
+			int64 hdCY = (int64)(actorPos.y + a->_hdRelY) * hdH / MAX(1, _screenHeight);
+
+			// Skip if the actor hasn't been positioned yet (origin = loading state)
+			if (hdCX <= 0 && hdCY <= 0) {
+				hdCostumeSurf.free();
+				continue;
+			}
 
 			// Clamp blit region AND source offset to prevent OOB access
 			int blitX = MAX(0, (int)hdCX);
@@ -1482,7 +1482,6 @@ void ScummEngine::renderHDComposite() {
 			hdCostumeSurf.free();
 		}
 	}
-#endif
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	// Temporarily disabled — fonts need proper charset integration

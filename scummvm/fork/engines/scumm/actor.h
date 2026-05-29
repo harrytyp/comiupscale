@@ -113,6 +113,7 @@ public:
 	byte _number = 0;
 	uint16 _costume = 0;
 	int _hdCurrentCel = 0;
+	int _hdRelX = 0, _hdRelY = 0;
 	byte _room = 0;
 
 public:

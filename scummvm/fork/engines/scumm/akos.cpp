@@ -362,10 +362,9 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 	if (code != AKC_DrawMany && code != AKC_RelativeOffsetDrawMany) {
 		off = _akof + (code & AKC_CelMask);
 
-		// Save current cel index for HD costume overlay
-		{
-			int cel = (code & AKC_CelMask);
-			const_cast<Actor *>(a)->_hdCurrentCel = cel;
+		// Save current cel and draw position for HD costume overlay (limb 0 only)
+		if (limb == 0) {
+			const_cast<Actor *>(a)->_hdCurrentCel = (code & AKC_CelMask);
 		}
 
 		assert((code & AKC_CelMask) * 6 < READ_BE_UINT32((const byte *)_akof - 4) - 8);
@@ -378,6 +377,11 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 		_height = READ_LE_UINT16(&costumeInfo->height);
 		xMoveCur = _xMove + (int16)READ_LE_UINT16(&costumeInfo->relX);
 		yMoveCur = _yMove + (int16)READ_LE_UINT16(&costumeInfo->relY);
+		// Save draw position for HD overlay (limb 0 only)
+		if (limb == 0) {
+			const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(&costumeInfo->relX);
+			const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(&costumeInfo->relY);
+		}
 		_xMove += (int16)READ_LE_UINT16(&costumeInfo->moveX);
 		_yMove -= (int16)READ_LE_UINT16(&costumeInfo->moveY);
 
@@ -411,10 +415,9 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 				code = READ_BE_UINT16(p + 4);
 			off = _akof + (code & 0xFFF);
 
-			// Save cel index from DrawMany for HD costume overlay
-			{
-				int cel = (code & 0xFFF);
-				const_cast<Actor *>(a)->_hdCurrentCel = cel;
+			// Save current cel index from DrawMany for HD costume overlay
+			if (limb == 0) {
+				const_cast<Actor *>(a)->_hdCurrentCel = (code & 0xFFF);
 			}
 
 			_srcPtr = _akcd + READ_LE_UINT32(&off->akcd);
@@ -425,6 +428,11 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 
 			xMoveCur = _xMove + (int16)READ_LE_UINT16(p + 0);
 			yMoveCur = _yMove + (int16)READ_LE_UINT16(p + 2);
+			// Save draw position for HD overlay (limb 0 only)
+			if (limb == 0) {
+				const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(p + 0);
+				const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(p + 2);
+			}
 
 			// WORKAROUND bug #13532: There is a frame of Freddi's eye (US release of Freddi 3) accidentally being drawn
 			// big with a horizontal line at the bottom, causing this line to appear at the bottom of the screen.
