@@ -1226,12 +1226,45 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 }
 
 void ScummEngine::renderHDComposite() {
-	if (!_hdBackgroundSurface.getPixels())
-		return;
-
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
-	int hdW = _hdBackgroundSurface.w;
-	int hdH = _hdBackgroundSurface.h;
+	int hdW = _hdBackgroundSurface.w ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
+	int hdH = _hdBackgroundSurface.h ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
+
+	// If no HD background loaded (e.g. during SMUSH cutscenes), black-fill
+	// the HD surface and composite 8-bit content at full screen.
+	if (!_hdBackgroundSurface.getPixels()) {
+		if (!isSmushActive() || !vs || !vs->getBasePtr(0, 0))
+			return;
+
+		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
+		if (!_hdComposite.getPixels() || _hdComposite.w != hdW || _hdComposite.h != hdH) {
+			_hdComposite.free();
+			_hdComposite.create(hdW, hdH, rgbaFmt);
+			memset(_hdComposite.getPixels(), 0, _hdComposite.h * _hdComposite.pitch);
+		}
+
+		// Scale 8-bit content to fill HD screen
+		for (int dy = 0; dy < hdH; dy++) {
+			int sy = dy * _screenHeight / hdH;
+			sy = CLIP(sy, 0, _screenHeight - 1);
+			for (int dx = 0; dx < hdW; dx++) {
+				int sx = dx * _screenWidth / hdW;
+				sx = CLIP(sx, 0, _screenWidth - 1);
+				uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
+				uint8 r = _currentPalette[curPix * 3 + 0];
+				uint8 g = _currentPalette[curPix * 3 + 1];
+				uint8 b = _currentPalette[curPix * 3 + 2];
+				*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
+					r | (g << 8) | (b << 16) | (0xFF << 24);
+			}
+		}
+
+		_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
+		                          0, 0, hdW, hdH);
+		return;
+	}
+
+	// Normal HD path: composite HD background with 8-bit content
 	int visW = MIN<int>(_screenWidth, vs->w - vs->xstart);
 	int visH = MIN<int>(_screenHeight, vs->h);
 
