@@ -1410,10 +1410,15 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
-// Step 2.6: Overlay HD costume textures on top of composite
-// Step 2.6: Overlay HD costume textures on top of composite
-	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
-	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+// Step 2.6: (disabled) HD costume overlay
+// The AKOS-rendered SD costumes handle transparency internally via
+// palette keying. The upscaled PNGs have no alpha, and color-key
+// transparency (white/black) removes legitimate costume pixels.
+// SD 4x compositing (Step 2) handles everything correctly.
+// Cel tracking via _hdCurrentCel/_hdRelX/Y works; needs alpha-channel
+// integration from the AKOS codec to re-enable.
+#if 0
+if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
 			if (!a || a->_costume == 0 || !a->_visible)
@@ -1482,6 +1487,7 @@ void ScummEngine::renderHDComposite() {
 			hdCostumeSurf.free();
 		}
 	}
+#endif
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	// Temporarily disabled — fonts need proper charset integration

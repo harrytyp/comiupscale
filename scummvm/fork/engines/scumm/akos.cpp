@@ -362,12 +362,12 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 	if (code != AKC_DrawMany && code != AKC_RelativeOffsetDrawMany) {
 		off = _akof + (code & AKC_CelMask);
 
-		// Save current cel and draw position for HD costume overlay (limb 0 only)
-		if (limb == 0) {
-			const_cast<Actor *>(a)->_hdCurrentCel = (code & AKC_CelMask);
-		}
+	// Save current cel and relX/relY for HD overlay (any limb with non-zero cel)
+	if ((code & AKC_CelMask) != 0) {
+		const_cast<Actor *>(a)->_hdCurrentCel = (code & AKC_CelMask);
+	}
 
-		assert((code & AKC_CelMask) * 6 < READ_BE_UINT32((const byte *)_akof - 4) - 8);
+	assert((code & AKC_CelMask) * 6 < READ_BE_UINT32((const byte *)_akof - 4) - 8);
 		assert((code & 0x7000) == 0);
 
 		_srcPtr = _akcd + READ_LE_UINT32(&off->akcd);
@@ -377,8 +377,8 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 		_height = READ_LE_UINT16(&costumeInfo->height);
 		xMoveCur = _xMove + (int16)READ_LE_UINT16(&costumeInfo->relX);
 		yMoveCur = _yMove + (int16)READ_LE_UINT16(&costumeInfo->relY);
-		// Save draw position for HD overlay (limb 0 only)
-		if (limb == 0) {
+		// Save relX/relY for HD overlay (any limb with non-zero offset)
+		if (limb == 0 || a->_hdRelX == 0) {
 			const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(&costumeInfo->relX);
 			const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(&costumeInfo->relY);
 		}

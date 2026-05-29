@@ -87,10 +87,8 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 	Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
 	surf.create(pngSurf->w, pngSurf->h, rgbaFmt);
 
-	// Convert pixels: copy RGB and set alpha to opaque
-	// Then detect background color (top-left corner) and make it transparent
-	uint32 bgColor = 0;
-	bool bgKnown = false;
+	// Convert pixels: copy RGB, set alpha to opaque
+	// Make white and black pixels transparent (common background colors)
 	for (int y = 0; y < pngSurf->h; y++) {
 		const byte *src = (const byte *)pngSurf->getBasePtr(0, y);
 		uint32 *dst = (uint32 *)surf.getBasePtr(0, y);
@@ -99,12 +97,8 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 			byte r = src[x * srcBpp + 0];
 			byte g = src[x * srcBpp + 1];
 			byte b = src[x * srcBpp + 2];
-			uint32 pixel = r | (g << 8) | (b << 16) | (0xFF << 24);
-			if (!bgKnown) {
-				bgColor = pixel;
-				bgKnown = true;
-			}
-			dst[x] = (pixel == bgColor) ? (pixel & 0x00FFFFFF) : pixel;
+			bool isBg = (r == 0 && g == 0 && b == 0) || (r == 255 && g == 255 && b == 255);
+			dst[x] = r | (g << 8) | (b << 16) | (isBg ? 0x00 : 0xFF << 24);
 		}
 	}
 	png.destroy();
