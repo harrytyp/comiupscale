@@ -453,3 +453,24 @@ specific frame number (e.g., `hd_dump_frame=4` for room 4). This writes:
 - `hd_dump_N_clean.raw` — 640×480 8-bit clean background reference
 - `hd_dump_N_valid.raw` — per-pixel valid mask (1 = clean available)
 - `hd_dump_N_state.txt` — engine state at dump frame
+
+### HD Asset Tracing
+
+To see which HD files the fork is looking up and whether they exist, add to
+`scummvm.ini` under `[comi]`:
+
+```ini
+[comi]
+hd_trace=true
+```
+
+This prints every HD file access at runtime:
+
+```
+hd_trace: OK   game/hd/bg_0019.png
+hd_trace: MISS game/hd/objects/0087_easyhard-choice-object_0000.png
+hd_trace: OK   game/hd/costumes/LFLF_0001_AKOS_0001_aframe_0.png
+```
+
+Use this to debug missing assets, wrong paths, or unexpected fallback to
+8-bit rendering. Works for backgrounds, objects, costumes, fonts, and videos.
