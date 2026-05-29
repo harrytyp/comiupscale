@@ -300,7 +300,8 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 	}
 
 	// Try to load the HD background for this room
-	_hdBackgroundSurface.free();
+	// Only free the old background if we're about to load a new one.
+	// Otherwise keep it (e.g. overlay menus that share the prev room's bg).
 	_hdCleanBackground.free();
 	free(_hdCleanValid);
 	_hdCleanValid = nullptr;
@@ -308,6 +309,7 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 	_hdCurrentRoom = -1;
 	if (_hdAssetManager->isEnabled()) {
 		if (_hdAssetManager->hasBackground(room)) {
+			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
 				_hdScale = MAX(1, _hdBackgroundSurface.w / _screenWidth);
@@ -317,6 +319,7 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			}
 		} else {
 			warning("HD: no bg for room %d", room);
+			_hdCurrentRoom = room;
 		}
 	}
 

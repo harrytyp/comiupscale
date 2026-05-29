@@ -39,7 +39,7 @@ namespace Scumm {
 #define HD_TRACE(path, exists) \
 	do { \
 		if (ConfMan.getBool("hd_trace", "comi")) \
-			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+			warning("hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
 	} while (0)
 
 HdVideoPlayer::HdVideoPlayer()

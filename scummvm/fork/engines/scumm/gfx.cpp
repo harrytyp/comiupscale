@@ -1233,13 +1233,48 @@ void ScummEngine::renderHDComposite() {
 	if (isSmushActive())
 		return;
 
-	if (!_hdBackgroundSurface.getPixels())
-		return;
+	int hdW, hdH;
 
-	int hdW = _hdBackgroundSurface.w;
-	int hdH = _hdBackgroundSurface.h;
-	int visW = MIN<int>(_screenWidth, vs->w - vs->xstart);
-	int visH = MIN<int>(_screenHeight, vs->h);
+	// If no HD background for this room, scale 8-bit content to HD
+	if (!_hdBackgroundSurface.getPixels()) {
+		hdW = _screenWidth * _hdScale;
+		hdH = _screenHeight * _hdScale;
+		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
+		if (!_hdComposite.getPixels() || _hdComposite.w != hdW || _hdComposite.h != hdH) {
+			_hdComposite.free();
+			_hdComposite.create(hdW, hdH, rgbaFmt);
+		}
+		for (int dy = 0; dy < hdH; dy++) {
+			int sy = dy * _screenHeight / hdH;
+			sy = CLIP(sy, 0, _screenHeight - 1);
+			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, dy);
+			for (int dx = 0; dx < hdW; dx++) {
+				int sx = dx * _screenWidth / hdW;
+				sx = CLIP(sx, 0, _screenWidth - 1);
+				uint8 p = *(const uint8 *)vs->getBasePtr(sx, sy);
+				uint8 r = _currentPalette[p * 3 + 0];
+				uint8 g = _currentPalette[p * 3 + 1];
+				uint8 b = _currentPalette[p * 3 + 2];
+				dstRow[dx] = r | (g << 8) | (b << 16) | (0xFF << 24);
+			}
+		}
+		_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch, 0, 0, hdW, hdH);
+		// Trigger dump even without HD background
+		_hdFrameCount++;
+		if (_hdDebugDumpCount > 0) {
+			if (_hdFrameCount == _hdDebugDumpCount || 
+			    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
+				hdDebugDump();
+				_hdDebugDumpCount = 0;
+			}
+		}
+		return;
+	}
+
+	hdW = _hdBackgroundSurface.w;
+	hdH = _hdBackgroundSurface.h;
+	int visW = _screenWidth; // full width (ignore camera offset for compositing)
+	int visH = _screenHeight;
 
 	if (visW <= 0 || visH <= 0)
 		return;
@@ -1277,10 +1312,13 @@ void ScummEngine::renderHDComposite() {
 			int sx = dx * visW / hdW;
 			sx = CLIP(sx, 0, visW - 1);
 
-			uint8 curPix = *(const uint8 *)vs->getBasePtr(vs->xstart + sx, sy);
+			uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
 
 			bool isForeground = true;
-			if (_hdCleanValid && sy < _hdCleanValidSize / visW) {
+			// Only use clean background diffing when the HD background matches
+			// the current room. For overlay menus (room != hdRoom), render all
+			// 8-bit pixels to cover the stale background behind.
+			if (_hdCurrentRoom == _currentRoom && _hdCleanValid && sy < _hdCleanValidSize / visW) {
 				int pos = sy * visW + sx;
 				if (_hdCleanValid[pos]) {
 					uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
@@ -1374,9 +1412,10 @@ void ScummEngine::renderHDComposite() {
 
 	// Step 2.6: Overlay HD costume textures on top of composite
 	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+		warning("hd_trace: checking %d actors for HD costumes", _numActors);
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
-			if (!a || a->_costume == 0 || a->_frame == 0)
+			if (!a || a->_costume == 0)
 				continue;
 
 			// Try to find HD costume frame: akosId = a->_costume, frame=a->_frame
@@ -1387,9 +1426,13 @@ void ScummEngine::renderHDComposite() {
 			if (!_hdCostumeManager->loadCostume(a->_costume, a->_frame, hdCostumeSurf))
 				continue;
 
-			// Validate surface
+			// Validate surface — skip tiny costumes (< 8px) that are invisible at HD
 			if (hdCostumeSurf.w <= 0 || hdCostumeSurf.h <= 0 ||
-				hdCostumeSurf.format.bytesPerPixel != 4) {
+				hdCostumeSurf.format.bytesPerPixel != 4 ||
+				hdCostumeSurf.w < 8 || hdCostumeSurf.h < 8) {
+				if (hdCostumeSurf.w > 0 && hdCostumeSurf.h > 0)
+					warning("hd_trace: costume %04d frame %d too small (%dx%d) — skipping HD",
+						a->_costume, a->_frame, hdCostumeSurf.w, hdCostumeSurf.h);
 				hdCostumeSurf.free();
 				continue;
 			}
@@ -1413,9 +1456,15 @@ void ScummEngine::renderHDComposite() {
 			int blitH = MIN((int)hdCostumeSurf.h - srcOffY, (int)(hdH - blitY));
 
 			if (blitW <= 0 || blitH <= 0) {
+				warning("hd_trace: costume %04d frame %d off-screen (pos=%d,%d surf=%dx%d blit=%dx%d)",
+					a->_costume, a->_frame, (int)hdCX, (int)hdCY,
+					hdCostumeSurf.w, hdCostumeSurf.h, blitW, blitH);
 				hdCostumeSurf.free();
 				continue;
 			}
+
+			warning("hd_trace: costume %04d frame %d blit at (%d,%d) size %dx%d (srcOff=%d,%d)",
+				a->_costume, a->_frame, blitX, blitY, blitW, blitH, srcOffX, srcOffY);
 
 			for (int oy = 0; oy < blitH; oy++) {
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);

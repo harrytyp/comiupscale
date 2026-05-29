@@ -32,7 +32,7 @@ namespace Scumm {
 #define HD_TRACE(path, exists) \
 	do { \
 		if (ConfMan.getBool("hd_trace", "comi")) \
-			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+			warning("hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
 	} while (0)
 
 HdCostumeManager::HdCostumeManager(ScummEngine *vm)
@@ -50,7 +50,9 @@ HdCostumeManager::~HdCostumeManager() {
 
 Common::String HdCostumeManager::buildCostumePath(int akosId, int akosSub, int frame) const {
 	Common::String path = _hdPath;
-	path += Common::String::format("/costumes/LFLF_%04d_AKOS_%04d_aframe_%d.png", akosId, akosSub, frame);
+	// Parameters: akosId=AKOS number, akosSub=LFLF owner
+	// Filename format: LFLF_XXXX_AKOS_XXXX_aframe_X.png → LFLF_{lflf}_AKOS_{akos}_{frame}.png
+	path += Common::String::format("/costumes/LFLF_%04d_AKOS_%04d_aframe_%d.png", akosSub, akosId, frame);
 	return path;
 }
 
@@ -82,7 +84,21 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 		return false;
 	}
 
-	surf.copyFrom(*pngSurf);
+	Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
+	surf.create(pngSurf->w, pngSurf->h, rgbaFmt);
+
+	// Convert pixels: copy RGB and set alpha to opaque
+	for (int y = 0; y < pngSurf->h; y++) {
+		const byte *src = (const byte *)pngSurf->getBasePtr(0, y);
+		uint32 *dst = (uint32 *)surf.getBasePtr(0, y);
+		int srcBpp = pngSurf->format.bytesPerPixel;
+		for (int x = 0; x < pngSurf->w; x++) {
+			byte r = src[x * srcBpp + 0];
+			byte g = src[x * srcBpp + 1];
+			byte b = src[x * srcBpp + 2];
+			dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
+		}
+	}
 	png.destroy();
 	return true;
 }
@@ -118,32 +134,35 @@ bool HdCostumeManager::init(const Common::String &hdPath) {
 		if (!name.hasPrefixIgnoreCase("LFLF_") || !name.hasSuffixIgnoreCase(".png"))
 			continue;
 
-		int akosId = 0, akosSub = 0, frame = 0;
-		// Parse: LFLF_XXXX_AKOS_XXXX_aframe_XXXXX.png
-		if (sscanf(name.c_str(), "LFLF_%d_AKOS_%d_aframe_%d", &akosId, &akosSub, &frame) >= 3) {
+		int lflfOwner = 0, akosNumber = 0, frame = 0;
+		// Filename: LFLF_XXXX_AKOS_XXXX_aframe_XXXXX.png
+		//   LFLF_0087_AKOS_0439_aframe_0.png → lflfOwner=87, akosNumber=439, frame=0
+		if (sscanf(name.c_str(), "LFLF_%d_AKOS_%d_aframe_%d", &lflfOwner, &akosNumber, &frame) >= 3) {
 			CostumeKey key;
-			key.akosId = akosId;
-			key.akosSub = akosSub;
+			key.akosId = akosNumber;  // AKOS resource ID (0439) is the primary key
+			key.akosSub = lflfOwner;  // LFLF owner (0087) is the sub-group
 			key.frame = frame;
 			_availableCostumes[key] = true;
 			count++;
 
-			// Build per-AKOS sub list
-			if (!_akosSubs.contains(akosId)) {
-				_akosSubs[akosId] = Common::List<int>();
+			// Build per-AKOS sub list (akosId is the AKOS resource number)
+			if (!_akosSubs.contains(akosNumber)) {
+				_akosSubs[akosNumber] = Common::List<int>();
 			}
-			Common::List<int> &subs = _akosSubs[akosId];
+			Common::List<int> &subs = _akosSubs[akosNumber];
 			bool found = false;
 			for (Common::List<int>::iterator si = subs.begin(); si != subs.end(); ++si) {
-				if (*si == akosSub) { found = true; break; }
+				if (*si == lflfOwner) { found = true; break; }
 			}
 			if (!found)
-				subs.push_back(akosSub);
+				subs.push_back(lflfOwner);
 		}
 	}
 
 	_enabled = (count > 0);
 	debug(1, "HdCostumeManager: Registered %d HD costume frames from %s", count, costumesDir.c_str());
+	if (_enabled)
+		warning("hd_trace: HdCostumeManager: %d HD costume frames available", count);
 	return _enabled;
 }
 
@@ -151,61 +170,104 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 	if (!_enabled)
 		return false;
 
-	// Only use sub=1 (base animation set).
-	// AKOS subs are different animation sets — the actor's _frame value is
-	// relative to the CURRENT sub, which we can't determine here.
-	// Using other subs would cause wrong animations (e.g. banjo in cannon room).
-	CostumeKey key;
-	key.akosId = akosId;
-	key.akosSub = 1;
-	key.frame = frame;
-	bool exists = _availableCostumes.contains(key);
-	if (exists) {
-		Common::String p = buildCostumePath(akosId, 1, frame);
-		HD_TRACE(p, true);
+	// Check if any AKOS sub has this frame.
+	// AKOS subs are different animation sets — we search all available
+	// subs for the given AKOS ID to support non-base animation sets.
+	typename Common::HashMap<int, Common::List<int> >::const_iterator subsIt = _akosSubs.find(akosId);
+	if (subsIt == _akosSubs.end())
+		return false;
+
+	for (Common::List<int>::const_iterator si = subsIt->_value.begin(); si != subsIt->_value.end(); ++si) {
+		int sub = *si;
+		CostumeKey key;
+		key.akosId = akosId;
+		key.akosSub = sub;
+		key.frame = frame;
+		if (_availableCostumes.contains(key)) {
+			Common::String p = buildCostumePath(akosId, sub, frame);
+			HD_TRACE(p, true);
+			return true;
+		}
+		// Exact frame not found — check if ANY frame exists for this (akos,sub).
+		// If so, report available so the renderer tries to load the closest frame.
+		CostumeKey anyKey;
+		anyKey.akosId = akosId;
+		anyKey.akosSub = sub;
+		anyKey.frame = -1; // sentinel: not used in lookup
+		// Search for any frame with this akosId+sub
+		for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+		     it != _availableCostumes.end(); ++it) {
+			if (it->_key.akosId == akosId && it->_key.akosSub == sub) {
+				warning("hd_trace: costume %04d frame %d not available, but frame %d is — accepting",
+					akosId, frame, it->_key.frame);
+				return true;
+			}
+		}
 	}
-	return exists;
+	// Log MISS for debugging
+	warning("hd_trace: MISS costume akos=%d frame=%d (checked %d subs)", akosId, frame, (int)subsIt->_value.size());
+	return false;
 }
 
 bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest) {
 	if (!_enabled)
 		return false;
 
-	// Only use sub=1 (base animation set)
-	CostumeKey key;
-	key.akosId = akosId;
-	key.akosSub = 1;
-	key.frame = frame;
-
-	// Check cache first
-	Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::iterator cacheIt = _textureCache.find(key);
-	if (cacheIt != _textureCache.end()) {
-		dest.copyFrom(cacheIt->_value.surface);
-		cacheIt->_value.lastUsed = ++_lruCounter;
-		return true;
-	}
-
-	// Load from disk
-	Common::String path = buildCostumePath(akosId, 1, frame);
-	Graphics::Surface surf;
-	if (!loadPNG(path, surf))
+	// Search all available subs for this AKOS ID
+	if (!_akosSubs.contains(akosId))
 		return false;
 
-	// Add to cache
-	TextureCacheEntry entry;
-	entry.surface.copyFrom(surf);
-	entry.lastUsed = ++_lruCounter;
-	_textureCache[key] = entry;
+	for (Common::List<int>::const_iterator si = _akosSubs[akosId].begin(); si != _akosSubs[akosId].end(); ++si) {
+		int sub = *si;
+		CostumeKey key;
+		key.akosId = akosId;
+		key.akosSub = sub;
+		key.frame = frame;
 
-	dest.copyFrom(surf);
-	surf.free();
+		// Check cache first
+		Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::iterator cacheIt = _textureCache.find(key);
+		if (cacheIt != _textureCache.end()) {
+			dest.copyFrom(cacheIt->_value.surface);
+			cacheIt->_value.lastUsed = ++_lruCounter;
+			return true;
+		}
 
-	pruneCache(512);
+		// Try exact frame first, then fall back to any available frame
+		Common::String path;
+		int loadFrame = frame;
+		CostumeKey exactKey = key;
+		if (_availableCostumes.contains(exactKey)) {
+			path = buildCostumePath(akosId, sub, frame);
+		} else {
+			// Find the closest available frame
+			for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+			     it != _availableCostumes.end(); ++it) {
+				if (it->_key.akosId == akosId && it->_key.akosSub == sub) {
+					loadFrame = it->_key.frame;
+					key.frame = loadFrame;
+					path = buildCostumePath(akosId, sub, loadFrame);
+					warning("hd_trace: loading %s as fallback for frame %d", path.c_str(), frame);
+					break;
+				}
+			}
+		}
+		if (path.empty())
+			continue;
 
-	debug(2, "HdCostumeManager: Loaded costume %04d/%04d frame %d (%dx%d) from %s",
-		  akosId, 1, frame, dest.w, dest.h, path.c_str());
+		Graphics::Surface surf;
+		if (!loadPNG(path, surf))
+			continue;
 
-	return true;
+		// Add to cache
+		TextureCacheEntry entry;
+		entry.surface.copyFrom(surf);
+		entry.lastUsed = ++_lruCounter;
+		_textureCache[key] = entry;
+		dest.copyFrom(surf);
+		pruneCache(512);
+		return true;
+		}
+	return false;
 }
 
 void HdCostumeManager::pruneCache(int maxEntries) {
