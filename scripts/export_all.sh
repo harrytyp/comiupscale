@@ -60,10 +60,10 @@ check_prereqs() {
   # Python with numpy - try system Python paths first (Hermes venv has no pip)
   PYTHON=""
   for try_py in \
-    "/c/Users/go75bel/AppData/Local/Programs/Python/Python313/python.exe" \
-    "/c/Users/go75bel/AppData/Local/Programs/Python/Python312/python.exe" \
     "$(command -v python3 2>/dev/null)" \
-    "$(command -v python 2>/dev/null)"; do
+    "$(command -v python 2>/dev/null)" \
+    "/c/Users/$USER/AppData/Local/Programs/Python/Python313/python.exe" \
+    "/c/Users/$USER/AppData/Local/Programs/Python/Python312/python.exe"; do
     if [ -n "$try_py" ] && [ -x "$try_py" ] && "$try_py" -c "import numpy; import PIL" 2>/dev/null; then
       PYTHON="$try_py"
       break

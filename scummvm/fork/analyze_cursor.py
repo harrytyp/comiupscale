@@ -1,7 +1,7 @@
 import struct
 import os
 
-dump_dir = "C:/Users/go75bel/scummvm-fork"
+dump_dir = "."
 
 # Virtscr dump: 640x480, 1 byte per pixel (CLUT8 index)
 with open(dump_dir + "/hd_dump_4_virtscr.raw", "rb") as f:

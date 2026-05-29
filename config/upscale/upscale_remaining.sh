@@ -43,7 +43,18 @@ HD_DIR="$PROJECT_ROOT/game/hd"
 HD_COSTUMES="$HD_DIR/costumes"
 HD_FONTS="$HD_DIR/fonts"
 
-PYTHON="/c/Users/kolja/AppData/Local/Programs/Python/Python312/python.exe"
+# Auto-detect Python — prefer python3, then python, then common Windows paths
+PYTHON=""
+for try_py in \
+  "$(command -v python3 2>/dev/null)" \
+  "$(command -v python 2>/dev/null)" \
+  "/c/Users/$USER/AppData/Local/Programs/Python/Python313/python.exe" \
+  "/c/Users/$USER/AppData/Local/Programs/Python/Python312/python.exe"; do
+  if [ -n "$try_py" ] && [ -x "$try_py" ]; then
+    PYTHON="$try_py"
+    break
+  fi
+done
 
 GPU_ID="auto"
 SKIP_UPSCALE=false

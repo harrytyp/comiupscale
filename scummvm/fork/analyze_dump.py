@@ -94,7 +94,7 @@ def check_foreground_pixels(composite, hd_composite, threshold=10):
     return foreground_count, total
 
 def main():
-    dump_dir = "C:/Users/go75bel/scummvm-fork"
+    dump_dir = "."
     frame = 90
     
     hdW, hdH = 2560, 1920
