@@ -1410,15 +1410,11 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
-// Step 2.6: (disabled) HD costume overlay
-// The AKOS-rendered SD costumes handle transparency internally via
-// palette keying. The upscaled PNGs have no alpha, and color-key
-// transparency (white/black) removes legitimate costume pixels.
-// SD 4x compositing (Step 2) handles everything correctly.
-// Cel tracking via _hdCurrentCel/_hdRelX/Y works; needs alpha-channel
-// integration from the AKOS codec to re-enable.
-#if 0
-if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+	// Step 2.6: Overlay HD costume textures on top of composite
+	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
+	// Transparency is derived from the original extracted 8-bit PNG's palette
+	// index 0 (the AKOS transparent color), nearest-neighbor mapped to HD.
+	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
 			if (!a || a->_costume == 0 || !a->_visible)
@@ -1469,8 +1465,12 @@ if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 				continue;
 			}
 
-			warning("hd_trace: costume %04d frame %d blit at (%d,%d) size %dx%d (srcOff=%d,%d)",
-				a->_costume, a->_frame, blitX, blitY, blitW, blitH, srcOffX, srcOffY);
+			// Safety: validate source bounds before blitting
+			if (srcOffX + blitW > hdCostumeSurf.w || srcOffY + blitH > hdCostumeSurf.h ||
+				blitX + blitW > (int)hdW || blitY + blitH > (int)hdH) {
+				hdCostumeSurf.free();
+				continue;
+			}
 
 			for (int oy = 0; oy < blitH; oy++) {
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
@@ -1487,7 +1487,6 @@ if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 			hdCostumeSurf.free();
 		}
 	}
-#endif
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	// Temporarily disabled — fonts need proper charset integration
