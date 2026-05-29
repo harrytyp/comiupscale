@@ -1410,12 +1410,9 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
-	// Step 2.6: (disabled) HD costume PNG overlay
+	// Step 2.6: (disabled) HD costume overlay — positioning needs AKOS offset integration
 	// The SD actor costumes are already composited at 4x via Step 2.
-	// This overlay would replace individual frames with RealESRGAN
-	// upscales, but frame animation requires AKSQ-aware lookup.
-	// TODO: Re-enable with proper AKSQ cel tracking for RealESRGAN frames.
-	// (block commented out to restore SD animation for all costumes)
+	// Cel tracking via _hdCurrentCel works; position integration pending.
 #if 0
 	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 		for (int ai = 0; ai < _numActors; ai++) {
@@ -1423,8 +1420,12 @@ void ScummEngine::renderHDComposite() {
 			if (!a || a->_costume == 0)
 				continue;
 
-			// Try to find HD costume frame: akosId = a->_costume, frame=a->_frame
-			if (!_hdCostumeManager->hasCostume(a->_costume, a->_frame))
+			int cel = a->_hdCurrentCel;
+			if (cel < 0)
+				continue;
+
+			// Try to find HD costume frame for this cel
+			if (!_hdCostumeManager->hasCostume(a->_costume, cel))
 				continue;
 
 			Graphics::Surface hdCostumeSurf;
@@ -1439,14 +1440,13 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			// Compute HD position: actor pos in screen space → HD coordinates
+			// Don't center — place at the raw actor position scaled to HD.
+			// The AKOS internal offsets (relX/relY from cel info) are already
+			// baked into the extracted PNG dimensions.
 			Common::Point actorPos = a->getPos();
-			int64 hdCX = (int64)(actorPos.x - vs->xstart) * hdW / MAX(1, visW);
-			int64 hdCY = (int64)(actorPos.y) * hdH / MAX(1, visH);
-
-			// Center the costume hotspot — use the 8-bit costume height as anchor
-			// Actor position is usually at the feet; costumes extend upward
-			hdCX -= hdCostumeSurf.w / 2;
-			hdCY -= hdCostumeSurf.h; // Anchor at bottom (feet position)
+			int64 hdCX = (int64)actorPos.x * hdW / MAX(1, _screenWidth);
+			int64 hdCY = (int64)actorPos.y * hdH / MAX(1, _screenHeight);
+			// Remove the centering — actor position is already the foot position.
 
 			// Clamp blit region AND source offset to prevent OOB access
 			int blitX = MAX(0, (int)hdCX);
@@ -1482,6 +1482,7 @@ void ScummEngine::renderHDComposite() {
 			hdCostumeSurf.free();
 		}
 	}
+#endif
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	// Temporarily disabled — fonts need proper charset integration
@@ -1494,7 +1495,6 @@ void ScummEngine::renderHDComposite() {
 		}
 		_hdFontChars.clear();
 	} */
-#endif
 
 	// Step 3: Copy the entire HD composite to the system buffer
 	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,

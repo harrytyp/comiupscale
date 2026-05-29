@@ -362,6 +362,12 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 	if (code != AKC_DrawMany && code != AKC_RelativeOffsetDrawMany) {
 		off = _akof + (code & AKC_CelMask);
 
+		// Save current cel index for HD costume overlay
+		{
+			int cel = (code & AKC_CelMask);
+			const_cast<Actor *>(a)->_hdCurrentCel = cel;
+		}
+
 		assert((code & AKC_CelMask) * 6 < READ_BE_UINT32((const byte *)_akof - 4) - 8);
 		assert((code & 0x7000) == 0);
 
@@ -404,6 +410,12 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 			if (code & AKC_ExtendBit)
 				code = READ_BE_UINT16(p + 4);
 			off = _akof + (code & 0xFFF);
+
+			// Save cel index from DrawMany for HD costume overlay
+			{
+				int cel = (code & 0xFFF);
+				const_cast<Actor *>(a)->_hdCurrentCel = cel;
+			}
 
 			_srcPtr = _akcd + READ_LE_UINT32(&off->akcd);
 			costumeInfo = (const CostumeInfo *) (_akci + READ_LE_UINT16(&off->akci));
