@@ -24,6 +24,7 @@
 
 #include "common/str.h"
 #include "common/stream.h"
+#include "common/hashmap.h"
 #include "graphics/surface.h"
 
 namespace Scumm {
@@ -62,6 +63,12 @@ private:
 	ScummEngine *_vm;
 	Common::String _hdPath;
 	int _scale;
+
+	/** Map room ID → background filename (scanned from backgrounds/ dir). */
+	Common::HashMap<int, Common::String> _bgFiles;
+
+	/** Scan the backgrounds/ subdirectory and populate _bgFiles. */
+	void scanBackgrounds();
 };
 
 } // End of namespace Scumm

@@ -1229,16 +1229,6 @@ void ScummEngine::renderHDComposite() {
 	if (!_hdBackgroundSurface.getPixels())
 		return;
 
-	// During SMUSH cutscenes, fall through to normal copy, skip HD compositing
-	if (isSmushActive()) {
-		VirtScreen *vs = &_virtscr[kMainVirtScreen];
-		if (vs && vs->getBasePtr(0, 0)) {
-			_system->copyRectToScreen(vs->getBasePtr(0, 0), vs->pitch,
-			                          0, 0, _screenWidth, _screenHeight);
-		}
-		return;
-	}
-
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 	int hdW = _hdBackgroundSurface.w;
 	int hdH = _hdBackgroundSurface.h;
@@ -1258,27 +1248,16 @@ void ScummEngine::renderHDComposite() {
 		_hdComposite.create(hdW, hdH, rgbaFmt);
 	}
 
-	// Step 1: Copy HD background to composite surface, with camera offset
-	// For V7+, vs->xstart = camera._cur.x - _screenWidth/2
-	// Map this room pixel offset to HD coordinates
-	int64 camOffX = (int64)vs->xstart * hdW / MAX(1, _roomWidth);
-	camOffX = CLIP<int64>(camOffX, 0, hdW - 1);
-
-	// Copy HD background row by row (much faster than pixel-by-pixel)
-	for (int y = 0; y < hdH; y++) {
-		int64 hdSrcY = (int64)y * _hdBackgroundSurface.h / hdH;
-		hdSrcY = CLIP<int64>(hdSrcY, 0, _hdBackgroundSurface.h - 1);
-		int copyW = MIN(hdW, _hdBackgroundSurface.w - (int)camOffX);
-		if (copyW > 0) {
-			memcpy(_hdComposite.getBasePtr(0, y),
-			       _hdBackgroundSurface.getBasePtr((int)camOffX, (int)hdSrcY),
-			       copyW * 4);
-			// If camOffX caused us to run out of source pixels, fill remainder with black
-			if (copyW < hdW) {
-				memset(_hdComposite.getBasePtr(copyW, y), 0, (hdW - copyW) * 4);
-			}
-		} else {
-			memset(_hdComposite.getBasePtr(0, y), 0, hdW * 4);
+	// Step 1: Copy HD background to composite surface (RGB→RGBA)
+	// PNG decoder returns 3-bpp RGB; composite uses 4-bpp RGBA.
+	for (int y = 0; y < _hdBackgroundSurface.h && y < _hdComposite.h; y++) {
+		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(0, y);
+		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
+		for (int x = 0; x < _hdBackgroundSurface.w && x < _hdComposite.w; x++) {
+			uint8 r = src[x * 3 + 0];
+			uint8 g = src[x * 3 + 1];
+			uint8 b = src[x * 3 + 2];
+			dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
 		}
 	}
 

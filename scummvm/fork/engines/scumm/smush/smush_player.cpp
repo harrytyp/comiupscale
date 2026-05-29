@@ -1220,12 +1220,20 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 	// Check for HD video replacement
 	_hdVideo = new HdVideoPlayer();
 	if (_hdVideo->hasVideo(filename)) {
-		// Build path to MP4 with case-insensitive filename handling
-		Common::FSNode gameDataDir(ConfMan.getPath("path"));
-		Common::String mp4Path = gameDataDir.getPath().toString();
+		// Build path to MP4 — use hd_path config when available
+		Common::String mp4Path;
+		if (ConfMan.hasKey("hd_path", "comi")) {
+			mp4Path = ConfMan.get("hd_path", "comi");
+		} else {
+			Common::FSNode gameDataDir(ConfMan.getPath("path"));
+			mp4Path = gameDataDir.getPath().toString();
+			if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
+				mp4Path += '/';
+			mp4Path += "hd";
+		}
 		if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
 			mp4Path += '/';
-		mp4Path += "hd/videos/";
+		mp4Path += "videos/";
 
 		Common::String baseName = filename;
 		int dotPos = baseName.findLastOf('.');
@@ -1237,9 +1245,9 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 			baseName = "SINKSHIP";
 
 		// Try exact case first, then uppercase (for archive.org videos)
-		Common::FSNode videoDir = gameDataDir.getChild("hd").getChild("videos");
 		Common::String mp4Filename = baseName + ".mp4";
-		if (!videoDir.getChild(mp4Filename).exists()) {
+		Common::FSNode mp4File(Common::Path(mp4Path + mp4Filename, Common::Path::kNativeSeparator));
+		if (!mp4File.exists()) {
 			Common::String upper = baseName;
 			upper.toUppercase();
 			mp4Filename = upper + ".mp4";

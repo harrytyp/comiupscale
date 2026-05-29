@@ -40,6 +40,7 @@ HDAssetManager::HDAssetManager(ScummEngine *vm)
 }
 
 HDAssetManager::~HDAssetManager() {
+	_bgFiles.clear();
 }
 
 void HDAssetManager::setHDPath(const Common::String &path) {
@@ -55,33 +56,65 @@ void HDAssetManager::setHDPath(const Common::String &path) {
 	if (!dir.exists() || !dir.isDirectory()) {
 		debug(1, "HDAssetManager: HD directory not found, HD mode disabled");
 		_hdPath.clear();
-	} else {
-		warning("HDAssetManager: HD mode ENABLED at %s", _hdPath.c_str());
+		return;
 	}
+	warning("HDAssetManager: HD mode ENABLED at %s", _hdPath.c_str());
+
+	// Scan backgrounds directory for room→filename mapping
+	scanBackgrounds();
+}
+
+void HDAssetManager::scanBackgrounds() {
+	_bgFiles.clear();
+
+	Common::String bgDirPath = _hdPath + "/backgrounds";
+	Common::FSNode bgDir(Common::Path(bgDirPath, Common::Path::kNativeSeparator));
+	if (!bgDir.exists() || !bgDir.isDirectory()) {
+		debug(1, "HDAssetManager: No backgrounds/ subdirectory at %s", bgDirPath.c_str());
+		return;
+	}
+
+	Common::FSList files;
+	if (!bgDir.getChildren(files, Common::FSNode::kListFilesOnly)) {
+		debug(1, "HDAssetManager: Failed to list backgrounds directory");
+		return;
+	}
+
+	int count = 0;
+	for (Common::FSList::iterator it = files.begin(); it != files.end(); ++it) {
+		Common::String name = it->getName();
+		if (!name.hasSuffixIgnoreCase(".png"))
+			continue;
+
+		// Extract room number from "ROOMNAME_..." or "bg_ROOM_..." pattern
+		int room = 0;
+		if (sscanf(name.c_str(), "%d", &room) == 1 || sscanf(name.c_str(), "bg_%d", &room) == 1) {
+			Common::String fullPath = bgDirPath + "/" + name;
+			_bgFiles[room] = fullPath;
+			count++;
+		}
+	}
+
+	debug(1, "HDAssetManager: Scanned %d backgrounds from %s", count, bgDirPath.c_str());
 }
 
 bool HDAssetManager::hasBackground(int room) const {
 	if (_hdPath.empty())
 		return false;
 
-	// Build expected path
-	Common::String bgPath = _hdPath;
-	bgPath += Common::String::format("/bg_%04d.png", room);
-
-	Common::FSNode file(Common::Path(bgPath, Common::Path::kNativeSeparator));
-	bool exists = file.exists();
-	HD_TRACE(bgPath, exists);
-	return exists;
+	return _bgFiles.contains(room);
 }
 
 bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	if (_hdPath.empty())
 		return false;
 
-	// Build path: <hdPath>/bg_XXXX.png
-	Common::String bgPath = _hdPath;
-	bgPath += Common::String::format("/bg_%04d.png", room);
+	if (!_bgFiles.contains(room)) {
+		HD_TRACE(Common::String::format("bg room %d", room), false);
+		return false;
+	}
 
+	Common::String bgPath = _bgFiles[room];
 	Common::FSNode fileNode(Common::Path(bgPath, Common::Path::kNativeSeparator));
 	if (!fileNode.exists()) {
 		HD_TRACE(bgPath, false);
@@ -110,31 +143,7 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	}
 
 	surf.copyFrom(*pngSurf);
-
-	// Convert 24-bit RGB to 32-bit RGBA if needed
-	if (surf.format.bytesPerPixel == 3) {
-		Graphics::Surface *conv = new Graphics::Surface();
-		conv->create(surf.w, surf.h, Graphics::PixelFormat(4, 8, 8, 8, 8, 0, 8, 16, 24));
-		const byte *src = (const byte *)surf.getPixels();
-		byte *dst = (byte *)conv->getPixels();
-		// PNG 24-bit RGB: bytes in memory are [R, G, B] (LE, createFormatRGB24).
-		// SDL RGBA8888 expects bytes [R, G, B, A] in memory.
-		for (int i = 0; i < surf.w * surf.h; i++) {
-			dst[i * 4 + 0] = src[i * 3 + 0];  // R
-			dst[i * 4 + 1] = src[i * 3 + 1];  // G
-			dst[i * 4 + 2] = src[i * 3 + 2];  // B
-			dst[i * 4 + 3] = 0xFF;            // A
-		}
-		surf.free();
-		surf.copyFrom(*conv);
-		conv->free();
-		delete conv;
-	}
-
 	png.destroy();
-
-	debug(1, "HDAssetManager: Loaded HD background for room %d: %dx%d (%s)",
-		room, surf.w, surf.h, bgPath.c_str());
 	return true;
 }
 

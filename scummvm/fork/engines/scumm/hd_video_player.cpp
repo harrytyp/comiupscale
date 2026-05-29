@@ -70,9 +70,20 @@ bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 		}
 	}
 
-	Common::FSNode gameDataDir(ConfMan.getPath("path"));
-	Common::FSNode hdDir = gameDataDir.getChild("hd");
+	// Build path from hd_path config, with fallback to game/hd/
+	Common::FSNode hdDir;
+	if (ConfMan.hasKey("hd_path", "comi")) {
+		hdDir = Common::FSNode(Common::Path(ConfMan.get("hd_path", "comi"), Common::Path::kNativeSeparator));
+	} else {
+		Common::FSNode gameDataDir(ConfMan.getPath("path"));
+		hdDir = gameDataDir.getChild("hd");
+	}
+
 	Common::FSNode videoDir = hdDir.getChild("videos");
+	if (!videoDir.exists()) {
+		// Videos directory not present — no HD video
+		return false;
+	}
 
 	// Try exact case first, then lowercase, then uppercase
 	Common::FSNode mp4File = videoDir.getChild(baseName + ".mp4");

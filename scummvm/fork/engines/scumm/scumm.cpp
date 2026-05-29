@@ -995,10 +995,18 @@ Common::Error ScummEngine::init() {
 		const Common::FSNode gameDataDir(ConfMan.getPath("path"));
 
 	// Initialize HD asset path
-	Common::String hdPath = gameDataDir.getPath().toString();
-	if (hdPath.lastChar() != '/' && hdPath.lastChar() != '\\')
-		hdPath += '/';
-	hdPath += "hd";
+	Common::String hdPath;
+	if (ConfMan.hasKey("hd_path", "comi")) {
+		// Use explicit HD path from config (e.g., "D:/COMI-Upscaled/assets/upscaled")
+		hdPath = ConfMan.get("hd_path", "comi");
+		debug(1, "ScummEngine: HD path from config: %s", hdPath.c_str());
+	} else {
+		// Default: look for "hd/" subdirectory next to game data
+		hdPath = gameDataDir.getPath().toString();
+		if (hdPath.lastChar() != '/' && hdPath.lastChar() != '\\\\')
+			hdPath += '/';
+		hdPath += "hd";
+	}
 	_hdAssetManager->setHDPath(hdPath);
 	_hdObjectManager->init(hdPath);
 	_hdCostumeManager->init(hdPath);
@@ -1024,6 +1032,12 @@ Common::Error ScummEngine::init() {
 			_hdAssetManager->setScale(_hdScale);
 			warning("HD: preloaded bg_0000 (%dx%d) scale=%d",
 				_hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale);
+
+			// Re-init screen at HD resolution so the OpenGL backend
+			// allocates a texture large enough for copyRectToScreen.
+			_system->beginGFXTransaction();
+			_system->initSize(_hdBackgroundSurface.w, _hdBackgroundSurface.h, &_hdBackgroundSurface.format);
+			_system->endGFXTransaction();
 		}
 	}
 
@@ -1554,15 +1568,16 @@ Common::Error ScummEngine::init() {
 
 	// HD mode: set system buffer to native HD resolution (32-bit RGBA)
 	// so the HD background and composited game content render at full quality.
-	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
+	if (_hdScale > 1) {
+		int hdW = _screenWidth * _hdScale;
+		int hdH = _screenHeight * _hdScale;
 		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
 		_system->beginGFXTransaction();
-		_system->initSize(_hdBackgroundSurface.w, _hdBackgroundSurface.h, &rgbaFmt);
+		_system->initSize(hdW, hdH, &rgbaFmt);
 		OSystem::TransactionError err = _system->endGFXTransaction();
 		_outputPixelFormat = _system->getScreenFormat();
 		warning("HD: init at %dx%d fmt=%d bpp err=%d",
-			_hdBackgroundSurface.w, _hdBackgroundSurface.h,
-			_outputPixelFormat.bytesPerPixel * 8, (int)err);
+			hdW, hdH, _outputPixelFormat.bytesPerPixel * 8, (int)err);
 	}
 
 	// Create the debugger now that _numVariables has been set
