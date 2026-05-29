@@ -59,6 +59,9 @@ public:
 	/** Returns true if HD mode is active (directory was found). */
 	bool isEnabled() const { return !_hdPath.empty(); }
 
+	/** Returns the HD path string. */
+	const Common::String &getHDPath() const { return _hdPath; }
+
 private:
 	ScummEngine *_vm;
 	Common::String _hdPath;

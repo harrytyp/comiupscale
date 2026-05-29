@@ -1463,11 +1463,25 @@ void ScummEngine::renderHDComposite() {
 void ScummEngine::hdDebugDump() {
 	Common::DumpFile df;
 	char path[256];
-	
+
+	// Write dumps to <project>/logs/ (resolved from hd_path parent)
+	Common::String dumpDir;
+	if (_hdAssetManager->isEnabled()) {
+		Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
+		Common::FSNode parent = hdNode.getParent();
+		dumpDir = parent.getPath().toString('/') + "/logs";
+	} else {
+		dumpDir = ".";
+	}
+	// Ensure logs/ directory exists
+	Common::FSNode logDir(Common::Path(dumpDir, Common::Path::kNativeSeparator));
+	if (!logDir.exists())
+		logDir.createDirectory();
+
 	// 1. Dump HD composite surface (before cursor)
 	Graphics::Surface *screen = _system->lockScreen();
 	if (screen) {
-		snprintf(path, sizeof(path), "hd_dump_%d_composite.raw", _hdFrameCount);
+		snprintf(path, sizeof(path), "%s/hd_dump_%d_composite.raw", dumpDir.c_str(), _hdFrameCount);
 		df.open(Common::Path(path));
 		df.write(screen->getPixels(), screen->h * screen->pitch);
 		df.close();
@@ -1476,7 +1490,7 @@ void ScummEngine::hdDebugDump() {
 	}
 	
 	// 2. Dump HD composite surface (our internal 32-bit surface)
-	snprintf(path, sizeof(path), "hd_dump_%d_hdcomposite.raw", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_hdcomposite.raw", dumpDir.c_str(), _hdFrameCount);
 	if (_hdComposite.getPixels()) {
 		df.open(Common::Path(path));
 		df.write(_hdComposite.getPixels(), _hdComposite.h * _hdComposite.pitch);
@@ -1486,7 +1500,7 @@ void ScummEngine::hdDebugDump() {
 	
 	// 3. Dump clean background + valid mask
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
-	snprintf(path, sizeof(path), "hd_dump_%d_clean.raw", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_clean.raw", dumpDir.c_str(), _hdFrameCount);
 	if (_hdCleanBackground.getPixels()) {
 		df.open(Common::Path(path));
 		df.write(_hdCleanBackground.getPixels(), _hdCleanBackground.h * _hdCleanBackground.pitch);
@@ -1495,7 +1509,7 @@ void ScummEngine::hdDebugDump() {
 	}
 	
 	// 4. Dump cleanValid mask
-	snprintf(path, sizeof(path), "hd_dump_%d_valid.raw", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_valid.raw", dumpDir.c_str(), _hdFrameCount);
 	if (_hdCleanValid && _hdCleanValidSize > 0) {
 		df.open(Common::Path(path));
 		df.write(_hdCleanValid, _hdCleanValidSize);
@@ -1504,7 +1518,7 @@ void ScummEngine::hdDebugDump() {
 	}
 	
 	// 5. Dump game virtual screen (8-bit)
-	snprintf(path, sizeof(path), "hd_dump_%d_virtscr.raw", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_virtscr.raw", dumpDir.c_str(), _hdFrameCount);
 	df.open(Common::Path(path));
 	for (int y = 0; y < vs->h; y++) {
 		df.write(vs->getBasePtr(vs->xstart, y), _screenWidth);
@@ -1513,7 +1527,7 @@ void ScummEngine::hdDebugDump() {
 	warning("HD DEBUG: virtscr saved to %s", path);
 	
 	// 6. Dump palette
-	snprintf(path, sizeof(path), "hd_dump_%d_palette.txt", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_palette.txt", dumpDir.c_str(), _hdFrameCount);
 	df.open(Common::Path(path));
 	char line[64];
 	for (int i = 0; i < 256; i++) {
@@ -1524,7 +1538,7 @@ void ScummEngine::hdDebugDump() {
 	df.close();
 	
 	// 7. Dump engine state
-	snprintf(path, sizeof(path), "hd_dump_%d_state.txt", _hdFrameCount);
+	snprintf(path, sizeof(path), "%s/hd_dump_%d_state.txt", dumpDir.c_str(), _hdFrameCount);
 	df.open(Common::Path(path));
 	snprintf(line, sizeof(line), "frame=%d room=%d hdRoom=%d hdScale=%d\n",
 		_hdFrameCount, _currentRoom, _hdCurrentRoom, _hdScale);
