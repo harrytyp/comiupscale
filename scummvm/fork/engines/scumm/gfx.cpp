@@ -1410,9 +1410,14 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
-	// Step 2.6: Overlay HD costume textures on top of composite
+	// Step 2.6: (disabled) HD costume PNG overlay
+	// The SD actor costumes are already composited at 4x via Step 2.
+	// This overlay would replace individual frames with RealESRGAN
+	// upscales, but frame animation requires AKSQ-aware lookup.
+	// TODO: Re-enable with proper AKSQ cel tracking for RealESRGAN frames.
+	// (block commented out to restore SD animation for all costumes)
+#if 0
 	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
-		warning("hd_trace: checking %d actors for HD costumes", _numActors);
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
 			if (!a || a->_costume == 0)
@@ -1426,13 +1431,9 @@ void ScummEngine::renderHDComposite() {
 			if (!_hdCostumeManager->loadCostume(a->_costume, a->_frame, hdCostumeSurf))
 				continue;
 
-			// Validate surface — skip tiny costumes (< 8px) that are invisible at HD
+			// Validate surface
 			if (hdCostumeSurf.w <= 0 || hdCostumeSurf.h <= 0 ||
-				hdCostumeSurf.format.bytesPerPixel != 4 ||
-				hdCostumeSurf.w < 8 || hdCostumeSurf.h < 8) {
-				if (hdCostumeSurf.w > 0 && hdCostumeSurf.h > 0)
-					warning("hd_trace: costume %04d frame %d too small (%dx%d) — skipping HD",
-						a->_costume, a->_frame, hdCostumeSurf.w, hdCostumeSurf.h);
+				hdCostumeSurf.format.bytesPerPixel != 4) {
 				hdCostumeSurf.free();
 				continue;
 			}
@@ -1493,6 +1494,7 @@ void ScummEngine::renderHDComposite() {
 		}
 		_hdFontChars.clear();
 	} */
+#endif
 
 	// Step 3: Copy the entire HD composite to the system buffer
 	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
