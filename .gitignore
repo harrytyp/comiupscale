@@ -82,5 +82,7 @@ scummvm/fork/**/*.a
 scummvm/fork/dists/scummvm.o
 scummvm/fork/dists/*.rh
 scummvm/fork/scummvm.exe
+scummvm/fork/*.dll
+scummvm/fork/scummvm.log
 /scummvm-fork/
 /scummvm-src/
