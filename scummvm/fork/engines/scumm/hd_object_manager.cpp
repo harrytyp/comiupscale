@@ -21,6 +21,7 @@
 
 #include "scumm/hd_object_manager.h"
 #include "scumm/scumm.h"
+#include "common/config-manager.h"
 #include "common/debug.h"
 #include "common/formats/json.h"
 #include "common/fs.h"
@@ -28,6 +29,13 @@
 #include "image/png.h"
 
 namespace Scumm {
+
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
 
 HdObjectManager::HdObjectManager(ScummEngine *vm)
 	: _vm(vm), _enabled(false), _lruCounter(0) {
@@ -56,8 +64,11 @@ Common::String HdObjectManager::buildLayerPath(int room, const Common::String &n
 
 bool HdObjectManager::loadPNG(const Common::String &path, Graphics::Surface &surf) {
 	Common::FSNode fileNode(Common::Path(path, Common::Path::kNativeSeparator));
-	if (!fileNode.exists())
+	if (!fileNode.exists()) {
+		HD_TRACE(path, false);
 		return false;
+	}
+	HD_TRACE(path, true);
 
 	Common::SeekableReadStream *stream = fileNode.createReadStream();
 	if (!stream) {
@@ -112,10 +123,12 @@ bool HdObjectManager::init(const Common::String &hdPath) {
 	Common::String mapPath = _hdPath + "/object_map.json";
 	Common::FSNode mapNode(Common::Path(mapPath, Common::Path::kNativeSeparator));
 	if (!mapNode.exists()) {
+		HD_TRACE(mapPath, false);
 		warning("HdObjectManager: object_map.json not found at %s — HD objects disabled", mapPath.c_str());
 		_enabled = false;
 		return false;
 	}
+	HD_TRACE(mapPath, true);
 
 	// Read the mapping file
 	Common::SeekableReadStream *stream = mapNode.createReadStream();

@@ -21,11 +21,19 @@
 
 #include "scumm/hd_costume_manager.h"
 #include "scumm/scumm.h"
+#include "common/config-manager.h"
 #include "common/debug.h"
 #include "common/fs.h"
 #include "image/png.h"
 
 namespace Scumm {
+
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
 
 HdCostumeManager::HdCostumeManager(ScummEngine *vm)
 	: _vm(vm), _enabled(false), _lruCounter(0) {
@@ -48,8 +56,11 @@ Common::String HdCostumeManager::buildCostumePath(int akosId, int akosSub, int f
 
 bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &surf) {
 	Common::FSNode fileNode(Common::Path(path, Common::Path::kNativeSeparator));
-	if (!fileNode.exists())
+	if (!fileNode.exists()) {
+		HD_TRACE(path, false);
 		return false;
+	}
+	HD_TRACE(path, true);
 
 	Common::SeekableReadStream *stream = fileNode.createReadStream();
 	if (!stream) {
@@ -148,7 +159,12 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 	key.akosId = akosId;
 	key.akosSub = 1;
 	key.frame = frame;
-	return _availableCostumes.contains(key);
+	bool exists = _availableCostumes.contains(key);
+	if (exists) {
+		Common::String p = buildCostumePath(akosId, 1, frame);
+		HD_TRACE(p, true);
+	}
+	return exists;
 }
 
 bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest) {

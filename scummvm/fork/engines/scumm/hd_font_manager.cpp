@@ -21,11 +21,19 @@
 
 #include "scumm/hd_font_manager.h"
 #include "scumm/scumm.h"
+#include "common/config-manager.h"
 #include "common/debug.h"
 #include "common/fs.h"
 #include "image/png.h"
 
 namespace Scumm {
+
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
 
 HdFontManager::HdFontManager(ScummEngine *vm)
 	: _vm(vm), _enabled(false), _scale(4) {
@@ -90,9 +98,11 @@ bool HdFontManager::loadFontSheet(int fontSlot) {
 
 	Common::FSNode fileNode(Common::Path(path, Common::Path::kNativeSeparator));
 	if (!fileNode.exists()) {
+		HD_TRACE(path, false);
 		debug(2, "HdFontManager: Font sheet not found: %s", path.c_str());
 		return false;
 	}
+	HD_TRACE(path, true);
 
 	Common::SeekableReadStream *stream = fileNode.createReadStream();
 	if (!stream) {

@@ -21,11 +21,19 @@
 
 #include "scumm/hd_asset_manager.h"
 #include "scumm/scumm.h"
+#include "common/config-manager.h"
 #include "common/debug.h"
 #include "common/fs.h"
 #include "image/png.h"
 
 namespace Scumm {
+
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
 
 HDAssetManager::HDAssetManager(ScummEngine *vm)
 	: _vm(vm), _scale(4) {
@@ -61,7 +69,9 @@ bool HDAssetManager::hasBackground(int room) const {
 	bgPath += Common::String::format("/bg_%04d.png", room);
 
 	Common::FSNode file(Common::Path(bgPath, Common::Path::kNativeSeparator));
-	return file.exists();
+	bool exists = file.exists();
+	HD_TRACE(bgPath, exists);
+	return exists;
 }
 
 bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
@@ -73,8 +83,11 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	bgPath += Common::String::format("/bg_%04d.png", room);
 
 	Common::FSNode fileNode(Common::Path(bgPath, Common::Path::kNativeSeparator));
-	if (!fileNode.exists())
+	if (!fileNode.exists()) {
+		HD_TRACE(bgPath, false);
 		return false;
+	}
+	HD_TRACE(bgPath, true);
 
 	Common::SeekableReadStream *stream = fileNode.createReadStream();
 	if (!stream) {

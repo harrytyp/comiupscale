@@ -35,6 +35,13 @@
 
 namespace Scumm {
 
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			debug(0, "hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
+
 HdVideoPlayer::HdVideoPlayer()
 	: _hdProcess(nullptr), _hdPipe(nullptr), _width(0), _height(0) {
 }
@@ -69,18 +76,21 @@ bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 
 	// Try exact case first, then lowercase, then uppercase
 	Common::FSNode mp4File = videoDir.getChild(baseName + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
 	Common::String lower = baseName;
 	lower.toLowercase();
 	mp4File = videoDir.getChild(lower + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
 	Common::String upper = baseName;
 	upper.toUppercase();
 	mp4File = videoDir.getChild(upper + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
+	// None found — log the last tried path
+	Common::String lastTry = videoDir.getPath().toString() + "/" + baseName + ".mp4";
+	HD_TRACE(lastTry, false);
 	return false;
 }
 
@@ -89,6 +99,9 @@ bool HdVideoPlayer::open(const Common::String &mp4Path, int width, int height) {
 
 	_width = width;
 	_height = height;
+
+	Common::FSNode mp4Node(Common::Path(mp4Path, Common::Path::kNativeSeparator));
+	HD_TRACE(mp4Path, mp4Node.exists());
 
 #ifdef _WIN32
 	// Build ffmpeg command
