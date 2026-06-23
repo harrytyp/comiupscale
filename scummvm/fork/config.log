@@ -1,0 +1,22 @@
+Invocation command line was:
+./configure --host=mingw64 --backend=opengl --enable-optimizations --enable-release --disable-all-engines --enable-engine=scumm
+Saved environment variables:
+AR="" AS="" ASFLAGS="" CPPFLAGS="" CXX="" CXXFLAGS="" CXXFILT="" DWP="" LD="" LDFLAGS="" NM="" PKG_CONFIG_LIBDIR="unset" RANLIB="" SDL_CONFIG="" STRIP="" WINDRES="" WINDRESFLAGS=""
+testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-g++
+./configure: line 2305: x86_64-pc-mingw64-x86_64-pc-mingw64-g++: command not found
+failure testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-g++
+testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-c++
+./configure: line 2305: x86_64-pc-mingw64-x86_64-pc-mingw64-c++: command not found
+failure testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-c++
+testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-clang++
+./configure: line 2305: x86_64-pc-mingw64-x86_64-pc-mingw64-clang++: command not found
+failure testing compiler: x86_64-pc-mingw64-x86_64-pc-mingw64-clang++
+testing compiler: mingw64-g++
+./configure: line 2305: mingw64-g++: command not found
+failure testing compiler: mingw64-g++
+testing compiler: mingw64-c++
+./configure: line 2305: mingw64-c++: command not found
+failure testing compiler: mingw64-c++
+testing compiler: mingw64-clang++
+./configure: line 2305: mingw64-clang++: command not found
+failure testing compiler: mingw64-clang++

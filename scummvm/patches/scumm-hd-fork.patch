@@ -1,0 +1,948 @@
+diff --git a/backends/graphics/opengl/opengl-graphics.cpp b/backends/graphics/opengl/opengl-graphics.cpp
+index 888e9b53..b7a4274f 100644
+--- a/backends/graphics/opengl/opengl-graphics.cpp
++++ b/backends/graphics/opengl/opengl-graphics.cpp
+@@ -80,7 +80,7 @@ OpenGLGraphicsManager::OpenGLGraphicsManager()
+ 	  _cursor(nullptr), _cursorMask(nullptr),
+ 	  _cursorHotspotX(0), _cursorHotspotY(0),
+ 	  _cursorHotspotXScaled(0), _cursorHotspotYScaled(0), _cursorWidthScaled(0), _cursorHeightScaled(0),
+-	  _cursorKeyColor(0), _cursorUseKey(true), _cursorDontScale(false), _cursorPaletteEnabled(false), _shakeOffsetScaled()
++	  _cursorKeyColor(0), _cursorUseKey(true), _cursorDontScale(false), _cursorPaletteEnabled(false), _hdCursorScale(1), _originalGameWidth(0), _originalGameHeight(0), _shakeOffsetScaled()
+ #if !USE_FORCED_GLES
+ 	  , _libretroPipeline(nullptr)
+ #endif
+@@ -641,6 +641,10 @@ OSystem::TransactionError OpenGLGraphicsManager::endGFXTransaction() {
+ 	// Something changed, so update the screen change ID.
+ 	++_screenChangeID;
+ 
++	// No need to recreate cursor when game screen format changes — the cursor
++	// surface (TextureSurfaceCLUT8GPU or FakeTextureSurface) handles CLUT8→RGBA
++	// conversion internally via palette lookup in updateGLTexture().
++
+ 	// Since transactionError is a ORd list of TransactionErrors this is
+ 	// clearly wrong. But our API is simply broken.
+ 	return (OSystem::TransactionError)transactionError;
+@@ -661,6 +665,11 @@ void OpenGLGraphicsManager::initSize(uint width, uint height, const Graphics::Pi
+ 	_currentState.gameFormat = requestedFormat;
+ #endif
+ 
++	// Save original game dimensions for cursor scaling
++	if (_originalGameWidth == 0) {
++		_originalGameWidth = width;
++		_originalGameHeight = height;
++	}
+ 	_currentState.gameWidth = width;
+ 	_currentState.gameHeight = height;
+ 	_gameScreenShakeXOffset = 0;
+@@ -691,22 +700,6 @@ void OpenGLGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) {
+ }
+ 
+ void OpenGLGraphicsManager::renderCursor() {
+-	/*
+-	Windows and Mac cursor XOR works by drawing the cursor to the screen with the formula (Destination AND Mask XOR Color)
+-
+-	OpenGL does not have an XOR blend mode though.  Full inversions can be accomplished by using blend modes with
+-	ONE_MINUS_DST_COLOR but the problem is how to do that in a way that handles linear filtering properly.
+-
+-	To avoid color fringing, we need to produce an output of 3 separately-modulated inputs: The framebuffer modulated by
+-	(1 - inversion)*(1 - alpha), the inverted framebuffer modulated by inversion*(1 - alpha), and the cursor colors modulated by alpha.
+-	The last part is additive and not framebuffer dependent so it can just be a separate draw call.  The first two are the problem
+-	because we can't use the unmodified framebuffer value twice if we do it in two separate draw calls, and if we do it in a single
+-	draw call, we can only supply one RGB input even though the inversion mask should be RGB.
+-
+-	If we only allow grayscale inversions though, then we can put inversion*(1 - alpha) in the RGB channel and
+-	(1 - inversion)*(1 - alpha) in the alpha channel and use and use ((1-dstColor)*src+(1-srcAlpha)*dest) blend formula to do
+-	the inversion and opacity mask at once.  We use 1-srcAlpha instead of srcAlpha so zero-fill is transparent.
+-	*/
+ 	if (_cursorMask) {
+ 		_targetBuffer->enableBlend(Framebuffer::kBlendModeMaskAlphaAndInvertByColor);
+ 
+@@ -1101,6 +1094,12 @@ void OpenGLGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int
+ 	Graphics::PixelFormat maskFormat;
+ 	if (format) {
+ 		inputFormat = *format;
++		// HACK: The engine reports _system->getScreenFormat() as the cursor
++		// format, but SCUMM cursors are always 8-bit CLUT8 even when the
++		// screen format has been changed to RGBA32 (HD mode). If the reported
++		// format doesn't match 1 byte per pixel, force CLUT8.
++		if (inputFormat.bytesPerPixel != 1)
++			inputFormat = Graphics::PixelFormat::createFormatCLUT8();
+ 	} else {
+ 		inputFormat = Graphics::PixelFormat::createFormatCLUT8();
+ 	}
+@@ -1312,6 +1311,15 @@ void OpenGLGraphicsManager::setMouseCursor(const void *buf, uint w, uint h, int
+ 	}
+ 
+ 	recalculateCursorScaling();
++
++	// HD cursor scaling: auto-detect from game screen size
++	if (_gameScreen && _gameScreen->getWidth() > 640) {
++		int hdScale = _gameScreen->getWidth() / 640;
++		_cursorHotspotXScaled *= hdScale;
++		_cursorHotspotYScaled *= hdScale;
++		_cursorWidthScaled    *= hdScale;
++		_cursorHeightScaled   *= hdScale;
++	}
+ }
+ 
+ void OpenGLGraphicsManager::setCursorPalette(const byte *colors, uint start, uint num) {
+@@ -1443,18 +1451,23 @@ void OpenGLGraphicsManager::displayActivityIconOnOSD(const Graphics::Surface *ic
+ 
+ void OpenGLGraphicsManager::setPalette(const byte *colors, uint start, uint num) {
+ 	assert(_gameScreen);
+-	assert(_gameScreen->hasPalette());
+ 
++	// Always update local palette copy — needed for HD composite (8-bit→32-bit) and cursor
+ 	memcpy(_gamePalette + start * 3, colors, num * 3);
+-	_gameScreen->setPalette(start, num, colors);
+ 
+-	// We might need to update the cursor palette here.
++	// In true-color mode (HD rendering), the game screen texture doesn't need the palette
++	if (_gameScreen->hasPalette())
++		_gameScreen->setPalette(start, num, colors);
++
+ 	updateCursorPalette();
+ }
+ 
+ void OpenGLGraphicsManager::grabPalette(byte *colors, uint start, uint num) const {
+ 	assert(_gameScreen);
+-	assert(_gameScreen->hasPalette());
++
++	// In true-color mode (HD rendering), palette is unused
++	if (!_gameScreen->hasPalette())
++		return;
+ 
+ 	memcpy(colors, _gamePalette + start * 3, num * 3);
+ }
+@@ -1951,11 +1964,11 @@ void OpenGLGraphicsManager::recalculateCursorScaling() {
+ 		const frac_t screenScaleFactorX = intToFrac(rotatedWidth) / _gameScreen->getWidth();
+ 		const frac_t screenScaleFactorY = intToFrac(rotatedHeight) / _gameScreen->getHeight();
+ 
+-		_cursorHotspotXScaled = fracToInt(_cursorHotspotXScaled * screenScaleFactorX);
+-		_cursorWidthScaled    = fracToDouble(cursorWidth        * screenScaleFactorX);
++	_cursorHotspotXScaled = fracToInt(_cursorHotspotXScaled * screenScaleFactorX);
++	_cursorWidthScaled    = fracToDouble(cursorWidth        * screenScaleFactorX);
+ 
+-		_cursorHotspotYScaled = fracToInt(_cursorHotspotYScaled * screenScaleFactorY);
+-		_cursorHeightScaled   = fracToDouble(cursorHeight       * screenScaleFactorY);
++	_cursorHotspotYScaled = fracToInt(_cursorHotspotYScaled * screenScaleFactorY);
++	_cursorHeightScaled   = fracToDouble(cursorHeight       * screenScaleFactorY);
+ 	}
+ 
+ 	switch (_rotationMode) {
+diff --git a/backends/graphics/opengl/opengl-graphics.h b/backends/graphics/opengl/opengl-graphics.h
+index 3c1db36f..9645a798 100644
+--- a/backends/graphics/opengl/opengl-graphics.h
++++ b/backends/graphics/opengl/opengl-graphics.h
+@@ -131,6 +131,9 @@ public:
+ 	void setMouseCursor(const void *buf, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale, const Graphics::PixelFormat *format, const byte *mask) override;
+ 	void setCursorPalette(const byte *colors, uint start, uint num) override;
+ 
++	/** Set HD cursor scale multiplier for upscaled content. */
++	void setHDCursorScale(int scale) { _hdCursorScale = scale; }
++
+ 	void displayMessageOnOSD(const Common::U32String &msg) override;
+ 	void displayActivityIconOnOSD(const Graphics::Surface *icon) override;
+ 
+@@ -361,6 +364,18 @@ protected:
+ 	 */
+ 	Surface *_gameScreen;
+ 
++	/**
++	 * Original game width/height before any HD override. Used to compute
++	 * the HD cursor scale factor automatically.
++	 */
++	int16 _originalGameWidth, _originalGameHeight;
++
++	/**
++	 * HD cursor scale multiplier. Set by the engine when HD content is loaded.
++	 * Cursor dimensions are multiplied by this factor after standard scaling.
++	 */
++	int _hdCursorScale;
++
+ #if defined(USE_OPENGL_GAME) || defined(USE_OPENGL_SHADERS)
+ 	/**
+ 	 * The rendering helper for 3D games.
+diff --git a/backends/graphics/opengl/pipelines/libretro.cpp b/backends/graphics/opengl/pipelines/libretro.cpp
+index 7bd57885..54233c8e 100644
+--- a/backends/graphics/opengl/pipelines/libretro.cpp
++++ b/backends/graphics/opengl/pipelines/libretro.cpp
+@@ -266,7 +266,7 @@ protected:
+ };
+ 
+ LibRetroPipeline::LibRetroPipeline()
+-	: _inputPipeline(ShaderMan.query(ShaderManager::kDefault)),
++	: _inputPipeline(ShaderMan.query(ShaderManager::kLanczos)),
+ 	  _outputPipeline(ShaderMan.query(ShaderManager::kDefault)),
+ 	  _needsScaling(false), _shaderPreset(nullptr), _linearFiltering(false), _rotation(Common::kRotationNormal),
+ 	  _currentTarget(uint(-1)), _inputWidth(0), _inputHeight(0),
+diff --git a/backends/graphics/opengl/pipelines/libretro.h b/backends/graphics/opengl/pipelines/libretro.h
+index 5b204725..65e66b08 100644
+--- a/backends/graphics/opengl/pipelines/libretro.h
++++ b/backends/graphics/opengl/pipelines/libretro.h
+@@ -93,6 +93,15 @@ private:
+ 	 */
+ 	ShaderPipeline _inputPipeline;
+ 	ShaderPipeline _outputPipeline;
++
++public:
++	/** Set a temporary shader override for the input pipeline (e.g. Lanczos). */
++	void setInputShaderOverride(Shader *shader) { _inputPipeline.setOverrideShader(shader); }
++	/** Clear the input pipeline shader override. */
++	void clearInputShaderOverride() { _inputPipeline.clearOverrideShader(); }
++
++private:
++
+ 	bool _needsScaling;
+ 
+ 	const LibRetro::ShaderPreset *_shaderPreset;
+diff --git a/backends/graphics/opengl/pipelines/shader.cpp b/backends/graphics/opengl/pipelines/shader.cpp
+index b1ede3a8..e6a5208d 100644
+--- a/backends/graphics/opengl/pipelines/shader.cpp
++++ b/backends/graphics/opengl/pipelines/shader.cpp
+@@ -86,6 +86,10 @@ void ShaderPipeline::drawTextureInternal(const Texture &texture, const GLfloat *
+ 
+ 	texture.bind();
+ 
++	// Use override shader if set (for Lanczos downsampling etc.)
++	Shader *drawShader = _overrideShader ? _overrideShader : _activeShader;
++	drawShader->use();
++
+ 	if (_colorDirty) {
+ 		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, _colorVBO));
+ 		GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_colorAttributes), _colorAttributes));
+@@ -98,12 +102,18 @@ void ShaderPipeline::drawTextureInternal(const Texture &texture, const GLfloat *
+ 	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+ 
+ 	GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
++
++	// Restore default shader if override was used
++	if (_overrideShader)
++		_activeShader->use();
+ }
+ 
+ void ShaderPipeline::setProjectionMatrix(const Math::Matrix4 &projectionMatrix) {
+ 	assert(isActive());
+ 
+ 	_activeShader->setUniform("projection", projectionMatrix);
++	if (_overrideShader)
++		_overrideShader->setUniform("projection", projectionMatrix);
+ }
+ #endif // !USE_FORCED_GLES
+ 
+diff --git a/backends/graphics/opengl/pipelines/shader.h b/backends/graphics/opengl/pipelines/shader.h
+index 560b6587..5c3d6e1e 100644
+--- a/backends/graphics/opengl/pipelines/shader.h
++++ b/backends/graphics/opengl/pipelines/shader.h
+@@ -51,6 +51,11 @@ protected:
+ 	bool _colorDirty;
+ 
+ 	Shader *const _activeShader;
++public:
++	Shader *_overrideShader = nullptr;
++	void setOverrideShader(Shader *s) { _overrideShader = s; }
++	void clearOverrideShader() { _overrideShader = nullptr; }
++protected:
+ };
+ #endif // !USE_FORCED_GLES
+ 
+diff --git a/backends/graphics/opengl/shader.cpp b/backends/graphics/opengl/shader.cpp
+index 2f2c91be..081a7013 100644
+--- a/backends/graphics/opengl/shader.cpp
++++ b/backends/graphics/opengl/shader.cpp
+@@ -64,6 +64,56 @@ const char *const g_defaultFragmentShader =
+ 	"\tgl_FragColor = blendColor * texture2D(shaderTexture, texCoord);\n"
+ 	"}\n";
+ 
++const char *const g_lanczosFragmentShader =
++	"varying vec2 texCoord;\n"
++	"varying vec4 blendColor;\n"
++	"\n"
++	"uniform sampler2D shaderTexture;\n"
++	"\n"
++	"// Lanczos-2 area sampling for high-quality downscaling\n"
++	"void main(void) {\n"
++	"\tvec2 texelStep = vec2(1.0 / 2560.0, 1.0 / 1920.0);\n"
++	"\tvec2 dx = dFdx(texCoord);\n"
++	"\tvec2 dy = dFdy(texCoord);\n"
++	"\tvec2 pixelStep = vec2(length(dx), length(dy));\n"
++	"\tvec2 scale = pixelStep / texelStep;\n"
++	"\tfloat maxScale = max(scale.x, scale.y);\n"
++	"\t// 1:1 or upscaling -> simple sample (fast path)\n"
++	"\tif (maxScale <= 1.0) {\n"
++	"\t\tgl_FragColor = blendColor * texture2D(shaderTexture, texCoord);\n"
++	"\t\treturn;\n"
++	"\t}\n"
++	"\t// Downscaling: Lanczos-2 weighted area sampling\n"
++	"\tint radius = int(ceil(maxScale * 2.0));\n"
++	"\tif (radius > 6) radius = 6;\n"
++	"\tvec4 sum = vec4(0.0);\n"
++	"\tfloat totalWeight = 0.0;\n"
++	"\tfor (int y = -6; y <= 6; y++) {\n"
++	"\t\tif (y < -radius || y > radius) continue;\n"
++	"\t\tfor (int x = -6; x <= 6; x++) {\n"
++	"\t\t\tif (x < -radius || x > radius) continue;\n"
++	"\t\t\tvec2 off = vec2(float(x), float(y));\n"
++	"\t\t\tfloat d = length(off) / maxScale;\n"
++	"\t\t\tfloat w;\n"
++	"\t\t\tif (d < 0.001) {\n"
++	"\t\t\t\tw = 1.0;\n"
++	"\t\t\t} else if (d < 2.0) {\n"
++	"\t\t\t\tfloat pix = 3.14159265 * d;\n"
++	"\t\t\t\tw = sin(pix) * sin(pix * 0.5) / (pix * pix * 0.5);\n"
++	"\t\t\t} else {\n"
++	"\t\t\t\tw = 0.0;\n"
++	"\t\t\t}\n"
++	"\t\t\tvec2 sc = texCoord + off * texelStep;\n"
++	"\t\t\tsum += texture2D(shaderTexture, sc) * w;\n"
++	"\t\t\ttotalWeight += w;\n"
++	"\t\t}\n"
++	"\t}\n"
++	"\tif (totalWeight > 0.0)\n"
++	"\t\tgl_FragColor = blendColor * (sum / totalWeight);\n"
++	"\telse\n"
++	"\t\tgl_FragColor = blendColor * texture2D(shaderTexture, texCoord);\n"
++	"}\n";
++
+ const char *const g_lookUpFragmentShader =
+ 	"varying vec2 texCoord;\n"
+ 	"varying vec4 blendColor;\n"
+@@ -105,6 +155,7 @@ void ShaderManager::notifyCreate() {
+ 	notifyDestroy();
+ 
+ 	_builtIn[kDefault] = Shader::fromStrings("default", g_defaultVertexShader, g_defaultFragmentShader, g_defaultShaderAttributes, 110);
++	_builtIn[kLanczos] = Shader::fromStrings("lanczos", g_defaultVertexShader, g_lanczosFragmentShader, g_defaultShaderAttributes, 110);
+ 	_builtIn[kCLUT8LookUp] = Shader::fromStrings("clut8lookup", g_defaultVertexShader, g_lookUpFragmentShader, g_defaultShaderAttributes, 110);
+ 	_builtIn[kCLUT8LookUp]->setUniform("palette", 1);
+ 
+diff --git a/backends/graphics/opengl/shader.h b/backends/graphics/opengl/shader.h
+index 63ecf0ba..b2909355 100644
+--- a/backends/graphics/opengl/shader.h
++++ b/backends/graphics/opengl/shader.h
+@@ -38,6 +38,9 @@ public:
+ 		/** Default shader implementing the GL fixed-function pipeline. */
+ 		kDefault = 0,
+ 
++		/** Lanczos-2 downsampling shader for high-quality texture filtering. */
++		kLanczos,
++
+ 		/** CLUT8 look up shader. */
+ 		kCLUT8LookUp,
+ 
+diff --git a/engines/scumm/gfx.cpp b/engines/scumm/gfx.cpp
+index fb78f408..e9c20366 100644
+--- a/engines/scumm/gfx.cpp
++++ b/engines/scumm/gfx.cpp
+@@ -21,6 +21,8 @@
+ 
+ #include "common/system.h"
+ #include "scumm/actor.h"
++#include "common/translation.h"
++#include "common/file.h"
+ #include "scumm/charset.h"
+ #ifdef ENABLE_HE
+ #include "scumm/he/intern_he.h"
+@@ -30,7 +32,9 @@
+ #include "scumm/scumm_v5.h"
+ #include "scumm/scumm_v6.h"
+ #include "scumm/usage_bits.h"
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/he/wiz_he.h"
++#include "image/png.h"
+ #include "scumm/util.h"
+ 
+ #ifdef USE_ARM_GFX_ASM
+@@ -535,13 +539,17 @@ void ScummEngine::drawDirtyScreenParts() {
+ 
+ 	// Update game area ("stage")
+ 	if (camera._last.x != camera._cur.x || (_game.version >= 7 && (camera._cur.y != camera._last.y))) {
+-		// Camera moved: redraw everything
+ 		VirtScreen *vs = &_virtscr[kMainVirtScreen];
+ 		drawStripToScreen(vs, 0, vs->w, 0, vs->h);
+ 		vs->setDirtyRange(vs->h, 0);
+ 	} else {
+ 		updateDirtyScreen(kMainVirtScreen);
+ 	}
++
++	// HD composite: replace system buffer with native-resolution 32-bit composite
++	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
++		renderHDComposite();
++	}
+ }
+ 
+ void ScummEngine_v6::drawDirtyScreenParts() {
+@@ -1179,6 +1187,232 @@ void ScummEngine::redrawBGStrip(int start, int num) {
+ 		room = getResourceAddress(rtRoom, _roomResource);
+ 
+ 	_gdi->drawBitmap(room + _IM00_offs, &_virtscr[kMainVirtScreen], s, 0, _roomWidth, _virtscr[kMainVirtScreen].h, s, num, 0);
++
++	// HD: save the freshly drawn room background strips as clean reference.
++	// These strips contain ONLY the room image (Gdi draws no objects/actors).
++	// Objects, actors, blast effects, verbs draw later and will differ from clean.
++	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
++		VirtScreen *vs = &_virtscr[kMainVirtScreen];
++		int visW = MIN<int>(_screenWidth, vs->w);
++		int visH = MIN<int>(_screenHeight, vs->h);
++		int totalPix = visW * visH;
++		if (!_hdCleanBackground.getPixels() ||
++			_hdCleanBackground.w != visW ||
++			_hdCleanBackground.h != visH) {
++			_hdCleanBackground.free();
++			_hdCleanBackground.create(visW, visH, vs->format);
++			memset(_hdCleanBackground.getPixels(), 0, visW * visH);
++			_hdCleanValidSize = totalPix;
++			_hdCleanValid = (byte *)realloc(_hdCleanValid, totalPix);
++			memset(_hdCleanValid, 0, totalPix);
++		}
++		// Save the num strips starting at room strip s
++		int screenLeft = s * 8 - vs->xstart;
++		for (int y = 0; y < visH; y++) {
++			byte *src = (byte *)vs->getBasePtr(s * 8, y);
++			for (int x = 0; x < num * 8; x++) {
++				int sx = screenLeft + x;
++				if (sx >= 0 && sx < visW) {
++					*((byte *)_hdCleanBackground.getBasePtr(sx, y)) = src[x];
++					_hdCleanValid[y * visW + sx] = 1;
++				}
++			}
++		}
++	}
++}
++
++void ScummEngine::renderHDComposite() {
++	if (!_hdBackgroundSurface.getPixels())
++		return;
++
++	VirtScreen *vs = &_virtscr[kMainVirtScreen];
++	int hdW = _hdBackgroundSurface.w;
++	int hdH = _hdBackgroundSurface.h;
++	int visW = MIN<int>(_screenWidth, vs->w - vs->xstart);
++	int visH = MIN<int>(_screenHeight, vs->h);
++
++	if (visW <= 0 || visH <= 0)
++		return;
++
++	Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
++
++	// Allocate HD composite surface once
++	if (!_hdComposite.getPixels() ||
++		_hdComposite.w != hdW ||
++		_hdComposite.h != hdH) {
++		_hdComposite.free();
++		_hdComposite.create(hdW, hdH, rgbaFmt);
++	}
++
++	// Step 1: Copy HD background to composite surface, with camera offset
++	// For V7+, vs->xstart = camera._cur.x - _screenWidth/2
++	// Map this room pixel offset to HD coordinates
++	int64 camOffX = (int64)vs->xstart * hdW / MAX(1, _roomWidth);
++	camOffX = CLIP<int64>(camOffX, 0, hdW - 1);
++
++	// Copy HD background row by row (much faster than pixel-by-pixel)
++	for (int y = 0; y < hdH; y++) {
++		int64 hdSrcY = (int64)y * _hdBackgroundSurface.h / hdH;
++		hdSrcY = CLIP<int64>(hdSrcY, 0, _hdBackgroundSurface.h - 1);
++		int copyW = MIN(hdW, _hdBackgroundSurface.w - (int)camOffX);
++		if (copyW > 0) {
++			memcpy(_hdComposite.getBasePtr(0, y),
++			       _hdBackgroundSurface.getBasePtr((int)camOffX, (int)hdSrcY),
++			       copyW * 4);
++			// If camOffX caused us to run out of source pixels, fill remainder with black
++			if (copyW < hdW) {
++				memset(_hdComposite.getBasePtr(copyW, y), 0, (hdW - copyW) * 4);
++			}
++		} else {
++			memset(_hdComposite.getBasePtr(0, y), 0, hdW * 4);
++		}
++	}
++
++	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
++	// Diff against clean background to only overlay foreground pixels.
++	// Clean background is populated per-strip in redrawBGStrip (room image only).
++	// Pixels that haven't been covered by a strip yet are treated as foreground.
++	for (int dy = 0; dy < hdH; dy++) {
++		int sy = dy * visH / hdH;
++		sy = CLIP(sy, 0, visH - 1);
++
++		for (int dx = 0; dx < hdW; dx++) {
++			int sx = dx * visW / hdW;
++			sx = CLIP(sx, 0, visW - 1);
++
++			// Read current game pixel (8-bit palette index) at visible screen position
++			uint8 curPix = *(const uint8 *)vs->getBasePtr(vs->xstart + sx, sy);
++
++			// Foreground if clean pixel not yet available, or differs from current
++			bool isForeground = true;
++			if (_hdCleanValid && sy < _hdCleanValidSize / visW) {
++				int pos = sy * visW + sx;
++				if (_hdCleanValid[pos]) {
++					uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
++					isForeground = (curPix != cleanPix);
++				}
++			}
++
++			if (isForeground) {
++				// Convert 8-bit palette index to 32-bit RGBA
++				uint8 r = _currentPalette[curPix * 3 + 0];
++				uint8 g = _currentPalette[curPix * 3 + 1];
++				uint8 b = _currentPalette[curPix * 3 + 2];
++				*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
++					r | (g << 8) | (b << 16) | (0xFF << 24);
++			}
++			// else: background pixel → HD background shows through (already in composit)
++		}
++	}
++
++	// Step 3: Copy the entire HD composite to the system buffer
++	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
++	                          0, 0, hdW, hdH);
++
++	// HD debug dump — trigger on frame count OR room change
++	_hdFrameCount++;
++	if (_hdDebugDumpCount > 0) {
++		if (_hdFrameCount == _hdDebugDumpCount || 
++		    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
++			hdDebugDump();
++			_hdDebugDumpCount = 0; // one-shot
++		}
++	}
++}
++
++void ScummEngine::hdDebugDump() {
++	Common::DumpFile df;
++	char path[256];
++	
++	// 1. Dump HD composite surface (before cursor)
++	Graphics::Surface *screen = _system->lockScreen();
++	if (screen) {
++		snprintf(path, sizeof(path), "hd_dump_%d_composite.raw", _hdFrameCount);
++		df.open(Common::Path(path));
++		df.write(screen->getPixels(), screen->h * screen->pitch);
++		df.close();
++		_system->unlockScreen();
++		warning("HD DEBUG: composite saved to %s (%dx%d)", path, screen->w, screen->h);
++	}
++	
++	// 2. Dump HD composite surface (our internal 32-bit surface)
++	snprintf(path, sizeof(path), "hd_dump_%d_hdcomposite.raw", _hdFrameCount);
++	if (_hdComposite.getPixels()) {
++		df.open(Common::Path(path));
++		df.write(_hdComposite.getPixels(), _hdComposite.h * _hdComposite.pitch);
++		df.close();
++		warning("HD DEBUG: hdcomposite saved to %s (%dx%d)", path, _hdComposite.w, _hdComposite.h);
++	}
++	
++	// 3. Dump clean background + valid mask
++	VirtScreen *vs = &_virtscr[kMainVirtScreen];
++	snprintf(path, sizeof(path), "hd_dump_%d_clean.raw", _hdFrameCount);
++	if (_hdCleanBackground.getPixels()) {
++		df.open(Common::Path(path));
++		df.write(_hdCleanBackground.getPixels(), _hdCleanBackground.h * _hdCleanBackground.pitch);
++		df.close();
++		warning("HD DEBUG: clean saved to %s (%dx%d)", path, _hdCleanBackground.w, _hdCleanBackground.h);
++	}
++	
++	// 4. Dump cleanValid mask
++	snprintf(path, sizeof(path), "hd_dump_%d_valid.raw", _hdFrameCount);
++	if (_hdCleanValid && _hdCleanValidSize > 0) {
++		df.open(Common::Path(path));
++		df.write(_hdCleanValid, _hdCleanValidSize);
++		df.close();
++		warning("HD DEBUG: valid mask saved to %s (%d bytes)", path, _hdCleanValidSize);
++	}
++	
++	// 5. Dump game virtual screen (8-bit)
++	snprintf(path, sizeof(path), "hd_dump_%d_virtscr.raw", _hdFrameCount);
++	df.open(Common::Path(path));
++	for (int y = 0; y < vs->h; y++) {
++		df.write(vs->getBasePtr(vs->xstart, y), _screenWidth);
++	}
++	df.close();
++	warning("HD DEBUG: virtscr saved to %s", path);
++	
++	// 6. Dump palette
++	snprintf(path, sizeof(path), "hd_dump_%d_palette.txt", _hdFrameCount);
++	df.open(Common::Path(path));
++	char line[64];
++	for (int i = 0; i < 256; i++) {
++		snprintf(line, sizeof(line), "%3d %3d %3d %3d\n", i,
++			(int)_currentPalette[i*3], (int)_currentPalette[i*3+1], (int)_currentPalette[i*3+2]);
++		df.write(line, strlen(line));
++	}
++	df.close();
++	
++	// 7. Dump engine state
++	snprintf(path, sizeof(path), "hd_dump_%d_state.txt", _hdFrameCount);
++	df.open(Common::Path(path));
++	snprintf(line, sizeof(line), "frame=%d room=%d hdRoom=%d hdScale=%d\n",
++		_hdFrameCount, _currentRoom, _hdCurrentRoom, _hdScale);
++	df.write(line, strlen(line));
++	snprintf(line, sizeof(line), "screen=%dx%d roomW=%d roomH=%d\n",
++		_screenWidth, _screenHeight, _roomWidth, _roomHeight);
++	df.write(line, strlen(line));
++	snprintf(line, sizeof(line), "camera=(%d,%d) xstart=%d screenStartStrip=%d\n",
++		camera._cur.x, camera._cur.y, vs->xstart, _screenStartStrip);
++	df.write(line, strlen(line));
++	snprintf(line, sizeof(line), "mouse=(%d,%d) hdBg=(%dx%d) composite=(%dx%d)\n",
++		_mouse.x, _mouse.y,
++		_hdBackgroundSurface.w, _hdBackgroundSurface.h,
++		_hdComposite.w, _hdComposite.h);
++	df.write(line, strlen(line));
++	snprintf(line, sizeof(line), "hdBgPixels=%d cleanPixels=%d cleanValid=%d\n",
++		_hdBackgroundSurface.getPixels() ? 1 : 0,
++		_hdCleanBackground.getPixels() ? 1 : 0,
++		_hdCleanValid ? 1 : 0);
++	df.write(line, strlen(line));
++	snprintf(line, sizeof(line), "actorCount=%d fullRedraw=%d bgNeedsRedraw=%d\n",
++		_numActors, _fullRedraw ? 1 : 0, _bgNeedsRedraw ? 1 : 0);
++	df.write(line, strlen(line));
++	df.close();
++	
++	// Signal to OGL backend to capture framebuffer after next updateScreen()
++	
++	warning("HD DEBUG: state saved to %s", path);
+ }
+ 
+ void ScummEngine::restoreBackground(Common::Rect rect, byte backColor) {
+diff --git a/engines/scumm/input.cpp b/engines/scumm/input.cpp
+index ecef09cf..93147261 100644
+--- a/engines/scumm/input.cpp
++++ b/engines/scumm/input.cpp
+@@ -232,6 +232,13 @@ void ScummEngine::parseEvent(Common::Event event) {
+ 		_mouse.x = event.mouse.x;
+ 		_mouse.y = event.mouse.y;
+ 
++		// HD mode: backend delivers mouse in 2560×1920 space (from initSize).
++		// Rescale back to 640×480 game space so hotspots/verbs work correctly.
++		if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
++			_mouse.x = _mouse.x * _screenWidth / _hdBackgroundSurface.w;
++			_mouse.y = _mouse.y * _screenHeight / _hdBackgroundSurface.h;
++		}
++
+ 		if (_renderMode == Common::kRenderHercA || _renderMode == Common::kRenderHercG) {
+ 			_mouse.x -= (kHercWidth - _screenWidth * 2) / 2;
+ 			_mouse.x >>= 1;
+diff --git a/engines/scumm/module.mk b/engines/scumm/module.mk
+index c3fadf55..64d0281c 100644
+--- a/engines/scumm/module.mk
++++ b/engines/scumm/module.mk
+@@ -22,6 +22,8 @@ MODULE_OBJS := \
+ 	gfx_nes.o \
+ 	gfx_towns.o \
+ 	gfx.o \
++	hd_asset_manager.o \
++	hd_video_player.o \
+ 	he/mixer_he.o \
+ 	he/resource_he.o \
+ 	he/script_v60he.o \
+diff --git a/engines/scumm/room.cpp b/engines/scumm/room.cpp
+index e6a6109e..ddd6fdd0 100644
+--- a/engines/scumm/room.cpp
++++ b/engines/scumm/room.cpp
+@@ -26,6 +26,7 @@
+ #ifdef ENABLE_HE
+ #include "scumm/he/intern_he.h"
+ #endif
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/object.h"
+ #include "scumm/resource.h"
+ #include "scumm/scumm_v3.h"
+@@ -298,6 +299,27 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
+ 			_system->setFeatureState(OSystem::kFeatureVirtualKeyboard, true);
+ 	}
+ 
++	// Try to load the HD background for this room
++	_hdBackgroundSurface.free();
++	_hdCleanBackground.free();
++	free(_hdCleanValid);
++	_hdCleanValid = nullptr;
++	_hdCleanValidSize = 0;
++	_hdCurrentRoom = -1;
++	if (_hdAssetManager->isEnabled()) {
++		if (_hdAssetManager->hasBackground(room)) {
++			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
++				_hdCurrentRoom = room;
++				_hdScale = MAX(1, _hdBackgroundSurface.w / _screenWidth);
++				_hdAssetManager->setScale(_hdScale);
++				warning("HD: loaded bg for room %d (%dx%d) scale=%d", room,
++					_hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale);
++			}
++		} else {
++			warning("HD: no bg for room %d", room);
++		}
++	}
++
+ }
+ 
+ /**
+diff --git a/engines/scumm/scumm.cpp b/engines/scumm/scumm.cpp
+index 1b65e51c..3af92ab1 100644
+--- a/engines/scumm/scumm.cpp
++++ b/engines/scumm/scumm.cpp
+@@ -27,6 +27,7 @@
+ #include "common/events.h"
+ #include "common/str.h"
+ #include "common/system.h"
++#include "common/file.h"
+ #include "common/translation.h"
+ 
+ #include "backends/keymapper/keymap.h"
+@@ -47,6 +48,7 @@
+ #include "scumm/dialogs.h"
+ #include "scumm/file.h"
+ #include "scumm/file_nes.h"
++#include "scumm/hd_asset_manager.h"
+ #include "scumm/imuse/imuse.h"
+ #include "scumm/imuse_digi/dimuse_engine.h"
+ #include "scumm/smush/smush_player.h"
+@@ -155,6 +157,7 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
+ 		_gdi = new Gdi(this);
+ 	}
+ 	_res = new ResourceManager(this);
++	_hdAssetManager = new HDAssetManager(this);
+ 
+ 	// Convert MD5 checksum back into a digest
+ 	for (int i = 0; i < 16; ++i) {
+@@ -979,7 +982,36 @@ ScummEngine_v8::~ScummEngine_v8() {
+ 
+ Common::Error ScummEngine::init() {
+ 
+-	const Common::FSNode gameDataDir(ConfMan.getPath("path"));
++		const Common::FSNode gameDataDir(ConfMan.getPath("path"));
++
++	// Initialize HD asset path
++	Common::String hdPath = gameDataDir.getPath().toString();
++	if (hdPath.lastChar() != '/' && hdPath.lastChar() != '\\')
++		hdPath += '/';
++	hdPath += "hd";
++	_hdAssetManager->setHDPath(hdPath);
++	if (_hdAssetManager->isEnabled()) {
++		_hdScale = _hdAssetManager->getScale();
++		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
++
++		// HD debug: set dump frame from env or config
++		if (ConfMan.hasKey("hd_dump_frame"))
++			_hdDebugDumpCount = ConfMan.getInt("hd_dump_frame");
++		if (_hdDebugDumpCount == 0)
++			_hdDebugDumpCount = 4; // room trigger
++		if (_hdDebugDumpCount > 0)
++			warning("HD debug dump enabled (trigger: room %d)", _hdDebugDumpCount);
++
++		// Preload test pattern (room 0)
++		_hdBackgroundSurface.free();
++		if (_hdAssetManager->loadBackground(0, _hdBackgroundSurface)) {
++			_hdCurrentRoom = 0;
++			_hdScale = MAX(1, _hdBackgroundSurface.w / _screenWidth);
++			_hdAssetManager->setScale(_hdScale);
++			warning("HD: preloaded bg_0000 (%dx%d) scale=%d",
++				_hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale);
++		}
++	}
+ 
+ 	for (uint i = 0; ruScummPatcherTable[i].patcherName; i++) {
+ 		if (ruScummPatcherTable[i].gameid == _game.id && (_game.variant == nullptr || strcmp(_game.variant, ruScummPatcherTable[i].variant) == 0)) {
+@@ -1506,6 +1538,19 @@ Common::Error ScummEngine::init() {
+ 
+ 	readIndexFile();
+ 
++	// HD mode: set system buffer to native HD resolution (32-bit RGBA)
++	// so the HD background and composited game content render at full quality.
++	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
++		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
++		_system->beginGFXTransaction();
++		_system->initSize(_hdBackgroundSurface.w, _hdBackgroundSurface.h, &rgbaFmt);
++		OSystem::TransactionError err = _system->endGFXTransaction();
++		_outputPixelFormat = _system->getScreenFormat();
++		warning("HD: init at %dx%d fmt=%d bpp err=%d",
++			_hdBackgroundSurface.w, _hdBackgroundSurface.h,
++			_outputPixelFormat.bytesPerPixel * 8, (int)err);
++	}
++
+ 	// Create the debugger now that _numVariables has been set
+ 	setDebugger(new ScummDebugger(this));
+ 
+diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
+index 928cebd9..235d1b43 100644
+--- a/engines/scumm/scumm.h
++++ b/engines/scumm/scumm.h
+@@ -100,6 +100,7 @@ class ScummDebugger;
+ class Sound;
+ class Localizer;
+ class GlyphRenderer_v7;
++class HDAssetManager;
+ 
+ struct Box;
+ struct BoxCoords;
+@@ -545,6 +546,20 @@ public:
+ 	/** Graphics manager */
+ 	Gdi *_gdi = nullptr;
+ 
++	/** HD asset manager (for upscaled external textures) */
++	HDAssetManager *_hdAssetManager = nullptr;
++	int _hdScale = 1;
++	Graphics::Surface _hdBackgroundSurface;
++	Graphics::Surface _hdComposite;
++	Graphics::Surface _hdCleanBackground;
++	byte *_hdCleanValid = nullptr; // 640×480 byte array: 1 = pixel has clean data
++	int _hdCleanValidSize = 0;
++	int _hdCurrentRoom = -1;
++	int _hdFrameCount = 0;
++	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
++	bool _hdScreenshotDone = false;
++	bool _hdVideoPlaying = false; // true when HD video replaces SMUSH cutscene
++
+ 	/** Central resource data. */
+ 	ResourceManager *_res = nullptr;
+ 	int _insideCreateResource = 0; // Counter for HE sound
+@@ -1420,6 +1435,11 @@ protected:
+ 
+ 	void restoreBackground(Common::Rect rect, byte backcolor = 0);
+ 	void redrawBGStrip(int start, int num);
++
++	/** HD mode: render the HD composite to the system buffer (32-bit RGBA). */
++	void renderHDComposite();
++	/** HD debug: dump all surfaces and state to files. */
++	void hdDebugDump();
+ 	virtual void redrawBGAreas();
+ 
+ 	void cameraMoved();
+diff --git a/engines/scumm/smush/smush_player.cpp b/engines/scumm/smush/smush_player.cpp
+index 31c322a7..a0613070 100644
+--- a/engines/scumm/smush/smush_player.cpp
++++ b/engines/scumm/smush/smush_player.cpp
+@@ -40,6 +40,7 @@
+ #include "scumm/smush/codec37.h"
+ #include "scumm/smush/codec47.h"
+ #include "scumm/smush/smush_font.h"
++#include "scumm/hd_video_player.h"
+ #include "scumm/smush/smush_player.h"
+ 
+ #include "scumm/insane/insane.h"
+@@ -223,6 +224,9 @@ SmushPlayer::SmushPlayer(ScummEngine_v7 *scumm, IMuseDigital *imuseDigital, Insa
+ 	_imuseDigital = imuseDigital;
+ 	_insane = insane;
+ 	_nbframes = 0;
++	_hdVideo = nullptr;
++	_hdVideoActive = false;
++	_hdFrameBuffer = nullptr;
+ 	_deltaBlocksCodec = 0;
+ 	_deltaGlyphsCodec = 0;
+ 	_strings = nullptr;
+@@ -343,6 +347,12 @@ void SmushPlayer::release() {
+ 	_deltaBlocksCodec = 0;
+ 	delete _deltaGlyphsCodec;
+ 	_deltaGlyphsCodec = 0;
++
++	delete _hdVideo;
++	_hdVideo = nullptr;
++	_hdVideoActive = false;
++	free(_hdFrameBuffer);
++	_hdFrameBuffer = nullptr;
+ }
+ 
+ void SmushPlayer::handleStore(int32 subSize, Common::SeekableReadStream &b) {
+@@ -1207,6 +1217,45 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
+ 	file->close();
+ 	delete file;
+ 
++	// Check for HD video replacement
++	_hdVideo = new HdVideoPlayer();
++	if (_hdVideo->hasVideo(filename)) {
++		// Build path to MP4 with case-insensitive filename handling
++		Common::FSNode gameDataDir(ConfMan.getPath("path"));
++		Common::String mp4Path = gameDataDir.getPath().toString();
++		if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
++			mp4Path += '/';
++		mp4Path += "hd/videos/";
++
++		Common::String baseName = filename;
++		int dotPos = baseName.findLastOf('.');
++		if (dotPos > 0)
++			baseName.erase(dotPos);
++
++		// Apply filename mapping (SAN → MP4 name differences)
++		if (baseName.equalsIgnoreCase("SINKSHP"))
++			baseName = "SINKSHIP";
++
++		// Try exact case first, then uppercase (for archive.org videos)
++		Common::FSNode videoDir = gameDataDir.getChild("hd").getChild("videos");
++		Common::String mp4Filename = baseName + ".mp4";
++		if (!videoDir.getChild(mp4Filename).exists()) {
++			Common::String upper = baseName;
++			upper.toUppercase();
++			mp4Filename = upper + ".mp4";
++		}
++		mp4Path += mp4Filename;
++		if (_hdVideo->open(mp4Path, 2880, 2160)) {
++			warning("HD video: playing %s at %dx%d", mp4Path.c_str(),
++				_hdVideo->getWidth(), _hdVideo->getHeight());
++			_hdVideoActive = true;
++			_hdFrameBuffer = (byte *)malloc(_hdVideo->getFrameSize());
++		} else {
++			delete _hdVideo;
++			_hdVideo = nullptr;
++		}
++	}
++
+ 	_updateNeeded = false;
+ 	_warpNeeded = false;
+ 	_palDirtyMin = 256;
+@@ -1316,15 +1365,26 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
+ 				skipped = 0;
+ 			if (_updateNeeded) {
+ 				if (!skipFrame) {
+-					// WORKAROUND for bug #2415: "FT DEMO: assertion triggered
+-					// when playing movie". Some frames there are 384 x 224
+-					int frameWidth = MIN(_width, _vm->_screenWidth);
+-					int frameHeight = MIN(_height, _vm->_screenHeight);
+-
+-					if (_vm->_macScreen) {
+-						_vm->mac_drawBufferToScreen(_dst, frameWidth, 0, 0, frameWidth, frameHeight);
++					if (_hdVideoActive && _hdFrameBuffer) {
++						// Render HD video frame from ffmpeg pipe
++						if (_hdVideo->readFrame(_hdFrameBuffer)) {
++							_vm->_system->copyRectToScreen(_hdFrameBuffer,
++								_hdVideo->getWidth() * 4, 0, 0,
++								_hdVideo->getWidth(), _hdVideo->getHeight());
++						} else {
++							// HD video ended
++							_endOfFile = true;
++						}
+ 					} else {
+-						_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
++						// Original SMUSH rendering
++						int frameWidth = MIN(_width, _vm->_screenWidth);
++						int frameHeight = MIN(_height, _vm->_screenHeight);
++
++						if (_vm->_macScreen) {
++							_vm->mac_drawBufferToScreen(_dst, frameWidth, 0, 0, frameWidth, frameHeight);
++						} else {
++							_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
++						}
+ 					}
+ 
+ 					_vm->_system->updateScreen();
+diff --git a/engines/scumm/smush/smush_player.h b/engines/scumm/smush/smush_player.h
+index 557203d9..7ffb79f1 100644
+--- a/engines/scumm/smush/smush_player.h
++++ b/engines/scumm/smush/smush_player.h
+@@ -87,6 +87,7 @@ class SmushDeltaBlocksDecoder;
+ class SmushDeltaGlyphsDecoder;
+ class IMuseDigital;
+ class Insane;
++class HdVideoPlayer;
+ 
+ class SmushPlayer {
+ 	friend class Insane;
+@@ -175,6 +176,11 @@ private:
+ 	SmushAudioTrack _smushTracks[SMUSH_MAX_TRACKS];
+ 	SmushAudioDispatch _smushDispatch[SMUSH_MAX_TRACKS];
+ 
++	/** HD video player for MP4 cutscene replacement. */
++	HdVideoPlayer *_hdVideo;
++	bool _hdVideoActive;
++	byte *_hdFrameBuffer;
++
+ 	int _smushMaxFrames[SMUSH_MAX_TRACKS];
+ 	int _smushTrackIds[SMUSH_MAX_TRACKS];
+ 	int _smushTrackIdxs[SMUSH_MAX_TRACKS];

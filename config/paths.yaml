@@ -1,0 +1,33 @@
+# Path configuration for all scripts
+# Edit this file to adapt to your project layout.
+# All paths are relative to the project root (where this file lives).
+
+# ── Directory Layout ──
+
+# Assets (user-generated, not tracked)
+ASSETS_EXTRACTED: "assets/extracted/COMI"
+ASSETS_UPSCALED: "assets/upscaled"
+
+# Game runtime data (user-generated, not tracked)
+GAME_DIR: "game"
+GAME_HD_DIR: "game/hd"
+GAME_VIDEOS_DIR: "game/hd/videos"
+
+# Fork source
+FORK_DIR: "scummvm/fork"
+FORK_CONFIG: "scummvm/fork/config.h"
+FORK_CONFIG_MK: "scummvm/fork/config.mk"
+
+# Configuration (tracked)
+CONFIG_DIR: "config"
+HD_MANIFEST: "config/hd_manifest.json"
+OBJECT_MAP: "config/object_map.json"
+UPSCALE_CONFIG_DIR: "config/upscale"
+
+# Scripts
+SCRIPTS_DIR: "scripts"
+
+# Tools
+NUTCRACKER_SRC: "tools/nutcracker/src"
+NUTCRACKER_BIN: "tools/nutcracker-Windows_X64"
+REALESRGAN_DIR: "tools/realesrgan-ncnn-vulkan-v0.2.0-windows"
