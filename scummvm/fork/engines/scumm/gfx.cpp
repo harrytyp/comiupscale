@@ -1489,8 +1489,7 @@ void ScummEngine::renderHDComposite() {
 	}
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
-	// Temporarily disabled — fonts need proper charset integration
-	/* if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
+	if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
 		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
 			int hdX = fi->x * hdW / MAX(1, visW);
 			int hdY = fi->y * hdH / MAX(1, visH);
@@ -1498,7 +1497,7 @@ void ScummEngine::renderHDComposite() {
 			_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY);
 		}
 		_hdFontChars.clear();
-	} */
+	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
 	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
