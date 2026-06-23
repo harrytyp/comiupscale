@@ -1381,8 +1381,7 @@ void CharsetRendererClassic::drawChar(int chr, Graphics::Surface &s, int x, int 
 		return;
 
 	// Record HD font character for the HD composite pass
-	// Temporarily disabled — needs proper charset integration
-	/* if (_vm->_hdFontManager && _vm->_hdFontManager->isEnabled() && _curId >= 0 && _curId <= 4) {
+	if (_vm->_hdFontManager && _vm->_hdFontManager->isEnabled() && _curId >= 0 && _curId <= 4) {
 		if (_vm->_hdFontManager->hasFont(_curId)) {
 			ScummEngine::HdFontChar fc;
 			fc.chr = chr;
@@ -1391,7 +1390,7 @@ void CharsetRendererClassic::drawChar(int chr, Graphics::Surface &s, int x, int 
 			fc.y = y;
 			_vm->_hdFontChars.push_back(fc);
 		}
-	} */
+	}
 
 	byte *dst = (byte *)s.getBasePtr(x, y);
 
