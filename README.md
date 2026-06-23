@@ -10,7 +10,7 @@ and delivers them via a **modified ScummVM fork** with HD overlay support.
 breaks coordinate-based structures), we fork ScummVM's SCUMM engine to load 4x
 replacement textures from an external `hd/` directory at runtime. See [PLAN.md](PLAN.md).
 
-**Project root:** `Z:\Projekte\COMI-Upscaled\` (NAS)
+**Project root:** `Z:\Projekte\COMI-Upscaled\` (NAS, Windows) / `~/comiupscale/` (Linux/macOS)
 
 ---
 
@@ -28,6 +28,8 @@ replacement textures from an external `hd/` directory at runtime. See [PLAN.md](
 | `docs/FORK_PLAN.md` | Detailed technical plan for ScummVM fork |
 | `docs/HD_MANIFEST_SPEC.md` | hd_manifest.json format specification |
 | `docs/BUILD.md` | Build instructions for the ScummVM fork |
+| `scummvm/fork/` | **Pre-configured ScummVM fork** (all HD patches applied) |
+| `scummvm/fork/build.sh` | Cross-platform build script (Linux/macOS/Windows) |
 
 ---
 
@@ -159,15 +161,15 @@ Z:\Projekte\COMI-Upscaled\
 **You need:** Your own copy of Curse of Monkey Island (COMI.LA0/1/2).
 
 ```bash
-# 1. Clone this repo
+# 1. Clone this repo (works on Linux, macOS, and Windows)
 git clone https://github.com/harrytyp/comiupscale.git
 cd comiupscale
 
-# 2. Download the pre-built ScummVM HD binary and HD backgrounds
-#    (from the GitHub Releases page — see below)
-#    
-#    OR build from source + upscale yourself:
-bash setup.sh --game /path/to/your/COMI
+# 2. Build from source (recommended — cross-platform)
+cd scummvm/fork
+bash build.sh              # Auto-detects Linux/macOS/Windows
+
+# 3. Or download pre-built binary from GitHub Releases
 ```
 
 ### How to get assets
@@ -194,34 +196,32 @@ To make the fast path work for others, create a Release on GitHub:
 
 Then `setup.sh` will download these automatically.
 
-### Build from Source (No Binary)
+### Build from Source (Recommended)
 
-If you prefer to build everything yourself:
+The repo includes a **pre-configured ScummVM fork** in `scummvm/fork/` with all HD
+patches already applied. No need to clone vanilla ScummVM or apply patches manually.
 
 ```bash
-# Build the ScummVM fork
-git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git
-cd scummvm
+# Quick build (cross-platform):
+cd scummvm/fork
+bash build.sh
 
-# Apply HD fork patches
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/scumm-hd-fork.patch
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.h
-curl -O https://raw.githubusercontent.com/harrytyp/comiupscale/main/patches/hd_asset_manager.cpp
+# Or manual build:
+# Linux
+./configure --backend=sdl --disable-all-engines --enable-engine=scumm
+make -j$(nproc)
 
-git apply scumm-hd-fork.patch
-mv hd_asset_manager.h hd_asset_manager.cpp engines/scumm/
-
-# Configure and build
-./configure --host=mingw64 --backend=opengl --disable-all-engines --enable-engine=scumm
+# Windows (MSYS2 MinGW64)
+./configure --host=mingw64 --backend=sdl --disable-all-engines --enable-engine=scumm
 mingw32-make -j$(nproc)
 
-# Prepare game directory
-mkdir -p /path/to/monkey3/hd/
-# Copy COMI.LA0/1/2 into monkey3/
-# Copy HD background PNGs from hd-backgrounds.zip into monkey3/hd/
+# Verify SCUMM v7/8 support
+grep "ENABLE_SCUMM_7_8" config.mk
+# Should show: ENABLE_SCUMM_7_8 = 1
 
 # Run
-./scummvm.exe --path=/path/to/monkey3 scumm:comi
+./scummvm --path=/path/to/game          # Linux/macOS
+./scummvm.exe --path=/path/to/game      # Windows
 ```
 
 ### Generate HD Backgrounds from Game Files
@@ -246,6 +246,7 @@ This will:
 2. **AKOS costumes** are NOT extracted by sputm — use Python decoder
 3. **NAS (Z:) is slow** — bulk operations on 25K+ files may time out
 4. **Shell is Git Bash** — POSIX syntax, NOT PowerShell
+   (On Linux/macOS, use your native shell — no Git Bash needed)
 5. **ScummVM fork approach** replaces the old reimport plan — coordinate patching
    is handled at runtime in C++, not in the asset files
 
@@ -412,34 +413,64 @@ directory; falls back to default bilinear filtering otherwise).
 ## Build Instructions
 
 ### Prerequisites
-- MSYS2 MinGW64 with: `gcc`, `make`, `SDL2-devel`, `libpng-devel`, `zlib-devel`
-- ScummVM source (shallow clone recommended)
+## Build Instructions
+
+### Prerequisites
+
+#### Linux (Ubuntu/Debian)
+```bash
+sudo apt install build-essential pkg-config \
+  libsdl2-dev libfreetype-dev libpng-dev \
+  libvorbis-dev libflac-dev libgl-dev \
+  libglu1-mesa-dev libjpeg-dev zlib1g-dev
+```
+
+#### Linux (Fedora/RHEL)
+```bash
+sudo dnf groupinstall 'Development Tools'
+sudo dnf install SDL2-devel freetype-devel libpng-devel \
+  libvorbis-devel flac-devel mesa-libGL-devel \
+  libjpeg-turbo-devel zlib-devel
+```
+
+#### Linux (Arch)
+```bash
+sudo pacman -S base-devel pkgconf sdl2 freetype2 libpng \
+  libvorbis flac mesa libglvnd
+```
+
+#### Windows (MSYS2)
+See [docs/BUILD.md](docs/BUILD.md) for full MSYS2 setup.
+
+Quick install (MSYS2 MinGW64 terminal):
+```bash
+pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-make \
+  mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libpng mingw-w64-x86_64-zlib \
+  mingw-w64-x86_64-freetype mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg \
+  mingw-w64-x86_64-flac mingw-w64-x86_64-libmad mingw-w64-x86_64-libtheora \
+  mingw-w64-x86_64-faad2 mingw-w64-x86_64-curl mingw-w64-x86_64-fluidsynth \
+  mingw-w64-x86_64-fribidi
+```
 
 ### Build Steps
 
 ```bash
-# 1. Install MSYS2 (https://www.msys2.org/) — default install to C:\msys64
-#    Then open "MSYS2 MinGW64" from Start Menu and run:
-#    pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-make \
-#      mingw-w64-x86_64-SDL2 mingw-w64-x86_64-libpng mingw-w64-x86_64-zlib \
-#      mingw-w64-x86_64-freetype mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg \
-#      mingw-w64-x86_64-flac mingw-w64-x86_64-libmad mingw-w64-x86_64-libtheora \
-#      mingw-w64-x86_64-faad2 mingw-w64-x86_64-curl mingw-w64-x86_64-fluidsynth \
-#      mingw-w64-x86_64-fribidi
+# 1. Install prerequisites (see Prerequisites above)
 
 # 2. Clone the repo
 git clone git@github.com:harrytyp/comiupscale.git
 cd comiupscale/scummvm/fork
 
 # 3. Build (config is pre-configured, no ./configure needed)
-bash build.sh
+bash build.sh              # Auto-detects platform (Linux/macOS/Windows)
 
 # 4. Prepare game data
 mkdir -p ../../game
 # Copy COMI.LA0/1/2 + RESOURCE/ from your game install into ../../game/
 
 # 5. Run
-bash launch.cmd
+./scummvm --path=../../game    # Linux/macOS
+bash launch.cmd                # Windows
 ```
 
 ### Debug Dumps
