@@ -1,42 +1,162 @@
 #!/usr/bin/env bash
-# Build the ScummVM COMI Upscaled fork.
-# Handles the MSYS2 sed 4.9 bug workaround automatically.
+# ============================================================
+# COMI Upscaled — ScummVM HD Fork Build Script
+# ============================================================
+# Cross-platform build for Windows (MSYS2) and Linux.
 #
 # Usage:
 #   cd <repo>/scummvm/fork
 #   bash build.sh
 #
-# Requirements: MSYS2 MinGW64 toolchain installed.
+# Detects platform automatically:
+#   - Windows (MSYS2/MinGW64) → mingw32-make
+#   - Linux/macOS → make
+# ============================================================
 
 set -e
 
-# Ensure MinGW64 tools are in PATH
-export PATH="/mingw64/bin:/usr/bin:$PATH"
+# ── Platform detection ─────────────────────────────────
+OS="$(uname -s)"
+case "$OS" in
+    MINGW*|MSYS*|CYGWIN*)
+        PLATFORM="windows"
+        MAKE_CMD="mingw32-make"
+        MAKE_TARGET="scummvm.exe"
+        ;;
+    Linux*)
+        PLATFORM="linux"
+        MAKE_CMD="make"
+        MAKE_TARGET="scummvm"
+        ;;
+    Darwin*)
+        PLATFORM="macos"
+        MAKE_CMD="make"
+        MAKE_TARGET="scummvm"
+        ;;
+    *)
+        echo "ERROR: Unsupported platform: $OS"
+        exit 1
+        ;;
+esac
 
-# MSYS2 temp directory fix (prevents "Cannot create temporary file in C:\WINDOWS\")
-export TMP="/tmp"
-export TEMP="/tmp"
-mkdir -p /tmp
+echo "=== COMI Upscaled Build ==="
+echo "Platform: $PLATFORM ($OS)"
 
-echo "=== Building ScummVM HD Fork ==="
+# ── Windows-specific setup ─────────────────────────────
+if [ "$PLATFORM" = "windows" ]; then
+    # Ensure MinGW64 tools are in PATH
+    export PATH="/mingw64/bin:/usr/bin:$PATH"
 
-# Workaround for MSYS2 sed 4.9 bug (crashes on Makefile.common sed patterns)
-# Generate the resource header files first, then compile manually
-mkdir -p dists dists/.deps
-mingw32-make -j$(nproc) \
-  dists/scummvm_rc_engine_data_core.rh \
-  dists/scummvm_rc_engine_data.rh \
-  dists/scummvm_rc_engine_data_big.rh \
-  2>/dev/null || true
+    # MSYS2 temp directory fix
+    export TMP="/tmp"
+    export TEMP="/tmp"
+    mkdir -p /tmp
 
-# Compile the resource file manually (avoids the broken sed dependency rule)
-windres -DHAVE_CONFIG_H -DRELEASE_BUILD -DWIN32 -DSDL_BACKEND -DUSE_SDL2 \
-  -I. -I./engines -I./base \
-  dists/scummvm.rc -o dists/scummvm.o 2>/dev/null || true
+    echo ""
+    echo "Applying MSYS2 sed 4.9 workaround..."
 
-# Full build
-mingw32-make -j$(nproc)
+    # Workaround for MSYS2 sed 4.9 bug (crashes on Makefile.common sed patterns)
+    mkdir -p dists dists/.deps
+    $MAKE_CMD -j$(nproc) \
+      dists/scummvm_rc_engine_data_core.rh \
+      dists/scummvm_rc_engine_data.rh \
+      dists/scummvm_rc_engine_data_big.rh \
+      2>/dev/null || true
 
+    # Compile the resource file manually (avoids the broken sed dependency rule)
+    if command -v windres &>/dev/null; then
+        windres -DHAVE_CONFIG_H -DRELEASE_BUILD -DWIN32 -DSDL_BACKEND -DUSE_SDL2 \
+          -I. -I./engines -I./base \
+          dists/scummvm.rc -o dists/scummvm.o 2>/dev/null || true
+    fi
+fi
+
+# ── Linux-specific checks ──────────────────────────────
+if [ "$PLATFORM" = "linux" ] || [ "$PLATFORM" = "macos" ]; then
+    echo ""
+    echo "Checking dependencies..."
+
+    MISSING=""
+    for cmd in gcc g++ make pkg-config; do
+        if ! command -v "$cmd" &>/dev/null; then
+            MISSING="$MISSING $cmd"
+        fi
+    done
+    if [ -n "$MISSING" ]; then
+        echo "ERROR: Missing required tools:$MISSING"
+        echo ""
+        echo "Install with:"
+        echo "  Ubuntu/Debian: sudo apt install build-essential pkg-config"
+        echo "  Fedora/RHEL:   sudo dnf groupinstall 'Development Tools'"
+        echo "  Arch:          sudo pacman -S base-devel pkgconf"
+        exit 1
+    fi
+
+    # Check for SDL2 and other required libraries
+    for lib in sdl2 freetype2 libpng vorbis flac; do
+        if ! pkg-config --exists "$lib" 2>/dev/null; then
+            echo "WARNING: pkg-config can't find $lib"
+            case "$lib" in
+                sdl2)
+                    echo "  Install: sudo apt install libsdl2-dev"
+                    ;;
+                freetype2)
+                    echo "  Install: sudo apt install libfreetype-dev"
+                    ;;
+                libpng)
+                    echo "  Install: sudo apt install libpng-dev"
+                    ;;
+                vorbis)
+                    echo "  Install: sudo apt install libvorbis-dev"
+                    ;;
+                flac)
+                    echo "  Install: sudo apt install libflac-dev"
+                    ;;
+            esac
+        fi
+    done
+
+    # Check OpenGL support (needed for HD rendering)
+    if ! pkg-config --exists gl 2>/dev/null; then
+        echo "WARNING: OpenGL development files not found"
+        echo "  Install: sudo apt install libgl-dev libglu1-mesa-dev"
+        echo "  For headless/software rendering: sudo apt install mesa-utils libgl1-mesa-dri"
+    fi
+
+    echo "Dependencies OK"
+fi
+
+# ── Build ───────────────────────────────────────────────
+echo ""
+echo "Building with $MAKE_CMD ($(nproc) jobs)..."
+
+# Parallel jobs: detect CPU count
+if command -v nproc &>/dev/null; then
+    JOBS=$(nproc)
+elif [ "$PLATFORM" = "macos" ]; then
+    JOBS=$(sysctl -n hw.ncpu 2>/dev/null || echo 4)
+else
+    JOBS=4
+fi
+
+$MAKE_CMD -j"$JOBS"
+
+# ── Done ────────────────────────────────────────────────
 echo ""
 echo "=== Build complete ==="
-ls -la scummvm.exe
+
+if [ -f "$MAKE_TARGET" ]; then
+    ls -lh "$MAKE_TARGET"
+    echo ""
+    echo "Binary: $(pwd)/$MAKE_TARGET"
+    echo ""
+    echo "Usage:"
+    echo "  ./$MAKE_TARGET --path=/path/to/COMI/game"
+    echo ""
+    echo "With HD assets:"
+    echo "  Place hd/ directory next to your game data (COMI.LA0/1/2)"
+    echo "  See docs/BUILD.md for details"
+else
+    echo "ERROR: Build target $MAKE_TARGET not found"
+    exit 1
+fi

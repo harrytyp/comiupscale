@@ -25,6 +25,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tlhelp32.h>
+#else
+// POSIX headers for popen/pclose/fread
+#include <cstdio>
+#include <cstdlib>
 #endif
 
 #include "scumm/hd_video_player.h"
@@ -35,8 +39,20 @@
 
 namespace Scumm {
 
+// ── Tracing helper ────────────────────────────────────
+#define HD_TRACE(path, exists) \
+	do { \
+		if (ConfMan.getBool("hd_trace", "comi")) \
+			warning("hd_trace: %s %s", (exists) ? "OK" : "MISS", (path).c_str()); \
+	} while (0)
+
 HdVideoPlayer::HdVideoPlayer()
-	: _hdProcess(nullptr), _hdPipe(nullptr), _width(0), _height(0) {
+#ifdef _WIN32
+	: _hdProcess(nullptr), _hdPipe(nullptr)
+#else
+	: _hdPipePosix(nullptr)
+#endif
+	, _width(0), _height(0) {
 }
 
 HdVideoPlayer::~HdVideoPlayer() {
@@ -63,24 +79,38 @@ bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 		}
 	}
 
-	Common::FSNode gameDataDir(ConfMan.getPath("path"));
-	Common::FSNode hdDir = gameDataDir.getChild("hd");
+	// Build path from hd_path config, with fallback to game/hd/
+	Common::FSNode hdDir;
+	if (ConfMan.hasKey("hd_path", "comi")) {
+		hdDir = Common::FSNode(Common::Path(ConfMan.get("hd_path", "comi"), Common::Path::kNativeSeparator));
+	} else {
+		Common::FSNode gameDataDir(ConfMan.getPath("path"));
+		hdDir = gameDataDir.getChild("hd");
+	}
+
 	Common::FSNode videoDir = hdDir.getChild("videos");
+	if (!videoDir.exists()) {
+		// Videos directory not present — no HD video
+		return false;
+	}
 
 	// Try exact case first, then lowercase, then uppercase
 	Common::FSNode mp4File = videoDir.getChild(baseName + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
 	Common::String lower = baseName;
 	lower.toLowercase();
 	mp4File = videoDir.getChild(lower + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
 	Common::String upper = baseName;
 	upper.toUppercase();
 	mp4File = videoDir.getChild(upper + ".mp4");
-	if (mp4File.exists()) return true;
+	if (mp4File.exists()) { HD_TRACE(mp4File.getPath().toString(), true); return true; }
 
+	// None found — log the last tried path
+	Common::String lastTry = videoDir.getPath().toString() + "/" + baseName + ".mp4";
+	HD_TRACE(lastTry, false);
 	return false;
 }
 
@@ -90,14 +120,18 @@ bool HdVideoPlayer::open(const Common::String &mp4Path, int width, int height) {
 	_width = width;
 	_height = height;
 
-#ifdef _WIN32
-	// Build ffmpeg command
+	Common::FSNode mp4Node(Common::Path(mp4Path, Common::Path::kNativeSeparator));
+	HD_TRACE(mp4Path, mp4Node.exists());
+
+	// Resolve ffmpeg binary path
 	Common::String ffmpegPath = "ffmpeg";
 	if (ConfMan.hasKey("ffmpeg_path", "comi"))
 		ffmpegPath = ConfMan.get("ffmpeg_path", "comi");
 
+#ifdef _WIN32
+	// ── Windows: CreateProcess + pipe ──────────────────
 	Common::String cmd = Common::String::format(
-		"%s -i \"%s\" -vf crop=2560:1920:160:120 -f rawvideo -pix_fmt rgba -an -loglevel error -",
+		"%s -i \"%s\" -vf scale=2560:1920:flags=bilinear -f rawvideo -pix_fmt rgba -an -loglevel error -",
 		ffmpegPath.c_str(), mp4Path.c_str());
 
 	// Set up pipe for reading ffmpeg stdout
@@ -145,13 +179,25 @@ bool HdVideoPlayer::open(const Common::String &mp4Path, int width, int height) {
 	_height = 1920;
 	return true;
 #else
-	// TODO: POSIX implementation with popen
-	warning("HdVideoPlayer: not yet implemented on non-Windows");
-	return false;
+	// ── POSIX: popen + fread ──────────────────────────
+	Common::String cmd = Common::String::format(
+		"%s -i \"%s\" -vf scale=2560:1920:flags=bilinear -f rawvideo -pix_fmt rgba -an -loglevel error -",
+		ffmpegPath.c_str(), mp4Path.c_str());
+
+	_hdPipePosix = popen(cmd.c_str(), "r");
+	if (!_hdPipePosix) {
+		warning("HdVideoPlayer: popen failed for: %s", cmd.c_str());
+		return false;
+	}
+
+	_width = 2560;
+	_height = 1920;
+	return true;
 #endif
 }
 
 bool HdVideoPlayer::readFrame(byte *buffer) {
+#ifdef _WIN32
 	if (!_hdPipe)
 		return false;
 
@@ -168,6 +214,22 @@ bool HdVideoPlayer::readFrame(byte *buffer) {
 	}
 
 	return true;
+#else
+	if (!_hdPipePosix)
+		return false;
+
+	int frameSize = getFrameSize();
+	int total = 0;
+
+	while (total < frameSize) {
+		size_t bytesRead = fread(buffer + total, 1, frameSize - total, _hdPipePosix);
+		if (bytesRead == 0)
+			return false;
+		total += (int)bytesRead;
+	}
+
+	return true;
+#endif
 }
 
 void HdVideoPlayer::close() {
@@ -181,6 +243,11 @@ void HdVideoPlayer::close() {
 	if (_hdPipe) {
 		CloseHandle(_hdPipe);
 		_hdPipe = nullptr;
+	}
+#else
+	if (_hdPipePosix) {
+		pclose(_hdPipePosix);
+		_hdPipePosix = nullptr;
 	}
 #endif
 }

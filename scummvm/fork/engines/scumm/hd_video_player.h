@@ -31,8 +31,10 @@ namespace Scumm {
  * HD video player using ffmpeg via pipe to decode MP4 files.
  *
  * When a SMUSH cutscene plays, this class checks if an MP4 replacement
- * exists in the hd/videos/ directory. If so, it spawns ffmpeg.exe
- * as a subprocess and pipes raw BGRA frames for direct HD rendering.
+ * exists in the hd/videos/ directory. If so, it spawns ffmpeg as a
+ * subprocess and pipes raw BGRA frames for direct HD rendering.
+ *
+ * Supported platforms: Windows (CreateProcess + HANDLE) and POSIX (popen + FILE*).
  */
 class HdVideoPlayer {
 public:
@@ -45,8 +47,8 @@ public:
 	/**
 	 * Open an MP4 video file for playback.
 	 * @param mp4Path  Full path to the MP4 file
-	 * @param width    Expected frame width (e.g., 2880)
-	 * @param height   Expected frame height (e.g., 2160)
+	 * @param width    Expected frame width (e.g., 2560)
+	 * @param height   Expected frame height (e.g., 1920)
 	 * @return true if ffmpeg was spawned successfully
 	 */
 	bool open(const Common::String &mp4Path, int width, int height);
@@ -62,7 +64,13 @@ public:
 	void close();
 
 	/** Check if a video is currently playing. */
-	bool isPlaying() const { return _hdPipe != nullptr; }
+	bool isPlaying() const {
+#ifdef _WIN32
+		return _hdPipe != nullptr;
+#else
+		return _hdPipePosix != nullptr;
+#endif
+	}
 
 	int getWidth() const { return _width; }
 	int getHeight() const { return _height; }
@@ -73,8 +81,7 @@ private:
 	void *_hdProcess;  // HANDLE (opaque)
 	void *_hdPipe;     // HANDLE (opaque)
 #else
-	// TODO: POSIX pipe
-	void *_hdPipe;
+	FILE *_hdPipePosix;  // popen FILE*
 #endif
 	int _width;
 	int _height;
