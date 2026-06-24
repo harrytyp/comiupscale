@@ -1235,6 +1235,17 @@ void ScummEngine::renderHDComposite() {
 
 	int hdW, hdH;
 
+	// ── HD Debug Summary (once per frame) ──────────────────────
+	if (_hdFrameCount % 30 == 0) {
+		warning("HDDBG room=%d hdRoom=%d bg=%d objMgr=%d/%d costMgr=%d/%d fontMgr=%d/%d fontChars=%d",
+			_currentRoom, _hdCurrentRoom,
+			_hdBackgroundSurface.getPixels() ? 1 : 0,
+			_hdObjectManager ? 1 : 0, _hdObjectManager ? _hdObjectManager->isEnabled() : 0,
+			_hdCostumeManager ? 1 : 0, _hdCostumeManager ? _hdCostumeManager->isEnabled() : 0,
+			_hdFontManager ? 1 : 0, _hdFontManager ? _hdFontManager->isEnabled() : 0,
+			(int)_hdFontChars.size());
+	}
+
 	// If no HD background for this room, scale 8-bit content to HD
 	if (!_hdBackgroundSurface.getPixels()) {
 		hdW = _screenWidth * _hdScale;
@@ -1265,7 +1276,7 @@ void ScummEngine::renderHDComposite() {
 			if (_hdFrameCount == _hdDebugDumpCount || 
 			    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
 				hdDebugDump();
-				_hdDebugDumpCount = 0;
+				_hdDebugDumpCount = 30; // periodic
 			}
 		}
 		return;
@@ -1304,6 +1315,7 @@ void ScummEngine::renderHDComposite() {
 
 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
 	// Diff against clean background to only overlay foreground pixels.
+	int step2_fgPixels = 0;
 	for (int dy = 0; dy < hdH; dy++) {
 		int sy = dy * visH / hdH;
 		sy = CLIP(sy, 0, visH - 1);
@@ -1327,6 +1339,7 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			if (isForeground) {
+				step2_fgPixels++;
 				uint8 r = _currentPalette[curPix * 3 + 0];
 				uint8 g = _currentPalette[curPix * 3 + 1];
 				uint8 b = _currentPalette[curPix * 3 + 2];
@@ -1335,8 +1348,13 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	}
+	if (_hdFrameCount % 30 == 0)
+		warning("HDDBG step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
+			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
+			_hdCleanValid ? 1 : 0);
 
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
+	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
 		for (int oi = 1; oi < _numLocalObjects; oi++) {
 			ObjectData &od = _objs[oi];
@@ -1348,8 +1366,10 @@ void ScummEngine::renderHDComposite() {
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
 
-			if (!_hdObjectManager->hasObject(od.obj_nr, _currentRoom, objState))
+			if (!_hdObjectManager->hasObject(od.obj_nr, _currentRoom, objState)) {
+				step25_skipped++;
 				continue;
+			}
 
 			Graphics::Surface hdObjSurf;
 			if (!_hdObjectManager->loadObject(od.obj_nr, _currentRoom, objState, hdObjSurf))
@@ -1389,12 +1409,14 @@ void ScummEngine::renderHDComposite() {
 					}
 				}
 				if (visiblePixels < 2) { // no significant foreground content
+					step25_culled++;
 					hdObjSurf.free();
 					continue;
 				}
 			}
 
 			// Blit HD object with alpha transparency
+			step25_loaded++;
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
@@ -1409,23 +1431,39 @@ void ScummEngine::renderHDComposite() {
 			hdObjSurf.free();
 		}
 	}
+	if (_hdFrameCount % 30 == 0)
+		warning("HDDBG step2.5 objects: loaded=%d skipped=%d culled=%d",
+			step25_loaded, step25_skipped, step25_culled);
 
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
 	// index 0 (the AKOS transparent color), nearest-neighbor mapped to HD.
+	int step26_loaded = 0, step26_skipped = 0;
+	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
 	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 		for (int ai = 0; ai < _numActors; ai++) {
 			Actor *a = _actors[ai];
-			if (!a || a->_costume == 0 || !a->_visible)
+			if (!a || a->_costume == 0 || !a->_visible) {
+				step26_noCostume++;
+				step26_skipped++;
 				continue;
+			}
 
 			int cel = a->_hdCurrentCel;
-			if (cel < 0)
+			if (cel < 0) {
+				step26_noCel++;
+				step26_skipped++;
 				continue;
+			}
 
-			if (!_hdCostumeManager->hasCostume(a->_costume, cel))
+			if (!_hdCostumeManager->hasCostume(a->_costume, cel)) {
+				step26_noHdCostume++;
+				step26_skipped++;
+				if (_hdFrameCount % 30 == 0)
+					warning("HDDBG costume MISS: actor=%d costume=%04d cel=%d", ai, a->_costume, cel);
 				continue;
+			}
 
 			Graphics::Surface hdCostumeSurf;
 			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeSurf))
@@ -1472,6 +1510,22 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
+			step26_loaded++;
+			if (_hdFrameCount % 30 == 0)
+				warning("HDDBG costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d",
+					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h);
+			// Debug: check blit surface pixel data
+			if (_hdFrameCount % 30 == 0) {
+				uint32 *checkRow = (uint32 *)hdCostumeSurf.getBasePtr(0, 0);
+				int nonZero = 0;
+				int checkW = hdCostumeSurf.w;
+				for (int cx = 0; cx < checkW && cx < 100; cx++) {
+					if (checkRow[cx] != 0) nonZero++;
+				}
+				warning("HDDBG blitCheck: actor=%d surf=%dx%d bpp=%d nonZero100=%d first=0x%08x blit=(%d,%d,%d,%d)",
+					ai, hdCostumeSurf.w, hdCostumeSurf.h, hdCostumeSurf.format.bytesPerPixel,
+					nonZero, checkRow[0], blitX, blitY, blitW, blitH);
+			}
 			for (int oy = 0; oy < blitH; oy++) {
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
@@ -1485,17 +1539,25 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			hdCostumeSurf.free();
-		}
-	}
+			}
+			}
+			if (_hdFrameCount % 30 == 0)
+				warning("HDDBG step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)",
+					step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
 
 	// Step 2.7: Render HD font characters recorded during 8-bit drawing
+	int step27_drawn = 0;
 	if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
 		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
 			int hdX = fi->x * hdW / MAX(1, visW);
 			int hdY = fi->y * hdH / MAX(1, visH);
 			hdX += (int)(vs->xstart) * hdW / MAX(1, _roomWidth);
-			_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY);
+			if (_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY))
+				step27_drawn++;
 		}
+		if (_hdFrameCount % 30 == 0)
+			warning("HDDBG step2.7 fonts: chars=%d drawn=%d fontMgr=%d",
+				(int)_hdFontChars.size(), step27_drawn, _hdFontManager->isEnabled());
 		_hdFontChars.clear();
 	}
 
@@ -1506,11 +1568,13 @@ void ScummEngine::renderHDComposite() {
 	// HD debug dump — trigger on frame count OR room change
 	_hdFrameCount++;
 	if (_hdDebugDumpCount > 0) {
-		if (_hdFrameCount == _hdDebugDumpCount || 
-		    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
-			hdDebugDump();
-			_hdDebugDumpCount = 0; // one-shot
-		}
+	    if (_hdFrameCount % 30 == 0 && _hdFrameCount > 0) {
+	        hdDebugDump();
+	    }
+	    // SD vs HD diff: every 30 frames, also save an SD-only composite
+	    if (_hdFrameCount % 30 == 0 && _hdFrameCount > 0) {
+	        hdDumpSDComposite();
+	    }
 	}
 }
 
@@ -1624,6 +1688,128 @@ void ScummEngine::hdDebugDump() {
 	// Signal to OGL backend to capture framebuffer after next updateScreen()
 	
 	warning("HD DEBUG: state saved to %s", path);
+}
+
+void ScummEngine::hdDumpSDComposite() {
+    // Render the 8-bit VirtScreen as-is (SD only, no HD assets)
+    // This is the "SD fallback" — just palette-mapped 8-bit → 32-bit RGBA
+    VirtScreen *vs = &_virtscr[kMainVirtScreen];
+    int hdW = _hdBackgroundSurface.getPixels() ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
+    int hdH = _hdBackgroundSurface.getPixels() ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
+
+    Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
+    Graphics::Surface sdComposite;
+    sdComposite.create(hdW, hdH, rgbaFmt);
+
+    int visW = _screenWidth;
+    int visH = _screenHeight;
+
+    // Scale 8-bit VirtScreen to HD resolution using current palette
+    for (int dy = 0; dy < hdH; dy++) {
+        int sy = dy * visH / hdH;
+        sy = CLIP(sy, 0, visH - 1);
+        uint32 *dstRow = (uint32 *)sdComposite.getBasePtr(0, dy);
+        for (int dx = 0; dx < hdW; dx++) {
+            int sx = dx * visW / hdW;
+            sx = CLIP(sx, 0, visW - 1);
+            uint8 p = *(const uint8 *)vs->getBasePtr(sx, sy);
+            uint8 r = _currentPalette[p * 3 + 0];
+            uint8 g = _currentPalette[p * 3 + 1];
+            uint8 b = _currentPalette[p * 3 + 2];
+            dstRow[dx] = r | (g << 8) | (b << 16) | (0xFF << 24);
+        }
+    }
+
+    // Compute pixel diff between HD composite and SD composite
+    int diffPixels = 0;
+    int totalPixels = hdW * hdH;
+    // Also count per-region diffs
+    int bgDiffPixels = 0;   // top 75% (background region)
+    int fgDiffPixels = 0;   // bottom 25% (foreground/UI region)
+
+    for (int y = 0; y < hdH; y++) {
+        uint32 *hdRow = (uint32 *)_hdComposite.getBasePtr(0, y);
+        uint32 *sdRow = (uint32 *)sdComposite.getBasePtr(0, y);
+        for (int x = 0; x < hdW; x++) {
+            uint32 hdPix = hdRow[x];
+            uint32 sdPix = sdRow[x];
+            // Compare RGB, ignore alpha
+            uint8 hdR = hdPix & 0xFF, sdR = sdPix & 0xFF;
+            uint8 hdG = (hdPix >> 8) & 0xFF, sdG = (sdPix >> 8) & 0xFF;
+            uint8 hdB = (hdPix >> 16) & 0xFF, sdB = (sdPix >> 16) & 0xFF;
+            int dr = abs((int)hdR - (int)sdR);
+            int dg = abs((int)hdG - (int)sdG);
+            int db = abs((int)hdB - (int)sdB);
+            if (dr + dg + db > 30) { // threshold: pixels differ significantly
+                diffPixels++;
+                if (y < hdH * 3 / 4)
+                    bgDiffPixels++;
+                else
+                    fgDiffPixels++;
+            }
+        }
+    }
+
+    // Also generate a diff visualization (red = changed pixels)
+    Graphics::Surface diffVis;
+    diffVis.create(hdW, hdH, rgbaFmt);
+    for (int y = 0; y < hdH; y++) {
+        uint32 *hdRow = (uint32 *)_hdComposite.getBasePtr(0, y);
+        uint32 *sdRow = (uint32 *)sdComposite.getBasePtr(0, y);
+        uint32 *diffRow = (uint32 *)diffVis.getBasePtr(0, y);
+        for (int x = 0; x < hdW; x++) {
+            uint32 hdPix = hdRow[x];
+            uint32 sdPix = sdRow[x];
+            uint8 hdR = hdPix & 0xFF, sdR = sdPix & 0xFF;
+            uint8 hdG = (hdPix >> 8) & 0xFF, sdG = (sdPix >> 8) & 0xFF;
+            uint8 hdB = (hdPix >> 16) & 0xFF, sdB = (sdPix >> 16) & 0xFF;
+            int dr = abs((int)hdR - (int)sdR);
+            int dg = abs((int)hdG - (int)sdG);
+            int db = abs((int)hdB - (int)sdB);
+            if (dr + dg + db > 30) {
+                // Red pixel where HD differs from SD
+                diffRow[x] = 0xFF | (0x00 << 8) | (0x00 << 16) | (0xFF << 24);
+            } else {
+                // Grayscale of the SD version for context
+                uint8 gray = (uint8)((sdR + sdG + sdB) / 3);
+                diffRow[x] = gray | (gray << 8) | (gray << 16) | (0xFF << 24);
+            }
+        }
+    }
+
+    // Save dumps
+    Common::DumpFile df;
+    char path[256];
+    Common::String dumpDir;
+    if (_hdAssetManager->isEnabled()) {
+        Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
+        Common::FSNode project = hdNode.getParent().getParent();
+        dumpDir = project.getPath().toString('/');
+        while (dumpDir.size() > 0 && (dumpDir.lastChar() == '/' || dumpDir.lastChar() == '\\'))
+            dumpDir.deleteLastChar();
+        dumpDir += "/logs";
+    } else {
+        dumpDir = ".";
+    }
+
+    // Save SD composite
+    snprintf(path, sizeof(path), "%s/hd_dump_%d_sdcomposite.raw", dumpDir.c_str(), _hdFrameCount);
+    df.open(Common::Path(path));
+    df.write(sdComposite.getPixels(), sdComposite.h * sdComposite.pitch);
+    df.close();
+
+    // Save diff visualization
+    snprintf(path, sizeof(path), "%s/hd_dump_%d_diff.raw", dumpDir.c_str(), _hdFrameCount);
+    df.open(Common::Path(path));
+    df.write(diffVis.getPixels(), diffVis.h * diffVis.pitch);
+    df.close();
+
+    warning("HDDBG SDvsHD: diff=%d/%d (%.1f%%) bgDiff=%d fgDiff=%d room=%d",
+        diffPixels, totalPixels, diffPixels * 100.0 / totalPixels,
+        bgDiffPixels, fgDiffPixels, _currentRoom);
+
+    sdComposite.free();
+    diffVis.free();
 }
 
 void ScummEngine::restoreBackground(Common::Rect rect, byte backColor) {
