@@ -88,6 +88,7 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 	surf.create(pngSurf->w, pngSurf->h, rgbaFmt);
 
 	// Convert upscaled RGB → RGBA with full opacity
+	// Then detect background color from border pixels and make transparent
 	for (int y = 0; y < pngSurf->h; y++) {
 		const byte *src = (const byte *)pngSurf->getBasePtr(0, y);
 		uint32 *dst = (uint32 *)surf.getBasePtr(0, y);
@@ -97,6 +98,82 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 			byte g = src[x * srcBpp + 1];
 			byte b = src[x * srcBpp + 2];
 			dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
+		}
+	}
+
+	// Detect background color from border pixels (same logic as add_costume_alpha.py)
+	// Count border pixel colors, find most common = background
+	if (pngSurf->format.bytesPerPixel >= 3) {
+		int colorCounts[256][256][256] = {}; // too big for stack, use histogram approach
+		// Simpler: just sample border pixels and find mode
+		// Use a flat map: color_key -> count
+		Common::HashMap<uint32, int> borderColors;
+		int sw = pngSurf->w;
+		int sh = pngSurf->h;
+		const byte *srcData = (const byte *)pngSurf->getPixels();
+		int srcBpp = pngSurf->format.bytesPerPixel;
+		int srcPitch = pngSurf->pitch;
+
+		// Top row
+		for (int x = 0; x < sw; x++) {
+			int off = x * srcBpp;
+			uint32 key = srcData[off] | (srcData[off+1] << 8) | (srcData[off+2] << 16);
+			borderColors[key]++;
+		}
+		// Bottom row
+		for (int x = 0; x < sw; x++) {
+			int off = (sh - 1) * srcPitch + x * srcBpp;
+			uint32 key = srcData[off] | (srcData[off+1] << 8) | (srcData[off+2] << 16);
+			borderColors[key]++;
+		}
+		// Left column
+		for (int y = 0; y < sh; y++) {
+			int off = y * srcPitch;
+			uint32 key = srcData[off] | (srcData[off+1] << 8) | (srcData[off+2] << 16);
+			borderColors[key]++;
+		}
+		// Right column
+		for (int y = 0; y < sh; y++) {
+			int off = y * srcPitch + (sw - 1) * srcBpp;
+			uint32 key = srcData[off] | (srcData[off+1] << 8) | (srcData[off+2] << 16);
+			borderColors[key]++;
+		}
+
+		// Find most common border color = background
+		uint32 bgKey = 0;
+		int bgCount = 0;
+		for (Common::HashMap<uint32, int>::iterator it = borderColors.begin();
+			 it != borderColors.end(); ++it) {
+			if (it->_value > bgCount) {
+				bgCount = it->_value;
+				bgKey = it->_key;
+			}
+		}
+		byte bgR = bgKey & 0xFF;
+		byte bgG = (bgKey >> 8) & 0xFF;
+		byte bgB = (bgKey >> 16) & 0xFF;
+
+		// Set alpha=0 for all pixels matching background color
+		int transparentPixels = 0;
+		for (int y = 0; y < surf.h; y++) {
+			uint32 *row = (uint32 *)surf.getBasePtr(0, y);
+			for (int x = 0; x < surf.w; x++) {
+				uint32 pix = row[x];
+				byte r = pix & 0xFF;
+				byte g = (pix >> 8) & 0xFF;
+				byte b = (pix >> 16) & 0xFF;
+				if (r == bgR && g == bgG && b == bgB) {
+					row[x] = pix & 0x00FFFFFF; // set alpha=0
+					transparentPixels++;
+				}
+			}
+		}
+
+		if (ConfMan.getBool("hd_trace", "comi")) {
+			int sw2 = surf.w;
+			int sh2 = surf.h;
+			warning("hd_trace: loadPNG %dx%d bg=(%d,%d,%d) transparent=%d/%d",
+				sw2, sh2, bgR, bgG, bgB, transparentPixels, sw2 * sh2);
 		}
 	}
 	png.destroy();

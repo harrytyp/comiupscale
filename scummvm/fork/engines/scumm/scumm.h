@@ -1456,6 +1456,7 @@ protected:
 	void renderHDComposite();
 	/** HD debug: dump all surfaces and state to files. */
 	void hdDebugDump();
+	void hdDumpSDComposite();
 	virtual void redrawBGAreas();
 
 	void cameraMoved();
