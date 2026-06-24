@@ -399,14 +399,81 @@ directory; falls back to default bilinear filtering otherwise).
   and don't display over the HD framebuffer. **Upscaled videos** are available from
   [archive.org](https://archive.org/details/COMI_4k) — place them in `monkey3/hd/videos/`.
   The fork doesn't yet intercept video playback to use these HD replacements.
-- **HD objects/costumes** — only backgrounds have HD replacements so far.
+- **HD costumes** — ⚠️ **BLOCKED: Costume extraction produces black/near-black images.**
+  See [HD Costume Problem](#hd-costume-problem-known-issue) below for full analysis.
+- **HD objects** — only backgrounds have HD replacements so far.
   The compositing pipeline works with original-resolution objects.
 
 ### Remaining Work
+- **FIX HD COSTUME EXTRACTION** (see below — this is the current blocker)
 - SMUSH/SAN video rendering support through the HD pipeline
-- HD costume/object/sprite loading and display
+- HD object/sprite loading and display
 - Cutscene frame upscaling pipeline
 - Performance optimization (Lanczos on Intel UHD)
+
+---
+
+## HD Costume Problem (Known Issue) ⚠️
+
+### Symptom
+NUTcracker extracts 25,304 costume frames, but **~95% of pixels are black**.
+The extracted PNGs show only faint outlines or are completely dark.
+Example: Guybrush frame 0 (83×214) has 50% RGB(0,0,0), 10% RGB(1,0,0),
+only ~8% actual colored pixels.
+
+### Root Cause (Confirmed)
+
+**COMI costumes use runtime palette assignment, not embedded colors.**
+
+The AKOS costume format stores:
+1. **RLE-encoded pixel data** → palette indices (0–15 per pixel)
+2. **AKPL chunk** → maps pixel indices to palette slots
+3. **RGBS chunk** → 16 RGB colors (the "base" palette)
+
+But ScummVM does NOT use AKPL+RGBS directly. In `akos.cpp:setPalette()`:
+```cpp
+// For COMI (GF_16BIT_COLOR):
+if (new_palette[i] == 0xFF) {
+    // Fallback: use AKPL+RGBS
+    _palette[i] = get16BitColor(_rgbs[col*3+0], ...);
+} else {
+    // ACTUAL: use Actor/Room palette
+    _palette[i] = new_palette[i];
+}
+```
+
+`new_palette` comes from the Actor system and is set per-room via scripts.
+**Most costume colors are overridden at runtime** — the AKPL+RGBS table
+is only a fallback for slots marked 0xFF.
+
+### Why This Matters for Extraction
+
+When NUTcracker uses `construct_palette(akpl, rgbs)`:
+- It builds a palette from AKPL+RGBS only
+- Missing the runtime `new_palette` overrides
+- Many palette slots map to RGB(0,0,0) or near-black
+- Result: costumes appear as black silhouettes
+
+### Impact on HD Pipeline
+- The `HdCostumeManager` overlay system is **fully functional** (loads PNGs,
+  positions via `_hdCurrentCel`/`_hdRelX`/`_hdRelY`, alpha-composites)
+- But it needs **correctly colored HD costume PNGs** as input
+- Currently `hd/costumes/` contains the broken black extractions
+
+### Possible Solutions
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| **A. Fix NUTcracker decoder** | Automated, 25K+ frames | Must resolve runtime palette mapping |
+| **B. ScummVM export function** | 100% correct colors | Must navigate all rooms |
+| **C. Extract per-room palettes + map** | Correct per-room colors | Complex mapping, costumes may share palettes |
+| **D. SD costumes only** | Quick to ship | Not a "full HD remaster" |
+
+### Related Code
+- `engines/scumm/akos.cpp:232` — `setPalette()` (runtime palette override)
+- `engines/scumm/base-costume.cpp:286` — `byleRLEDecode()` (pixel rendering)
+- `nutcracker/sputm/costume/akos.py:103` — `construct_palette()` (extraction)
+- `nutcracker/graphics/image.py:30` — `convert_to_pil_image()` (resize bug, fixed)
 
 ---
 
