@@ -1269,7 +1269,7 @@ void ScummEngine::renderHDComposite() {
 				dstRow[dx] = r | (g << 8) | (b << 16) | (0xFF << 24);
 			}
 		}
-		_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch, 0, 0, hdW, hdH);
+		_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch, 0, 0, MIN(hdW, (int)_system->getWidth()), MIN(hdH, (int)_system->getHeight()));
 		// Trigger dump even without HD background
 		_hdFrameCount++;
 		if (_hdDebugDumpCount > 0) {
@@ -1367,8 +1367,17 @@ void ScummEngine::renderHDComposite() {
 			if (objState < 0) objState = 0;
 
 			if (!_hdObjectManager->hasObject(od.obj_nr, _currentRoom, objState)) {
-				step25_skipped++;
-				continue;
+				// Fallback: try state=0 if the exact state isn't available.
+				// Many HD objects are extracted only at state=0 (default/visible).
+				if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, _currentRoom, 0)) {
+					objState = 0;
+				} else {
+					step25_skipped++;
+					if (_hdFrameCount % 30 == 0)
+						warning("HDDBG step2.5 SKIP: obj_nr=%d objName=%d state=%d room=%d",
+							od.obj_nr, od.obj_nr, objState, _currentRoom);
+					continue;
+				}
 			}
 
 			Graphics::Surface hdObjSurf;
@@ -1439,10 +1448,44 @@ void ScummEngine::renderHDComposite() {
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
 	// index 0 (the AKOS transparent color), nearest-neighbor mapped to HD.
+	// NOTE: HD costumes are composited BEFORE non-actor foreground elements.
+	// This ensures UI overlays (title cards, verbs, text) that were drawn AFTER
+	// actors in the 8-bit engine will correctly appear ON TOP of HD costumes.
 	int step26_loaded = 0, step26_skipped = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
-	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+	// HD alpha mask: tracks which HD pixels were painted by HD costumes.
+	// Used in Step 2.6b to re-overlay UI only where NO HD costume exists.
+	byte *hdAlphaMask = (byte *)calloc(hdW * hdH, 1);
+	// Dump all actors with costumes on first frame for debugging
+	if (_hdFrameCount == 1 || _hdFrameCount == 30) {
 		for (int ai = 0; ai < _numActors; ai++) {
+			Actor *a = _actors[ai];
+			if (a && a->_costume != 0 && a->_visible) {
+				int cel = a->_hdCurrentCel;
+				bool hasHd = _hdCostumeManager && _hdCostumeManager->isEnabled() && _hdCostumeManager->hasCostume(a->_costume, cel);
+				warning("HDDBG ACTOR: id=%d costume=%04d cel=%d pos=(%d,%d) elev=%d xstart=%d scale=(%d,%d) w=%d top=%d bot=%d room=%d hd=%d rel=(%d,%d)",
+					ai, a->_costume, cel, (int)a->getPos().x, (int)a->getPos().y,
+					a->getElevation(), vs->xstart,
+					a->_scalex, a->_scaley, a->_width, a->_top, a->_bottom,
+					a->_room, hasHd ? 1 : 0, a->_hdRelX, a->_hdRelY);
+			}
+		}
+	}
+	if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+		// Collect all visible actors with HD costumes, then sort by z-order
+		// (same sorting as ScummEngine::processActors: y - layer * 2000)
+		struct HdCostumeEntry {
+			Actor *actor;
+			int ai;
+			int cel;
+			int limb;
+			int drawX, drawY; // per-limb AKOS drawing position
+			int sortKey; // y - layer * 2000
+		};
+		HdCostumeEntry entries[256];
+		int numEntries = 0;
+
+		for (int ai = 0; ai < _numActors && numEntries < 256; ai++) {
 			Actor *a = _actors[ai];
 			if (!a || a->_costume == 0 || !a->_visible) {
 				step26_noCostume++;
@@ -1450,20 +1493,47 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			int cel = a->_hdCurrentCel;
-			if (cel < 0) {
-				step26_noCel++;
-				step26_skipped++;
-				continue;
+			// Collect per-limb HD cels (multi-limb support: body + head, etc.)
+			bool foundAnyLimb = false;
+			for (int li = 0; li < a->_hdNumLimbs && li < 16 && numEntries < 256; li++) {
+				int cel = a->_hdLimbCel[li];
+				if (cel <= 0) continue;
+				if (!_hdCostumeManager->hasCostume(a->_costume, cel)) {
+					step26_noHdCostume++;
+					continue;
+				}
+				int sortKey = (int)a->getPos().y - (int)a->_layer * 2000;
+				entries[numEntries].actor = a;
+				entries[numEntries].ai = ai;
+				entries[numEntries].cel = cel;
+				entries[numEntries].limb = li;
+				entries[numEntries].drawX = a->_hdLimbDrawX[li];
+				entries[numEntries].drawY = a->_hdLimbDrawY[li];
+				entries[numEntries].sortKey = sortKey;
+				numEntries++;
+				foundAnyLimb = true;
 			}
+			if (!foundAnyLimb) {
+				step26_skipped++;
+			}
+		}
 
-			if (!_hdCostumeManager->hasCostume(a->_costume, cel)) {
-				step26_noHdCostume++;
-				step26_skipped++;
-				if (_hdFrameCount % 30 == 0)
-					warning("HDDBG costume MISS: actor=%d costume=%04d cel=%d", ai, a->_costume, cel);
-				continue;
+		// Bubble sort by sortKey (same as original engine — stable, works for <100 objects)
+		for (int j = 0; j < numEntries; j++) {
+			for (int i = 0; i < numEntries; i++) {
+				if (entries[i].sortKey > entries[j].sortKey) {
+					HdCostumeEntry tmp = entries[i];
+					entries[i] = entries[j];
+					entries[j] = tmp;
+				}
 			}
+		}
+
+		// Composite in z-sorted order
+		for (int ei = 0; ei < numEntries; ei++) {
+			Actor *a = entries[ei].actor;
+			int ai = entries[ei].ai;
+			int cel = entries[ei].cel;
 
 			Graphics::Surface hdCostumeSurf;
 			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeSurf))
@@ -1476,10 +1546,19 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			// Use the actor's screen position (getPos) plus AKOS relX/relY offset.
+			// Use per-limb drawing position from the entry
 			Common::Point actorPos = a->getPos();
-			int64 hdCX = (int64)(actorPos.x + a->_hdRelX) * hdW / MAX(1, _screenWidth);
-			int64 hdCY = (int64)(actorPos.y + a->_hdRelY) * hdH / MAX(1, _screenHeight);
+			int drawX = actorPos.x - vs->xstart;
+			int drawY = actorPos.y - a->getElevation();
+			// Apply facing direction: in 8-bit, paintCelByleRLECommon negates
+			// xMoveCur when !_drawActorToRight, then compData.x += xMoveCur.
+			// This means: facing right → screenX = actorX + xMoveCur
+			//             facing left  → screenX = actorX - xMoveCur
+			int limbDrawX = entries[ei].drawX;
+			if (!a->_hdFacingRight)
+				limbDrawX = -limbDrawX;
+			int64 hdCX = (int64)(drawX + limbDrawX) * hdW / MAX(1, _screenWidth);
+			int64 hdCY = (int64)(drawY + entries[ei].drawY) * hdH / MAX(1, _screenHeight);
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
 			if (hdCX <= 0 && hdCY <= 0) {
@@ -1512,40 +1591,115 @@ void ScummEngine::renderHDComposite() {
 
 			step26_loaded++;
 			if (_hdFrameCount % 30 == 0)
-				warning("HDDBG costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d",
-					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h);
-			// Debug: check blit surface pixel data
-			if (_hdFrameCount % 30 == 0) {
-				uint32 *checkRow = (uint32 *)hdCostumeSurf.getBasePtr(0, 0);
-				int nonZero = 0;
-				int checkW = hdCostumeSurf.w;
-				for (int cx = 0; cx < checkW && cx < 100; cx++) {
-					if (checkRow[cx] != 0) nonZero++;
-				}
-				warning("HDDBG blitCheck: actor=%d surf=%dx%d bpp=%d nonZero100=%d first=0x%08x blit=(%d,%d,%d,%d)",
-					ai, hdCostumeSurf.w, hdCostumeSurf.h, hdCostumeSurf.format.bytesPerPixel,
-					nonZero, checkRow[0], blitX, blitY, blitW, blitH);
-			}
+				warning("HDDBG costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
+					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
 			for (int oy = 0; oy < blitH; oy++) {
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
 				for (int ox = 0; ox < blitW; ox++) {
 					uint32 pix = srcRow[ox];
 					uint8 alpha = (pix >> 24) & 0xFF;
+					int maskX = blitX + ox;
+					int maskY = blitY + oy;
 					if (alpha >= 128) {
 						dstRow[ox] = pix;
+					} else {
+						// Transparent costume pixel: replace 8-bit foreground
+						// with HD background. This prevents SD costume remnants
+						// (e.g. SD head) from showing through transparent areas.
+						int bgX = blitX + ox;
+						int bgY = blitY + oy;
+						if (bgX >= 0 && bgX < _hdBackgroundSurface.w && bgY >= 0 && bgY < _hdBackgroundSurface.h) {
+							const byte *bgRow = (const byte *)_hdBackgroundSurface.getBasePtr(bgX, bgY);
+							dstRow[ox] = bgRow[0] | (bgRow[1] << 8) | (bgRow[2] << 16) | (0xFF << 24);
+						}
 					}
+					// Track alpha mask for Step 2.6b:
+					// Mark ALL pixels within the costume bbox (opaque AND transparent)
+					// This prevents step2.6b from re-overlaying 8-bit pixels
+					// at HD costume positions. Actor bbox uses getPos() which may
+					// be wrong (pos.x=0 when actor is off-screen left in 8-bit)
+					// but HD costumes are drawn at the correct relative position.
+					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
+						hdAlphaMask[maskY * hdW + maskX] = 1;
 				}
 			}
 
 			hdCostumeSurf.free();
-			}
-			}
-			if (_hdFrameCount % 30 == 0)
-				warning("HDDBG step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)",
-					step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
+		}
+		if (_hdFrameCount % 30 == 0)
+			warning("HDDBG step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
+	}
 
-	// Step 2.7: Render HD font characters recorded during 8-bit drawing
+	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes.
+	// Combined alpha mask + bounding box approach:
+	// - HD costume pixel (alpha mask=1) → keep HD, never touch
+	// - Actor bbox area but NO HD pixel → DON'T re-overlay (prevents
+	//   SD costume parts from appearing where HD costume is transparent,
+	//   e.g. heads, arms that the HD extraction missed)
+	// - Outside all actor bboxes AND foreground → re-overlay (UI elements:
+	//   title cards, verbs, text)
+	if (_hdCleanBackground.getPixels() && _hdCleanValid && hdAlphaMask) {
+		int step26b_count = 0;
+		// Build actor bounding box mask in 8-bit coordinates
+		int bboxMaskSize = visW * visH;
+		byte *actorBBoxMask = (byte *)calloc(bboxMaskSize, 1);
+		if (actorBBoxMask) {
+			for (int ai = 0; ai < _numActors; ai++) {
+				Actor *a = _actors[ai];
+				if (!a || a->_costume == 0 || !a->_visible)
+					continue;
+				Common::Point pos = a->getPos();
+				int actX = pos.x - a->_width / 2 - 40; // extra margin
+				int actY = a->_top - 40; // extra margin
+				int actH = (a->_bottom - a->_top) + 80;
+				int actW = a->_width + 80;
+				if (actH <= 0) actH = a->_width;
+				int startX = MAX(0, actX);
+				int startY = MAX(0, actY);
+				int endX = MIN(visW, actX + actW);
+				int endY = MIN(visH, actY + actH);
+				for (int y = startY; y < endY; y++)
+					for (int x = startX; x < endX; x++)
+						actorBBoxMask[y * visW + x] = 1;
+			}
+			// Re-overlay: only outside actor bboxes + not covered by HD costume
+			for (int dy = 0; dy < hdH; dy++) {
+				int sy = dy * visH / hdH;
+				sy = CLIP(sy, 0, visH - 1);
+				for (int dx = 0; dx < hdW; dx++) {
+					int sx = dx * visW / hdW;
+					sx = CLIP(sx, 0, visW - 1);
+					// Skip if HD costume covers this pixel
+					if (hdAlphaMask[dy * hdW + dx])
+						continue;
+					// Skip if inside any actor bounding box (prevents SD overlay)
+					int mpos = sy * visW + sx;
+					if (actorBBoxMask[mpos])
+						continue;
+					if (mpos < _hdCleanValidSize && _hdCleanValid[mpos]) {
+						uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
+						uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
+						if (curPix != cleanPix) {
+							uint8 r = _currentPalette[curPix * 3 + 0];
+							uint8 g = _currentPalette[curPix * 3 + 1];
+							uint8 b = _currentPalette[curPix * 3 + 2];
+							*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
+								r | (g << 8) | (b << 16) | (0xFF << 24);
+							step26b_count++;
+						}
+					}
+				}
+			}
+			free(actorBBoxMask);
+		}
+		if (_hdFrameCount % 30 == 0)
+			warning("HDDBG step2.6b ui-overlay: pixels=%d", step26b_count);
+	}
+	// Free alpha mask after Step 2.6b
+	if (hdAlphaMask) { free(hdAlphaMask); hdAlphaMask = NULL; }
+
+// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	int step27_drawn = 0;
 	if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
 		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
@@ -1562,17 +1716,23 @@ void ScummEngine::renderHDComposite() {
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
-	_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
-	                          0, 0, hdW, hdH);
+	// Clamp to screen dimensions to avoid assertion failure on small displays
+	{
+		int copyW = MIN(hdW, (int)_system->getWidth());
+		int copyH = MIN(hdH, (int)_system->getHeight());
+		if (copyW > 0 && copyH > 0)
+			_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
+			                          0, 0, copyW, copyH);
+	}
 
 	// HD debug dump — trigger on frame count OR room change
 	_hdFrameCount++;
 	if (_hdDebugDumpCount > 0) {
-	    if (_hdFrameCount % 30 == 0 && _hdFrameCount > 0) {
+	    if (_hdFrameCount % 10 == 0 && _hdFrameCount > 0) {
 	        hdDebugDump();
 	    }
-	    // SD vs HD diff: every 30 frames, also save an SD-only composite
-	    if (_hdFrameCount % 30 == 0 && _hdFrameCount > 0) {
+	    // SD vs HD diff: every 10 frames, also save an SD-only composite
+	    if (_hdFrameCount % 10 == 0 && _hdFrameCount > 0) {
 	        hdDumpSDComposite();
 	    }
 	}
@@ -1797,6 +1957,32 @@ void ScummEngine::hdDumpSDComposite() {
     df.open(Common::Path(path));
     df.write(sdComposite.getPixels(), sdComposite.h * sdComposite.pitch);
     df.close();
+
+    // Dump each visible actor's costume from the 8-bit virtual screen as PNG
+    if (_hdFrameCount == 30) {
+        VirtScreen &vs = _virtscr[kMainVirtScreen];
+        int visW = vs.w;
+        int visH = vs.h;
+        // Save palette for Python renderer
+        snprintf(path, sizeof(path), "%s/hd_dump_palette.txt", dumpDir.c_str());
+        df.open(Common::Path(path));
+        for (int i = 0; i < 256; i++) {
+            char line[64];
+            snprintf(line, sizeof(line), "%3d %3d %3d %3d\n", i,
+                _currentPalette[i * 3 + 0], _currentPalette[i * 3 + 1], _currentPalette[i * 3 + 2]);
+            df.writeString(line);
+        }
+        df.close();
+
+        // Save the full 8-bit virtual screen as raw (palette-indexed)
+        snprintf(path, sizeof(path), "%s/hd_dump_virtual_screen.raw", dumpDir.c_str());
+        df.open(Common::Path(path));
+        for (int y = 0; y < visH; y++) {
+            df.write(vs.getBasePtr(0, y), visW);
+        }
+        df.close();
+        warning("HDDBG actor_dump: virtual screen %dx%d saved, palette saved", visW, visH);
+    }
 
     // Save diff visualization
     snprintf(path, sizeof(path), "%s/hd_dump_%d_diff.raw", dumpDir.c_str(), _hdFrameCount);

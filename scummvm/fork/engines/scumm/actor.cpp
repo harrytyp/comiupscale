@@ -2556,6 +2556,9 @@ void Actor::prepareDrawActorCostume(BaseCostumeRenderer *bcr) {
 	bcr->_actorX = _pos.x - _vm->_virtscr[kMainVirtScreen].xstart;
 	bcr->_actorY = _pos.y - _elevation;
 
+	// Reset HD limb data before each costume draw
+	_hdNumLimbs = 0;
+
 	if (_vm->_game.version == 4 && (_boxscale & 0x8000)) {
 		bcr->_scaleX = bcr->_scaleY = _vm->getScaleFromSlot((_boxscale & 0x7fff) + 1, _pos.x, _pos.y);
 	} else {
