@@ -114,6 +114,13 @@ public:
 	uint16 _costume = 0;
 	int _hdCurrentCel = 0;
 	int _hdRelX = 0, _hdRelY = 0;
+	// Per-limb drawing positions (xMoveCur/yMoveCur from AKOS renderer)
+	// These account for _xMove/_yMove accumulation across limbs
+	int _hdLimbCel[16] = {};
+	int _hdLimbDrawX[16] = {};
+	int _hdLimbDrawY[16] = {};
+	int _hdNumLimbs = 0;
+	bool _hdFacingRight = true; // Set by akos renderer for HD compositing X-flip
 	byte _room = 0;
 
 public:

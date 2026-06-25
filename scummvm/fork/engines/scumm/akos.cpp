@@ -324,6 +324,11 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 		sequenceLayerIndirection[i] = i;
 	}
 
+	// Save facing direction for HD compositing
+	if (limb == 0) {
+		const_cast<Actor *>(a)->_hdFacingRight = _drawActorToRight;
+	}
+
 	if (_skipLimbs)
 		return 0;
 
@@ -362,7 +367,7 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 	if (code != AKC_DrawMany && code != AKC_RelativeOffsetDrawMany) {
 		off = _akof + (code & AKC_CelMask);
 
-	// Save current cel and relX/relY for HD overlay (any limb with non-zero cel)
+	// Save current cel and per-limb drawing position for HD overlay
 	if ((code & AKC_CelMask) != 0) {
 		const_cast<Actor *>(a)->_hdCurrentCel = (code & AKC_CelMask);
 	}
@@ -377,10 +382,20 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 		_height = READ_LE_UINT16(&costumeInfo->height);
 		xMoveCur = _xMove + (int16)READ_LE_UINT16(&costumeInfo->relX);
 		yMoveCur = _yMove + (int16)READ_LE_UINT16(&costumeInfo->relY);
-		// Save relX/relY for HD overlay (any limb with non-zero offset)
+		// Save relX/relY for HD overlay (limb 0 only)
 		if (limb == 0 || a->_hdRelX == 0) {
 			const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(&costumeInfo->relX);
 			const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(&costumeInfo->relY);
+		}
+		// Save per-limb cel + drawing position for HD multi-limb compositing
+		if (limb < 16) {
+			const_cast<Actor *>(a)->_hdLimbCel[limb] = (code & AKC_CelMask);
+			const_cast<Actor *>(a)->_hdLimbDrawX[limb] = xMoveCur;
+			const_cast<Actor *>(a)->_hdLimbDrawY[limb] = yMoveCur;
+			const_cast<Actor *>(a)->_hdNumLimbs = MAX((int)const_cast<Actor *>(a)->_hdNumLimbs, limb + 1);
+			if (a->_number == 1)
+				warning("HDDBG LIMB: actor=%d limb=%d cel=%d drawX=%d drawY=%d w=%d h=%d",
+					a->_number, limb, (code & AKC_CelMask), xMoveCur, yMoveCur, _width, _height);
 		}
 		_xMove += (int16)READ_LE_UINT16(&costumeInfo->moveX);
 		_yMove -= (int16)READ_LE_UINT16(&costumeInfo->moveY);
@@ -432,6 +447,20 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 			if (limb == 0) {
 				const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(p + 0);
 				const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(p + 2);
+			}
+			// Save per-sub-cel drawing position for HD multi-limb compositing
+			{
+				int subCel = (code & 0xFFF);
+				const_cast<Actor *>(a)->_hdCurrentCel = subCel;
+				if (limb < 16) {
+					const_cast<Actor *>(a)->_hdLimbCel[limb] = subCel;
+					const_cast<Actor *>(a)->_hdLimbDrawX[limb] = xMoveCur;
+					const_cast<Actor *>(a)->_hdLimbDrawY[limb] = yMoveCur;
+					const_cast<Actor *>(a)->_hdNumLimbs = MAX((int)const_cast<Actor *>(a)->_hdNumLimbs, limb + 1);
+					if (a->_number == 1)
+						warning("HDDBG LIMB: actor=%d limb=%d subCel=%d drawX=%d drawY=%d w=%d h=%d",
+							a->_number, limb, subCel, xMoveCur, yMoveCur, _width, _height);
+				}
 			}
 
 			// WORKAROUND bug #13532: There is a frame of Freddi's eye (US release of Freddi 3) accidentally being drawn
