@@ -1353,6 +1353,10 @@ void ScummEngine::renderHDComposite() {
 			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
 			_hdCleanValid ? 1 : 0);
 
+	// Allocate HD alpha mask early — Step 2.5 (objects) and Step 2.6 (costumes)
+	// both need to mark their pixels so Step 2.6b doesn't overwrite them.
+	byte *hdAlphaMask = (byte *)calloc(hdW * hdH, 1);
+
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
@@ -1373,9 +1377,11 @@ void ScummEngine::renderHDComposite() {
 					objState = 0;
 				} else {
 					step25_skipped++;
-					if (_hdFrameCount % 30 == 0)
-						warning("HDDBG step2.5 SKIP: obj_nr=%d objName=%d state=%d room=%d",
-							od.obj_nr, od.obj_nr, objState, _currentRoom);
+					if (_hdFrameCount % 30 == 0) {
+						const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
+						warning("HDDBG step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d",
+							od.obj_nr, name, objState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
+					}
 					continue;
 				}
 			}
@@ -1426,14 +1432,25 @@ void ScummEngine::renderHDComposite() {
 
 			// Blit HD object with alpha transparency
 			step25_loaded++;
+			if (_hdFrameCount % 30 == 0) {
+				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
+				warning("HDDBG step2.5 LOAD: obj=%d(%s) state=%d pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
+					od.obj_nr, name, objState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+			}
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+				int maskY = (int)hdY + oy;
 				for (int ox = 0; ox < hdObjW; ox++) {
 					uint32 pix = srcRow[ox];
 					uint8 alpha = (pix >> 24) & 0xFF;
-					if (alpha >= 128)
+					if (alpha >= 128) {
 						dstRow[ox] = pix;
+						// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
+						int maskX = (int)hdX + ox;
+						if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
+							hdAlphaMask[maskY * hdW + maskX] = 1;
+					}
 				}
 			}
 
@@ -1453,9 +1470,7 @@ void ScummEngine::renderHDComposite() {
 	// actors in the 8-bit engine will correctly appear ON TOP of HD costumes.
 	int step26_loaded = 0, step26_skipped = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
-	// HD alpha mask: tracks which HD pixels were painted by HD costumes.
-	// Used in Step 2.6b to re-overlay UI only where NO HD costume exists.
-	byte *hdAlphaMask = (byte *)calloc(hdW * hdH, 1);
+	// HD alpha mask was allocated before Step 2.5; objects already marked it.
 	// Dump all actors with costumes on first frame for debugging
 	if (_hdFrameCount == 1 || _hdFrameCount == 30) {
 		for (int ai = 0; ai < _numActors; ai++) {
@@ -1512,6 +1527,24 @@ void ScummEngine::renderHDComposite() {
 				entries[numEntries].sortKey = sortKey;
 				numEntries++;
 				foundAnyLimb = true;
+			}
+			// Fallback: if no limb was found but costume exists, try frame 0
+			if (!foundAnyLimb && a->_costume != 0) {
+				int cel = 0; // try frame 0
+				bool hasHd = _hdCostumeManager && _hdCostumeManager->isEnabled() && _hdCostumeManager->hasCostume(a->_costume, cel);
+				if (hasHd) {
+					int sortKey = (int)a->getPos().y - (int)a->_layer * 2000;
+					entries[numEntries].actor = a;
+					entries[numEntries].ai = ai;
+					entries[numEntries].cel = cel;
+					entries[numEntries].limb = 0;
+					// Use HD relative position for fallback (actor hasn't been rendered by AKOS)
+					entries[numEntries].drawX = a->_hdRelX;
+					entries[numEntries].drawY = a->_hdRelY;
+					entries[numEntries].sortKey = sortKey;
+					numEntries++;
+					foundAnyLimb = true;
+				}
 			}
 			if (!foundAnyLimb) {
 				step26_skipped++;
