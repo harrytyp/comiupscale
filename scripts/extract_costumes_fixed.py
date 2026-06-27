@@ -192,12 +192,39 @@ def extract_all_costumes(game_path, output_dir):
                     
                     if non_black > 0:
                         # Save as PNG with alpha (transparent background)
-                        # Create RGBA image with alpha=0 for black pixels
+                        # CRITICAL FIX: The BOMP/MajMin codecs fill unused pixels
+                        # with a fill value. In ScummVM, bompApplyMask replaces
+                        # mask pixels with _palette[0] (transparent color), and
+                        # bompApplyShadow handles the final compositing.
+                        # For HD PNG extraction, we need to identify the fill value
+                        # (background/unused pixels) and mark them as transparent.
+                        #
+                        # Strategy: The fill value is the MOST COMMON palette index
+                        # that occupies >50% of the frame AND is NOT a costume color.
+                        # We detect it as the single most dominant index.
+                        arr_p = np.array(im)  # Palette indices (0-255)
                         rgba = im.convert('RGBA')
                         arr_rgba = np.array(rgba)
-                        # Set alpha to 0 for black pixels
-                        black_mask = np.all(arr_rgb < 10, axis=2)
-                        arr_rgba[black_mask, 3] = 0
+                        
+                        unique, counts = np.unique(arr_p, return_counts=True)
+                        total_px = arr_p.size
+                        
+                        # Find the dominant fill index (>40% of pixels)
+                        # This is the BOMP fill value (0xFF = index 255 typically)
+                        # Threshold 40% catches costumes where the sprite is small
+                        # relative to the frame (e.g., small character animations)
+                        fill_indices = []
+                        for idx_val, cnt in zip(unique, counts):
+                            if cnt / total_px > 0.4:
+                                fill_indices.append(idx_val)
+                        
+                        # Mark fill pixels as transparent
+                        for fill_idx in fill_indices:
+                            arr_rgba[arr_p == fill_idx, 3] = 0
+                        
+                        # Also mark palette index 0 as transparent
+                        # (ScummVM _palette[0] = transparent color for HE >= 61)
+                        arr_rgba[arr_p == 0, 3] = 0
                         
                         # Save with HD naming convention: LFLF_XXXX_AKOS_YYYY_aframe_Z.png
                         hd_frame_path = output_dir / f'LFLF_{lflf_owner:04d}_AKOS_{akos_id:04d}_aframe_{frame_idx}.png'
