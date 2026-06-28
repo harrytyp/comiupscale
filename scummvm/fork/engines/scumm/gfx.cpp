@@ -1305,10 +1305,18 @@ void ScummEngine::renderHDComposite() {
 	for (int y = 0; y < _hdBackgroundSurface.h && y < _hdComposite.h; y++) {
 		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(0, y);
 		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
+		int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
 		for (int x = 0; x < _hdBackgroundSurface.w && x < _hdComposite.w; x++) {
-			uint8 r = src[x * 3 + 0];
-			uint8 g = src[x * 3 + 1];
-			uint8 b = src[x * 3 + 2];
+			uint8 r, g, b;
+			if (bgBpp == 4) {
+				r = src[x * 4 + 0];
+				g = src[x * 4 + 1];
+				b = src[x * 4 + 2];
+			} else {
+				r = src[x * 3 + 0];
+				g = src[x * 3 + 1];
+				b = src[x * 3 + 2];
+			}
 			dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
 		}
 	}
@@ -1635,18 +1643,28 @@ void ScummEngine::renderHDComposite() {
 					int maskX = blitX + ox;
 					int maskY = blitY + oy;
 					if (alpha >= 128) {
+						// Fully opaque HD pixel: overwrite composite.
 						dstRow[ox] = pix;
-					} else {
-						// Transparent costume pixel: replace 8-bit foreground
-						// with HD background. This prevents SD costume remnants
-						// (e.g. SD head) from showing through transparent areas.
-						int bgX = blitX + ox;
-						int bgY = blitY + oy;
-						if (bgX >= 0 && bgX < _hdBackgroundSurface.w && bgY >= 0 && bgY < _hdBackgroundSurface.h) {
-							const byte *bgRow = (const byte *)_hdBackgroundSurface.getBasePtr(bgX, bgY);
-							dstRow[ox] = bgRow[0] | (bgRow[1] << 8) | (bgRow[2] << 16) | (0xFF << 24);
-						}
+					} else if (alpha > 0) {
+						// Semi-transparent: alpha-blend with existing composite.
+						// Preserves HD objects (Step 2.5) and other HD costumes
+						// (z-sorted ToD) underneath the current costume.
+						uint32 dst = dstRow[ox];
+						uint8 dr = dst & 0xFF;
+						uint8 dg = (dst >> 8) & 0xFF;
+						uint8 db = (dst >> 16) & 0xFF;
+						uint8 sr = pix & 0xFF;
+						uint8 sg = (pix >> 8) & 0xFF;
+						uint8 sb = (pix >> 16) & 0xFF;
+						dstRow[ox] = 
+							((sr * alpha + dr * (255 - alpha)) / 255) |
+							(((sg * alpha + dg * (255 - alpha)) / 255) << 8) |
+							(((sb * alpha + db * (255 - alpha)) / 255) << 16) |
+							(0xFF << 24);
 					}
+					// alpha == 0: leave existing composite content unchanged.
+					// The alpha mask tracking below ensures Step 2.6b won't
+					// re-overlay 8-bit content over this costume area.
 					// Track alpha mask for Step 2.6b:
 					// Mark ALL pixels within the costume bbox (opaque AND transparent)
 					// This prevents step2.6b from re-overlaying 8-bit pixels
@@ -1758,17 +1776,8 @@ void ScummEngine::renderHDComposite() {
 			                          0, 0, copyW, copyH);
 	}
 
-	// HD debug dump — trigger on frame count OR room change
+	// HD debug dump — disabled by default (set hd_dump_frame=N to enable)
 	_hdFrameCount++;
-	if (_hdDebugDumpCount > 0) {
-	    if (_hdFrameCount % 10 == 0 && _hdFrameCount > 0) {
-	        hdDebugDump();
-	    }
-	    // SD vs HD diff: every 10 frames, also save an SD-only composite
-	    if (_hdFrameCount % 10 == 0 && _hdFrameCount > 0) {
-	        hdDumpSDComposite();
-	    }
-	}
 }
 
 void ScummEngine::hdDebugDump() {

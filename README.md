@@ -303,6 +303,58 @@ arr = np.frombuffer(out, dtype=np.uint8).reshape((height, width))
 
 ---
 
+### Hotfix (immediately after): Alpha Compositing — Multi-Object Transparency
+
+**Date:** 2026-06-28 (hotfix, same session)
+
+**File:** `scummvm/fork/engines/scumm/gfx.cpp:renderHDComposite()` — Step 2.6
+
+**Symptom:** When two HD costumes overlapped (e.g., Guybrush in front of the cannon, or two pirates stacked), transparent pixels around the front costume showed the **static room background** instead of the object behind it. Objects were transparent only against the background, not against each other.
+
+**Root Cause:** The Step 2.6 pixel compositor replaced **every** transparent pixel (alpha < 128) with the HD background pixel at that position:
+
+```cpp
+// OLD: transparent → always background
+if (alpha >= 128) {
+    dstRow[ox] = pix;
+} else {
+    const byte *bgRow = (const byte *)_hdBackgroundSurface.getBasePtr(bgX, bgY);
+    dstRow[ox] = bgRow[0] | (bgRow[1] << 8) | (bgRow[2] << 16) | (0xFF << 24);
+}
+```
+
+This was intended as a workaround to prevent SD costume remnants (drawn earlier in Step 2) from bleeding through transparent HD areas. However, it also destroyed any other HD object or costume that was drawn underneath (Step 2.5 HD objects, or z-sorted HD costumes from Step 2.6).
+
+**Fix:** Transparent HD pixels now preserve the existing composite content:
+
+```cpp
+// NEW: alpha ≥ 128 → fully opaque overwrite
+//      0 < alpha < 128 → alpha-blend with existing composite
+//      alpha == 0 → leave existing content unchanged
+if (alpha >= 128) {
+    dstRow[ox] = pix;
+} else if (alpha > 0) {
+    uint32 dst = dstRow[ox];
+    uint8 dr = dst & 0xFF, dg = (dst >> 8) & 0xFF, db = (dst >> 16) & 0xFF;
+    uint8 sr = pix & 0xFF, sg = (pix >> 8) & 0xFF, sb = (pix >> 16) & 0xFF;
+    dstRow[ox] =
+        ((sr * alpha + dr * (255 - alpha)) / 255) |
+        (((sg * alpha + dg * (255 - alpha)) / 255) << 8) |
+        (((sb * alpha + db * (255 - alpha)) / 255) << 16) |
+        (0xFF << 24);
+}
+// alpha == 0: leave existing composite unchanged
+```
+
+This works because:
+1. **Z-sorting is already correct** — actors are sorted by `y - layer * 2000` (same algorithm as `processActors()`), so distant actors draw first, near actors on top.
+2. **Step 2.6b won't re-overlay SD content** — the `hdAlphaMask` (allocated before Step 2.5) marks all pixels within HD costume bounding boxes, preventing Step 2.6b from restoring SD actors over them.
+3. **HD objects from Step 2.5** are preserved behind transparent costume areas.
+
+**Verification:** Room 9 (cannon room) composite dump confirmed correct multi-object transparency. Guybrush (AKOS 0025) overlaps cannon+larry (AKOS 0026) and pirates (AKOS 0028) correctly — transparent areas show the object behind, not the background.
+
+---
+
 ## HD Rendering Pipeline (How It Works)
 
 The ScummVM fork uses the **OpenGL backend** (not SurfaceSDL). HD backgrounds are loaded
