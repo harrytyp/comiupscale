@@ -198,51 +198,6 @@ def extract_all_costumes(game_path, output_dir):
 
                     if im is None:
                         continue
-<<<<<<< HEAD
-                    
-                    # Check if frame has content
-                    arr_rgb = np.array(im.convert('RGB'))
-                    non_black = np.sum(np.any(arr_rgb > 10, axis=2))
-                    
-                    if non_black > 0:
-                        # Save as PNG with alpha (transparent background)
-                        # CRITICAL FIX: The BOMP/MajMin codecs fill unused pixels
-                        # with a fill value. In ScummVM, bompApplyMask replaces
-                        # mask pixels with _palette[0] (transparent color), and
-                        # bompApplyShadow handles the final compositing.
-                        # For HD PNG extraction, we need to identify the fill value
-                        # (background/unused pixels) and mark them as transparent.
-                        #
-                        # Strategy: The fill value is the MOST COMMON palette index
-                        # that occupies >50% of the frame AND is NOT a costume color.
-                        # We detect it as the single most dominant index.
-                        arr_p = np.array(im)  # Palette indices (0-255)
-                        rgba = im.convert('RGBA')
-                        arr_rgba = np.array(rgba)
-                        
-                        unique, counts = np.unique(arr_p, return_counts=True)
-                        total_px = arr_p.size
-                        
-                        # Find the dominant fill index (>40% of pixels)
-                        # This is the BOMP fill value (0xFF = index 255 typically)
-                        # Threshold 40% catches costumes where the sprite is small
-                        # relative to the frame (e.g., small character animations)
-                        fill_indices = []
-                        for idx_val, cnt in zip(unique, counts):
-                            if cnt / total_px > 0.4:
-                                fill_indices.append(idx_val)
-                        
-                        # Mark fill pixels as transparent
-                        for fill_idx in fill_indices:
-                            arr_rgba[arr_p == fill_idx, 3] = 0
-                        
-                        # Also mark palette index 0 as transparent
-                        # (ScummVM _palette[0] = transparent color for HE >= 61)
-                        arr_rgba[arr_p == 0, 3] = 0
-                        
-                        # Save with HD naming convention: LFLF_XXXX_AKOS_YYYY_aframe_Z.png
-=======
-
                     # Check if frame has any non-fill content
                     if raw_indices is not None:
                         non_fill = np.sum(raw_indices != 255)
@@ -252,24 +207,30 @@ def extract_all_costumes(game_path, output_dir):
 
                     if non_fill > 0:
                         # Save as PNG with alpha
-                        # Use raw palette indices to identify fill pixels (index 255)
+                        # Strategy: combine explicit fill detection (raw_indices == 255
+                        # for BOMP codec) with dominant-index heuristic for other codecs.
+                        # Also mark palette index 0 transparent (ScummVM convention).
                         rgba = im.convert('RGBA')
                         arr_rgba = np.array(rgba)
 
+                        # Method 1: Explicit BOMP fill value (index 255)
                         if raw_indices is not None:
-                            # FIXED: Make fill pixels (palette index 255) transparent,
-                            # NOT black pixels
                             fill_mask = (raw_indices == 255)
                             arr_rgba[fill_mask, 3] = 0
                             stats['fill_fixed'] += int(np.sum(fill_mask))
-                        else:
-                            # Fallback: make near-black pixels transparent
-                            arr_rgb_check = np.array(im.convert('RGB'))
-                            dark_mask = np.all(arr_rgb_check < 10, axis=2)
-                            arr_rgba[dark_mask, 3] = 0
+
+                        # Method 2: Dominant-index heuristic for other codecs
+                        arr_p = np.array(im)
+                        unique, counts = np.unique(arr_p, return_counts=True)
+                        total_px = arr_p.size
+                        for idx_val, cnt in zip(unique, counts):
+                            if cnt / total_px > 0.4:
+                                arr_rgba[arr_p == idx_val, 3] = 0
+
+                        # Method 3: Palette index 0 = transparent (ScummVM convention)
+                        arr_rgba[arr_p == 0, 3] = 0
 
                         # Save with HD naming convention
->>>>>>> 7b618d3a (fix: HD costume extraction — codec 5/16 room palette + row-major reshape)
                         hd_frame_path = output_dir / f'LFLF_{lflf_owner:04d}_AKOS_{akos_id:04d}_aframe_{frame_idx}.png'
                         Image.fromarray(arr_rgba).save(hd_frame_path)
 
