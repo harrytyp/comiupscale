@@ -1776,7 +1776,7 @@ void ScummEngine::renderHDComposite() {
 			                          0, 0, copyW, copyH);
 	}
 
-	// HD debug dump — disabled by default (set hd_dump_frame=N to enable)
+	// HD debug dump — disabled (enable by setting hd_dump_frame=N)
 	_hdFrameCount++;
 }
 
