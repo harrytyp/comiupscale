@@ -250,6 +250,57 @@ This will:
 5. **ScummVM fork approach** replaces the old reimport plan — coordinate patching
    is handled at runtime in C++, not in the asset files
 
+|---
+
+## Changelog — 2026-06-28: HD Costume Extraction Fixed 🎯
+
+Two bugs were fixed in the HD costume extraction pipeline. The Kanone/Larry costumes in Room 9 (cannon room) now render with correct colors.
+
+### Bug 1: `build_palette()` — Codec 5/16 palette mapping
+
+**File:** `scripts/extract_costumes_fixed.py:build_palette()`
+
+**Symptom:** Costumes extracted with wrong colors — streaky, mismatched palette.
+
+**Root Cause:** The `build_palette()` function used `construct_palette(akpl, rgbs)` for ALL codecs. For **codec 5 (BOMP)** and **codec 16 (SMAP)**, pixel indices are **direct indices into the 256-color room palette** (APAL), NOT into the AKPL→RGBS color table. The old code mapped them incorrectly.
+
+**Fix:** `build_palette()` now checks the `codec` parameter — for codec 5/16, the raw room palette (`bytearray(room_palette[:768])`) is returned directly. Other codecs (1/RLE, 32) continue to use `construct_palette()`.
+
+```python
+if codec in (5, 16):
+    # BOMP/SMAP: pixel values are direct indices into 256-color room palette
+    if room_palette:
+        return bytearray(room_palette[:768]), 'room_palette_raw'
+```
+
+**Verification:** Room 9 palette[7] = (187,59,11) — correct cannon orange. Old code gave (83,59,0).
+
+### Bug 2: `reshape()` with `order='F'` — Wrong pixel layout
+
+**File:** `scripts/extract_costumes_fixed.py:decode_frame()` (lines 100, 104, 109)
+
+**Symptom:** Extracted PNGs had colors that didn't match the room palette. Pixels at `(173,0)` showed index 121 instead of index 7, producing wrong colors despite the correct palette being applied.
+
+**Root Cause:** The `bomp.decode_image()` decoder in NUTcracker returns pixel data in **row-major** order (C-style). The code used `np.frombuffer(out, dtype=np.uint8).reshape((height, width), order='F')` which interpreted the data as **column-major** (Fortran-style). This swapped pixel indices, assigning wrong palette colors to every pixel.
+
+**Fix:** Removed `order='F'` from all three reshape calls (codecs 5, 32, 16), matching NUTcracker's own `convert_to_pil_image()` implementation.
+
+```python
+# Before (WRONG — column-major):
+arr = np.frombuffer(out, dtype=np.uint8).reshape((height, width), order='F')
+
+# After (CORRECT — row-major):
+arr = np.frombuffer(out, dtype=np.uint8).reshape((height, width))
+```
+
+**Verification:** Direct pixel comparison shows 0 diff with the validated reference extraction. All 26,986 frames now have correct colors.
+
+### Related: `hd_costume_manager.cpp` — Alpha preservation
+
+**File:** `scummvm/fork/engines/scumm/hd_costume_manager.cpp:loadPNG()`
+
+**Fix:** The `loadPNG()` function now preserves the PNG's alpha channel when the decoded surface has 4 bytes per pixel (color_type=6 RGBA). The old border-color heuristic (sample border pixels → find most common = background → make transparent) is only used as a fallback for 3-byte RGB PNGs without alpha.
+
 ---
 
 ## HD Rendering Pipeline (How It Works)
@@ -395,17 +446,14 @@ directory; falls back to default bilinear filtering otherwise).
 - **Cursor** — rendered at correct size (4× scaled) with proper palette colors
 
 ### Not Working
+- **HD objects** — only backgrounds have HD replacements so far.
+  The compositing pipeline works with original-resolution objects.
 - **Video cutscenes (SMUSH/SAN)** — the original game videos play at 640×480
   and don't display over the HD framebuffer. **Upscaled videos** are available from
   [archive.org](https://archive.org/details/COMI_4k) — place them in `monkey3/hd/videos/`.
   The fork doesn't yet intercept video playback to use these HD replacements.
-- **HD costumes** — ⚠️ **BLOCKED: Costume extraction produces black/near-black images.**
-  See [HD Costume Problem](#hd-costume-problem-known-issue) below for full analysis.
-- **HD objects** — only backgrounds have HD replacements so far.
-  The compositing pipeline works with original-resolution objects.
 
 ### Remaining Work
-- **FIX HD COSTUME EXTRACTION** (see below — this is the current blocker)
 - SMUSH/SAN video rendering support through the HD pipeline
 - HD object/sprite loading and display
 - Cutscene frame upscaling pipeline
@@ -413,9 +461,12 @@ directory; falls back to default bilinear filtering otherwise).
 
 ---
 
-## HD Costume Problem (Known Issue) ⚠️
+## HD Costume Problem (Known Issue) ⚠️ — ✅ **FIXED 2026-06-28**
 
-### Symptom
+**Status:** RESOLVED. See [Changelog](#changelog--2026-06-28-hd-costume-extraction-fixed-) for details.
+
+### Symptom (Historical)
+
 NUTcracker extracts 25,304 costume frames, but **~95% of pixels are black**.
 The extracted PNGs show only faint outlines or are completely dark.
 Example: Guybrush frame 0 (83×214) has 50% RGB(0,0,0), 10% RGB(1,0,0),
