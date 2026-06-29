@@ -34,50 +34,50 @@
 #undef USE_ALSA
 #undef USE_JPEG
 #define USE_PNG
-#define USE_FAAD
-#undef USE_SEQ_MIDI
+#undef USE_FAAD
+#define USE_SEQ_MIDI
 #undef USE_SNDIO
-#undef USE_TIMIDITY
+#define USE_TIMIDITY
 #define USE_ZLIB
 #undef USE_A52
-#undef USE_SPARKLE
-#define USE_LIBCURL
-#define USE_BASIC_NET
-#define USE_HTTP
+#undef USE_LIBCURL
+#undef USE_BASIC_NET
+#undef USE_HTTP
 #undef USE_OPENMPT
 #undef USE_MIKMOD
 #undef USE_DLC
 #undef USE_SCUMMVMDLC
-#define USE_FLUIDSYNTH
+#undef USE_FLUIDSYNTH
 #undef USE_FLUIDLITE
 #undef USE_SONIVOX
 #undef USE_READLINE
 #undef USE_TEXT_CONSOLE_FOR_DEBUGGER
+#undef USE_UNITY
 #undef USE_GTK
-#define USE_FREETYPE2
+#undef USE_FREETYPE2
 #undef USE_GLES_MODE
 #define USE_OPENGL
 #define USE_GLAD
 #define USE_OPENGL_GAME
 #define USE_OPENGL_SHADERS
+#define USE_LINUXCD
 #undef USE_NASM
 #undef USE_PANDOC
 #define USE_CURL
-#define USE_FRIBIDI
+#undef USE_FRIBIDI
 #undef ENABLE_TEST_CPP_11
 #undef USE_DISCORD
-#define USE_IMGUI_SDLRENDERER2
 #undef ENABLE_VKEYBD
 #undef ENABLE_EVENTRECORDER
 #define USE_TRANSLATION
 #define USE_DETECTLANG
-#define USE_TASKBAR
+#undef USE_TASKBAR
 #define USE_SYSTEM_PRINTING
-#define USE_SYSDIALOGS
-#define USE_TTS
+#undef USE_SYSDIALOGS
+#undef USE_TTS
 #define USE_BINK
 #undef USE_UPDATES
-#define USE_CLOUD
+#undef USE_CLOUD
 #define BUILTIN_RESOURCES
 #define SCUMMVM_SSE2
 #define SCUMMVM_AVX2
@@ -89,7 +89,7 @@
 #define USE_FMTOWNS_PC98_AUDIO
 /* #define USE_GIF */
 /* #define USE_HNM */
-#define USE_IMGUI
+/* #define USE_IMGUI */
 /* #define USE_INDEO3 */
 /* #define USE_INDEO45 */
 /* #define USE_JYV1 */

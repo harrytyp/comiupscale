@@ -18,7 +18,7 @@
 set -euo pipefail
 
 # ── Configuration ────────────────────────────────────────────────────────────
-SCUMMVM_BIN="/opt/data/local/scummvm-build/scummvm"
+SCUMMVM_BIN="/opt/data/local/comi-hd-repo/scummvm/fork/scummvm"
 BUILD_DIR="/opt/data/local/scummvm-build"
 GAME_DIR="/opt/data/local/comi-hd-final"
 REPO_DIR="/opt/data/local/comi-hd-repo"

@@ -37,6 +37,16 @@
 #include "common/fs.h"
 #include "common/textconsole.h"
 
+// HD video player uses raw POSIX FILE* (popen/fread) which conflicts
+// with common/forbidden.h's FILE/FREAD → FORBIDDEN_look_at_... redefine.
+// undefine them here to allow the POSIX code path to compile.
+#ifdef FILE
+#undef FILE
+#endif
+#ifdef fread
+#undef fread
+#endif
+
 namespace Scumm {
 
 // ── Tracing helper ────────────────────────────────────
@@ -184,7 +194,7 @@ bool HdVideoPlayer::open(const Common::String &mp4Path, int width, int height) {
 		"%s -i \"%s\" -vf scale=2560:1920:flags=bilinear -f rawvideo -pix_fmt rgba -an -loglevel error -",
 		ffmpegPath.c_str(), mp4Path.c_str());
 
-	_hdPipePosix = popen(cmd.c_str(), "r");
+	_hdPipePosix = (void*)popen(cmd.c_str(), "r");
 	if (!_hdPipePosix) {
 		warning("HdVideoPlayer: popen failed for: %s", cmd.c_str());
 		return false;
@@ -222,7 +232,8 @@ bool HdVideoPlayer::readFrame(byte *buffer) {
 	int total = 0;
 
 	while (total < frameSize) {
-		size_t bytesRead = fread(buffer + total, 1, frameSize - total, _hdPipePosix);
+		FILE *pipe = (FILE*)_hdPipePosix;
+		size_t bytesRead = fread(buffer + total, 1, frameSize - total, pipe);
 		if (bytesRead == 0)
 			return false;
 		total += (int)bytesRead;
@@ -246,7 +257,7 @@ void HdVideoPlayer::close() {
 	}
 #else
 	if (_hdPipePosix) {
-		pclose(_hdPipePosix);
+		pclose((FILE*)_hdPipePosix);
 		_hdPipePosix = nullptr;
 	}
 #endif

@@ -139,6 +139,14 @@ def upscale_image(input_path, output_path):
             else:
                 cv2.fillPoly(alpha_4x, [pts_4x], 0)
 
+    # Preserve original SD transparency (fill pixels index 255)
+    orig_up = cv2.resize(alpha, (alpha_4x.shape[1], alpha_4x.shape[0]),
+                         interpolation=cv2.INTER_NEAREST)
+    alpha_4x[orig_up < 128] = 0
+
+    # Clean RGB in fully transparent areas (white fill pixels → black)
+    out_np[alpha_4x < 128] = 0
+
     # Step 3: Composite (model outputs RGB, cv2 needs BGR for imwrite)
     result = np.dstack([out_np[:, :, ::-1], alpha_4x])  # RGB → BGR
     cv2.imwrite(output_path, result)

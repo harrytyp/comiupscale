@@ -63,7 +63,7 @@ void MemoryPool::allocPage() {
 
 	// Allocate a new page
 	page.numChunks = _chunksPerPage;
-	assert(page.numChunks * _chunkSize < 16*1024*1024); // Refuse to allocate pages bigger than 16 MB
+	assert(page.numChunks * _chunkSize < 64*1024*1024); // Refuse to allocate pages bigger than 64 MB (HD mode needs > 16 MB for 2560×1920 RGBA)
 
 	page.start = ::malloc(page.numChunks * _chunkSize);
 	assert(page.start);

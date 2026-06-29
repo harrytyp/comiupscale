@@ -1346,6 +1346,11 @@ void ScummEngine::renderHDComposite() {
 				}
 			}
 
+			// Skip index 255 — AKOS transparent color (_transparentColor = 255).
+			// Without this, palette[255] appears as opaque garbage.
+			if (isForeground && curPix == 255)
+				isForeground = false;
+
 			if (isForeground) {
 				step2_fgPixels++;
 				uint8 r = _currentPalette[curPix * 3 + 0];
@@ -1368,7 +1373,9 @@ void ScummEngine::renderHDComposite() {
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
-		for (int oi = 1; oi < _numLocalObjects; oi++) {
+		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
+		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
+		for (int oi = _numLocalObjects - 1; oi > 0; oi--) {
 			ObjectData &od = _objs[oi];
 			if (od.obj_nr == 0)
 				continue;
@@ -1454,11 +1461,14 @@ void ScummEngine::renderHDComposite() {
 					uint8 alpha = (pix >> 24) & 0xFF;
 					if (alpha >= 128) {
 						dstRow[ox] = pix;
-						// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
-						int maskX = (int)hdX + ox;
-						if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
-							hdAlphaMask[maskY * hdW + maskX] = 1;
 					}
+					// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
+					// Cover ALL pixels within HD object bounding box, not just opaque.
+					// Transparent/empty areas of HD objects should still protect against
+					// 8-bit overlay artifacts and show what's behind them correctly.
+					int maskX = (int)hdX + ox;
+					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
+						hdAlphaMask[maskY * hdW + maskX] = 1;
 				}
 			}
 
@@ -1661,16 +1671,30 @@ void ScummEngine::renderHDComposite() {
 							(((sg * alpha + dg * (255 - alpha)) / 255) << 8) |
 							(((sb * alpha + db * (255 - alpha)) / 255) << 16) |
 							(0xFF << 24);
+					} else {
+						// alpha == 0: check if something is behind (HD object or
+						// earlier z-sorted HD costume). If so, preserve it.
+						// Otherwise, restore HD background to prevent 8-bit artifacts.
+						if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH) {
+							if (hdAlphaMask[maskY * hdW + maskX] == 0) {
+								// Nothing behind → restore HD background
+								int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
+								const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(maskX, maskY);
+								uint8 bgR = bgRowRaw[0], bgG = bgRowRaw[1], bgB = bgRowRaw[2];
+								dstRow[ox] = bgR | (bgG << 8) | (bgB << 16) | (0xFF << 24);
+								hdAlphaMask[maskY * hdW + maskX] = 1;
+							}
+							// else: leave existing (something behind)
+						}
 					}
-					// alpha == 0: leave existing composite content unchanged.
-					// The alpha mask tracking below ensures Step 2.6b won't
-					// re-overlay 8-bit content over this costume area.
 					// Track alpha mask for Step 2.6b:
-					// Mark ALL pixels within the costume bbox (opaque AND transparent)
-					// This prevents step2.6b from re-overlaying 8-bit pixels
-					// at HD costume positions. Actor bbox uses getPos() which may
-					// be wrong (pos.x=0 when actor is off-screen left in 8-bit)
-					// but HD costumes are drawn at the correct relative position.
+					// Mark ALL pixels within HD costume bounding box so Step 2.6b 
+					// won't re-overlay 8-bit content over this costume area.
+					// This prevents 8-bit artifacts ("white stripes") around costumes
+					// where the HD version has transparent edges. The transparent
+					// areas correctly show whatever is behind (HD objects from Step
+					// 2.5, other HD costumes from z-sorted Step 2.6, or the HD
+					// background from Step 1).
 					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
 						hdAlphaMask[maskY * hdW + maskX] = 1;
 				}
@@ -1776,8 +1800,15 @@ void ScummEngine::renderHDComposite() {
 			                          0, 0, copyW, copyH);
 	}
 
-	// HD debug dump — disabled (enable by setting hd_dump_frame=N)
+	// HD debug dump — trigger dump at configured room/frame
 	_hdFrameCount++;
+	if (_hdDebugDumpCount > 0) {
+		if (_hdFrameCount == _hdDebugDumpCount || 
+		    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
+			hdDebugDump();
+			_hdDebugDumpCount = 30; // periodic
+		}
+	}
 }
 
 void ScummEngine::hdDebugDump() {

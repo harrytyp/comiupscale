@@ -355,6 +355,30 @@ This works because:
 
 ---
 
+## Changelog — 2026-06-29: HD Costume Assets Cleanup & Rendering Fixes 🧹
+
+### Asset Cleanup
+
+Multiple overlapping costume directories (`costumes_ai/`, `costumes_backup_old/`, `costumes_fixed*`, `costumes_sd_backup/`, `comi-hd-test/`) with mixed SD/HD files have been consolidated. Guybrush (AKOS 0002) was missing from the AI-upscaling pipeline — all 688 frames were at SD resolution while other costumes were already 4× HD. AI-upscaled frames from the `costumes_ai/` output were copied into the final `comi-hd-final/hd/costumes/` directory. All redundant backup directories have been deleted. Scripts updated to reference only the two canonical paths: extracted (SD) and upscaled (HD).
+
+### Boot Param for Room Testing
+
+The auto-warp mechanism (`startScene(9)`) bypassed proper room entry scripts, leaving Guybrush (Actor 1) not initialized in Room 9. Removed auto-warp code from `scumm.cpp`. Use `--boot-param=9` to start directly in Room 9 with full room script execution.
+
+### Z-Order Object Rendering (V8 fix, `gfx.cpp` Step 2.5)
+
+Objects were iterated in ascending ID order, but V8 (COMI) uses descending ID order (highest ID = behind, lowest ID = front). Fixed by reversing loop direction.
+
+### Index 255 Transparency Skip (`gfx.cpp` Step 2)
+
+AKOS transparent color (index 255) was being treated as opaque foreground, producing garbage pixels from palette entry 255. Fixed by skipping index 255 during diff-against-clean compositing.
+
+### Alpha Compositing (`gfx.cpp` Step 2.6)
+
+Transparent HD costume pixels (alpha == 0) now check `hdAlphaMask` — if something is behind (HD object or earlier z-sorted costume), it's preserved. Otherwise the HD background is restored.
+
+---
+
 ## HD Rendering Pipeline (How It Works)
 
 The ScummVM fork uses the **OpenGL backend** (not SurfaceSDL). HD backgrounds are loaded
