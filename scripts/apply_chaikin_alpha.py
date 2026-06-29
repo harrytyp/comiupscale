@@ -154,6 +154,14 @@ def apply_chaikin_alpha(sd_path, hd_path, output_path=None):
         if hole_list:
             cv2.fillPoly(alpha_4x, hole_list, 0)
 
+        # Preserve original SD transparency (fill pixels index 255, transparent BG)
+        # Chaikin fillPoly fills everything inside outer contours as opaque,
+        # which overwrites fill pixels that should stay transparent.
+        if not src_from_hd:
+            orig_up = cv2.resize(mask, (alpha_4x.shape[1], alpha_4x.shape[0]),
+                                 interpolation=cv2.INTER_NEAREST)
+            alpha_4x[orig_up == 0] = 0
+
         # Composite onto HD image
         hd_img = Image.open(hd_path)
         hd_arr = np.array(hd_img)
@@ -161,6 +169,15 @@ def apply_chaikin_alpha(sd_path, hd_path, output_path=None):
             hd_arr[:, :, 3] = alpha_4x
         else:
             hd_arr = np.dstack([hd_arr, alpha_4x])
+
+        # Clean RGB in fully transparent areas:
+        # RealESRGAN upscales fill pixels (palette index 255 = white) to white RGB,
+        # but they should be invisible where alpha=0. Chaikin smoothing makes alpha
+        # boundaries tighter, potentially exposing white halos. Set RGB=0 where alpha=0
+        # to prevent white bleed-through at transparent edges.
+        transparent = (hd_arr[:, :, 3] == 0)
+        hd_arr[transparent, 0:3] = 0
+
         Image.fromarray(hd_arr, 'RGBA').save(output_path or hd_path)
 
         return True, f"OK ({len(outer_list)} outer, {len(hole_list)} holes)"

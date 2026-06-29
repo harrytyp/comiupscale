@@ -9,8 +9,8 @@ Use --no-chaikin to skip alpha smoothing (nearest-neighbor alpha only).
 """
 import sys, os, time, subprocess, glob
 
-SRC_DIR = '/opt/data/local/scummvm-build/hd/costumes'
-DST_DIR = '/opt/data/local/scummvm-build/hd/costumes_ai'
+SRC_DIR = '/opt/data/local/comi-hd-final/hd/costumes_sd_backup'  # raw SD extractions
+DST_DIR = '/opt/data/local/comi-hd-final/hd/costumes'  # HD output (AlESRGAN + Chaikin)
 ESRGAN_BIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'realesrgan-ncnn-vulkan')
 
 os.makedirs(DST_DIR, exist_ok=True)

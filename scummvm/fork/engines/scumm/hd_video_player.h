@@ -81,7 +81,7 @@ private:
 	void *_hdProcess;  // HANDLE (opaque)
 	void *_hdPipe;     // HANDLE (opaque)
 #else
-	FILE *_hdPipePosix;  // popen FILE*
+	void *_hdPipePosix;  // stored as void* to avoid forbidden.h FILE* conflict
 #endif
 	int _width;
 	int _height;

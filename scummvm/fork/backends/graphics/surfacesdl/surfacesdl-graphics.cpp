@@ -1870,7 +1870,13 @@ int16 SurfaceSdlGraphicsManager::getWidth() const {
 
 void SurfaceSdlGraphicsManager::setPalette(const byte *colors, uint start, uint num) {
 	assert(colors);
-	assert(_screenFormat.bytesPerPixel == 1);
+
+	// In HD mode with RGBA32 screen format, bytesPerPixel may be > 1.
+	// Skip palette updates in this case — the compositing pipeline
+	// handles 8-bit→32-bit conversion via _currentPalette.
+	if (_screenFormat.bytesPerPixel != 1) {
+		return;
+	}
 
 	// Setting the palette before _screen is created is allowed - for now -
 	// since we don't actually set the palette until the screen is updated.

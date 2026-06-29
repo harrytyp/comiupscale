@@ -43,6 +43,14 @@ namespace Scumm {
 void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 	int i, where;
 
+	// HACK: force room 9 for HD debugging
+	// Only force after initialization (skip rooms 0 and 87 which are loading/menu)
+	if (room != 9 && _hdDebugDumpCount == 9 && room != 0 && room != 87) {
+		warning("HD DEBUG: Forcing room 9 (was room %d)", room);
+		room = 9;
+		objectNr = 0;
+	}
+
 	debugC(DEBUG_GENERAL, "Loading room %d", room);
 
 #ifdef ENABLE_SCUMM_7_8
