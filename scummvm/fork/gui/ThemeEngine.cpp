@@ -1843,7 +1843,14 @@ const Graphics::Font *ThemeEngine::loadFont(const Common::String &filename, cons
 	// We can use non-scalable fonts, but only for English
 	bool allowNonScalable = true;
 #ifdef USE_TRANSLATION
+#ifndef USE_FREETYPE2
+	// Without FreeType2, no scalable fonts are available at all.
+	// Always fall back to BDF built-in fonts regardless of language,
+	// otherwise non-English users get no font at all.
+	allowNonScalable = true;
+#else
 	allowNonScalable = TransMan.currentIsBuiltinLanguage();
+#endif
 #endif
 	if (!font && allowNonScalable) {
 		font = loadFont(filename, fontName);

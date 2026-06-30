@@ -394,7 +394,7 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 			const_cast<Actor *>(a)->_hdLimbDrawY[limb] = yMoveCur;
 			const_cast<Actor *>(a)->_hdNumLimbs = MAX((int)const_cast<Actor *>(a)->_hdNumLimbs, limb + 1);
 			if (a->_number == 1)
-				warning("HDDBG LIMB: actor=%d limb=%d cel=%d drawX=%d drawY=%d w=%d h=%d",
+				debug(1, "HDDBG LIMB: actor=%d limb=%d cel=%d drawX=%d drawY=%d w=%d h=%d",
 					a->_number, limb, (code & AKC_CelMask), xMoveCur, yMoveCur, _width, _height);
 		}
 		_xMove += (int16)READ_LE_UINT16(&costumeInfo->moveX);
@@ -458,7 +458,7 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 					const_cast<Actor *>(a)->_hdLimbDrawY[limb] = yMoveCur;
 					const_cast<Actor *>(a)->_hdNumLimbs = MAX((int)const_cast<Actor *>(a)->_hdNumLimbs, limb + 1);
 					if (a->_number == 1)
-						warning("HDDBG LIMB: actor=%d limb=%d subCel=%d drawX=%d drawY=%d w=%d h=%d",
+						debug(1, "HDDBG LIMB: actor=%d limb=%d subCel=%d drawX=%d drawY=%d w=%d h=%d",
 							a->_number, limb, subCel, xMoveCur, yMoveCur, _width, _height);
 				}
 			}

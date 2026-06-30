@@ -89,13 +89,23 @@ bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 		}
 	}
 
-	// Build path from hd_path config, with fallback to game/hd/
+	// Build path from hd_path config, with fallback to sibling directory
 	Common::FSNode hdDir;
 	if (ConfMan.hasKey("hd_path", "comi")) {
 		hdDir = Common::FSNode(Common::Path(ConfMan.get("hd_path", "comi"), Common::Path::kNativeSeparator));
 	} else {
+		// Sibling path: if game is in /path/to/game/, hd is in /path/to/hd/
 		Common::FSNode gameDataDir(ConfMan.getPath("path"));
-		hdDir = gameDataDir.getChild("hd");
+		Common::String gp = gameDataDir.getPath().toString(Common::Path::kNativeSeparator);
+		for (uint i = 0; i < gp.size(); ++i)
+			if (gp[i] == '\\') gp[i] = '/';
+		while (!gp.empty() && (gp.lastChar() == '/' || gp.lastChar() == '\\'))
+			gp.deleteLastChar();
+		Common::String::size_type pos = gp.rfind('/');
+		if (pos != Common::String::npos)
+			gp.erase(pos);
+		Common::String hdPath = gp + "/hd";
+		hdDir = Common::FSNode(Common::Path(hdPath, Common::Path::kNativeSeparator));
 	}
 
 	Common::FSNode videoDir = hdDir.getChild("videos");
