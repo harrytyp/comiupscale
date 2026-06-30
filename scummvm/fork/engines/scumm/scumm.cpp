@@ -994,18 +994,38 @@ Common::Error ScummEngine::init() {
 
 		const Common::FSNode gameDataDir(ConfMan.getPath("path"));
 
-	// Initialize HD asset path
+	// ── Resolve HD path ─────────────────────────────────────────
+	// Priority: 1) active domain, 2) explicit comi/comi-de,
+	//           3) sibling "hd" directory of game dir (one-up + /hd)
 	Common::String hdPath;
-	if (ConfMan.hasKey("hd_path", "comi")) {
-		// Use explicit HD path from config (e.g., "D:/COMI-Upscaled/assets/upscaled")
-		hdPath = ConfMan.get("hd_path", "comi");
-		debug(1, "ScummEngine: HD path from config: %s", hdPath.c_str());
-	} else {
-		// Default: look for "hd/" subdirectory next to game data
-		hdPath = gameDataDir.getPath().toString();
-		if (hdPath.lastChar() != '/' && hdPath.lastChar() != '\\\\')
-			hdPath += '/';
-		hdPath += "hd";
+	Common::String domain = ConfMan.getActiveDomainName();
+
+	// Helper: check a domain and log result
+	auto tryDomain = [&](const Common::String &d) -> bool {
+		if (d.empty() || !ConfMan.hasKey("hd_path", d))
+			return false;
+		hdPath = ConfMan.get("hd_path", d);
+		warning("ScummEngine: HD path from config domain '%s': %s", d.c_str(), hdPath.c_str());
+		return true;
+	};
+
+	if (!tryDomain(domain) && !tryDomain("comi") && !tryDomain("comi-de")) {
+		// Compute HD as sibling directory of game data
+		// e.g. game = "/path/to/game/" → hd = "/path/to/hd/"
+		Common::String gp = gameDataDir.getPath().toString(Common::Path::kNativeSeparator);
+		// Normalise separators to forward slash
+		for (uint i = 0; i < gp.size(); ++i)
+			if (gp[i] == '\\') gp[i] = '/';
+		// Strip trailing separator
+		while (!gp.empty() && (gp.lastChar() == '/' || gp.lastChar() == '\\'))
+			gp.deleteLastChar();
+		// Go up one directory (strip last component)
+		Common::String::size_type pos = gp.rfind('/');
+		if (pos != Common::String::npos)
+			gp.erase(pos);
+		// Append hd
+		hdPath = gp + "/hd";
+		warning("ScummEngine: HD path from game-dir sibling: %s", hdPath.c_str());
 	}
 	_hdAssetManager->setHDPath(hdPath);
 	_hdObjectManager->init(hdPath);

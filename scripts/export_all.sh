@@ -23,10 +23,10 @@ set -euo pipefail
 
 # ---- Configuration ---------------------------------------------------------
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-GAME_DIR="$PROJECT_ROOT/game"
+GAME_DIR="$PROJECT_ROOT/comi-hd-final"
 RESOURCE_DIR="$GAME_DIR/RESOURCE"
 NUTCRACKER="$PROJECT_ROOT/tools/nutcracker-Windows_X64/nutcracker.exe"
-NUTCRACKER_SRC="$PROJECT_ROOT/tools/nutcracker/src"
+NUTCRACKER_SRC="$PROJECT_ROOT/../nutcracker_src"
 OUTPUT_BASE="$PROJECT_ROOT/assets/extracted/COMI"
 PYTHON=""
 VERBOSE=false

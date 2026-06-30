@@ -142,9 +142,30 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 		return false;
 	}
 
-	surf.copyFrom(*pngSurf);
-	png.destroy();
-	return true;
-}
+		// Convert 24-bit RGB PNGs (3 bytes/pixel) to 32-bit RGBA
+		// because ScummVM's fillRect etc. don't support 3 bytes/pixel.
+		if (pngSurf->format.bytesPerPixel == 3) {
+				warning("HDAssetManager: Converting 24-bit PNG to 32-bit RGBA");
+			Graphics::PixelFormat dstFmt(4, 8, 8, 8, 8, 24, 16, 8, 0); // 32-bit RGBA
+			surf.create(pngSurf->w, pngSurf->h, dstFmt);
+			// Manual pixel conversion: RGB24 → RGBA32 (alpha = 255)
+			for (int y = 0; y < pngSurf->h; ++y) {
+				const byte *src = (const byte *)pngSurf->getBasePtr(0, y);
+				byte *dst = (byte *)surf.getBasePtr(0, y);
+				for (int x = 0; x < pngSurf->w; ++x) {
+					dst[0] = src[0]; // R
+					dst[1] = src[1]; // G
+					dst[2] = src[2]; // B
+					dst[3] = 255;    // A
+					src += 3;
+					dst += 4;
+				}
+			}
+		} else {
+			surf.copyFrom(*pngSurf);
+		}
+		png.destroy();
+		return true;
+	}
 
 } // End of namespace Scumm

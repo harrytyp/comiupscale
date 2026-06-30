@@ -1231,10 +1231,15 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 			mp4Path = ConfMan.get("hd_path", "comi");
 		} else {
 			Common::FSNode gameDataDir(ConfMan.getPath("path"));
-			mp4Path = gameDataDir.getPath().toString();
-			if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
-				mp4Path += '/';
-			mp4Path += "hd";
+			Common::String gp = gameDataDir.getPath().toString(Common::Path::kNativeSeparator);
+			for (uint i = 0; i < gp.size(); ++i)
+				if (gp[i] == '\\') gp[i] = '/';
+			while (!gp.empty() && (gp.lastChar() == '/' || gp.lastChar() == '\\'))
+				gp.deleteLastChar();
+			Common::String::size_type pos = gp.rfind('/');
+			if (pos != Common::String::npos)
+				gp.erase(pos);
+			mp4Path = gp + "/hd";
 		}
 		if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
 			mp4Path += '/';
