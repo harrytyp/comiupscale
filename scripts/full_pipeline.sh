@@ -172,7 +172,7 @@ if [ "$SKIP_BUILD" = false ]; then
     
     # Configure and build
     ./configure --host=mingw64 --backend=opengl \
-        --disable-all-engines --enable-engine=scumm 2>&1 | tail -3
+        --disable-all-engines --enable-engine=scumm --enable-engine=scumm_7_8 2>&1 | tail -3
     mingw32-make -j$(nproc) 2>&1 | tail -5
     
     # Copy binary to game dir
