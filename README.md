@@ -116,3 +116,30 @@ Original Curse of Monkey Island data:
 ### v1.0.0
 - Initial release with HD backgrounds
 - Basic costume support
+
+---
+
+## Acknowledgments
+
+This project builds on the work of many people in the SCUMM modding community:
+
+### Tools & Libraries
+- **ScummVM Team** — The amazing engine that makes all this possible. [scummvm.org](https://www.scummvm.org/)
+- **NUTcracker** ([BLooperZ](https://github.com/BLooperZ/nutcracker) / pycd02) — Asset extraction toolkit for SCUMM games. The AKOS costume decoder was added specifically for COMI upscaling.
+- **RealESRGAN** ([xinntao](https://github.com/xinntao/Real-ESRGAN)) — AI upscaling model (`x4plus_anime_6B`) used for all backgrounds, objects, and costumes.
+- **MMUCS** ([haywirephoenix](https://github.com/haywirephoenix/MMUCS)) — Godot-powered SCUMM V8 content explorer. Groundbreaking work on COMI modding and AKOS rendering.
+
+### Research & Predecessors
+- **Happy-Ferret (Mark Bauermeister)** — Pioneering work on a ScummVM v6 HD fork with external texture loading. [patreon.com/HappyFerret](https://patreon.com/HappyFerret)
+- **Laserschwert** — Early ESRGAN upscales of COMI assets (2020). MixnMojo veteran.
+- **haywirephoenix** — Requested and tested AKOS support in NUTcracker, created ScummRev (AKOS viewer predecessor), built MMUCS.
+- **ubertrout** — 4K Topaz Video upscale of all COMI cutscenes. [archive.org/details/COMI_4k](https://archive.org/details/COMI_4k)
+
+### HD Assets
+- **Original Game:** © LucasArts / Disney (1998). Game data not included.
+- **HD Textures:** AI-upscaled using RealESRGAN. Licensed under CC BY-NC-SA 4.0.
+- **4K Videos:** Upscaled by ubertrout using Topaz Video AI. Available at the link above.
+
+---
+
+*COMI-HD is a fan project. Not affiliated with LucasArts, Disney, or ScummVM.*
