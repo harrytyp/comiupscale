@@ -178,6 +178,20 @@ if [ "$SKIP_BUILD" = false ]; then
     # Copy binary to game dir
     cp scummvm.exe "$PROJECT_ROOT/game/scummvm-hd.exe"
     echo "  Binary deployed to $PROJECT_ROOT/game/scummvm-hd.exe"
+
+    # Copy required runtime DLLs (MSYS2 MinGW64)
+    if [ -f "/mingw64/bin/SDL2.dll" ]; then
+        cp /mingw64/bin/SDL2.dll "$PROJECT_ROOT/game/"
+        echo "  SDL2.dll copied"
+    else
+        echo "  WARNING: SDL2.dll not found at /mingw64/bin/"
+    fi
+    if [ -f "/mingw64/bin/zlib1.dll" ]; then
+        cp /mingw64/bin/zlib1.dll "$PROJECT_ROOT/game/"
+        echo "  zlib1.dll copied"
+    else
+        echo "  WARNING: zlib1.dll not found at /mingw64/bin/"
+    fi
 fi
 
 echo ""
