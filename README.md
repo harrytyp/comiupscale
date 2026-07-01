@@ -18,37 +18,26 @@ COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM 
 
 ---
 
+## Prerequisites
+
+You need a **legal copy of "The Curse of Monkey Island"** to play. The original game files (`COMI.LA0`, `COMI.LA1`, `COMI.LA2`, `RESOURCE/`) are **not included** in this release.
+
+| Source | Link | Price |
+|--------|------|:-----:|
+| **Steam** | https://store.steampowered.com/app/730820/ | ~€5 |
+| **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | ~€5, DRM-free |
+
 ## Downloads
 
-The release is split into **3 parts**:
+This release contains the **ScummVM fork** and **HD texture packs** — no game data.
 
-| Part | Content | Size | Source |
-||------|---------|:----:|:------:|
-|| 1. Game | COMI.LA0, LA1, LA2 | 82 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
-|| 2. HD Assets | Backgrounds, Videos, Costumes, Objects, Fonts | 8.8 GB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) (6 parts) |
-|| 3. ScummVM Build | scummvm.exe, SDL2.dll, zlib1.dll, Scripts | 26 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
+| Part | Content | Size |
+|------|---------|:----:|
+| 1. ScummVM Build | `comi_hd_build.zip` (scummvm.exe, SDL2.dll, zlib1.dll, Scripts) | 26 MB |
+| 2. HD Assets | `hd_assets_part1.zip` – `hd_assets_part6.zip` | 8.8 GB (6 parts) |
 
-### 1. Game Files (`comi_hd_game.zip`)
-Original Curse of Monkey Island data:
-- `COMI.LA0`
-- `COMI.LA1`
-- `COMI.LA2`
+### 1. ScummVM Build (`comi_hd_build.zip`)
 
-→ Extract into your `COMI/` directory.
-
-### 2. HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
-```
-hd/
-├── backgrounds/   (81 HD backgrounds, 2560×1920)
-├── costumes/      (25,303 costume frames)
-├── videos/        (15 upscaled cutscenes)
-├── objects/       (600 HD objects)
-├── fonts/         (5 HD fonts)
-└── object_map.json
-```
-→ Download all 6 parts, then extract all into the same directory (next to `game/hd/`).
-
-### 3. ScummVM Build (`comi_hd_build.zip`)
 | File | Description |
 |------|-------------|
 | `scummvm.exe` | ScummVM v1.0.2 with HD support (scumm_7_8 engine) |
@@ -58,22 +47,38 @@ hd/
 | `start_comi_hd.sh` | Linux launcher script |
 | `scummvm.ini` | Preconfigured ScummVM config |
 
+### 2. HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
+
+```
+hd/
+├── backgrounds/   (81 HD backgrounds, 2560×1920)
+├── costumes/      (25,303 costume frames)
+├── videos/        (15 upscaled cutscenes)
+├── objects/       (600 HD objects)
+├── fonts/         (5 HD fonts)
+└── object_map.json
+```
+
+→ Download all 6 parts, then extract all into the same directory (next to `game/hd/`).
+
 ---
 
 ## Installation
 
-|### Windows
-|1. Extract `comi_hd_game.zip` → `COMI/`
-|2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-|3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
-|4. Run `start_comi_hd.bat`
+### Windows
+1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
+2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
+4. Copy your COMI game data into the `game/` subdirectory
+5. Run `start_comi_hd.bat`
 
-|### Linux
-|1. Extract `comi_hd_game.zip` → `COMI/`
-|2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-|3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
-|4. `chmod +x scummvm start_comi_hd.sh`
-|5. Run `./start_comi_hd.sh`
+### Linux
+1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
+2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
+4. Copy your COMI game data into the `game/` subdirectory
+5. `chmod +x scummvm start_comi_hd.sh`
+6. Run `./start_comi_hd.sh`
 
 ---
 
