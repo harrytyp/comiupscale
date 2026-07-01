@@ -35,8 +35,8 @@ This release contains the **ScummVM fork** and **HD texture packs** — no game 
 
 | File | Contents |
 |------|----------|
-| `comi_hd_build_0.0.3.zip` | ScummVM fork (`scummvm.exe`, `SDL2.dll`, `zlib1.dll`), launcher scripts, config |
-| `hd_assets_0.0.3_part1–6.zip` | HD textures (6 parts, ~8.8 GB total) — extract all into `hd/` |
+| `comi_hd_build.zip` | ScummVM fork (`scummvm.exe`, `SDL2.dll`, `zlib1.dll`), launcher scripts, config |
+| `hd_assets_part1–6.zip` | HD textures (6 parts, ~8.8 GB total) — extract all into `hd/` |
 
 → Download all 6 HD part ZIPs and extract into the same directory (next to `game/hd/`).
 
@@ -46,15 +46,15 @@ This release contains the **ScummVM fork** and **HD texture packs** — no game 
 
 ### Windows
 1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-|2. Extract `comi_hd_build_0.0.3.zip` → `comi_hd_v0.0.3/`
-|3. Download & extract all 6 `hd_assets_0.0.3_part*.zip` → `comi_hd_v0.0.3/hd/`
-|4. Copy your COMI game data into the `game/` subdirectory
-|5. Run `start_comi_hd.bat`
+2. Extract `comi_hd_build.zip` → your game folder
+3. Download & extract all 6 `hd_assets_part*.zip` → same folder's `hd/`
+4. Copy your COMI game data into the `game/` subdirectory
+5. Run `start_comi_hd.bat`
 
-|### Linux
-|1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-|2. Extract `comi_hd_build_0.0.3.zip` → `comi_hd_v0.0.3/`
-|3. Download & extract all 6 `hd_assets_0.0.3_part*.zip` → `comi_hd_v0.0.3/hd/`
+### Linux
+1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
+2. Extract `comi_hd_build.zip` → your game folder
+3. Download & extract all 6 `hd_assets_part*.zip` → same folder's `hd/`
 4. Copy your COMI game data into the `game/` subdirectory
 5. `chmod +x scummvm start_comi_hd.sh`
 6. Run `./start_comi_hd.sh`
@@ -87,7 +87,7 @@ This release contains the **ScummVM fork** and **HD texture packs** — no game 
 
 ## Changelog
 
-### v0.0.3 (Current)
+### Current
 - ✅ scumm_7_8 engine enabled
 - ✅ Room-warp debug feature removed
 - ✅ Relative game path in `start_comi_hd.bat`
