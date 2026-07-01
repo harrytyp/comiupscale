@@ -100,7 +100,6 @@ Key options in `scummvm.ini` under `[comi]`:
 ## 📜 License
 
 - **ScummVM:** GPLv2 — https://www.scummvm.org/
-- **HD Textures:** Creative Commons BY-NC-SA 4.0
 - **Game Data:** © LucasArts / Disney — not included
 
 ## 🙏 Acknowledgments
@@ -133,15 +132,8 @@ This project is provided for **educational and archival purposes only**.
 - ❌ No original game assets (COMI.LA0, LA1, LA2, or original room data)
 - ❌ No ROMs, ISOs, or disk images
 
-### Legal Defenses
-- **Transformative Use:** HD textures are 4x AI-upscaled — new pixels created by neural inference
-- **No Market Harm:** The game (1998) is no longer commercially marketed; this project requires a legitimate copy
-- **ScummVM Precedent:** Clean-room reimplementation — unchallenged for 20+ years
-- **Non-Commercial:** Free, open-source, no monetization of Disney's IP
-
 ### License
 - **ScummVM fork:** GPL v2 — https://www.scummvm.org/
-- **HD Textures:** CC BY-NC-SA 4.0 — share/adapt for non-commercial use with attribution
 - **Documentation:** MIT License
 
 ---

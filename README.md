@@ -31,12 +31,17 @@ You need a **legal copy of "The Curse of Monkey Island"** to play. The original 
 
 This release contains the **ScummVM fork** and **HD texture packs** — no game data.
 
-| Part | Content | Size |
-|------|---------|:----:|
-| 1. ScummVM Build | `comi_hd_build.zip` (scummvm.exe, SDL2.dll, zlib1.dll, Scripts) | 26 MB |
-| 2. HD Assets | `hd_assets_part1.zip` – `hd_assets_part6.zip` | 8.8 GB (6 parts) |
+| Part | File | Size | Download |
+|------|------|:----:|:--------:|
+| 1. ScummVM Build | `comi_hd_build.zip` | 26 MB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/comi_hd_build.zip) |
+| 2. HD Assets (Part 1) | `hd_assets_part1.zip` | 1.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part1.zip) |
+| 2. HD Assets (Part 2) | `hd_assets_part2.zip` | 1.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part2.zip) |
+| 2. HD Assets (Part 3) | `hd_assets_part3.zip` | 1.7 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part3.zip) |
+| 2. HD Assets (Part 4) | `hd_assets_part4.zip` | 0.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part4.zip) |
+| 2. HD Assets (Part 5) | `hd_assets_part5.zip` | 1.7 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part5.zip) |
+| 2. HD Assets (Part 6) | `hd_assets_part6.zip` | 0.8 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part6.zip) |
 
-### 1. ScummVM Build (`comi_hd_build.zip`)
+### ScummVM Build (`comi_hd_build.zip`)
 
 | File | Description |
 |------|-------------|
@@ -47,7 +52,7 @@ This release contains the **ScummVM fork** and **HD texture packs** — no game 
 | `start_comi_hd.sh` | Linux launcher script |
 | `scummvm.ini` | Preconfigured ScummVM config |
 
-### 2. HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
+### HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
 
 ```
 hd/
@@ -142,7 +147,6 @@ This project builds on the work of many people in the SCUMM modding community:
 
 ### HD Assets
 - **Original Game:** © LucasArts / Disney (1998). Game data not included.
-- **HD Textures:** AI-upscaled using RealESRGAN. Licensed under CC BY-NC-SA 4.0.
 - **4K Videos:** Upscaled by ubertrout using Topaz Video AI. Available at the link above.
 
 ---
@@ -174,27 +178,6 @@ The user must own a legitimate copy of "The Curse of Monkey Island" and extract 
 - [GOG.com](https://www.gog.com/en/game/the_curse_of_monkey_island)
 - The original CD release
 
-#### Legal Defenses
-
-| Argument | Explanation |
-|----------|-------------|
-| **Transformative Use** | The HD textures are not copies — they are 4x AI-upscaled derivatives produced by RealESRGAN. The original 640×480 pixel data is transformed into 2560×1920 through neural inference, creating new pixels that did not exist in the original. |
-| **No Market Harm** | "The Curse of Monkey Island" is a 1998 game no longer commercially marketed. This project does not replace the original game — it requires it. There is no substitute effect. |
-| **ScummVM Precedent** | ScummVM itself has been legally unchallenged for 20+ years. It is a clean-room reimplementation of game engines. Our fork extends ScummVM — it does not contain any LucasArts code. |
-| **Non-Commercial** | This project is free, open-source, and non-commercial. There is no monetization of Disney's IP. |
-
-#### What Happens If Disney Contacts You
-
-If Disney or its representatives contact you regarding this project:
-
-1. **Do not ignore it** — respond promptly and courteously
-2. **State clearly that this is a non-commercial fan project**
-3. **Offer to remove any specific files they object to**
-4. **Comply with DMCA takedown requests** (GitHub has a standard process)
-5. **Consult a lawyer** if the matter escalates
-
-Historically, Disney has tolerated modding and fan projects for their classic LucasArts catalog. The ScummVM project has operated without incident for two decades. Several COMI modding projects (MMUCS, NUTcracker, various upscale attempts) have existed publicly for years without legal action.
-
 #### Trademarks
 
 "Curse of Monkey Island", "Monkey Island", "LucasArts", and "Disney" are registered trademarks of their respective owners. This project is not endorsed by or affiliated with Disney, LucasArts, or any of their subsidiaries. All trademarks and copyrights are property of their respective holders.
@@ -202,7 +185,6 @@ Historically, Disney has tolerated modding and fan projects for their classic Lu
 #### License
 
 - **ScummVM fork:** GPL v2 — [https://www.scummvm.org/](https://www.scummvm.org/)
-- **HD Textures:** Creative Commons BY-NC-SA 4.0 — you may share and adapt them for non-commercial purposes with attribution
 - **Documentation:** MIT License
 
 ---
