@@ -15,18 +15,12 @@
 
 ## ❌ What You Need To Provide
 
-### 1. The Game "Curse of Monkey Island" (COMI)
+### The Game "Curse of Monkey Island" (COMI)
 
-You need the original game files (~146 MB):
-- `COMI.LA0`
-- `COMI.LA1`  
-- `COMI.LA2`
-- `RESOURCE/` (folder)
+The original game files (`COMI.LA0`, `COMI.LA1`, `COMI.LA2`, `RESOURCE/`) are **not included**. You need a legal copy:
 
-Available from:
-
-| Source | Link | Note |
-|--------|------|------|
+| Source | Link | Price |
+|--------|------|:-----:|
 | **Steam** | https://store.steampowered.com/app/730820/ | ~€5 |
 | **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | ~€5, DRM-free |
 
@@ -41,23 +35,24 @@ Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 
 ### Linux
 ```bash
-# 1. Extract all ZIPs
-unzip comi_hd_game.zip -d ~/spiele/COMI/
+# 1. Extract build ZIP
 unzip comi_hd_build.zip -d comi_hd_v1.0.2/
-# Extract all 6 HD asset parts into the same directory
+# 2. Extract all 6 HD asset parts into the same directory
 for f in hd_assets_part*.zip; do unzip "$f" -d comi_hd_v1.0.2/; done
 cd comi_hd_v1.0.2
 
-# 2. Make binaries executable
+# 3. Copy your COMI game data into game/ subdirectory
+
+# 4. Make binaries executable
 chmod +x scummvm
 ./start_comi_hd.sh
 ```
 
 ### Windows
 ```bat
-:: 1. Extract comi_hd_game.zip → COMI/
-:: 2. Extract comi_hd_build.zip → comi_hd_v1.0.2/
-:: 3. Extract all 6 hd_assets_part*.zip → comi_hd_v1.0.2/ (same directory)
+:: 1. Extract comi_hd_build.zip → comi_hd_v1.0.2/
+:: 2. Extract all 6 hd_assets_part*.zip → comi_hd_v1.0.2/ (same directory)
+:: 3. Copy COMI game data into game/ subdirectory
 :: 4. Run start_comi_hd.bat
 ```
 
