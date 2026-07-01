@@ -1,118 +1,118 @@
 # COMI-HD — Curse of Monkey Island HD Upscale
 
 ![COMI-HD Screenshot](docs/screenshots/room9.png)
-*Room 9 (Cannon Gallery) mit HD-Texturen — 4x Upscale*
+*Room 9 (Cannon Gallery) with HD textures — 4x upscale*
 
 ---
 
-## Überblick
+## Overview
 
-COMI-HD ist ein **ScummVM Fork** der Curse of Monkey Island (COMI / SCUMM v8) in **4x HD** rendert. Der Fork lädt externe HD-Texturen (Backgrounds, Kostüme, Objekte, Fonts) aus einem `hd/` Verzeichnis und skaliert Koordinaten zur Laufzeit — kein Patchen der Original-Spiel-Dateien nötig.
+COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts) from an `hd/` directory and scales coordinates at runtime — no original game file patching required.
 
 ### Features
-- ⚡ **4x HD** (2560×1920) — KI-upscalte Texturen via RealESRGAN
-- 🎭 **25.303 Kostüm-Frames** — HD-Charaktere in voller Pracht
-- 🖼️ **81 HD-Backgrounds** — alle Räume in hochskalierter Qualität
-- 🎬 **15 HD-Videos** — KI-upscalte Zwischensequenzen
-- 🔧 **Kein Patchen** — Original-Spiel-Dateien bleiben unverändert
+- ⚡ **4x HD** (2560×1920) — AI-upscaled textures via RealESRGAN
+- 🎭 **25,303 costume frames** — HD characters in full detail
+- 🖼️ **81 HD backgrounds** — every room upscaled
+- 🎬 **15 HD videos** — AI-upscaled cutscenes
+- 🔧 **No patching** — original game files remain untouched
 
 ---
 
 ## Downloads
 
-Das Release ist in **3 Teile** aufgeteilt:
+The release is split into **3 parts**:
 
-| Teil | Inhalt | Größe | Quelle |
-|------|--------|:-----:|:------:|
+| Part | Content | Size | Source |
+|------|---------|:----:|:------:|
 | 1. Game | COMI.LA0, LA1, LA2 | 82 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
-| 2. HD Assets | Backgrounds, Videos, Kostüme, Objekte, Fonts | 8.8 GB | [MEGA](/comi_hd_v1.0.2/hd/) |
+| 2. HD Assets | Backgrounds, Videos, Costumes, Objects, Fonts | 8.8 GB | [MEGA](/comi_hd_v1.0.2/hd/) |
 | 3. ScummVM Build | scummvm.exe, SDL2.dll, zlib1.dll, Scripts | 26 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
 
 ### 1. Game Files (`comi_hd_game.zip`)
-Original Curse of Monkey Island Daten:
+Original Curse of Monkey Island data:
 - `COMI.LA0`
 - `COMI.LA1`
 - `COMI.LA2`
 
-→ In das `COMI/` Verzeichnis entpacken.
+→ Extract into your `COMI/` directory.
 
 ### 2. HD Assets (MEGA)
 ```
 /comi_hd_v1.0.2/hd/
-├── backgrounds/   (81 HD-Backgrounds, 2560×1920)
-├── costumes/      (25.303 Kostüm-Frames)
-├── videos/        (15 upscalte Zwischensequenzen)
-├── objects/       (600 HD-Objekte)
-├── fonts/         (5 HD-Fonts)
+├── backgrounds/   (81 HD backgrounds, 2560×1920)
+├── costumes/      (25,303 costume frames)
+├── videos/        (15 upscaled cutscenes)
+├── objects/       (600 HD objects)
+├── fonts/         (5 HD fonts)
 └── object_map.json
 ```
-→ In das Spielverzeichnis entpacken (neben `game/hd/`).
+→ Extract into the game directory (next to `game/hd/`).
 
 ### 3. ScummVM Build (`comi_hd_build.zip`)
-| Datei | Beschreibung |
-|-------|-------------|
-| `scummvm.exe` | ScummVM v1.0.2 mit HD-Unterstützung (scumm_7_8 engine) |
-| `SDL2.dll` | SDL2 Runtime |
-| `zlib1.dll` | Zlib Runtime |
-| `start_comi_hd.bat` | Windows Start-Script |
-| `start_comi_hd.sh` | Linux Start-Script |
-| `scummvm.ini` | Vorkonfigurierte ScummVM-INI |
+| File | Description |
+|------|-------------|
+| `scummvm.exe` | ScummVM v1.0.2 with HD support (scumm_7_8 engine) |
+| `SDL2.dll` | SDL2 runtime |
+| `zlib1.dll` | Zlib runtime |
+| `start_comi_hd.bat` | Windows launcher script |
+| `start_comi_hd.sh` | Linux launcher script |
+| `scummvm.ini` | Preconfigured ScummVM config |
 
 ---
 
 ## Installation
 
 ### Windows
-1. `comi_hd_game.zip` → `COMI/` entpacken
-2. `comi_hd_build.zip` → `comi_hd_v1.0.2/` entpacken
-3. HD Assets von MEGA → `comi_hd_v1.0.2/hd/` entpacken
-4. `start_comi_hd.bat` ausführen
+1. Extract `comi_hd_game.zip` → `COMI/`
+2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+3. Extract HD Assets from MEGA → `comi_hd_v1.0.2/hd/`
+4. Run `start_comi_hd.bat`
 
 ### Linux
-1. `comi_hd_game.zip` → `COMI/` entpacken
-2. `comi_hd_build.zip` → `comi_hd_v1.0.2/` entpacken
-3. HD Assets von MEGA → `comi_hd_v1.0.2/hd/` entpacken
+1. Extract `comi_hd_game.zip` → `COMI/`
+2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+3. Extract HD Assets from MEGA → `comi_hd_v1.0.2/hd/`
 4. `chmod +x scummvm start_comi_hd.sh`
-5. `./start_comi_hd.sh` ausführen
+5. Run `./start_comi_hd.sh`
 
 ---
 
-## HD-Vergleich
+## HD Comparison
 
 ![HD Background Room 9](docs/screenshots/hd_background_room9.png)
-*HD Background Room 9 (2560×1920) — 4x Upscale*
+*HD Background for Room 9 (2560×1920) — 4x upscale*
 
 ---
 
-## Technische Details
+## Technical Details
 
 ### ScummVM Fork
-- **Basis:** ScummVM (eigener Fork)
-- **HD Asset Manager:** Lädt externe Texturen aus `hd/` Verzeichnis
-- **Coordinate Scaling:** Automatische Skalierung von SD→HD Koordinaten
+- **Base:** ScummVM (custom fork)
+- **HD Asset Manager:** Loads external textures from `hd/` directory
+- **Coordinate Scaling:** Automatic SD→HD coordinate mapping at runtime
 - **Engine Support:** SCUMM v0-v6, v7 & v8 (COMI, Full Throttle, The Dig, etc.)
-- **Build:** LLVM MinGW Cross-Compile (Windows) + GCC (Linux)
+- **Build:** LLVM MinGW cross-compile (Windows) + GCC (Linux)
 
 ### HD Assets
-- **Upscaling:** RealESRGAN `x4plus_anime_6B` Modell
-- **Backgrounds:** Original ROOM/IMAG → PNG → 4x Upscale → PNG
-- **Costumes:** AKOS → PNG Frames → 4x Upscale → PNG
-- **Videos:** HNM → MP4 → 4x Upscale (Topaz) → MP4
+- **Upscaling:** RealESRGAN `x4plus_anime_6B` model
+- **Backgrounds:** Original ROOM/IMAG → PNG → 4x upscale → PNG
+- **Costumes:** AKOS → PNG frames → 4x upscale → PNG
+- **Videos:** HNM → MP4 → 4x upscale (Topaz) → MP4
 
 ---
 
 ## Changelog
 
 ### v1.0.2 (Current)
-- ✅ scumm_7_8 engine aktiviert
-- ✅ Room-Warp Debug entfernt
-- ✅ Relativer Game-Pfad in start-comi_hd.bat
-- ✅ SDL2.dll + zlib1.dll inkludiert
+- ✅ scumm_7_8 engine enabled
+- ✅ Room-warp debug feature removed
+- ✅ Relative game path in `start_comi_hd.bat`
+- ✅ SDL2.dll + zlib1.dll included
 
 ### v1.0.1
-- HD Asset Pipeline stabilisiert
-- Kostüm-Rendering optimiert
+- HD asset pipeline stabilized
+- Costume rendering optimized
 
 ### v1.0.0
-- Erstes Release mit HD-Backgrounds
-- Grundlegende Kostüm-Unterstützung
+- Initial release with HD backgrounds
+- Basic costume support
