@@ -266,9 +266,8 @@ cp scummvm/fork/scummvm /tmp/comi_hd_complete/scummvm
 ### 4.3 GitHub Release (Upload)
 
 ```bash
-# Upload all 8 assets to the release
+# Upload all 7 assets to the release
 gh release upload v1.0.2 \
-  /tmp/release_zips/comi_hd_game.zip \
   /tmp/release_zips/comi_hd_build.zip \
   /tmp/hd_zips/hd_assets_part1.zip \
   /tmp/hd_zips/hd_assets_part2.zip \
@@ -289,7 +288,6 @@ gh release create v1.0.2 \
   --title "COMI-HD v1.0.2" \
   --repo harrytyp/comiupscale \
   --notes "..." \
-  /tmp/release_zips/comi_hd_game.zip \
   /tmp/release_zips/comi_hd_build.zip
 ```
 
