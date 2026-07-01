@@ -79,10 +79,18 @@ hd_fb_dump.raw
 # Fork source build artifacts
 scummvm/fork/**/*.o
 scummvm/fork/**/*.a
+scummvm/fork/**/.deps/
 scummvm/fork/dists/scummvm.o
 scummvm/fork/dists/*.rh
 scummvm/fork/scummvm.exe
+scummvm/fork/scummvm
 scummvm/fork/*.dll
 scummvm/fork/scummvm.log
+scummvm/fork/build-linux/
+scummvm/fork/config.h
+scummvm/fork/config.mk
+scummvm/fork/config.log
+scummvm/fork/hd/
+scummvm/fork/configure.stamp
 /scummvm-fork/
 /scummvm-src/

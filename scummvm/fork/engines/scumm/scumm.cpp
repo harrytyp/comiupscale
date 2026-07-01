@@ -1036,9 +1036,8 @@ Common::Error ScummEngine::init() {
 		_hdScale = _hdAssetManager->getScale();
 		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
 
-		// HD debug: set dump frame (default 9 = room 9 trigger)
-		_hdDebugDumpCount = 9;
-		warning("HD debug dump enabled (trigger: room %d)", _hdDebugDumpCount);
+		// HD debug: set dump frame (disabled for release)
+		_hdDebugDumpCount = 0;
 
 		// Preload test pattern (room 0)
 		_hdBackgroundSurface.free();
@@ -3097,8 +3096,8 @@ void ScummEngine::scummLoop(int delta) {
 		}
 	}
 
-	// HD DEBUG: auto-start new game from menu
-	if (_hdAssetManager && _hdAssetManager->isEnabled() && _currentRoom == 87) {
+	// HD DEBUG: auto-start new game from menu (disabled for release)
+	if (false && _hdAssetManager && _hdAssetManager->isEnabled() && _currentRoom == 87) {
 		static int menuCount = 0;
 		menuCount++;
 		if (menuCount > 30) {
