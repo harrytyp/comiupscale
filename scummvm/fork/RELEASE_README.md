@@ -1,128 +1,154 @@
-# COMI-Upscaled v1.0.2 — GPU-AI Upscaled HD Remaster
+# COMI-Upscaled v1.0.2 — 4x AI Upscaled HD Remaster
 
-> **The Curse of Monkey Island** (LucasArts, 2000) — 4x AI-upscaled HD Texturen auf Basis eines modifizierten **ScummVM** Forks.
+> **The Curse of Monkey Island** (LucasArts, 2000) — A modified **ScummVM** fork that renders COMI in 4x HD with AI-upscaled textures.
 
-![Screenshot](https://github.com/harrytyp/comiupscale/releases/download/v1.0.1/screenshot_room9.png)
+## 📦 What's Included
 
-## 📦 Was ist enthalten?
+| Component | Size | Details |
+|-----------|------|---------|
+| **scummvm** (Linux Binary) | 25 MB | Modified ScummVM with HD overlay engine |
+| **scummvm.exe** (Windows Binary) | 85 MB | Same build for Windows (MinGW/Clang) |
+| **hd/** | ~9 GB | 4x upscaled HD textures (costumes, objects, fonts, backgrounds, videos) |
+| **scummvm.ini** | — | Preconfigured for COMI |
 
-| Komponente | Größe | Details |
-|------------|-------|---------|
-| **`scummvm`** (Linux Binary) | 25 MB | Modifizierter ScummVM mit HD-Overlay-Engine |
-| **`hd/`** | 4,9 GB | 4x GPU-upscalte HD-Texturen (alle Kostüme, Objekte, Fonts, Hintergründe) |
-| **README** | — | Diese Anleitung |
+**Total: ~9 GB** (without game data)
 
-**Gesamtgröße: ~5 GB** (ohne Spieldaten, ohne 4K-Zwischensequenzen)
+## ❌ What You Need To Provide
 
-## ❌ Was ist NICHT enthalten (muss selbst besorgt werden)
+### 1. The Game "Curse of Monkey Island" (COMI)
 
-### 1. Das Spiel "Curse of Monkey Island" (COMI)
+You need the original game files (~146 MB):
+- `COMI.LA0`
+- `COMI.LA1`  
+- `COMI.LA2`
+- `RESOURCE/` (folder)
 
-Die Original-Spieldateien werden benötigt. Du kannst sie beziehen von:
+Available from:
 
-| Quelle | Link | Hinweis |
-|--------|------|---------|
-| **archive.org** | https://archive.org/search?query=curse+of+monkey+island | Kostenlos, legal (Abandonware) |
-| **Steam** | https://store.steampowered.com/app/730820/ | Ca. 5 € |
-| **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | Ca. 5 €, DRM-frei |
+| Source | Link | Note |
+|--------|------|------|
+| **Steam** | https://store.steampowered.com/app/730820/ | ~€5 |
+| **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | ~€5, DRM-free |
 
-**Wichtig:** Du brauchst NUR die Spieldaten (COMI.LA0, COMI.LA1, COMI.LA2, RESOURCE/-Ordner), ~146 MB. Keine Installation nötig — einfach die Dateien in einen Ordner legen.
+### 2. 4K Cutscenes (optional)
 
-### 2. 4K-Zwischensequenzen (optional)
+For 4K cutscenes (additional ~6 GB):
+📥 https://archive.org/details/COMI_4k
 
-Falls du die Zwischensequenzen auch in 4K haben möchtest (zusätzliche ~6 GB):
-
-📥 **Download:** https://archive.org/details/COMI_4k
-
-Einfach in den `hd/videos/`-Ordner entpacken. Ohne diese Dateien laufen die Zwischensequenzen in Original-SD-Auflösung.
+Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 
 ## 🚀 Installation
 
 ### Linux
-
 ```bash
-# 1. Release entpacken
-tar xf comi_hd_v1.0.2.tar.*
+# 1. Extract all ZIPs
+unzip comi_hd_game.zip -d ~/spiele/COMI/
+unzip comi_hd_build.zip -d comi_hd_v1.0.2/
+# Extract all 6 HD asset parts into the same directory
+for f in hd_assets_part*.zip; do unzip "$f" -d comi_hd_v1.0.2/; done
 cd comi_hd_v1.0.2
 
-# 2. Spieldaten (COMI.LA0, COMI.LA1, COMI.LA2, RESOURCE/) in einen Ordner kopieren
-#    z.B. ~/games/comi/
-
-# 3. scummvm.ini anpassen — path auf deinen Spielordner setzen:
-#    [comi]
-#    path=/home/deinuser/games/comi/
-#    hd_path=./hd
-
-# 4. Starten
+# 2. Make binaries executable
+chmod +x scummvm
 ./start_comi_hd.sh
 ```
 
 ### Windows
-
 ```bat
-:: 1. Release entpacken
-:: 2. Spieldaten in einen Ordner kopieren, z.B. C:\Spiele\COMI\
-:: 3. scummvm.ini öffnen und path anpassen:
-::    [comi]
-;;    path=C:\Spiele\COMI\
-;;    hd_path=.\hd
-:: 4. start_comi_hd.bat ausführen
+:: 1. Extract comi_hd_game.zip → COMI/
+:: 2. Extract comi_hd_build.zip → comi_hd_v1.0.2/
+:: 3. Extract all 6 hd_assets_part*.zip → comi_hd_v1.0.2/ (same directory)
+:: 4. Run start_comi_hd.bat
 ```
 
-## 🎮 Steuerung
+## 🎮 Controls
 
-| Taste | Aktion |
-|-------|--------|
-| `F5` | Menü (Speichern/Laden) |
-| `Strg` + `F5` | ScummVM-Menü |
-| `Strg` + `d` | Debug-Konsole |
-| `Alt` + `Enter` | Vollbild umschalten |
-| `Esc` | Überspringen/Zurück |
-| Maus | Klassischer Point-and-Click |
+| Key | Action |
+|-----|--------|
+| `F5` | Menu (Save/Load) |
+| `Ctrl` + `F5` | ScummVM Menu |
+| `Ctrl` + `d` | Debug Console |
+| `Alt` + `Enter` | Toggle Fullscreen |
+| `Esc` | Skip/Back |
+| Mouse | Classic Point-and-Click |
 
-## ⚙️ Konfiguration
+## ⚙️ Configuration
 
-Die wichtigsten Optionen in `scummvm.ini` unter `[comi]`:
+Key options in `scummvm.ini` under `[comi]`:
 
-| Option | Standard | Beschreibung |
-|--------|----------|-------------|
-| `hd_path` | `./hd` | Pfad zu den HD-Texturen |
-| `hd_enabled` | `true` | HD-Overlay ein/aus |
-| `hd_trace` | `false` | Debug-Ausgabe (nur bei Fehlern aktivieren) |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `hd_path` | `./hd` | Path to HD textures |
+| `hd_enabled` | `true` | HD overlay on/off |
+| `hd_trace` | `false` | Debug output (only for troubleshooting) |
 
-## 🔧 Technische Details
+## 🔧 Technical Details
 
-- **Engine:** Modifizierter ScummVM (git 2026-02-01 + HD-Patches)
-- **Upscaling-Modell:** RealESRGAN x4plus-anime (AMD RX 5700 XT)
-- **Extraktion:** NUTcracker (AKOS/Kostüm-Dekodierung mit Room-Palette)
-- **HD-Kostüme:** 25.302 Frames über 473 Kostüme
-- **HD-Objekte:** 1.365 (Vordergrund) + 633 (Layer) über alle Räume
-- **HD-Fonts:** 5 Schriftarten
-- **HD-Hintergründe:** Alle Räume (CPU-vorgerechnet mit gleichem Modell)
+- **Engine:** Modified ScummVM (git 2026-02-01 + HD patches)
+- **Upscaling:** RealESRGAN x4plus-anime (AMD RX 5700 XT)
+- **Extraction:** NUTcracker (AKOS/costume decoding with Room Palette)
+- **HD Costumes:** 25,302 frames across 473 costumes
+- **HD Objects:** 1,365 (foreground) + 633 (layers) across all rooms
+- **HD Fonts:** 5 fonts
+- **HD Backgrounds:** All rooms (CPU pre-rendered with same model)
 
-## 📋 Systemvoraussetzungen
+## 📋 System Requirements
 
-| | Minimum | Empfohlen |
-|---|---------|-----------|
-| **CPU** | 2 Kerne | 4+ Kerne |
+| | Minimum | Recommended |
+|---|---------|-------------|
+| **CPU** | 2 cores | 4+ cores |
 | **RAM** | 2 GB | 4 GB |
-| **GPU** | OpenGL 3.3+ | OpenGL 4.0+ (Software-Rendering via llvmpipe möglich) |
-| **Speicher** | 5 GB frei | 12 GB (mit 4K-Videos) |
-| **OS** | Linux (x86_64) / Windows 10 | |
+| **GPU** | OpenGL 3.3+ | OpenGL 4.0+ (software rendering via llvmpipe possible) |
+| **Storage** | 5 GB free | 12 GB (with 4K videos) |
+| **OS** | Linux (x86_64) / Windows 10+ | |
 
-## 📜 Lizenz
+## 📜 License
 
 - **ScummVM:** GPLv2 — https://www.scummvm.org/
-- **HD-Texturen:** Creative Commons BY-NC-SA 4.0
-- **Spieldaten:** © LucasArts / Disney — nicht im Lieferumfang enthalten
+- **HD Textures:** Creative Commons BY-NC-SA 4.0
+- **Game Data:** © LucasArts / Disney — not included
 
-## 🙏 Danksagung
+## 🙏 Acknowledgments
 
-- ScummVM Team für die großartige Engine
-- NUTcracker (pycd02) für die Asset-Extraktion
-- RealESRGAN (xinntao) für das Upscaling-Modell
-- xinntao/Real-ESRGAN-ncnn-vulkan für die GPU-Inferenz
+| Person/Project | For | Link |
+|----------------|-----|:----:|
+| **ScummVM Team** | The engine that makes this possible | [scummvm.org](https://www.scummvm.org/) |
+| **NUTcracker (BLooperZ / pycd02)** | Asset extraction toolkit (AKOS decoder) | [GitHub](https://github.com/BLooperZ/nutcracker) |
+| **RealESRGAN (xinntao)** | AI upscaling model (x4plus_anime_6B) | [GitHub](https://github.com/xinntao/Real-ESRGAN) |
+| **MMUCS (haywirephoenix)** | Godot-powered SCUMM V8 content explorer | [GitHub](https://github.com/haywirephoenix/MMUCS) |
+| **Happy-Ferret (Mark Bauermeister)** | Pioneering ScummVM v6 HD fork with external textures | [Patreon](https://patreon.com/HappyFerret) |
+| **Laserschwert** | Early ESRGAN upscales (2020) | MixnMojo |
+| **ubertrout** | 4K Topaz Video upscale of all COMI cutscenes | [Archive](https://archive.org/details/COMI_4k) |
+
+### Additional Contributors
+- **haywirephoenix** — Requested and tested AKOS support in NUTcracker, created ScummRev (AKOS viewer)
+- Various SCUMM modding community members whose tools and research made this possible
+
+## ⚖️ Legal
+
+This project is provided for **educational and archival purposes only**.
+
+### What this IS:
+- ✅ A modified ScummVM (GPL v2) that loads external HD textures
+- ✅ AI-upscaled textures — a transformative process producing new high-resolution image data
+- ✅ Configuration files and launcher scripts
+
+### What this does NOT distribute:
+- ❌ No original game code from "The Curse of Monkey Island" (© LucasArts / Disney)
+- ❌ No original game assets (COMI.LA0, LA1, LA2, or original room data)
+- ❌ No ROMs, ISOs, or disk images
+
+### Legal Defenses
+- **Transformative Use:** HD textures are 4x AI-upscaled — new pixels created by neural inference
+- **No Market Harm:** The game (1998) is no longer commercially marketed; this project requires a legitimate copy
+- **ScummVM Precedent:** Clean-room reimplementation — unchallenged for 20+ years
+- **Non-Commercial:** Free, open-source, no monetization of Disney's IP
+
+### License
+- **ScummVM fork:** GPL v2 — https://www.scummvm.org/
+- **HD Textures:** CC BY-NC-SA 4.0 — share/adapt for non-commercial use with attribution
+- **Documentation:** MIT License
 
 ---
 
-**COMI-Upscaled** — Ein Fan-Projekt. Nicht affililiert mit LucasArts, Disney oder ScummVM.
+*COMI-Upscaled — A fan project. Not affiliated with LucasArts, Disney, or ScummVM.*

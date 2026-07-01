@@ -23,10 +23,10 @@ COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM 
 The release is split into **3 parts**:
 
 | Part | Content | Size | Source |
-|------|---------|:----:|:------:|
-| 1. Game | COMI.LA0, LA1, LA2 | 82 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
-| 2. HD Assets | Backgrounds, Videos, Costumes, Objects, Fonts | 8.8 GB | [MEGA](/comi_hd_v1.0.2/hd/) |
-| 3. ScummVM Build | scummvm.exe, SDL2.dll, zlib1.dll, Scripts | 26 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
+||------|---------|:----:|:------:|
+|| 1. Game | COMI.LA0, LA1, LA2 | 82 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
+|| 2. HD Assets | Backgrounds, Videos, Costumes, Objects, Fonts | 8.8 GB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) (6 parts) |
+|| 3. ScummVM Build | scummvm.exe, SDL2.dll, zlib1.dll, Scripts | 26 MB | [GitHub Release](https://github.com/harrytyp/comiupscale/releases/tag/v1.0.2) |
 
 ### 1. Game Files (`comi_hd_game.zip`)
 Original Curse of Monkey Island data:
@@ -36,9 +36,9 @@ Original Curse of Monkey Island data:
 
 → Extract into your `COMI/` directory.
 
-### 2. HD Assets (MEGA)
+### 2. HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
 ```
-/comi_hd_v1.0.2/hd/
+hd/
 ├── backgrounds/   (81 HD backgrounds, 2560×1920)
 ├── costumes/      (25,303 costume frames)
 ├── videos/        (15 upscaled cutscenes)
@@ -46,7 +46,7 @@ Original Curse of Monkey Island data:
 ├── fonts/         (5 HD fonts)
 └── object_map.json
 ```
-→ Extract into the game directory (next to `game/hd/`).
+→ Download all 6 parts, then extract all into the same directory (next to `game/hd/`).
 
 ### 3. ScummVM Build (`comi_hd_build.zip`)
 | File | Description |
@@ -62,18 +62,18 @@ Original Curse of Monkey Island data:
 
 ## Installation
 
-### Windows
-1. Extract `comi_hd_game.zip` → `COMI/`
-2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-3. Extract HD Assets from MEGA → `comi_hd_v1.0.2/hd/`
-4. Run `start_comi_hd.bat`
+|### Windows
+|1. Extract `comi_hd_game.zip` → `COMI/`
+|2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+|3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
+|4. Run `start_comi_hd.bat`
 
-### Linux
-1. Extract `comi_hd_game.zip` → `COMI/`
-2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-3. Extract HD Assets from MEGA → `comi_hd_v1.0.2/hd/`
-4. `chmod +x scummvm start_comi_hd.sh`
-5. Run `./start_comi_hd.sh`
+|### Linux
+|1. Extract `comi_hd_game.zip` → `COMI/`
+|2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
+|3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
+|4. `chmod +x scummvm start_comi_hd.sh`
+|5. Run `./start_comi_hd.sh`
 
 ---
 
