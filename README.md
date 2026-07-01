@@ -143,3 +143,63 @@ This project builds on the work of many people in the SCUMM modding community:
 ---
 
 *COMI-HD is a fan project. Not affiliated with LucasArts, Disney, or ScummVM.*
+
+---
+
+## Legal
+
+### Disclaimer & Legal Analysis
+
+This project is provided for **educational and archival purposes only**. We believe it falls within the boundaries of fair use / fair dealing, but we are not lawyers — this is not legal advice.
+
+#### What this project IS:
+- ✅ A **modified version of ScummVM** (GPL v2 licensed) that loads external HD textures
+- ✅ **AI-upscaled textures** created by running artwork through RealESRGAN — a transformative process that produces new, higher-resolution image data
+- ✅ **Configuration files** and **launcher scripts** to make everything work together
+
+#### What this project does NOT distribute:
+- ❌ **No original game code** from "The Curse of Monkey Island" (© LucasArts / Disney)
+- ❌ **No original game assets** — no .LA0, .LA1, .LA2 files, no original room data
+- ❌ **No ROMs, ISOs, or disk images**
+- ❌ **No decryption keys or copy protection circumvention**
+
+#### The User Must Provide:
+The user must own a legitimate copy of "The Curse of Monkey Island" and extract the game data files themselves. This can be purchased from:
+- [Steam](https://store.steampowered.com/app/730820/)
+- [GOG.com](https://www.gog.com/en/game/the_curse_of_monkey_island)
+- The original CD release
+
+#### Legal Defenses
+
+| Argument | Explanation |
+|----------|-------------|
+| **Transformative Use** | The HD textures are not copies — they are 4x AI-upscaled derivatives produced by RealESRGAN. The original 640×480 pixel data is transformed into 2560×1920 through neural inference, creating new pixels that did not exist in the original. |
+| **No Market Harm** | "The Curse of Monkey Island" is a 1998 game no longer commercially marketed. This project does not replace the original game — it requires it. There is no substitute effect. |
+| **ScummVM Precedent** | ScummVM itself has been legally unchallenged for 20+ years. It is a clean-room reimplementation of game engines. Our fork extends ScummVM — it does not contain any LucasArts code. |
+| **Non-Commercial** | This project is free, open-source, and non-commercial. There is no monetization of Disney's IP. |
+
+#### What Happens If Disney Contacts You
+
+If Disney or its representatives contact you regarding this project:
+
+1. **Do not ignore it** — respond promptly and courteously
+2. **State clearly that this is a non-commercial fan project**
+3. **Offer to remove any specific files they object to**
+4. **Comply with DMCA takedown requests** (GitHub has a standard process)
+5. **Consult a lawyer** if the matter escalates
+
+Historically, Disney has tolerated modding and fan projects for their classic LucasArts catalog. The ScummVM project has operated without incident for two decades. Several COMI modding projects (MMUCS, NUTcracker, various upscale attempts) have existed publicly for years without legal action.
+
+#### Trademarks
+
+"Curse of Monkey Island", "Monkey Island", "LucasArts", and "Disney" are registered trademarks of their respective owners. This project is not endorsed by or affiliated with Disney, LucasArts, or any of their subsidiaries. All trademarks and copyrights are property of their respective holders.
+
+#### License
+
+- **ScummVM fork:** GPL v2 — [https://www.scummvm.org/](https://www.scummvm.org/)
+- **HD Textures:** Creative Commons BY-NC-SA 4.0 — you may share and adapt them for non-commercial purposes with attribution
+- **Documentation:** MIT License
+
+---
+
+*This project is a labor of love by fans, for fans. We respect the rights of copyright holders and will comply with legitimate requests.*
