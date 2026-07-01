@@ -31,40 +31,14 @@ You need a **legal copy of "The Curse of Monkey Island"** to play. The original 
 
 This release contains the **ScummVM fork** and **HD texture packs** — no game data.
 
-| Part | File | Size | Download |
-|------|------|:----:|:--------:|
-| 1. ScummVM Build | `comi_hd_build.zip` | 26 MB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/comi_hd_build.zip) |
-| 2. HD Assets (Part 1) | `hd_assets_part1.zip` | 1.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part1.zip) |
-| 2. HD Assets (Part 2) | `hd_assets_part2.zip` | 1.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part2.zip) |
-| 2. HD Assets (Part 3) | `hd_assets_part3.zip` | 1.7 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part3.zip) |
-| 2. HD Assets (Part 4) | `hd_assets_part4.zip` | 0.9 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part4.zip) |
-| 2. HD Assets (Part 5) | `hd_assets_part5.zip` | 1.7 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part5.zip) |
-| 2. HD Assets (Part 6) | `hd_assets_part6.zip` | 0.8 GB | [⬇ Download](https://github.com/harrytyp/comiupscale/releases/download/v1.0.2/hd_assets_part6.zip) |
+👉 **[Download the latest release](https://github.com/harrytyp/comiupscale/releases/latest)**
 
-### ScummVM Build (`comi_hd_build.zip`)
+| File | Contents |
+|------|----------|
+| `comi_hd_build_0.0.3.zip` | ScummVM fork (`scummvm.exe`, `SDL2.dll`, `zlib1.dll`), launcher scripts, config |
+| `hd_assets_0.0.3_part1–6.zip` | HD textures (6 parts, ~8.8 GB total) — extract all into `hd/` |
 
-| File | Description |
-|------|-------------|
-| `scummvm.exe` | ScummVM v1.0.2 with HD support (scumm_7_8 engine) |
-| `SDL2.dll` | SDL2 runtime |
-| `zlib1.dll` | Zlib runtime |
-| `start_comi_hd.bat` | Windows launcher script |
-| `start_comi_hd.sh` | Linux launcher script |
-| `scummvm.ini` | Preconfigured ScummVM config |
-
-### HD Assets (`hd_assets_part1.zip` – `hd_assets_part6.zip`)
-
-```
-hd/
-├── backgrounds/   (81 HD backgrounds, 2560×1920)
-├── costumes/      (25,303 costume frames)
-├── videos/        (15 upscaled cutscenes)
-├── objects/       (600 HD objects)
-├── fonts/         (5 HD fonts)
-└── object_map.json
-```
-
-→ Download all 6 parts, then extract all into the same directory (next to `game/hd/`).
+→ Download all 6 HD part ZIPs and extract into the same directory (next to `game/hd/`).
 
 ---
 
@@ -72,15 +46,15 @@ hd/
 
 ### Windows
 1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
-4. Copy your COMI game data into the `game/` subdirectory
-5. Run `start_comi_hd.bat`
+|2. Extract `comi_hd_build_0.0.3.zip` → `comi_hd_v0.0.3/`
+|3. Download & extract all 6 `hd_assets_0.0.3_part*.zip` → `comi_hd_v0.0.3/hd/`
+|4. Copy your COMI game data into the `game/` subdirectory
+|5. Run `start_comi_hd.bat`
 
-### Linux
-1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-2. Extract `comi_hd_build.zip` → `comi_hd_v1.0.2/`
-3. Download & extract all 6 `hd_assets_part*.zip` → `comi_hd_v1.0.2/hd/`
+|### Linux
+|1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
+|2. Extract `comi_hd_build_0.0.3.zip` → `comi_hd_v0.0.3/`
+|3. Download & extract all 6 `hd_assets_0.0.3_part*.zip` → `comi_hd_v0.0.3/hd/`
 4. Copy your COMI game data into the `game/` subdirectory
 5. `chmod +x scummvm start_comi_hd.sh`
 6. Run `./start_comi_hd.sh`
@@ -113,7 +87,7 @@ hd/
 
 ## Changelog
 
-### v1.0.2 (Current)
+### v0.0.3 (Current)
 - ✅ scumm_7_8 engine enabled
 - ✅ Room-warp debug feature removed
 - ✅ Relative game path in `start_comi_hd.bat`
