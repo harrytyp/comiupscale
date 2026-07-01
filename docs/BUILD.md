@@ -263,21 +263,25 @@ cp scummvm/fork/scummvm.exe /tmp/comi_hd_complete/scummvm.exe
 cp scummvm/fork/scummvm /tmp/comi_hd_complete/scummvm
 ```
 
-### 4.3 MEGA Upload
+### 4.3 GitHub Release (Upload)
 
 ```bash
-export PATH="/tmp/megacmd_extract/usr/bin:$PATH"
-export LD_LIBRARY_PATH="/tmp/fuse_extract/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
-
-# Remove old file first, then upload fresh
-mega-rm /comi_hd_v1.0.2/scummvm.exe
-mega-put -c scummvm.exe /comi_hd_v1.0.2/
-
-# Verify
-mega-ls -l /comi_hd_v1.0.2/
+# Upload all 8 assets to the release
+gh release upload v1.0.2 \
+  /tmp/release_zips/comi_hd_game.zip \
+  /tmp/release_zips/comi_hd_build.zip \
+  /tmp/hd_zips/hd_assets_part1.zip \
+  /tmp/hd_zips/hd_assets_part2.zip \
+  /tmp/hd_zips/hd_assets_part3.zip \
+  /tmp/hd_zips/hd_assets_part4.zip \
+  /tmp/hd_zips/hd_assets_part5.zip \
+  /tmp/hd_zips/hd_assets_part6.zip \
+  --clobber
 ```
 
-### 4.4 GitHub Release
+HD assets are split into 6 ZIPs (max 1.9 GB each) to stay under GitHub's 2 GB per-file limit. All 6 must be extracted into the same directory.
+
+### 4.4 GitHub Release (Create)
 
 ```bash
 # Tag and create release
