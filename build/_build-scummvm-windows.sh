@@ -44,23 +44,13 @@ if [ ! -f "config.mk" ]; then
     # Build the configure arguments
     CONFIG_ARGS=(
         --host=x86_64-w64-mingw32
-        --backend=sdl
+        --with-zlib-prefix="$MINGW_PREFIX"
+        --with-png-prefix="$MINGW_PREFIX"
         --opengl-mode=gl
+        --enable-verbose-build
         --disable-nasm
         --disable-all-engines
-        --enable-engine=scumm
-        --enable-engine=scumm_7_8
-        --enable-verbose-build
-        # Disable all optional audio/video codecs (not needed for COMI)
-        --disable-vorbis
-        --disable-flac
-        --disable-mad
-        --disable-ogg
-        --disable-theoradec
-        --disable-faad
-        # Disable zlib/png — we provide them manually via LDFLAGS
-        --disable-zlib
-        --disable-png
+        --enable-engine=scumm,scumm-7-8
     )
 
     "$FORK_DIR/configure" "${CONFIG_ARGS[@]}" 2>&1 | tail -5
@@ -69,15 +59,6 @@ if [ ! -f "config.mk" ]; then
     if ! grep -q "ENABLE_SCUMM_7_8 = 1" config.mk 2>/dev/null; then
         err "SCUMM v7-8 engine not enabled!"
         exit 1
-    fi
-
-    # Add our prefix to LDFLAGS for zlib + libpng
-    # (configure flags like --with-zlib-prefix don't work well without pkg-config)
-    if [ -d "$MINGW_PREFIX/lib" ]; then
-        echo "" >> config.mk
-        echo "# COMI-HD: additional lib paths" >> config.mk
-        echo "LDFLAGS += -L$MINGW_PREFIX/lib" >> config.mk
-        echo "INCLUDES += -I$MINGW_PREFIX/include" >> config.mk
     fi
 
     ok "ScummVM configured for Windows"

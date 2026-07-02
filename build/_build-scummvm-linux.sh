@@ -72,4 +72,9 @@ fi
 
 # Copy to output
 cp scummvm "$SCUMMVM_LINUX"
+
+# Strip
+info "Stripping Linux binary..."
+strip "$SCUMMVM_LINUX"
+
 ok "Linux binary: $SCUMMVM_LINUX ($(du -h "$SCUMMVM_LINUX" | cut -f1))"

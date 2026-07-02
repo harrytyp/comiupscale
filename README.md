@@ -61,6 +61,57 @@ This release contains the **ScummVM fork** and **HD texture packs** — no game 
 
 ---
 
+## Building from Source
+
+The repo includes a **self-contained build system** in `build/` that downloads all dependencies (LLVM MinGW, SDL2, zlib, libpng) from their official sources and builds everything from scratch — no system packages beyond the basic C++ toolchain are needed.
+
+### Quick Start
+
+```bash
+# Install system build tools (Ubuntu/Debian)
+sudo apt install build-essential cmake pkg-config curl
+
+# Clone the repo
+git clone https://github.com/harrytyp/comiupscale.git
+cd comiupscale
+
+# Build Windows binary (cross-compile from Linux)
+bash build/build-all.sh windows
+
+# — OR — Build Linux binary
+bash build/build-all.sh linux
+
+# — OR — Build both
+bash build/build-all.sh
+```
+
+**Build artifacts appear in `build/out/`:**
+- `build/out/scummvm` — Linux binary
+- `build/out/scummvm.exe` — Windows binary
+
+### What the build system does
+
+| Step | What | For |
+|------|------|-----|
+| 1 | Downloads LLVM MinGW toolchain | Windows cross-compile |
+| 1 | Downloads SDL2 source | Both |
+| 1 | Downloads zlib + libpng source | Windows cross-compile |
+| 2 | Builds SDL2 from source | Linux native |
+| 3 | Builds SDL2 from source (MinGW) | Windows cross-compile |
+| 4 | Builds zlib + libpng (MinGW) | Windows cross-compile |
+| 5 | Configures + builds ScummVM | Linux + Windows |
+
+All downloaded tarballs go to `build/deps/` and built libraries to `build/install/` — subsequent runs are incremental. To force a clean rebuild:
+
+```bash
+rm -rf build/deps build/install build/out
+bash build/build-all.sh
+```
+
+See [`build/BUILD.md`](build/BUILD.md) for detailed documentation.
+
+---
+
 ## HD Comparison
 
 ![HD Background Room 9](docs/screenshots/hd_background_room9.png)
