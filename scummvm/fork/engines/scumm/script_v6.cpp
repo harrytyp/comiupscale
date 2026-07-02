@@ -1412,6 +1412,9 @@ void ScummEngine_v6::o6_setState() {
 	int state = pop();
 	int obj = pop();
 
+	if ((obj == 114 || obj == 1366) && _hdFrameCount <= 600)
+		warning("HDDBG o6_setState: obj=%d state=%d", obj, state);
+
 	putState(obj, state);
 	markObjectRectAsDirty(obj);
 	if (_bgNeedsRedraw)

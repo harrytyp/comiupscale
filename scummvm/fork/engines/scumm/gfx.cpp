@@ -1416,6 +1416,13 @@ void ScummEngine::renderHDComposite() {
 			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
+			// Debug: compare _objs[].state (from updateObjectStates) vs getState (from _objectStateTable)
+			if ((od.obj_nr == 114 || od.obj_nr == 1366) && _hdFrameCount <= 600) {
+				int globalState = getState(od.obj_nr);
+				if ((od.state & 0xF) != globalState)
+					warning("HDDBG STATE MISMATCH: obj=%d _objs.state=%d getState=%d fl=%d",
+						od.obj_nr, od.state & 0xF, globalState, od.fl_object_index);
+			}
 
 			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objState)) {
 				// Fallback: try state=0 if the exact state isn't available.
