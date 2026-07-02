@@ -1392,10 +1392,23 @@ void ScummEngine::renderHDComposite() {
 			// and UI panels that are rendered through the verb system but need HD
 			// compositing. Their state=0 in the 8-bit engine means they're not drawn
 			// there, but we should still check for HD replacements.
+			// HOWEVER: only draw them if at least one verb is actually visible.
+			// Otherwise these overlays would be visible in EVERY room at all times.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: still process, but hasObject determines if HD version exists
+				// V8: only draw FLOBJs with state=0 if the verb menu is active.
+				// Check if any verb slot has curmode==1 (visible).
+				bool anyVerbVisible = false;
+				for (int vi = 1; vi < _numVerbs; vi++) {
+					if (_verbs[vi].curmode == 1) {
+						anyVerbVisible = true;
+						break;
+					}
+				}
+				if (!anyVerbVisible)
+					continue;
+				// V8 + verb active: process FLOBJs for HD compositing
 			}
 
 			int objRoom = _currentRoom;
