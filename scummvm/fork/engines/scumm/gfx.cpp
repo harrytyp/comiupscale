@@ -1446,8 +1446,8 @@ void ScummEngine::renderHDComposite() {
 			// must match. Without this, objects at non-8-aligned positions are shifted
 			// by 1-7 game pixels (4-28 HD pixels).
 			int alignX = od.x_pos & ~7;
-			int64 hdX = (int64)alignX * hdW / MAX(1, visW);
-			int64 hdY = (int64)od.y_pos * hdH / MAX(1, visH);
+			int64 hdX = (int64)alignX * hdW / MAX(1, _roomWidth);
+			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _roomHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
 

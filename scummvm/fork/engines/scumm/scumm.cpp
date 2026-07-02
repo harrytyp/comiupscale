@@ -2137,6 +2137,8 @@ void ScummEngine::resetScumm() {
 		_verbs[i].saveid = 0;
 		_verbs[i].center = 0;
 		_verbs[i].key = 0;
+		_verbs[i].hd_obj_nr = 0;
+		_verbs[i].hd_room = 0;
 	}
 
 	if (_game.version >= 7) {

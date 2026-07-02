@@ -56,6 +56,10 @@ struct VerbSlot {
 	uint8 prep;
 	uint16 imgindex;
 	int16 origLeft;
+	// HD mod: remember which room/object this verb image came from
+	// so drawVerbBitmap can load HD textures from HdObjectManager.
+	int16 hd_obj_nr;
+	int16 hd_room;
 };
 
 enum VerbsV0 {

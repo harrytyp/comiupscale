@@ -22,6 +22,7 @@
 #include "scumm/actor.h"
 #include "scumm/charset.h"
 #include "scumm/he/intern_he.h"
+#include "scumm/hd_object_manager.h"
 #include "scumm/macgui/macgui.h"
 #include "scumm/object.h"
 #include "scumm/resource.h"
@@ -1230,6 +1231,44 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 	byte *obim;
 	uint32 size;
 
+	// HD mod: try to load HD texture for this verb
+	if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
+		int state = 0;
+		int hdRoom = vst->hd_room;
+		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
+			Graphics::Surface hdSurf;
+			if (_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdSurf)) {
+				if ((vs = findVirtScreen(y)) != nullptr && _hdScale > 1) {
+					// Scale HD surface down to SD verb screen
+					int sdW = hdSurf.w / _hdScale;
+					int sdH = hdSurf.h / _hdScale;
+					int verbX = x;
+					int verbY = y - vs->topline;
+					for (int row = 0; row < sdH && verbY + row < vs->h; row++) {
+						uint32 *srcRow = (uint32 *)hdSurf.getBasePtr(0, row * _hdScale);
+						uint32 *dstRow = (uint32 *)vs->getBasePtr(verbX, verbY + row);
+						for (int col = 0; col < sdW && verbX + col < vs->w; col++) {
+							uint32 pix = srcRow[col * _hdScale];
+							uint8 alpha = (pix >> 24) & 0xFF;
+							if (alpha >= 128)
+								dstRow[col] = pix;
+						}
+					}
+				}
+				int hdW = hdSurf.w;
+				int hdH = hdSurf.h;
+				hdSurf.free();
+				// Update verb rect (for redraw tracking)
+				vst->curRect.left = x;
+				vst->curRect.top = y;
+				vst->curRect.right = x + hdW / _hdScale;
+				vst->curRect.bottom = y + hdH / _hdScale;
+				vst->oldRect = vst->curRect;
+				return;
+			}
+		}
+	}
+
 	if ((vs = findVirtScreen(y)) == nullptr)
 		return;
 
@@ -1358,6 +1397,8 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				ptr[0] = *(obcdptr + 9);	// Width
 				ptr[1] = *(obcdptr + 15);	// Height
 				memcpy(ptr + 2, foir.obim, size);
+				_verbs[verb].hd_obj_nr = object;
+				_verbs[verb].hd_room = room;
 				return;
 			}
 		}
@@ -1377,6 +1418,8 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				obcdptr = getResourceAddress(rtRoom, room) + getOBCDOffs(object);
 				memcpy(getResourceAddress(rtVerb, verb), obimptr, size);
 				memcpy(getResourceAddress(rtVerb, verb) + size, obcdptr, size2);
+				_verbs[verb].hd_obj_nr = object;
+				_verbs[verb].hd_room = room;
 				return;
 			}
 		}
@@ -1387,6 +1430,8 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 		obimptr = getResourceAddress(rtRoom, room) - foir.roomptr + foir.obim;
 		memcpy(getResourceAddress(rtVerb, verb), obimptr, size);
 	}
+	_verbs[verb].hd_obj_nr = object;
+	_verbs[verb].hd_room = room;
 }
 
 } // End of namespace Scumm
