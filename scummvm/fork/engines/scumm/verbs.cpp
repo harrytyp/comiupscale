@@ -1238,15 +1238,17 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
 			Graphics::Surface hdSurf;
 			if (_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdSurf)) {
-				// Check if this is a full-screen overlay (e.g. inventory background).
-				// Full-screen textures should be composited directly in HD via
+				// Check if this is a large overlay (e.g. inventory background).
+				// Large textures (>90% of HD canvas) should be composited directly in HD via
 				// _hdVerbSurface, not scaled down to SD and back up (quality loss).
 				int expectedHDW = _hdBackgroundSurface.w > 0 ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
 				int expectedHDH = _hdBackgroundSurface.h > 0 ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
-				bool isFullScreen = (hdSurf.w >= expectedHDW && hdSurf.h >= expectedHDH);
+				bool isLarge = (hdSurf.w * 10 >= expectedHDW * 9 && hdSurf.h * 10 >= expectedHDH * 9);
+				warning("HDDBG drawVerbBitmap: verb=%d obj=%d room=%d surf=%dx%d expected=%dx%d hdScale=%d isLarge=%d",
+					verb, vst->hd_obj_nr, hdRoom, hdSurf.w, hdSurf.h, expectedHDW, expectedHDH, _hdScale, isLarge ? 1 : 0);
 
-				if (isFullScreen) {
-					// Store for later HD compositing (Step 2.7 in renderHDComposite)
+				if (isLarge) {
+					// Store for later HD compositing (Step 2.8 in renderHDComposite)
 					int fw = hdSurf.w, fh = hdSurf.h;
 					_hdVerbSurface.free();
 					_hdVerbSurface.copyFrom(hdSurf);
