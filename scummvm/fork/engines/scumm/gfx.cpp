@@ -1379,8 +1379,6 @@ void ScummEngine::renderHDComposite() {
 			ObjectData &od = _objs[oi];
 			if (od.obj_nr == 0)
 				continue;
-			if (od.fl_object_index)
-				continue;
 
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
@@ -1394,8 +1392,8 @@ void ScummEngine::renderHDComposite() {
 					step25_skipped++;
 					if (_hdFrameCount % 30 == 0) {
 						const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-						warning("HDDBG step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d",
-							od.obj_nr, name, objState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
+						warning("HDDBG step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d fl=%d",
+							od.obj_nr, name, objState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom, od.fl_object_index);
 					}
 					continue;
 				}
@@ -1411,8 +1409,12 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			int64 hdX = (int64)od.x_pos * hdW / MAX(1, _roomWidth);
-			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _roomHeight);
+			// Use screen coordinates (visW/visH) for HD object positioning to match
+			// the 8-bit compositing coordinate system in Step 2. This ensures HD
+			// objects align with their SD counterparts even when _roomWidth differs
+			// from _screenWidth (e.g., inventory overlays, letterboxed screens).
+			int64 hdX = (int64)od.x_pos * hdW / MAX(1, visW);
+			int64 hdY = (int64)od.y_pos * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
 
