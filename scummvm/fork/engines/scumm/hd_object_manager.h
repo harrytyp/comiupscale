@@ -63,6 +63,12 @@ public:
 	/** Get the name associated with an obj_nr (from DOBJ mapping). */
 	Common::String getObjectName(int obj_nr) const;
 
+	/** Find the first room that has this object in the mapping.
+	 *  Returns -1 if the object is not in the map at all.
+	 *  Used for inventory items whose files reside in a different
+	 *  room (e.g. room 3) than the player's current room. */
+	int findObjectRoom(int obj_nr) const;
+
 	/** Returns true if HD object mode is active. */
 	bool isEnabled() const { return _enabled; }
 

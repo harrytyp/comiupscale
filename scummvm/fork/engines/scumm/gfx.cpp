@@ -1413,7 +1413,12 @@ void ScummEngine::renderHDComposite() {
 			// the 8-bit compositing coordinate system in Step 2. This ensures HD
 			// objects align with their SD counterparts even when _roomWidth differs
 			// from _screenWidth (e.g., inventory overlays, letterboxed screens).
-			int64 hdX = (int64)od.x_pos * hdW / MAX(1, visW);
+			// Additionally, align X to 8-pixel boundaries: the 8-bit engine renders
+			// objects at strip-aligned positions (od.x_pos / 8 * 8), so the HD overlay
+			// must match. Without this, objects at non-8-aligned positions are shifted
+			// by 1-7 game pixels (4-28 HD pixels).
+			int alignX = od.x_pos & ~7;
+			int64 hdX = (int64)alignX * hdW / MAX(1, visW);
 			int64 hdY = (int64)od.y_pos * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
