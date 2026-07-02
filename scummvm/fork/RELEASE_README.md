@@ -1,4 +1,4 @@
-# COMI-Upscaled v1.0.2 — 4x AI Upscaled HD Remaster
+# COMI-Upscaled v0.0.3 — 4x AI Upscaled HD Remaster
 
 > **The Curse of Monkey Island** (LucasArts, 2000) — A modified **ScummVM** fork that renders COMI in 4x HD with AI-upscaled textures.
 
@@ -36,10 +36,10 @@ Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 ### Linux
 ```bash
 # 1. Extract build ZIP
-unzip comi_hd_build.zip -d comi_hd_v1.0.2/
+unzip comi_hd_build_0.0.3.zip -d comi_hd_v0.0.3/
 # 2. Extract all 6 HD asset parts into the same directory
-for f in hd_assets_part*.zip; do unzip "$f" -d comi_hd_v1.0.2/; done
-cd comi_hd_v1.0.2
+for f in hd_assets_0.0.3_part*.zip; do unzip "$f" -d comi_hd_v0.0.3/; done
+cd comi_hd_v0.0.3
 
 # 3. Copy your COMI game data into game/ subdirectory
 
@@ -50,8 +50,8 @@ chmod +x scummvm
 
 ### Windows
 ```bat
-:: 1. Extract comi_hd_build.zip → comi_hd_v1.0.2/
-:: 2. Extract all 6 hd_assets_part*.zip → comi_hd_v1.0.2/ (same directory)
+:: 1. Extract comi_hd_build_0.0.3.zip → comi_hd_v0.0.3/
+:: 2. Extract all 6 hd_assets_0.0.3_part*.zip → comi_hd_v0.0.3/ (same directory)
 :: 3. Copy COMI game data into game/ subdirectory
 :: 4. Run start_comi_hd.bat
 ```

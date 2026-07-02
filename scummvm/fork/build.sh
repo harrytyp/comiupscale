@@ -4,6 +4,14 @@
 # ============================================================
 # Cross-platform build for Windows (MSYS2) and Linux.
 #
+# This is a convenience wrapper. For the full automated build
+# (downloads deps, builds SDL2 from source, cross-compile for
+# Windows), use:
+#
+#   bash build/build-all.sh
+#
+# from the repository root.
+#
 # Usage:
 #   cd <repo>/scummvm/fork
 #   bash build.sh
@@ -41,6 +49,14 @@ esac
 
 echo "=== COMI Upscaled Build ==="
 echo "Platform: $PLATFORM ($OS)"
+
+echo ""
+echo "NOTE: For the fully automated build (downloads toolchains,"
+echo "builds SDL2 from source, cross-compiles for Windows), run:"
+echo ""
+echo "  bash build/build-all.sh"
+echo ""
+echo "from the repository root instead."
 
 # ── Windows-specific setup ─────────────────────────────
 if [ "$PLATFORM" = "windows" ]; then
@@ -92,29 +108,12 @@ if [ "$PLATFORM" = "linux" ] || [ "$PLATFORM" = "macos" ]; then
         exit 1
     fi
 
-    # Check for SDL2 and other required libraries
-    for lib in sdl2 freetype2 libpng vorbis flac; do
-        if ! pkg-config --exists "$lib" 2>/dev/null; then
-            echo "WARNING: pkg-config can't find $lib"
-            case "$lib" in
-                sdl2)
-                    echo "  Install: sudo apt install libsdl2-dev"
-                    ;;
-                freetype2)
-                    echo "  Install: sudo apt install libfreetype-dev"
-                    ;;
-                libpng)
-                    echo "  Install: sudo apt install libpng-dev"
-                    ;;
-                vorbis)
-                    echo "  Install: sudo apt install libvorbis-dev"
-                    ;;
-                flac)
-                    echo "  Install: sudo apt install libflac-dev"
-                    ;;
-            esac
-        fi
-    done
+    # Check for SDL2
+    if ! pkg-config --exists sdl2 2>/dev/null && ! command -v sdl2-config &>/dev/null; then
+        echo "WARNING: SDL2 not found. Build SDL2 first:"
+        echo "  bash build/build-all.sh linux"
+        echo "  (or install system SDL2: sudo apt install libsdl2-dev)"
+    fi
 
     # Check OpenGL support (needed for HD rendering)
     if ! pkg-config --exists gl 2>/dev/null; then
