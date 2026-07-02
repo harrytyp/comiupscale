@@ -215,28 +215,15 @@ bool HdObjectManager::hasObject(int obj_nr, int room, int state) const {
 	if (it == _objectMap.end())
 		return false;
 
-	const ObjectInfo &info = it->_value;
-
 	// Check if this room has the object
-	const Common::HashMap<int, Common::List<int>>::const_iterator rit = info.roomStates.find(room);
-	if (rit != info.roomStates.end()) {
-		// Check if the state exists
-		for (Common::List<int>::const_iterator sit = rit->_value.begin(); sit != rit->_value.end(); ++sit) {
-			if (*sit == state)
-				return true;
-		}
-	}
+	const Common::HashMap<int, Common::List<int>>::const_iterator rit = it->_value.roomStates.find(room);
+	if (rit == it->_value.roomStates.end())
+		return false;
 
-	// Fallback: try any other room in the mapping (inventory items, etc.)
-	for (Common::HashMap<int, Common::List<int>>::const_iterator oit = info.roomStates.begin();
-		 oit != info.roomStates.end(); ++oit) {
-		if (oit->_key == room)
-			continue;
-		for (Common::List<int>::const_iterator sit = oit->_value.begin();
-			 sit != oit->_value.end(); ++sit) {
-			if (*sit == state)
-				return true;
-		}
+	// Check if the state exists
+	for (Common::List<int>::const_iterator sit = rit->_value.begin(); sit != rit->_value.end(); ++sit) {
+		if (*sit == state)
+			return true;
 	}
 
 	return false;
@@ -271,39 +258,7 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 	if (loadPNG(objPath, surf)) {
 		cacheKey = objPath;
 	} else {
-		// Fallback: try alternate rooms (e.g. inventory items stored in room 3
-		// but referenced from the player's current room).
-		for (Common::HashMap<int, Common::List<int>>::const_iterator rit = info.roomStates.begin();
-			 rit != info.roomStates.end(); ++rit) {
-			int altRoom = rit->_key;
-			if (altRoom == room)
-				continue;
-			// Check if this room supports the requested state
-			bool hasState = false;
-			for (Common::List<int>::const_iterator sit = rit->_value.begin();
-				 sit != rit->_value.end(); ++sit) {
-				if (*sit == state) {
-					hasState = true;
-					break;
-				}
-			}
-			if (!hasState)
-				continue;
-			Common::String altPath = buildObjectPath(altRoom, info.name, state);
-			cacheIt = _textureCache.find(altPath);
-			if (cacheIt != _textureCache.end()) {
-				cacheIt->_value.lastUsed = ++_lruCounter;
-				dest.copyFrom(cacheIt->_value.surface);
-				return true;
-			}
-			if (loadPNG(altPath, surf)) {
-				objPath = altPath;
-				cacheKey = altPath;
-				break;
-			}
-		}
-		if (cacheKey.empty())
-			return false;
+		return false;
 	}
 
 	// Add to cache

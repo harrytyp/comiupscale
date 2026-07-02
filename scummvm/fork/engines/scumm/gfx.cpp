@@ -1380,14 +1380,33 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
+			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
 
-			if (!_hdObjectManager->hasObject(od.obj_nr, _currentRoom, objState)) {
+			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objState)) {
 				// Fallback: try state=0 if the exact state isn't available.
-				// Many HD objects are extracted only at state=0 (default/visible).
-				if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, _currentRoom, 0)) {
+				if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, objRoom, 0)) {
 					objState = 0;
+				} else if (od.fl_object_index != 0) {
+					// Inventory items: their HD PNGs live in a single room
+					// (e.g. room 3 for all inventory icons) regardless of the
+					// player's current room. Try alternate rooms from mapping.
+					int altRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
+					if (altRoom >= 0 && altRoom != objRoom) {
+						if (_hdObjectManager->hasObject(od.obj_nr, altRoom, objState)) {
+							objRoom = altRoom;
+						} else if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, altRoom, 0)) {
+							objRoom = altRoom;
+							objState = 0;
+						} else {
+							step25_skipped++;
+							continue;
+						}
+					} else {
+						step25_skipped++;
+						continue;
+					}
 				} else {
 					step25_skipped++;
 					if (_hdFrameCount % 30 == 0) {
@@ -1400,7 +1419,7 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			Graphics::Surface hdObjSurf;
-			if (!_hdObjectManager->loadObject(od.obj_nr, _currentRoom, objState, hdObjSurf))
+			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf))
 				continue;
 
 			// Skip full-HD textures (pre-composited layer files)
