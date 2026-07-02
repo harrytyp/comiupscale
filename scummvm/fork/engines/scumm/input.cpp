@@ -232,12 +232,14 @@ void ScummEngine::parseEvent(Common::Event event) {
 		_mouse.x = event.mouse.x;
 		_mouse.y = event.mouse.y;
 
-		// HD mode: backend delivers mouse in 2560×1920 space (from initSize).
-		// Rescale back to 640×480 game space so hotspots/verbs work correctly.
-		if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
-			_mouse.x = _mouse.x * _screenWidth / _hdBackgroundSurface.w;
-			_mouse.y = _mouse.y * _screenHeight / _hdBackgroundSurface.h;
-		}
+				// HD mode: backend delivers mouse in 2560×1920 space (from initSize).
+				// Rescale back to 640×480 game space so hotspots/verbs work correctly.
+				// Use _hdScale (always 4 in HD mode) instead of _hdBackgroundSurface
+				// dimensions, because getPixels() may be null before a room loads.
+				if (_hdScale > 1) {
+					_mouse.x /= _hdScale;
+					_mouse.y /= _hdScale;
+				}
 
 		if (_renderMode == Common::kRenderHercA || _renderMode == Common::kRenderHercG) {
 			_mouse.x -= (kHercWidth - _screenWidth * 2) / 2;
