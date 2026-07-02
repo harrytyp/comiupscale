@@ -1444,15 +1444,13 @@ void ScummEngine::renderHDComposite() {
 			// the 8-bit compositing coordinate system in Step 2. _roomWidth/_roomHeight
 			// can differ from _screenWidth/_screenHeight for some rooms (e.g. room 87,
 			// the easyhard screen), which would offset HD object positions incorrectly.
-			// Additionally, align X to 8-pixel boundaries: the 8-bit engine renders
-			// objects at strip-aligned positions (od.x_pos / 8 * 8), so the HD overlay
-			// must match. Without this, objects at non-8-aligned positions are shifted
-			// by 1-7 game pixels (4-28 HD pixels).
-			int alignX = od.x_pos & ~7;
-			int64 hdX = (int64)alignX * hdW / MAX(1, _screenWidth);
+			int64 hdX = (int64)od.x_pos * hdW / MAX(1, _screenWidth);
 			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _screenHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			warning("HDDBG step2.5 POS: obj=%d odPos=(%d,%d) hdPos=(%lld,%lld) sz=(%dx%d) screen=(%dx%d) hdCanvas=(%dx%d) room=%d hdRoom=%d rW=%d rH=%d fl=%d",
+				od.obj_nr, od.x_pos, od.y_pos, (long long)hdX, (long long)hdY, hdObjW, hdObjH,
+				_screenWidth, _screenHeight, hdW, hdH, _currentRoom, objRoom, _roomWidth, _roomHeight, od.fl_object_index);
 
 			// CULL: only render HD object if the 8-bit screen has visible
 			// foreground pixels in this area. If the object is invisible
@@ -1826,6 +1824,33 @@ void ScummEngine::renderHDComposite() {
 			warning("HDDBG step2.7 fonts: chars=%d drawn=%d fontMgr=%d",
 				(int)_hdFontChars.size(), step27_drawn, _hdFontManager->isEnabled());
 		_hdFontChars.clear();
+	}
+
+	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
+	// Full-screen verb textures are stored in _hdVerbSurface by drawVerbBitmap
+	// and composited here directly in HD to avoid HD→SD→HD quality loss.
+	if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
+		int overlayW = MIN((int)_hdVerbSurface.w, hdW);
+		int overlayH = MIN((int)_hdVerbSurface.h, hdH);
+		warning("HDDBG step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
+			overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
+		for (int oy = 0; oy < overlayH; oy++) {
+			uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
+			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
+			for (int ox = 0; ox < overlayW; ox++) {
+				uint32 pix = srcRow[ox];
+				uint8 alpha = (pix >> 24) & 0xFF;
+				if (alpha >= 128)
+					dstRow[ox] = pix;
+			}
+		}
+	}
+	// Always clear verb surface at end of frame, regardless of whether we drew it.
+	// drawVerbBitmap may have set it before the background was ready, or it may
+	// have been set in a previous frame when the inventory was open.
+	if (_hdVerbSurfaceValid) {
+		_hdVerbSurface.free();
+		_hdVerbSurfaceValid = false;
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer

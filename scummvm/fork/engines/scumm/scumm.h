@@ -566,6 +566,8 @@ public:
 	Graphics::Surface _hdBackgroundSurface;
 	Graphics::Surface _hdComposite;
 	Graphics::Surface _hdCleanBackground;
+	Graphics::Surface _hdVerbSurface; // HD verb overlay (e.g. inventory background)
+	bool _hdVerbSurfaceValid = false; // true when _hdVerbSurface has content
 	byte *_hdCleanValid = nullptr; // 640×480 byte array: 1 = pixel has clean data
 	int _hdCleanValidSize = 0;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object

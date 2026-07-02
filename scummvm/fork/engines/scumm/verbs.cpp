@@ -1238,6 +1238,29 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
 			Graphics::Surface hdSurf;
 			if (_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdSurf)) {
+				// Check if this is a full-screen overlay (e.g. inventory background).
+				// Full-screen textures should be composited directly in HD via
+				// _hdVerbSurface, not scaled down to SD and back up (quality loss).
+				int expectedHDW = _hdBackgroundSurface.w > 0 ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
+				int expectedHDH = _hdBackgroundSurface.h > 0 ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
+				bool isFullScreen = (hdSurf.w >= expectedHDW && hdSurf.h >= expectedHDH);
+
+				if (isFullScreen) {
+					// Store for later HD compositing (Step 2.7 in renderHDComposite)
+					int fw = hdSurf.w, fh = hdSurf.h;
+					_hdVerbSurface.free();
+					_hdVerbSurface.copyFrom(hdSurf);
+					_hdVerbSurfaceValid = true;
+					hdSurf.free();
+					// Update verb rect (for redraw tracking)
+					vst->curRect.left = x;
+					vst->curRect.top = y;
+					vst->curRect.right = x + fw / _hdScale;
+					vst->curRect.bottom = y + fh / _hdScale;
+					vst->oldRect = vst->curRect;
+					return;
+				}
+
 				if ((vs = findVirtScreen(y)) != nullptr && _hdScale > 1) {
 					// Scale HD surface down to SD verb screen
 					int sdW = hdSurf.w / _hdScale;
