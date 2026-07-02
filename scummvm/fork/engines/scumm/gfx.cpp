@@ -1393,15 +1393,13 @@ void ScummEngine::renderHDComposite() {
 			// and UI panels that are rendered through the verb system but need HD
 			// compositing. Their state=0 in the 8-bit engine means they're not drawn
 			// there, but we should still check for HD replacements.
-			// Only draw them if verbs were drawn this frame (_hdVerbDrawCount > 0),
-			// which means the verb menu is active and these overlays are visible.
+			// Only draw them if they are small UI elements (< 80% of HD canvas).
+			// Full-screen overlays (inventory background) are too large: they'd
+			// cover the entire screen and be visible in every room at all times.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: only draw FLOBJs if drawVerbBitmap was called this frame
-				// (indicating the verb/inventory menu is active).
-				if (_hdVerbDrawCount <= 0)
-					continue;
+				// V8: pass through, will be filtered by size in the load section
 			}
 
 			int objRoom = _currentRoom;
@@ -1450,9 +1448,20 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
+			// Also skip FLOBJs that are >80% of HD canvas — these are
+			// full-screen inventory/UI overlays that would cover the
+			// entire screen in every room. Small FLOBJs (icons, arrows)
+			// pass through.
 			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
 				hdObjSurf.free();
 				continue;
+			}
+			if (od.fl_object_index && (od.state & 0xF) == 0 && _game.version >= 7) {
+				if (hdObjSurf.w * 5 >= hdW * 4 && hdObjSurf.h * 5 >= hdH * 4) {
+					// Full-screen FLOBJ: skip (would be visible in every room)
+					hdObjSurf.free();
+					continue;
+				}
 			}
 
 			// Use _screenWidth/_screenHeight for HD object positioning to match
