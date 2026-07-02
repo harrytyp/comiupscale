@@ -1380,6 +1380,12 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
+			// Match the 8-bit engine's visibility check: objects with
+			// state == 0 are inactive/hidden (e.g. inventory background
+			// when the inventory is closed). Skip them entirely.
+			if (od.fl_object_index && (od.state & 0xF) == 0)
+				continue;
+
 			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
@@ -1422,11 +1428,11 @@ void ScummEngine::renderHDComposite() {
 			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf))
 				continue;
 
-			// Skip full-HD / near-full-HD textures (pre-composited layer files).
-			// Layer files cover most of the screen (e.g. inventory background at
-			// 2560×1888) and would overwrite the entire composite if rendered at
-			// the object's position. Check both dimensions against a 75% threshold.
-			if (hdObjSurf.w >= hdW * 3 / 4 && hdObjSurf.h >= hdH * 3 / 4) {
+			// Skip full-HD textures (pre-composited layer files).
+			// Layer files are the exact size of the HD canvas and
+			// are meant to replace the entire background, not to be
+			// rendered as standalone object overlays.
+			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH) {
 				hdObjSurf.free();
 				continue;
 			}
