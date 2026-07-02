@@ -327,9 +327,6 @@ int ScummEngine::getState(int obj) {
 void ScummEngine::putState(int obj, int state) {
 	assertRange(0, obj, _numGlobalObjects - 1, "object");
 	assertRange(0, state, 0xFF, "state");
-	// Debug: trace state changes for objects of interest
-	if ((obj == 114 || obj == 1366) && _hdFrameCount <= 600)
-		warning("HDDBG putState: obj=%d state=%d", obj, state);
 	_objectStateTable[obj] = state;
 }
 

@@ -1402,20 +1402,27 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
-			// BUT: for V8 floating objects (fl_object_index != 0), we still process
-			// them regardless of state, because they may represent inventory overlays
-			// that need HD compositing. The culling check below will skip them if
-			// the 8-bit screen has no foreground pixels in their area (inventory
-			// closed/screen element not visible).
-			if (od.fl_object_index && (od.state & 0xF) == 0) {
+			// Use getState() to read the GLOBAL state table (which may have been
+			// modified by the script mid-frame via o6_setState/putState), NOT
+			// od.state which is only updated once per frame by updateObjectStates().
+			int objGlobalState = getState(od.obj_nr);
+			if (objGlobalState < 0) objGlobalState = 0;
+
+			// Non-FLOBJ: skip if globally invisible
+			if (od.fl_object_index == 0 && objGlobalState == 0)
+				continue;
+
+			// V8 FLOBJ: skip if globally invisible (V6 and earlier never draw FLOBJs)
+			if (od.fl_object_index && objGlobalState == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: pass through — culling handles visibility
+				// V8: still skip — 8-bit engine never draws FLOBJs directly
+				// They appear through the verb system (drawVerb/drawVerbBitmap) or
+				// through setObjectState()→addObjectToDrawQue()→processDrawQue().
+				continue;
 			}
 
 			int objRoom = _currentRoom;
-			int objState = getState(od.obj_nr);
-			if (objState < 0) objState = 0;
 			// Debug: compare _objs[].state (from updateObjectStates) vs getState (from _objectStateTable)
 			if ((od.obj_nr == 114 || od.obj_nr == 1366) && _hdFrameCount <= 600) {
 				int globalState = getState(od.obj_nr);
@@ -1424,42 +1431,42 @@ void ScummEngine::renderHDComposite() {
 						od.obj_nr, od.state & 0xF, globalState, od.fl_object_index);
 			}
 
-			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objState)) {
+			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objGlobalState)) {
 				// Fallback: try state=0 if the exact state isn't available.
-				if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, objRoom, 0)) {
-					objState = 0;
+				if (objGlobalState != 0 && _hdObjectManager->hasObject(od.obj_nr, objRoom, 0)) {
+					objGlobalState = 0;
 				} else if (od.fl_object_index != 0) {
-					// Inventory items: their HD PNGs live in a single room
-					// (e.g. room 3 for all inventory icons) regardless of the
-					// player's current room. Try alternate rooms from mapping.
-					int altRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
-					if (altRoom >= 0 && altRoom != objRoom) {
-						if (_hdObjectManager->hasObject(od.obj_nr, altRoom, objState)) {
-							objRoom = altRoom;
-						} else if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, altRoom, 0)) {
-							objRoom = altRoom;
-							objState = 0;
+						// Inventory items: their HD PNGs live in a single room
+						// (e.g. room 3 for all inventory icons) regardless of the
+						// player's current room. Try alternate rooms from mapping.
+						int altRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
+						if (altRoom >= 0 && altRoom != objRoom) {
+							if (_hdObjectManager->hasObject(od.obj_nr, altRoom, objGlobalState)) {
+								objRoom = altRoom;
+							} else if (objGlobalState != 0 && _hdObjectManager->hasObject(od.obj_nr, altRoom, 0)) {
+								objRoom = altRoom;
+								objGlobalState = 0;
+							} else {
+								step25_skipped++;
+								continue;
+							}
 						} else {
 							step25_skipped++;
 							continue;
 						}
 					} else {
 						step25_skipped++;
+						if (_hdFrameCount % 30 == 0) {
+							const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
+							warning("HDDBG step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d fl=%d",
+								od.obj_nr, name, objGlobalState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom, od.fl_object_index);
+						}
 						continue;
 					}
-				} else {
-					step25_skipped++;
-					if (_hdFrameCount % 30 == 0) {
-						const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-						warning("HDDBG step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d fl=%d",
-							od.obj_nr, name, objState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom, od.fl_object_index);
-					}
-					continue;
-				}
 			}
 
 			Graphics::Surface hdObjSurf;
-			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf))
+			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objGlobalState, hdObjSurf))
 				continue;
 
 			// Skip full-HD textures (pre-composited layer files).
@@ -1517,7 +1524,7 @@ void ScummEngine::renderHDComposite() {
 			if (_hdFrameCount % 30 == 0) {
 				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
 				warning("HDDBG step2.5 LOAD: obj=%d(%s) state=%d pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
-					od.obj_nr, name, objState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+					od.obj_nr, name, objGlobalState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
 			}
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
