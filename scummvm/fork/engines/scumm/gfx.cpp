@@ -1393,23 +1393,17 @@ void ScummEngine::renderHDComposite() {
 			// and UI panels that are rendered through the verb system but need HD
 			// compositing. Their state=0 in the 8-bit engine means they're not drawn
 			// there, but we should still check for HD replacements.
-			// HOWEVER: only draw them if at least one verb is actually visible.
-			// Otherwise these overlays would be visible in EVERY room at all times.
+			// HOWEVER: full-screen FLOBJs (>90% of HD canvas) are excluded here
+			// because they are handled via drawVerbBitmap + _hdVerbSurface (Step 2.8).
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: only draw FLOBJs with state=0 if the verb menu is active.
-				// Check if any verb slot has curmode==1 (visible).
-				bool anyVerbVisible = false;
-				for (int vi = 1; vi < _numVerbs; vi++) {
-					if (_verbs[vi].curmode == 1) {
-						anyVerbVisible = true;
-						break;
-					}
-				}
-				if (!anyVerbVisible)
-					continue;
-				// V8 + verb active: process FLOBJs for HD compositing
+				// V8: process FLOBJs for HD compositing, but ONLY if they are
+				// small overlay elements (icons, arrows). Full-screen overlays
+				// (inventory background) are handled by drawVerbBitmap instead.
+				// Check if this FLOBJ has an HD version — if so, check its size.
+				// We defer the actual size check to after loadObject when we know
+				// the HD surface dimensions.
 			}
 
 			int objRoom = _currentRoom;
@@ -1458,12 +1452,22 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			// BUT: allow inventory overlay objects (fl_object_index != 0)
-			// through even at full size — e.g. the inventory background
-			// panel must render in HD, not be scaled down and back up.
+			// Also skip full-screen V8 FLOBJs (>90% of HD canvas) because
+			// they are handled via drawVerbBitmap → _hdVerbSurface → Step 2.8,
+			// which composites them directly in HD without quality loss.
+			// Smaller FLOBJs (icons, arrows) are fine to draw here.
 			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
 				hdObjSurf.free();
 				continue;
+			}
+			// For V8 floating objects with state=0, also skip if they're
+			// full-screen (>90% of HD canvas) — these are inventory overlays
+			// that should go through drawVerbBitmap instead.
+			if (od.fl_object_index && (od.state & 0xF) == 0 && _game.version >= 7) {
+				if (hdObjSurf.w * 10 >= hdW * 9 && hdObjSurf.h * 10 >= hdH * 9) {
+					hdObjSurf.free();
+					continue;
+				}
 			}
 
 			// Use _screenWidth/_screenHeight for HD object positioning to match
