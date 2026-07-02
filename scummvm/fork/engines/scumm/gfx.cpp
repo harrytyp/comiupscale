@@ -1432,22 +1432,25 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH) {
+			// BUT: allow inventory overlay objects (fl_object_index != 0)
+			// through even at full size — e.g. the inventory background
+			// panel must render in HD, not be scaled down and back up.
+			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
 				hdObjSurf.free();
 				continue;
 			}
 
-			// Use screen coordinates (visW/visH) for HD object positioning to match
-			// the 8-bit compositing coordinate system in Step 2. This ensures HD
-			// objects align with their SD counterparts even when _roomWidth differs
-			// from _screenWidth (e.g., inventory overlays, letterboxed screens).
+			// Use _screenWidth/_screenHeight for HD object positioning to match
+			// the 8-bit compositing coordinate system in Step 2. _roomWidth/_roomHeight
+			// can differ from _screenWidth/_screenHeight for some rooms (e.g. room 87,
+			// the easyhard screen), which would offset HD object positions incorrectly.
 			// Additionally, align X to 8-pixel boundaries: the 8-bit engine renders
 			// objects at strip-aligned positions (od.x_pos / 8 * 8), so the HD overlay
 			// must match. Without this, objects at non-8-aligned positions are shifted
 			// by 1-7 game pixels (4-28 HD pixels).
 			int alignX = od.x_pos & ~7;
-			int64 hdX = (int64)alignX * hdW / MAX(1, _roomWidth);
-			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _roomHeight);
+			int64 hdX = (int64)alignX * hdW / MAX(1, _screenWidth);
+			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _screenHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
 
