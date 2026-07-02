@@ -1374,6 +1374,20 @@ void ScummEngine::renderHDComposite() {
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
+		// Room-change debug: print all objects with their states
+		static int prevRoom = -1;
+		if (_currentRoom != prevRoom) {
+			prevRoom = _currentRoom;
+			warning("HDDBG ROOM CHANGE: entering room %d, %d objects:", _currentRoom, _numLocalObjects);
+			for (int di = _numLocalObjects - 1; di > 0; di--) {
+				ObjectData &dod = _objs[di];
+				if (dod.obj_nr == 0) continue;
+				warning("HDDBG ROOM OBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) name=%s",
+					di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
+					dod.x_pos, dod.y_pos, dod.width, dod.height,
+					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
+			}
+		}
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
 		for (int oi = _numLocalObjects - 1; oi > 0; oi--) {
@@ -1392,14 +1406,14 @@ void ScummEngine::renderHDComposite() {
 			// them regardless of state, because they may represent inventory overlays
 			// and UI panels that are rendered through the verb system but need HD
 			// compositing. Their state=0 in the 8-bit engine means they're not drawn
-			// there, but we should still check for HD replacements.
-			// Only draw them if they are small UI elements (< 80% of HD canvas).
-			// Full-screen overlays (inventory background) are too large: they'd
-			// cover the entire screen and be visible in every room at all times.
+			// there, but if an HD version exists we should show it.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: pass through, will be filtered by size in the load section
+				// V8: pass through to hasObject check — if an HD texture exists
+				// and this is a floating object, load and render it regardless of
+				// state. The 8-bit engine's state-based visibility doesn't apply
+				// to HD floating overlays (inventory icons, background panels).
 			}
 
 			int objRoom = _currentRoom;
@@ -1448,20 +1462,9 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			// Also skip FLOBJs that are >80% of HD canvas — these are
-			// full-screen inventory/UI overlays that would cover the
-			// entire screen in every room. Small FLOBJs (icons, arrows)
-			// pass through.
 			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
 				hdObjSurf.free();
 				continue;
-			}
-			if (od.fl_object_index && (od.state & 0xF) == 0 && _game.version >= 7) {
-				if (hdObjSurf.w * 5 >= hdW * 4 && hdObjSurf.h * 5 >= hdH * 4) {
-					// Full-screen FLOBJ: skip (would be visible in every room)
-					hdObjSurf.free();
-					continue;
-				}
 			}
 
 			// Use _screenWidth/_screenHeight for HD object positioning to match
