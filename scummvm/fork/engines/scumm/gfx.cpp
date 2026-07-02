@@ -1404,17 +1404,13 @@ void ScummEngine::renderHDComposite() {
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
 			// BUT: for V8 floating objects (fl_object_index != 0), we still process
 			// them regardless of state, because they may represent inventory overlays
-			// that need HD compositing. HOWEVER: only draw them when the current room
-			// matches their HD home room (the room from object_map.json).
-			// Floating objects from room 3 (inventory) should only render in room 3,
-			// not in every room they happen to appear in as invisible placeholders.
+			// that need HD compositing. The culling check below will skip them if
+			// the 8-bit screen has no foreground pixels in their area (inventory
+			// closed/screen element not visible).
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: only draw if current room matches the object's home room
-				int flobjHomeRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
-				if (flobjHomeRoom <= 0 || flobjHomeRoom != _currentRoom)
-					continue;
+				// V8: pass through — culling handles visibility
 			}
 
 			int objRoom = _currentRoom;
