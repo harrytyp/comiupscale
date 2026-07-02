@@ -624,6 +624,10 @@ void ScummEngine_v8::o8_cursorCommand() {
 		int y = pop();
 		int x = pop();
 
+		if (_hdScale > 1) {
+			x *= _hdScale;
+			y *= _hdScale;
+		}
 		_system->warpMouse(x, y);
 		}
 		break;

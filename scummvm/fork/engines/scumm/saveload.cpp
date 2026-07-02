@@ -1664,6 +1664,10 @@ void ScummEngine::saveLoadWithSerializer(Common::Serializer &s) {
 			y *= 2;
 		}
 
+		if (_hdScale > 1) {
+			x *= _hdScale;
+			y *= _hdScale;
+		}
 		updateCursor();
 		_system->warpMouse(x, y);
 	}
