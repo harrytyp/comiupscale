@@ -37,6 +37,7 @@
 #include "scumm/hd_font_manager.h"
 #include "scumm/hd_object_manager.h"
 #include "scumm/object.h"
+#include "scumm/verbs.h"
 #include "scumm/he/wiz_he.h"
 #include "image/png.h"
 #include "scumm/util.h"
