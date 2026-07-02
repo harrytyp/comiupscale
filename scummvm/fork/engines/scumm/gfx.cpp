@@ -1422,8 +1422,11 @@ void ScummEngine::renderHDComposite() {
 			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf))
 				continue;
 
-			// Skip full-HD textures (pre-composited layer files)
-			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH) {
+			// Skip full-HD / near-full-HD textures (pre-composited layer files).
+			// Layer files cover most of the screen (e.g. inventory background at
+			// 2560×1888) and would overwrite the entire composite if rendered at
+			// the object's position. Check both dimensions against a 75% threshold.
+			if (hdObjSurf.w >= hdW * 3 / 4 && hdObjSurf.h >= hdH * 3 / 4) {
 				hdObjSurf.free();
 				continue;
 			}
