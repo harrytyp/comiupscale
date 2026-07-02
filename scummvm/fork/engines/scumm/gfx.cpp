@@ -1380,6 +1380,12 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
+			// Debug: log every object entering Step 2.5 for the first 10 frames
+			if (_hdFrameCount <= 10 && od.fl_object_index != 0) {
+				warning("HDDBG step2.5 FLOBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) room=%d",
+					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
+			}
+
 			// Match the 8-bit engine's visibility check: objects with
 			// state == 0 are inactive/hidden (e.g. inventory background
 			// when the inventory is closed). Skip them entirely.
