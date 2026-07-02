@@ -1231,6 +1231,11 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 	byte *obim;
 	uint32 size;
 
+	// Debug: trace every drawVerbBitmap call
+	if (_hdFrameCount <= 30)
+		warning("HDDBG drawVerbBitmap CALL: verb=%d x=%d y=%d hd_obj_nr=%d hd_room=%d type=%d",
+			verb, x, y, vst->hd_obj_nr, vst->hd_room, vst->type);
+
 	// HD mod: try to load HD texture for this verb
 	if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
 		int state = 0;

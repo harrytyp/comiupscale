@@ -1386,11 +1386,17 @@ void ScummEngine::renderHDComposite() {
 					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
 			}
 
-			// Match the 8-bit engine's visibility check: objects with
-			// state == 0 are inactive/hidden (e.g. inventory background
-			// when the inventory is closed). Skip them entirely.
-			if (od.fl_object_index && (od.state & 0xF) == 0)
-				continue;
+			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
+			// BUT: for V8 floating objects (fl_object_index != 0), we still process
+			// them regardless of state, because they may represent inventory overlays
+			// and UI panels that are rendered through the verb system but need HD
+			// compositing. Their state=0 in the 8-bit engine means they're not drawn
+			// there, but we should still check for HD replacements.
+			if (od.fl_object_index && (od.state & 0xF) == 0) {
+				if (_game.version <= 6)
+					continue;
+				// V8: still process, but hasObject determines if HD version exists
+			}
 
 			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
