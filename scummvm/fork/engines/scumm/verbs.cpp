@@ -1236,8 +1236,13 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 		warning("HDDBG drawVerbBitmap CALL: verb=%d x=%d y=%d hd_obj_nr=%d hd_room=%d type=%d",
 			verb, x, y, vst->hd_obj_nr, vst->hd_room, vst->type);
 
+	// Track verb drawing activity — used by Step 2.5 to decide whether to
+	// draw FLOBJ overlays (only when verbs are actively being drawn).
+	_hdVerbDrawCount++;
+
 	// HD mod: try to load HD texture for this verb
 	if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
+		_hdVerbDrawCount++;
 		int state = 0;
 		int hdRoom = vst->hd_room;
 		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
