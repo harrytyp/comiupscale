@@ -1395,31 +1395,38 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
-			// Debug: log every object entering Step 2.5 for the first 10 frames
-			if (_hdFrameCount <= 10 && od.fl_object_index != 0) {
-				warning("HDDBG step2.5 FLOBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) room=%d",
-					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
+			// Debug: log EVERY object entering Step 2.5 for the first 60 frames
+			if (_hdFrameCount <= 60) {
+				int gs = getState(od.obj_nr);
+				if (gs < 0) gs = 0;
+				warning("HDDBG step2.5 ENTRY: oi=%d obj=%d fl=%d odState=%d getState=%d pos=(%d,%d) sz=(%dx%d) room=%d name=%s",
+					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, gs,
+					od.x_pos, od.y_pos, od.width, od.height, _currentRoom,
+					_hdObjectManager ? _hdObjectManager->getObjectName(od.obj_nr).c_str() : "");
 			}
 
-			// Use getState() as the single source of truth for visibility.
-			// getState() reads the LIVE _objectStateTable (updated by scripts
-			// via putState/o6_setState mid-frame), NOT the stale od.state copy
-			// which only syncs once per frame via updateObjectStates().
-			// This correctly handles:
-			//   - Regular room objects (getState() != 0 when script makes them visible)
-			//   - Inventory FLOBJs (getState() != 0 when inventory is open)
-			//   - Inventory background obj 114 (getState() != 0 when inventory is open)
-			int objGlobalState = getState(od.obj_nr);
-			if (objGlobalState < 0) objGlobalState = 0;
-
-			// Skip objects that are globally invisible (getState() == 0).
-			// This replaces the old dual-path logic that treated FLOBJs and
-			// non-FLOBJs differently — the script's state signal works for both.
-			if (objGlobalState == 0)
-				continue;
+			// V8 FLOBJs (fl_object_index != 0): always process regardless of state.
+			// The 8-bit engine never draws FLOBJs directly (they appear through the
+			// verb/object-queue system), but their HD textures exist and should be
+			// rendered when the verb system makes the inventory visible.
+			if (od.fl_object_index != 0) {
+				if (_game.version <= 6)
+					continue;
+				// V8: pass through — inventory needs HD compositing
+			} else {
+				// Non-FLOBJ: use getState() for visibility.
+				// getState() reads the LIVE _objectStateTable (updated by scripts
+				// via putState/o6_setState mid-frame), NOT the stale od.state copy
+				// which only syncs once per frame via updateObjectStates().
+				int objGlobalState = getState(od.obj_nr);
+				if (objGlobalState < 0) objGlobalState = 0;
+				if (objGlobalState == 0)
+					continue;
+			}
 
 			int objRoom = _currentRoom;
-			int objState = objGlobalState;
+			int objState = getState(od.obj_nr);
+			if (objState < 0) objState = 0;
 
 			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objState)) {
 				// Fallback: try state=0 if the exact state isn't available.
