@@ -1041,6 +1041,10 @@ void ScummEngine_v7::drawVerb(int verb, int mode, Common::TextToSpeechManager::A
 
 	vs = &_verbs[verb];
 
+	// HD mod: any verb drawing means the verb screen is active
+	if (_hdObjectManager && _hdObjectManager->isEnabled())
+		_hdVerbScreenTimestamp = _hdFrameCount;
+
 	if (!vs->saveid && vs->curmode && vs->verbid) {
 		if (vs->type == kImageVerbType) {
 			drawVerbBitmap(verb, vs->curRect.left, vs->curRect.top);
@@ -1243,6 +1247,7 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 	// HD mod: try to load HD texture for this verb
 	if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
 		_hdVerbDrawCount++;
+		_hdVerbScreenTimestamp = _hdFrameCount; // mark verb screen as active
 		int state = 0;
 		int hdRoom = vst->hd_room;
 		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {

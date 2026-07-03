@@ -569,6 +569,7 @@ public:
 	Graphics::Surface _hdVerbSurface; // HD verb overlay (e.g. inventory background)
 	bool _hdVerbSurfaceValid = false; // true when _hdVerbSurface has content
 	int _hdVerbDrawCount = 0; // incremented each drawVerbBitmap call, reset each frame
+	int _hdVerbScreenTimestamp = 0; // frame number when verb screen was last updated
 	byte *_hdCleanValid = nullptr; // 640×480 byte array: 1 = pixel has clean data
 	int _hdCleanValidSize = 0;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
