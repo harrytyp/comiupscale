@@ -1374,10 +1374,6 @@ void ScummEngine::renderHDComposite() {
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
-		// Debug log: open file for first 120 frames
-		Common::DumpFile hdDebugFile;
-		if (_hdFrameCount <= 120)
-			hdDebugFile.open(Common::Path("hd_debug.log"));
 		// Room-change debug: print all objects with their states
 		static int prevRoom = -1;
 		if (_currentRoom != prevRoom) {
@@ -1399,37 +1395,26 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
-			// Debug: log EVERY object entering Step 2.5 for the first 120 frames
-			if (_hdFrameCount <= 120 && hdDebugFile.isOpen()) {
-				int gs = getState(od.obj_nr);
-				if (gs < 0) gs = 0;
-				const char *hdName = _hdObjectManager ? _hdObjectManager->getObjectName(od.obj_nr).c_str() : "";
-				char line[512];
-				int n = snprintf(line, sizeof(line), "ENTRY frame=%d oi=%d obj=%d fl=%d odState=%d getState=%d pos=(%d,%d) sz=(%dx%d) room=%d name=%s\n",
-					_hdFrameCount, oi, od.obj_nr, od.fl_object_index, od.state & 0xF, gs,
-					od.x_pos, od.y_pos, od.width, od.height, _currentRoom, hdName);
-				if (n > 0)
-					hdDebugFile.write(line, n);
+			// Debug: log every object entering Step 2.5 for the first 10 frames
+			if (_hdFrameCount <= 10 && od.fl_object_index != 0) {
+				warning("HDDBG step2.5 FLOBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) room=%d",
+					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
 			}
 
-			// V8 FLOBJs (fl_object_index != 0): always process regardless of state.
-			// The 8-bit engine never draws FLOBJs directly (they appear through the
-			// verb/object-queue system), but their HD textures exist and should be
-			// rendered when the verb system makes the inventory visible.
-			if (od.fl_object_index != 0) {
+			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
+			// BUT: for V8 floating objects (fl_object_index != 0), we always process
+			// them regardless of state, because they represent inventory overlays
+			// that need HD compositing. The 8-bit engine never draws them directly
+			// (state=0), but their HD textures exist and should be rendered when
+			// the verb system or game script makes the inventory visible.
+			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: pass through — inventory needs HD compositing
-			} else {
-				// Non-FLOBJ: use getState() for visibility.
-				// getState() reads the LIVE _objectStateTable (updated by scripts
-				// via putState/o6_setState mid-frame), NOT the stale od.state copy
-				// which only syncs once per frame via updateObjectStates().
-				int objGlobalState = getState(od.obj_nr);
-				if (objGlobalState < 0) objGlobalState = 0;
-				if (objGlobalState == 0)
-					continue;
+				// V8: always pass through — inventory needs HD compositing
 			}
+			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
+			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
+				continue;
 
 			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
@@ -1439,19 +1424,21 @@ void ScummEngine::renderHDComposite() {
 				// Fallback: try state=0 if the exact state isn't available.
 				if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, objRoom, 0)) {
 					objState = 0;
-				} else {
-					// Room fallback: HD PNGs may live in a different room (e.g. Room 3
-					// for all inventory objects) than the player's current room.
-					// This applies to BOTH FLOBJs (inventory icons) and non-FLOBJs
-					// (inventory background obj 114) — any actively-visible object
-					// whose HD textures live elsewhere.
-					int altRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
-					if (altRoom >= 0 && altRoom != objRoom) {
-						if (_hdObjectManager->hasObject(od.obj_nr, altRoom, objState)) {
-							objRoom = altRoom;
-						} else if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, altRoom, 0)) {
-							objRoom = altRoom;
-							objState = 0;
+				} else if (od.fl_object_index != 0) {
+						// Inventory items: their HD PNGs live in a single room
+						// (e.g. room 3 for all inventory icons) regardless of the
+						// player's current room. Try alternate rooms from mapping.
+						int altRoom = _hdObjectManager->findObjectRoom(od.obj_nr);
+						if (altRoom >= 0 && altRoom != objRoom) {
+							if (_hdObjectManager->hasObject(od.obj_nr, altRoom, objState)) {
+								objRoom = altRoom;
+							} else if (objState != 0 && _hdObjectManager->hasObject(od.obj_nr, altRoom, 0)) {
+								objRoom = altRoom;
+								objState = 0;
+							} else {
+								step25_skipped++;
+								continue;
+							}
 						} else {
 							step25_skipped++;
 							continue;
@@ -1465,7 +1452,6 @@ void ScummEngine::renderHDComposite() {
 						}
 						continue;
 					}
-				}
 			}
 
 			Graphics::Surface hdObjSurf;
@@ -1476,11 +1462,7 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			// ONLY block if the object was loaded from the CURRENT room.
-			// Objects that loaded from a different room (e.g. inventory
-			// background from Room 3 while player is in Room 9) are
-			// cross-room overlays and should pass through.
-			if (objRoom == _currentRoom && hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
+			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
 				hdObjSurf.free();
 				continue;
 			}
@@ -1500,12 +1482,7 @@ void ScummEngine::renderHDComposite() {
 			// CULL: only render HD object if the 8-bit screen has visible
 			// foreground pixels in this area. If the object is invisible
 			// (hidden behind other elements or inactive), skip it.
-			// HOWEVER: skip culling for cross-room overlays (objRoom != currentRoom).
-			// Inventory content is rendered on the Verb VirtScreen, not the Main
-			// VirtScreen, so the diff-based culling would incorrectly kill inventory
-			// overlays. Objects loaded from a different room (objRoom != currentRoom)
-			// are such overlays and should bypass the diff check.
-			if (objRoom == _currentRoom) {
+			{
 				int sx = od.x_pos;
 				int sy = od.y_pos;
 				int sw = MIN<int>(od.width, visW - sx);
@@ -1560,9 +1537,6 @@ void ScummEngine::renderHDComposite() {
 
 			hdObjSurf.free();
 		}
-		// Close debug log file
-		if (hdDebugFile.isOpen())
-			hdDebugFile.close();
 	}
 	if (_hdFrameCount % 30 == 0)
 		warning("HDDBG step2.5 objects: loaded=%d skipped=%d culled=%d",
@@ -1927,6 +1901,34 @@ void ScummEngine::renderHDComposite() {
 			hdDebugDump();
 			_hdDebugDumpCount = 30; // periodic
 		}
+	}
+	
+	// State debug dump: write state table + verb info for first 120 frames
+	if (_hdFrameCount <= 120) {
+		Common::DumpFile df;
+		df.open(Common::Path("hd_state.log"));
+		char line[512];
+		// Header
+		int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
+		df.write(line, n);
+		// Non-zero _objectStateTable entries
+		for (int i = 0; i < _numGlobalObjects; i++) {
+			if (_objectStateTable[i] != 0) {
+				const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
+				n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
+				df.write(line, n);
+			}
+		}
+		// Verb slots with active image type
+		for (int vi = 0; vi < _numVerbs; vi++) {
+			VerbSlot &vs = _verbs[vi];
+			if (vs.verbid || vs.hd_obj_nr) {
+				n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d slot_saveid=%d\n",
+					vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room, vs.saveid);
+				df.write(line, n);
+			}
+		}
+		df.close();
 	}
 }
 
