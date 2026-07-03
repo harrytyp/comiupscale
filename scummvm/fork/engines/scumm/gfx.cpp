@@ -1903,32 +1903,48 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// State debug dump: write state table + verb info for first 120 frames
-	if (_hdFrameCount <= 120) {
-		Common::DumpFile df;
-		df.open(Common::Path("hd_state.log"));
-		char line[512];
-		// Header
-		int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
-		df.write(line, n);
-		// Non-zero _objectStateTable entries
-		for (int i = 0; i < _numGlobalObjects; i++) {
-			if (_objectStateTable[i] != 0) {
-				const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
-				n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
-				df.write(line, n);
+	// State debug log: always active — only produces output when inventory-related
+	// state changes. Logs non-zero _objectStateTable entries and verb slots with
+	// hd_obj_nr (inventory verbs). Naturally stays small/empty when nothing happens.
+	{
+		// Quick scan: is there anything interesting this frame?
+		bool hasStateChanges = false;
+		for (int i = 0; i < _numGlobalObjects && !hasStateChanges; i++) {
+			if (_objectStateTable[i] != 0)
+				hasStateChanges = true;
+		}
+		if (!hasStateChanges) {
+			for (int vi = 0; vi < _numVerbs && !hasStateChanges; vi++) {
+				if (_verbs[vi].hd_obj_nr > 0)
+					hasStateChanges = true;
 			}
 		}
-		// Verb slots with active image type
-		for (int vi = 0; vi < _numVerbs; vi++) {
-			VerbSlot &vs = _verbs[vi];
-			if (vs.verbid || vs.hd_obj_nr) {
-				n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d slot_saveid=%d\n",
-					vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room, vs.saveid);
-				df.write(line, n);
+		// Only write if there's something interesting
+		if (hasStateChanges) {
+			Common::DumpFile df;
+			df.open(Common::Path("hd_state.log"));
+			char line[512];
+			int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
+			df.write(line, n);
+			// Non-zero _objectStateTable entries
+			for (int i = 0; i < _numGlobalObjects; i++) {
+				if (_objectStateTable[i] != 0) {
+					const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
+					n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
+					df.write(line, n);
+				}
 			}
+			// Verb slots with inventory-related data
+			for (int vi = 0; vi < _numVerbs; vi++) {
+				VerbSlot &vs = _verbs[vi];
+				if (vs.hd_obj_nr > 0) {
+					n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d\n",
+						vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room);
+					df.write(line, n);
+				}
+			}
+			df.close();
 		}
-		df.close();
 	}
 }
 
