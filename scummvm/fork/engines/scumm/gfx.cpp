@@ -1937,14 +1937,14 @@ void ScummEngine::renderHDComposite() {
 					df.write(line, n);
 				}
 			}
-			// Verb slots with inventory-related data — log ALL verb slots
+			// Verb slots — log ALL slots unconditionally (no filter)
+			n = snprintf(line, sizeof(line), "  NUM_VERBS=%d\n", _numVerbs);
+			df.write(line, n);
 			for (int vi = 0; vi < _numVerbs; vi++) {
 				VerbSlot &vs = _verbs[vi];
-				if (vs.verbid != 0) {
-					n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d\n",
-						vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room);
-					df.write(line, n);
-				}
+				n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d key=%d saveid=%d\n",
+					vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room, vs.key, vs.saveid);
+				df.write(line, n);
 			}
 			// FLOBJ lock status check: isLocked should change when inventory opens/closes
 			for (int oi = 1; oi < _numLocalObjects; oi++) {
