@@ -1934,10 +1934,10 @@ void ScummEngine::renderHDComposite() {
 					df.write(line, n);
 				}
 			}
-			// Verb slots with inventory-related data
+			// Verb slots with inventory-related data — log ALL verb slots
 			for (int vi = 0; vi < _numVerbs; vi++) {
 				VerbSlot &vs = _verbs[vi];
-				if (vs.hd_obj_nr > 0) {
+				if (vs.verbid != 0) {
 					n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d\n",
 						vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room);
 					df.write(line, n);
