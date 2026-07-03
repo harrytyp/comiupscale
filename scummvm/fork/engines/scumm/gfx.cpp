@@ -1402,15 +1402,18 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
-			// BUT: for V8 floating objects (fl_object_index != 0), we always process
-			// them regardless of state, because they represent inventory overlays
-			// that need HD compositing. The 8-bit engine never draws them directly
-			// (state=0), but their HD textures exist and should be rendered when
-			// the verb system or game script makes the inventory visible.
+			// For V8 floating objects (fl_object_index != 0), we gate rendering on
+			// whether the FLOBJ resource is currently locked. V8 scripts call
+			// lockObject/unlockObject (kernelSetFunctions 11/12) to control FLOBJ
+			// resource lifecycle — if locked, the inventory is visible; if unlocked,
+			// the resource may be garbage-collected or is simply inactive.
+			// Without this gate the HD inventory overlay renders every frame.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: always pass through — inventory needs HD compositing
+				// V8: only render if the FLOBJ resource is locked
+				if (!_res->isLocked(rtFlObject, od.fl_object_index))
+					continue;
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
@@ -1942,6 +1945,17 @@ void ScummEngine::renderHDComposite() {
 						vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room);
 					df.write(line, n);
 				}
+			}
+			// FLOBJ lock status check: isLocked should change when inventory opens/closes
+			for (int oi = 1; oi < _numLocalObjects; oi++) {
+				ObjectData &od2 = _objs[oi];
+				if (od2.obj_nr == 0 || !od2.fl_object_index)
+					continue;
+				bool locked = _res->isLocked(rtFlObject, od2.fl_object_index);
+				const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(od2.obj_nr).c_str() : "";
+				n = snprintf(line, sizeof(line), "  FLOBJ[%d] obj=%d fl=%d locked=%d state=%d name=%s\n",
+					oi, od2.obj_nr, od2.fl_object_index, locked ? 1 : 0, od2.state & 0xF, name);
+				df.write(line, n);
 			}
 			df.close();
 		}
