@@ -1042,7 +1042,7 @@ void ScummEngine_v7::drawVerb(int verb, int mode, Common::TextToSpeechManager::A
 	vs = &_verbs[verb];
 
 	// HD mod: any verb drawing means the verb screen is active
-	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
+	if (_hdObjectManager && _hdObjectManager->isEnabled() && vs->curmode && vs->verbid) {
 		_hdVerbScreenTimestamp = _hdFrameCount;
 		if (_hdFrameCount <= 600)
 			warning("HDDBG drawVerb CALL: verb=%d curmode=%d type=%d hd_obj_nr=%d",

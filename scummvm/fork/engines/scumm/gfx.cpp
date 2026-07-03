@@ -1518,7 +1518,7 @@ void ScummEngine::renderHDComposite() {
 			if (_hdFrameCount % 30 == 0) {
 				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
 				warning("HDDBG step2.5 LOAD: obj=%d(%s) state=%d pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
-					od.obj_nr, name, objGlobalState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+					od.obj_nr, name, objState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
 			}
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
