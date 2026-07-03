@@ -1402,20 +1402,15 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
-			// BUT: for V8 floating objects (fl_object_index != 0), we still process
-			// them regardless of state, because they may represent inventory overlays
-			// and UI panels. Only draw them if the verb screen has been updated
-			// recently (indicating the verb/inventory menu is active).
+			// BUT: for V8 floating objects (fl_object_index != 0), we always process
+			// them regardless of state, because they represent inventory overlays
+			// that need HD compositing. The 8-bit engine never draws them directly
+			// (state=0), but their HD textures exist and should be rendered when
+			// the verb system or game script makes the inventory visible.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: only draw FLOBJs if verb screen was updated in last 2 frames
-				if (_hdFrameCount > 10 && _hdVerbScreenTimestamp + 2 < _hdFrameCount) {
-					if (_hdFrameCount % 60 == 0 && od.obj_nr == 114)
-						warning("HDDBG FLOBJ SKIP (verb stale): verbTs=%d frame=%d",
-							_hdVerbScreenTimestamp, _hdFrameCount);
-					continue;
-				}
+				// V8: always pass through — inventory needs HD compositing
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
