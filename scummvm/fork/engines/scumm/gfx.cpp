@@ -1410,8 +1410,12 @@ void ScummEngine::renderHDComposite() {
 				if (_game.version <= 6)
 					continue;
 				// V8: only draw FLOBJs if verb screen was updated in last 2 frames
-				if (_hdFrameCount > 10 && _hdVerbScreenTimestamp + 2 < _hdFrameCount)
+				if (_hdFrameCount > 10 && _hdVerbScreenTimestamp + 2 < _hdFrameCount) {
+					if (_hdFrameCount % 60 == 0 && od.obj_nr == 114)
+						warning("HDDBG FLOBJ SKIP (verb stale): verbTs=%d frame=%d",
+							_hdVerbScreenTimestamp, _hdFrameCount);
 					continue;
+				}
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
