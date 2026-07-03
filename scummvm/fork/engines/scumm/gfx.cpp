@@ -1374,6 +1374,10 @@ void ScummEngine::renderHDComposite() {
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
+		// Debug log: open file for first 120 frames
+		Common::DumpFile hdDebugFile;
+		if (_hdFrameCount <= 120)
+			hdDebugFile.open(Common::Path("hd_debug.log"));
 		// Room-change debug: print all objects with their states
 		static int prevRoom = -1;
 		if (_currentRoom != prevRoom) {
@@ -1395,14 +1399,17 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 0)
 				continue;
 
-			// Debug: log EVERY object entering Step 2.5 for the first 60 frames
-			if (_hdFrameCount <= 60) {
+			// Debug: log EVERY object entering Step 2.5 for the first 120 frames
+			if (_hdFrameCount <= 120 && hdDebugFile.isOpen()) {
 				int gs = getState(od.obj_nr);
 				if (gs < 0) gs = 0;
-				warning("HDDBG step2.5 ENTRY: oi=%d obj=%d fl=%d odState=%d getState=%d pos=(%d,%d) sz=(%dx%d) room=%d name=%s",
-					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, gs,
-					od.x_pos, od.y_pos, od.width, od.height, _currentRoom,
-					_hdObjectManager ? _hdObjectManager->getObjectName(od.obj_nr).c_str() : "");
+				const char *hdName = _hdObjectManager ? _hdObjectManager->getObjectName(od.obj_nr).c_str() : "";
+				char line[512];
+				int n = snprintf(line, sizeof(line), "ENTRY frame=%d oi=%d obj=%d fl=%d odState=%d getState=%d pos=(%d,%d) sz=(%dx%d) room=%d name=%s\n",
+					_hdFrameCount, oi, od.obj_nr, od.fl_object_index, od.state & 0xF, gs,
+					od.x_pos, od.y_pos, od.width, od.height, _currentRoom, hdName);
+				if (n > 0)
+					hdDebugFile.write(line, n);
 			}
 
 			// V8 FLOBJs (fl_object_index != 0): always process regardless of state.
@@ -1553,6 +1560,9 @@ void ScummEngine::renderHDComposite() {
 
 			hdObjSurf.free();
 		}
+		// Close debug log file
+		if (hdDebugFile.isOpen())
+			hdDebugFile.close();
 	}
 	if (_hdFrameCount % 30 == 0)
 		warning("HDDBG step2.5 objects: loaded=%d skipped=%d culled=%d",
