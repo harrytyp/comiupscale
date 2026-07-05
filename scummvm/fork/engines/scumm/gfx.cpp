@@ -1855,24 +1855,26 @@ void ScummEngine::renderHDComposite() {
 	}
 
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
+	// Step 2.8: Composite HD verb overlay (INVENTORY PANEL).
+	// V0.0.36-test: DISABLED — testing if inventory comes through verb surface.
 	// Full-screen verb textures are stored in _hdVerbSurface by drawVerbBitmap
 	// and composited here directly in HD to avoid HD→SD→HD quality loss.
-	if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
-		int overlayW = MIN((int)_hdVerbSurface.w, hdW);
-		int overlayH = MIN((int)_hdVerbSurface.h, hdH);
-		warning("HDDBG step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
-			overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
-		for (int oy = 0; oy < overlayH; oy++) {
-			uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
-			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
-			for (int ox = 0; ox < overlayW; ox++) {
-				uint32 pix = srcRow[ox];
-				uint8 alpha = (pix >> 24) & 0xFF;
-				if (alpha >= 128)
-					dstRow[ox] = pix;
-			}
-		}
-	}
+	//if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
+	//	int overlayW = MIN((int)_hdVerbSurface.w, hdW);
+	//	int overlayH = MIN((int)_hdVerbSurface.h, hdH);
+	//	warning("HDDBG step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
+	//		overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
+	//	for (int oy = 0; oy < overlayH; oy++) {
+	//		uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
+	//		uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
+	//		for (int ox = 0; ox < overlayW; ox++) {
+	//			uint32 pix = srcRow[ox];
+	//			uint8 alpha = (pix >> 24) & 0xFF;
+	//			if (alpha >= 128)
+	//				dstRow[ox] = pix;
+	//		}
+	//	}
+	//}
 	// Always clear verb surface at end of frame, regardless of whether we drew it.
 	// drawVerbBitmap may have set it before the background was ready, or it may
 	// have been set in a previous frame when the inventory was open.
