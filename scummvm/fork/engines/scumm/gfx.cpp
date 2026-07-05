@@ -1450,13 +1450,17 @@ void ScummEngine::renderHDComposite() {
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 		}
-		// ── Inventory Active Detection ──────────────────────────
-		// In COMI V8, inventory FLOBJs (obj=114, 115, 116 etc.) are drawn
-		// via drawVerbBitmap() when the inventory opens. _hdVerbDrawCount
-		// is incremented each call and reset per frame.
-		// > 0 means verbs/inventory were drawn this frame.
-		// Small FLOBJs (cursor, arrows, icons) use pixel culling.
-		bool inventoryActive = (_hdVerbDrawCount > 0);
+	// ── Inventory Active Detection ──────────────────────────
+		// COMI V8: inventory is drawn by the script engine, not through
+		// drawRoomObject (which skips state=0). Check verb slot array
+		// directly: if any verb has verbid && curmode, verbs are active.
+		bool inventoryActive = false;
+		for (int vi = 0; vi < _numVerbs; vi++) {
+			if (_verbs[vi].verbid != 0 && _verbs[vi].curmode != 0) {
+				inventoryActive = true;
+				break;
+			}
+		}
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
