@@ -2015,21 +2015,22 @@ void ScummEngine::renderHDComposite() {
 		}
 		// Only write if there's something interesting
 		if (hasStateChanges) {
-			Common::DumpFile df;
-			df.open(Common::Path("hd_state.log"));
-			char line[512];
+			char line[1024];
+			// Append frame state data to the persistent _hdDebugLog buffer.
+			// Buffer accumulates across frames so we don't lose inventory events
+			// that happened in earlier frames (file would be overwritten each frame).
+			Common::String frameData;
 			int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
-			df.write(line, n);
+			frameData += Common::String(line, n);
 			// Non-zero _objectStateTable entries
 			for (int i = 0; i < _numGlobalObjects; i++) {
 				if (_objectStateTable[i] != 0) {
 					const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
 					n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
-					df.write(line, n);
+					frameData += Common::String(line, n);
 				}
 			}
 			// Script drawObject tracking (last o8_drawObject call)
-			// Shows what positions the game script uses for inventory objects.
 			int scriptObj = _hdLastScriptObj;
 			int scriptX = _hdLastScriptX;
 			int scriptY = _hdLastScriptY;
@@ -2037,9 +2038,9 @@ void ScummEngine::renderHDComposite() {
 			if (scriptObj != 0) {
 				n = snprintf(line, sizeof(line), "  SCRIPT_DRAW: obj=%d x=%d y=%d state=%d\n",
 					scriptObj, scriptX, scriptY, scriptState);
-				df.write(line, n);
+				frameData += Common::String(line, n);
 			}
-			// FLOBJ lock status check: isLocked should change when inventory opens/closes
+			// FLOBJ lock status check
 			for (int oi = 1; oi < _numLocalObjects; oi++) {
 				ObjectData &od2 = _objs[oi];
 				if (od2.obj_nr == 0 || !od2.fl_object_index)
@@ -2048,20 +2049,27 @@ void ScummEngine::renderHDComposite() {
 				const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(od2.obj_nr).c_str() : "";
 				n = snprintf(line, sizeof(line), "  FLOBJ[%d] obj=%d fl=%d locked=%d state=%d name=%s\n",
 					oi, od2.obj_nr, od2.fl_object_index, locked ? 1 : 0, od2.state & 0xF, name);
-				df.write(line, n);
+				frameData += Common::String(line, n);
 			}
-			// HD debug log buffer (from hdPrintf calls during frame)
-			if (_hdDebugLog.size() > 0) {
+			// Append frame state data to the persistent debug log buffer
+			_hdDebugLog += frameData;
+			// Write to file when buffer is full or every 30 frames
+			bool shouldWrite = (_hdDebugLog.size() > 16384);
+			if (!shouldWrite && (_hdFrameCount % 30 == 0))
+				shouldWrite = (_hdDebugLog.size() > 0);
+			if (shouldWrite) {
+				Common::DumpFile df;
+				df.open(Common::Path("hd_state.log"));
 				df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+				df.close();
 				_hdDebugLog.clear();
 			}
-			df.close();
 		}
 	}
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	if (_hdDebugLog.size() > 8192)
+	if (_hdDebugLog.size() > 16384)
 		return;
 	_hdDebugLog += Common::String(msg, len);
 }
