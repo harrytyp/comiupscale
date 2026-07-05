@@ -1279,6 +1279,14 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 					vst->curRect.right = x + fw / _hdScale;
 					vst->curRect.bottom = y + fh / _hdScale;
 					vst->oldRect = vst->curRect;
+					// Sync verb position to ObjectData for Step 2.5
+					if (vst->hd_obj_nr > 0) {
+						int oi = getObjectIndex(vst->hd_obj_nr);
+						if (oi != -1) {
+							_objs[oi].x_pos = x;
+							_objs[oi].y_pos = y;
+						}
+					}
 					return;
 				}
 
@@ -1308,6 +1316,14 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 				vst->curRect.right = x + hdW / _hdScale;
 				vst->curRect.bottom = y + hdH / _hdScale;
 				vst->oldRect = vst->curRect;
+				// Sync verb position to ObjectData for Step 2.5
+				if (vst->hd_obj_nr > 0) {
+					int oi = getObjectIndex(vst->hd_obj_nr);
+					if (oi != -1) {
+						_objs[oi].x_pos = vst->curRect.left;
+						_objs[oi].y_pos = vst->curRect.top;
+					}
+				}
 				return;
 			}
 		}
