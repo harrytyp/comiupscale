@@ -1451,16 +1451,14 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	// ── Inventory Active Detection ──────────────────────────
-		// COMI V8: inventory is drawn by the script engine, not through
-		// drawRoomObject (which skips state=0). Check verb slot array
-		// directly: if any verb has verbid && curmode, verbs are active.
+		// COMI V8 inventory FLOBJs (obj=114,115,116,105,120,188,189)
+		// all have odPos=(0,0) in ObjectData. Their actual positions
+		// are set by the game script via GDI draw calls, not through
+		// the standard object rendering path.
+		// Step 2 (8-bit compositing) renders them correctly.
+		// Step 2.5 should skip FLOBJs at (0,0) to avoid rendering
+		// HD textures at wrong positions (fragments at top-left).
 		bool inventoryActive = false;
-		for (int vi = 0; vi < _numVerbs; vi++) {
-			if (_verbs[vi].verbid != 0 && _verbs[vi].curmode != 0) {
-				inventoryActive = true;
-				break;
-			}
-		}
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
@@ -1579,6 +1577,14 @@ void ScummEngine::renderHDComposite() {
 				int threshold = 2;
 				if (od.fl_object_index != 0 && sw > 0 && sh > 0) {
 					threshold = MAX(2, sw * sh / 50); // 2% of object area
+				}
+				// COMI V8 FLOBJs at position (0,0): these are inventory objects.
+				// The 8-bit engine (Step 2) renders them at correct positions
+				// via script-driven GDI calls. Skip them in Step 2.5 to avoid
+				// rendering HD textures at the wrong position (top-left corner).
+				// Room objects like obj=279,275 have non-zero positions.
+				if (od.fl_object_index != 0 && od.x_pos == 0 && od.y_pos == 0) {
+					threshold = visiblePixels + 1; // force cull
 				}
 				// Large FLOBJs (>=50% screen): scene content always produces
 				// 15-20% foreground pixels even with inventory closed.
