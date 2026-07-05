@@ -1459,6 +1459,9 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				memcpy(ptr + 2, foir.obim, size);
 				_verbs[verb].hd_obj_nr = object;
 				_verbs[verb].hd_room = room;
+				if (_game.version >= 7 && (object == 114 || object == 115 || object == 116 || object == 105))
+					warning("HDDBG setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
+						room, object, verb, object, room);
 				return;
 			}
 		}
@@ -1480,6 +1483,9 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				memcpy(getResourceAddress(rtVerb, verb) + size, obcdptr, size2);
 				_verbs[verb].hd_obj_nr = object;
 				_verbs[verb].hd_room = room;
+				if (_game.version >= 7 && (object == 114 || object == 115 || object == 116 || object == 105))
+					warning("HDDBG setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
+						room, object, verb, object, room);
 				return;
 			}
 		}
