@@ -1045,7 +1045,7 @@ void ScummEngine_v7::drawVerb(int verb, int mode, Common::TextToSpeechManager::A
 	if (_hdObjectManager && _hdObjectManager->isEnabled() && vs->curmode && vs->verbid) {
 		_hdVerbScreenTimestamp = _hdFrameCount;
 		if (_hdFrameCount <= 600)
-			warning("HDDBG drawVerb CALL: verb=%d curmode=%d type=%d hd_obj_nr=%d",
+			hdPrintf("drawVerb CALL: verb=%d curmode=%d type=%d hd_obj_nr=%d",
 				verb, vs->curmode, vs->type, vs->hd_obj_nr);
 	}
 
@@ -1241,7 +1241,7 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 
 	// Debug: trace every drawVerbBitmap call
 	if (_hdFrameCount <= 30)
-		warning("HDDBG drawVerbBitmap CALL: verb=%d x=%d y=%d hd_obj_nr=%d hd_room=%d type=%d",
+		hdPrintf("drawVerbBitmap CALL: verb=%d x=%d y=%d hd_obj_nr=%d hd_room=%d type=%d",
 			verb, x, y, vst->hd_obj_nr, vst->hd_room, vst->type);
 
 	// Track verb drawing activity — used by Step 2.5 to decide whether to
@@ -1263,7 +1263,7 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 				int expectedHDW = _hdBackgroundSurface.w > 0 ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
 				int expectedHDH = _hdBackgroundSurface.h > 0 ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
 				bool isLarge = (hdSurf.w * 10 >= expectedHDW * 9 && hdSurf.h * 10 >= expectedHDH * 9);
-				warning("HDDBG drawVerbBitmap: verb=%d obj=%d room=%d surf=%dx%d expected=%dx%d hdScale=%d isLarge=%d",
+				hdPrintf("drawVerbBitmap: verb=%d obj=%d room=%d surf=%dx%d expected=%dx%d hdScale=%d isLarge=%d",
 					verb, vst->hd_obj_nr, hdRoom, hdSurf.w, hdSurf.h, expectedHDW, expectedHDH, _hdScale, isLarge ? 1 : 0);
 
 				if (isLarge) {
@@ -1460,7 +1460,7 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				_verbs[verb].hd_obj_nr = object;
 				_verbs[verb].hd_room = room;
 				if (_game.version >= 7 && (object == 114 || object == 115 || object == 116 || object == 105))
-					warning("HDDBG setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
+					hdPrintf("setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
 						room, object, verb, object, room);
 				return;
 			}
@@ -1484,7 +1484,7 @@ void ScummEngine::setVerbObject(uint room, uint object, uint verb) {
 				_verbs[verb].hd_obj_nr = object;
 				_verbs[verb].hd_room = room;
 				if (_game.version >= 7 && (object == 114 || object == 115 || object == 116 || object == 105))
-					warning("HDDBG setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
+					hdPrintf("setVerbObject: room=%d object=%d verb=%d -> hd_obj_nr=%d hd_room=%d",
 						room, object, verb, object, room);
 				return;
 			}

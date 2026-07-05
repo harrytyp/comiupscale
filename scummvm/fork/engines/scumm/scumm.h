@@ -580,6 +580,7 @@ public:
 	int _hdObjectMaskSize = 0;
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
+	Common::String _hdDebugLog; // HD debug log buffer (flushed to hd_state.log each frame)
 	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
 	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
 	bool _hdScreenshotDone = false;
@@ -1465,6 +1466,8 @@ protected:
 	/** HD debug: dump all surfaces and state to files. */
 	void hdDebugDump();
 	void hdDumpSDComposite();
+	void hdAppendDebugLog(const char *msg, int len);
+	void hdPrintf(const char* fmt, ...);
 	virtual void redrawBGAreas();
 
 	void cameraMoved();
