@@ -1460,15 +1460,18 @@ void ScummEngine::renderHDComposite() {
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
 			// For V8 floating objects (fl_object_index != 0), we gate rendering
-			// on whether a verb with matching hd_obj_nr is active (curmode != 0).
-			// This is the only reliable visibility signal — isLocked() is
-			// permanently true for inventory FLOBJs and state is always 0.
-			// V0.0.35-test: skip ALL FLOBJs to test if any 8-bit path draws them.
+			// on whether the 8-bit framebuffer has actual foreground pixels in
+			// the object's area (pixel-based culling). This naturally handles
+			// inventory open/close — when closed, there are no foreground pixels,
+			// so the HD texture is correctly skipped.
+			// Gating on isLocked() doesn't work (permanently true for inventory).
+			// Gating on verb curmode doesn't work (all verbs are inactive in COMI).
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V0.0.35-test: skip ALL V8 FLOBJs to isolate Step 2.5 vs other paths
-				continue;
+				// V8: Let FLOBJs proceed to culling check below.
+				// The culling will skip rendering if there are < 2 foreground
+				// pixels in the object's area. This replaces the old isLocked() gate.
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
@@ -1912,27 +1915,25 @@ void ScummEngine::renderHDComposite() {
 	}
 
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
-	// Step 2.8: Composite HD verb overlay (INVENTORY PANEL).
-	// V0.0.36-test: DISABLED — testing if inventory comes through verb surface.
+	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
 	// Full-screen verb textures are stored in _hdVerbSurface by drawVerbBitmap
 	// and composited here directly in HD to avoid HD→SD→HD quality loss.
-	//if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
-	//	int overlayW = MIN((int)_hdVerbSurface.w, hdW);
-	//	int overlayH = MIN((int)_hdVerbSurface.h, hdH);
-	//	warning("HDDBG step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
-	//		overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
-	//	for (int oy = 0; oy < overlayH; oy++) {
-	//		uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
-	//		uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
-	//		for (int ox = 0; ox < overlayW; ox++) {
-	//			uint32 pix = srcRow[ox];
-	//			uint8 alpha = (pix >> 24) & 0xFF;
-	//			if (alpha >= 128)
-	//				dstRow[ox] = pix;
-	//		}
-	//	}
-	//}
-	// Always clear verb surface at end of frame, regardless of whether we drew it.
+	if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
+		int overlayW = MIN((int)_hdVerbSurface.w, hdW);
+		int overlayH = MIN((int)_hdVerbSurface.h, hdH);
+		warning("HDDBG step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
+			overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
+		for (int oy = 0; oy < overlayH; oy++) {
+			uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
+			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
+			for (int ox = 0; ox < overlayW; ox++) {
+				uint32 pix = srcRow[ox];
+				uint8 alpha = (pix >> 24) & 0xFF;
+				if (alpha >= 128)
+					dstRow[ox] = pix;
+			}
+		}
+	}
 	// drawVerbBitmap may have set it before the background was ready, or it may
 	// have been set in a previous frame when the inventory was open.
 	if (_hdVerbSurfaceValid) {
