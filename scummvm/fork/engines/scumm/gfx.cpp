@@ -1229,20 +1229,10 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 void ScummEngine::renderHDComposite() {
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 
-	// Pre-compute verb screen content state — used as visibility gate for FLOBJs.
-	// The Verb VirtScreen only has non-zero pixels when the inventory is open.
-	bool verbScreenDirty = false;
-	{
-		VirtScreen *vvs = &_virtscr[kVerbVirtScreen];
-		int numPixels = vvs->w * vvs->h;
-		const byte *pix = (const byte *)vvs->getPixels(0, 0);
-		if (pix) {
-			for (int pi = 0; pi < numPixels && !verbScreenDirty; pi++) {
-				if (pix[pi] != 0)
-					verbScreenDirty = true;
-			}
-		}
-	}
+	// COMI V8 uses the Verb system (drawVerbBitmap) for inventory rendering.
+	// _hdVerbSurfaceValid is the native "inventory open" signal.
+	// Step 2.8 composites _hdVerbSurface for large overlays.
+	// (No Verb VirtScreen signal used — COMI V8 allocates it with height 0.)
 
 	// During SMUSH cutscenes, skip HD compositing to avoid overwriting
 	// the video frames. SMUSH handles its own screen updates.
@@ -1397,10 +1387,10 @@ void ScummEngine::renderHDComposite() {
 		Common::DumpFile df;
 		df.open(Common::Path("hd_state_inv.log"));
 			char line[256];
-				int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d verbDirty=%d\n",
+				int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d verbSurfValid=%d\n",
 					_hdFrameCount, step2_invFg, step2_invTotal,
 					step2_invTotal > 0 ? step2_invFg * 100.0 / step2_invTotal : 0.0,
-					_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount, verbScreenDirty ? 1 : 0);
+					_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount, _hdVerbSurfaceValid ? 1 : 0);
 		df.write(line, n);
 		df.close();
 	}
@@ -1460,36 +1450,17 @@ void ScummEngine::renderHDComposite() {
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 		}
-		// ── Inventory Active Detection (Canary Pre-scan) ────────────
-		// Pixel culling doesn't work for inventory-bg-object (obj=114, 640x472)
-		// because scene content always fills the area with foreground pixels.
-		// Instead, pre-scan a small FLOBJ (system-cursor-icon obj=105, 80x56 at 0,0).
-		// When inventory is closed: 0 visible pixels → CULL.
-		// When inventory opens: 3045+ visible pixels → inventory is active.
-		// All small FLOBJs (105, 115, 116, 120, 188, 189) toggle correctly using
-		// pixel culling. We use obj=105's area as a canary to gate obj=114.
-		bool inventoryActive = false;
-		if (_hdCleanValid) {
-			int canaryX = 0, canaryY = 0;
-			int canaryW = 80, canaryH = 56;
-			int canarySW = MIN(canaryW, visW - canaryX);
-			int canarySH = MIN(canaryH, visH - canaryY);
-			int canaryVisible = 0;
-			for (int row = 0; row < canarySH; row++) {
-				for (int col = 0; col < canarySW; col++) {
-					int pos = (canaryY + row) * visW + (canaryX + col);
-					if (_hdCleanValid[pos]) {
-						byte curPix = *(const byte *)vs->getBasePtr(vs->xstart + canaryX + col, canaryY + row);
-						byte cleanPix = *(const byte *)_hdCleanBackground.getBasePtr(canaryX + col, canaryY + row);
-						if (curPix != cleanPix)
-							canaryVisible++;
-					}
-				}
-			}
-			// 2% threshold for 4480 pixel area ≈ 90 pixels
-			if (canaryVisible > MAX(2, canarySW * canarySH / 50))
-				inventoryActive = true;
-		}
+		// ── Inventory Active Detection ──────────────────────────
+		// In COMI V8, the inventory background (obj=114) is drawn via the Verb
+		// system through drawVerbBitmap(). Large textures (>90% of HD canvas)
+		// are stored in _hdVerbSurface and composited in Step 2.8.
+		// _hdVerbSurfaceValid = true means inventory/fullscreen overlay is
+		// active. Step 2.5 should skip large FLOBJs (>=50% screen area)
+		// entirely — Step 2.8 handles them, and there's no pixel-based signal
+		// for "inventory is open" (the area always has scene content).
+		// Small FLOBJs (cursor, arrows, icons) continue using pixel culling
+		// which correctly handles their visibility.
+		bool inventoryActive = _hdVerbSurfaceValid;
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
