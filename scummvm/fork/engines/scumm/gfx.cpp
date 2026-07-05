@@ -1451,16 +1451,12 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 		// ── Inventory Active Detection ──────────────────────────
-		// In COMI V8, the inventory background (obj=114) is drawn via the Verb
-		// system through drawVerbBitmap(). Large textures (>90% of HD canvas)
-		// are stored in _hdVerbSurface and composited in Step 2.8.
-		// _hdVerbSurfaceValid = true means inventory/fullscreen overlay is
-		// active. Step 2.5 should skip large FLOBJs (>=50% screen area)
-		// entirely — Step 2.8 handles them, and there's no pixel-based signal
-		// for "inventory is open" (the area always has scene content).
-		// Small FLOBJs (cursor, arrows, icons) continue using pixel culling
-		// which correctly handles their visibility.
-		bool inventoryActive = _hdVerbSurfaceValid;
+		// In COMI V8, inventory FLOBJs (obj=114, 115, 116 etc.) are drawn
+		// via drawVerbBitmap() when the inventory opens. _hdVerbDrawCount
+		// is incremented each call and reset per frame.
+		// > 0 means verbs/inventory were drawn this frame.
+		// Small FLOBJs (cursor, arrows, icons) use pixel culling.
+		bool inventoryActive = (_hdVerbDrawCount > 0);
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
