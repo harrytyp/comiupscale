@@ -1324,7 +1324,9 @@ void ScummEngine::renderHDComposite() {
 
 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
 	// Diff against clean background to only overlay foreground pixels.
+
 	int step2_fgPixels = 0;
+	int step2_invFg = 0, step2_invTotal = 0;
 	for (int dy = 0; dy < hdH; dy++) {
 		int sy = dy * visH / hdH;
 		sy = CLIP(sy, 0, visH - 1);
@@ -1352,6 +1354,13 @@ void ScummEngine::renderHDComposite() {
 			if (isForeground && curPix == 255)
 				isForeground = false;
 
+			// Track foreground pixels in inventory area (top-left 640x280 in 8-bit)
+			if (sx < 640 && sy < 280) {
+				step2_invTotal++;
+				if (isForeground)
+					step2_invFg++;
+			}
+
 			if (isForeground) {
 				step2_fgPixels++;
 				uint8 r = _currentPalette[curPix * 3 + 0];
@@ -1366,6 +1375,20 @@ void ScummEngine::renderHDComposite() {
 		warning("HDDBG step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
 			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
 			_hdCleanValid ? 1 : 0);
+
+	// V0.0.38-test: write inventory area pixel count to hd_state.log
+	// This runs every frame to track if 8-bit engine draws inventory permanently.
+	{
+		Common::DumpFile df;
+		df.open(Common::Path("hd_state_inv.log"));
+		char line[256];
+		int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d\n",
+			_hdFrameCount, step2_invFg, step2_invTotal,
+			step2_invTotal > 0 ? step2_invFg * 100.0 / step2_invTotal : 0.0,
+			_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount);
+		df.write(line, n);
+		df.close();
+	}
 
 	// Step 2 debug: count foreground pixels in inventory area (0,0 to 640,280 in 8-bit)
 	// Inventory-bg-object (114) sits at (0,0) size 640x472.
