@@ -1429,6 +1429,11 @@ void ScummEngine_v8::o8_drawObject() {
 	int y = pop();
 	int x = pop();
 	int obj = pop();
+	// Track last script drawObject call for HD debug logging
+	_hdLastScriptObj = obj;
+	_hdLastScriptX = x;
+	_hdLastScriptY = y;
+	_hdLastScriptState = state;
 	setObjectState(obj, state, x, y);
 }
 

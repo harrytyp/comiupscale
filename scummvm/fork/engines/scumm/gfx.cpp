@@ -1381,20 +1381,6 @@ void ScummEngine::renderHDComposite() {
 			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
 			_hdCleanValid ? 1 : 0);
 
-	// V0.0.38-test: write inventory area pixel count to hd_state.log
-	// This runs every frame to track if 8-bit engine draws inventory permanently.
-	{
-		Common::DumpFile df;
-		df.open(Common::Path("hd_state_inv.log"));
-			char line[256];
-				int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d verbSurfValid=%d\n",
-					_hdFrameCount, step2_invFg, step2_invTotal,
-					step2_invTotal > 0 ? step2_invFg * 100.0 / step2_invTotal : 0.0,
-					_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount, _hdVerbSurfaceValid ? 1 : 0);
-		df.write(line, n);
-		df.close();
-	}
-
 	// Step 2 debug: count foreground pixels in inventory area (0,0 to 640,280 in 8-bit)
 	// Inventory-bg-object (114) sits at (0,0) size 640x472.
 	// If the 8-bit engine draws inventory pixels even when closed, we'll see them here.
@@ -1580,11 +1566,13 @@ void ScummEngine::renderHDComposite() {
 				}
 				// COMI V8 FLOBJs at position (0,0): these are inventory objects.
 				// The 8-bit engine (Step 2) renders them at correct positions
-				// via script-driven GDI calls. Skip them in Step 2.5 to avoid
-				// rendering HD textures at the wrong position (top-left corner).
-				// Room objects like obj=279,275 have non-zero positions.
+				// via script-driven GDI calls. When the inventory is CLOSED,
+				// skip them to avoid HD textures at wrong position (top-left).
+				// When the inventory IS open (>33% foreground in area), allow
+				// rendering so the HD inventory appears.
 				if (od.fl_object_index != 0 && od.x_pos == 0 && od.y_pos == 0) {
-					threshold = visiblePixels + 1; // force cull
+					if (visiblePixels < sw * sh / 3) // less than 33% = inventory closed
+						threshold = visiblePixels + 1; // force cull
 				}
 				// Large FLOBJs (>=50% screen): scene content always produces
 				// 15-20% foreground pixels even with inventory closed.
@@ -2040,13 +2028,15 @@ void ScummEngine::renderHDComposite() {
 					df.write(line, n);
 				}
 			}
-			// Verb slots — log ALL slots unconditionally (no filter)
-			n = snprintf(line, sizeof(line), "  NUM_VERBS=%d\n", _numVerbs);
-			df.write(line, n);
-			for (int vi = 0; vi < _numVerbs; vi++) {
-				VerbSlot &vs = _verbs[vi];
-				n = snprintf(line, sizeof(line), "  VERB[%d] id=%d curmode=%d type=%d hd_obj=%d hd_room=%d key=%d saveid=%d\n",
-					vi, vs.verbid, vs.curmode, vs.type, vs.hd_obj_nr, vs.hd_room, vs.key, vs.saveid);
+			// Script drawObject tracking (last o8_drawObject call)
+			// Shows what positions the game script uses for inventory objects.
+			int scriptObj = _hdLastScriptObj;
+			int scriptX = _hdLastScriptX;
+			int scriptY = _hdLastScriptY;
+			int scriptState = _hdLastScriptState;
+			if (scriptObj != 0) {
+				n = snprintf(line, sizeof(line), "  SCRIPT_DRAW: obj=%d x=%d y=%d state=%d\n",
+					scriptObj, scriptX, scriptY, scriptState);
 				df.write(line, n);
 			}
 			// FLOBJ lock status check: isLocked should change when inventory opens/closes
