@@ -1402,18 +1402,16 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
-			// For V8 floating objects (fl_object_index != 0), we gate rendering on
-			// whether the FLOBJ resource is currently locked. V8 scripts call
-			// lockObject/unlockObject (kernelSetFunctions 11/12) to control FLOBJ
-			// resource lifecycle — if locked, the inventory is visible; if unlocked,
-			// the resource may be garbage-collected or is simply inactive.
-			// Without this gate the HD inventory overlay renders every frame.
+			// For V8 floating objects (fl_object_index != 0), we gate rendering
+			// on whether a verb with matching hd_obj_nr is active (curmode != 0).
+			// This is the only reliable visibility signal — isLocked() is
+			// permanently true for inventory FLOBJs and state is always 0.
+			// V0.0.35-test: skip ALL FLOBJs to test if any 8-bit path draws them.
 			if (od.fl_object_index && (od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: only render if the FLOBJ resource is locked
-				if (!_res->isLocked(rtFlObject, od.fl_object_index))
-					continue;
+				// V0.0.35-test: skip ALL V8 FLOBJs to isolate Step 2.5 vs other paths
+				continue;
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)

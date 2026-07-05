@@ -112,6 +112,14 @@ See [`build/BUILD.md`](build/BUILD.md) for detailed documentation.
 
 ---
 
+## Documentation
+
+| File | Contents |
+|------|----------|
+| [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline — FLOBJs, AKOS, Verb-System, HD-Compositing. Technische Analyse der SCUMM-Engine |
+
+---
+
 ## HD Comparison
 
 ![HD Background Room 9](docs/screenshots/hd_background_room9.png)
