@@ -1367,6 +1367,40 @@ void ScummEngine::renderHDComposite() {
 			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
 			_hdCleanValid ? 1 : 0);
 
+	// Step 2 debug: count foreground pixels in inventory area (0,0 to 640,280 in 8-bit)
+	// Inventory-bg-object (114) sits at (0,0) size 640x472.
+	// If the 8-bit engine draws inventory pixels even when closed, we'll see them here.
+	if (_hdFrameCount % 30 == 0) {
+		int invW_8 = 640, invH_8 = 280; // conservative check
+		int invFg = 0;
+		int invTotal = 0;
+		for (int dy = 0; dy < hdH && dy < invH_8 * hdH / visH; dy++) {
+			int sy = dy * visH / hdH;
+			for (int dx = 0; dx < hdW && dx < invW_8 * hdW / visW; dx++) {
+				int sx = dx * visW / hdW;
+				if (sx < 0 || sx >= visW || sy < 0 || sy >= visH) continue;
+				uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
+				bool fg = true;
+				if (_hdCurrentRoom == _currentRoom && _hdCleanValid && sy < _hdCleanValidSize / visW) {
+					int pos = sy * visW + sx;
+					if (_hdCleanValid[pos]) {
+						uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
+						fg = (curPix != cleanPix);
+					} else {
+						fg = false;
+					}
+				} else {
+					fg = (curPix != 255);
+				}
+				if (fg) invFg++;
+				invTotal++;
+			}
+		}
+		warning("HDDBG step2 invArea: fg=%d/%d (%.1f%%) hdRoom=%d curRoom=%d cleanValid=%d verbDraw=%d",
+			invFg, invTotal, invTotal > 0 ? invFg * 100.0 / invTotal : 0.0,
+			_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount);
+	}
+
 	// Allocate HD alpha mask early — Step 2.5 (objects) and Step 2.6 (costumes)
 	// both need to mark their pixels so Step 2.6b doesn't overwrite them.
 	byte *hdAlphaMask = (byte *)calloc(hdW * hdH, 1);
