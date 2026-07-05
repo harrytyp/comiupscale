@@ -1550,8 +1550,11 @@ void ScummEngine::renderHDComposite() {
 				_screenWidth, _screenHeight, hdW, hdH, _currentRoom, objRoom, _roomWidth, _roomHeight, od.fl_object_index);
 
 			// CULL: only render HD object if the 8-bit screen has visible
-			// foreground pixels in this area. If the object is invisible
-			// (hidden behind other elements or inactive), skip it.
+			// foreground pixels in this area. For FLOBJs (floating objects
+			// in COMI V8), use a percentage-based threshold (2% of area)
+			// to filter out noise from overlapping objects. For large
+			// FLOBJs (>50% screen = obj=114), also check inventory state
+			// from verb slot activity.
 			{
 				int sx = od.x_pos;
 				int sy = od.y_pos;
@@ -1571,42 +1574,39 @@ void ScummEngine::renderHDComposite() {
 						}
 					}
 				}
-				if (visiblePixels < 2) { // no significant foreground content
-				// For FLOBJs: increase threshold to 2% of area to filter out
-				// small foreground changes from overlapping objects (cursor,
-				// dialog icons at position 0,0). Real inventory open/close
-				// changes 15-20% of pixels (40k-55k for 640x472 area).
+				// Determine threshold: for FLOBJs use 2% of object area,
+				// for normal objects just 2 pixels (noise floor).
 				int threshold = 2;
-				if (od.fl_object_index != 0 && sw > 0 && sh > 0)
+				if (od.fl_object_index != 0 && sw > 0 && sh > 0) {
 					threshold = MAX(2, sw * sh / 50); // 2% of object area
+				}
+				// Large FLOBJs (>=50% screen): scene content always produces
+				// 15-20% foreground pixels even with inventory closed.
+				// Use a higher threshold (50% of area) for these,
+				// AND gate on inventory activity signal.
+				if (od.fl_object_index != 0 && sw * sh >= visW * visH / 2) {
+					threshold = MAX(threshold, sw * sh / 2); // 50% of area for full-screen objects
+					// When inventory is NOT active, use stricter threshold
+					if (!inventoryActive)
+						threshold = MAX(threshold, visiblePixels + 1); // force cull
+				}
 				if (visiblePixels < threshold) {
 					step25_culled++;
 					if (od.fl_object_index != 0)
-						warning("HDDBG step2.5 CULL: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
+						warning("HDDBG step2.5 CULL: obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
 							od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-							_hdCleanValid ? "yes" : "NO");
+							threshold, inventoryActive ? 1 : 0);
 					hdObjSurf.free();
 					continue;
 				}
 				if (od.fl_object_index != 0)
-					warning("HDDBG step2.5 RENDER: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
+					warning("HDDBG step2.5 RENDER: obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
 						od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-						_hdCleanValid ? "yes" : "NO");
-				}
+						threshold, inventoryActive ? 1 : 0);
 			}
 
-			// Gate large FLOBJs (>50% screen area) on inventory activity.
-			// Pixel culling can't distinguish inventory content from scene
-			// content for full-screen objects (obj=114, 640x472).
-			// Use canary pre-scan of cursor area (obj=105, 80x56 at 0,0).
-			if (od.fl_object_index != 0 && od.width * od.height >= visW * visH / 2 && !inventoryActive) {
-				step25_culled++;
-				if (od.fl_object_index != 0 && _hdFrameCount % 30 == 0)
-					warning("HDDBG step2.5 INVGATE: obj=%d fl=%d sz=%dx%d invActive=%d",
-						od.obj_nr, od.fl_object_index, od.width, od.height, inventoryActive ? 1 : 0);
-				hdObjSurf.free();
-				continue;
-			}
+			// Remove the old large-FLOBJ gate since culling now handles it
+			// via the 50% threshold + inventoryActive check above.
 
 			// Blit HD object with alpha transparency
 			step25_loaded++;
