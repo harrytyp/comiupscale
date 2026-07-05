@@ -1564,9 +1564,17 @@ void ScummEngine::renderHDComposite() {
 				}
 				if (visiblePixels < 2) { // no significant foreground content
 					step25_culled++;
+					if (od.fl_object_index != 0)
+						warning("HDDBG step2.5 CULL: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
+							od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+							_hdCleanValid ? "yes" : "NO");
 					hdObjSurf.free();
 					continue;
 				}
+				if (od.fl_object_index != 0)
+					warning("HDDBG step2.5 RENDER: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
+						od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+						_hdCleanValid ? "yes" : "NO");
 			}
 
 			// Blit HD object with alpha transparency
