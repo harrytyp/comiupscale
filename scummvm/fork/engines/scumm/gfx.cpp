@@ -1229,6 +1229,21 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 void ScummEngine::renderHDComposite() {
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 
+	// Pre-compute verb screen content state — used as visibility gate for FLOBJs.
+	// The Verb VirtScreen only has non-zero pixels when the inventory is open.
+	bool verbScreenDirty = false;
+	{
+		VirtScreen *vvs = &_virtscr[kVerbVirtScreen];
+		int numPixels = vvs->w * vvs->h;
+		const byte *pix = (const byte *)vvs->getPixels(0, 0);
+		if (pix) {
+			for (int pi = 0; pi < numPixels && !verbScreenDirty; pi++) {
+				if (pix[pi] != 0)
+					verbScreenDirty = true;
+			}
+		}
+	}
+
 	// During SMUSH cutscenes, skip HD compositing to avoid overwriting
 	// the video frames. SMUSH handles its own screen updates.
 	if (isSmushActive())
@@ -1381,11 +1396,11 @@ void ScummEngine::renderHDComposite() {
 	{
 		Common::DumpFile df;
 		df.open(Common::Path("hd_state_inv.log"));
-		char line[256];
-		int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d\n",
-			_hdFrameCount, step2_invFg, step2_invTotal,
-			step2_invTotal > 0 ? step2_invFg * 100.0 / step2_invTotal : 0.0,
-			_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount);
+			char line[256];
+				int n = snprintf(line, sizeof(line), "frame=%d invFg=%d/%d (%.1f%%) hdRoom=%d room=%d cleanValid=%d verbDraw=%d verbDirty=%d\n",
+					_hdFrameCount, step2_invFg, step2_invTotal,
+					step2_invTotal > 0 ? step2_invFg * 100.0 / step2_invTotal : 0.0,
+					_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount, verbScreenDirty ? 1 : 0);
 		df.write(line, n);
 		df.close();
 	}
@@ -1445,6 +1460,37 @@ void ScummEngine::renderHDComposite() {
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 		}
+		// ── Inventory Active Detection (Canary Pre-scan) ────────────
+		// Pixel culling doesn't work for inventory-bg-object (obj=114, 640x472)
+		// because scene content always fills the area with foreground pixels.
+		// Instead, pre-scan a small FLOBJ (system-cursor-icon obj=105, 80x56 at 0,0).
+		// When inventory is closed: 0 visible pixels → CULL.
+		// When inventory opens: 3045+ visible pixels → inventory is active.
+		// All small FLOBJs (105, 115, 116, 120, 188, 189) toggle correctly using
+		// pixel culling. We use obj=105's area as a canary to gate obj=114.
+		bool inventoryActive = false;
+		if (_hdCleanValid) {
+			int canaryX = 0, canaryY = 0;
+			int canaryW = 80, canaryH = 56;
+			int canarySW = MIN(canaryW, visW - canaryX);
+			int canarySH = MIN(canaryH, visH - canaryY);
+			int canaryVisible = 0;
+			for (int row = 0; row < canarySH; row++) {
+				for (int col = 0; col < canarySW; col++) {
+					int pos = (canaryY + row) * visW + (canaryX + col);
+					if (_hdCleanValid[pos]) {
+						byte curPix = *(const byte *)vs->getBasePtr(vs->xstart + canaryX + col, canaryY + row);
+						byte cleanPix = *(const byte *)_hdCleanBackground.getBasePtr(canaryX + col, canaryY + row);
+						if (curPix != cleanPix)
+							canaryVisible++;
+					}
+				}
+			}
+			// 2% threshold for 4480 pixel area ≈ 90 pixels
+			if (canaryVisible > MAX(2, canarySW * canarySH / 50))
+				inventoryActive = true;
+		}
+
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
 		for (int oi = _numLocalObjects - 1; oi > 0; oi--) {
@@ -1458,20 +1504,12 @@ void ScummEngine::renderHDComposite() {
 					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
 			}
 
-			// Skip objects with state == 0 in the 8-bit engine (they are invisible).
-			// For V8 floating objects (fl_object_index != 0), we gate rendering
-			// on whether the 8-bit framebuffer has actual foreground pixels in
-			// the object's area (pixel-based culling). This naturally handles
-			// inventory open/close — when closed, there are no foreground pixels,
-			// so the HD texture is correctly skipped.
-			// Gating on isLocked() doesn't work (permanently true for inventory).
-			// Gating on verb curmode doesn't work (all verbs are inactive in COMI).
-			if (od.fl_object_index && (od.state & 0xF) == 0) {
+			// Skip objects with state == 0 in the 8-bit engine (they are invisible)
+			if ((od.state & 0xF) == 0) {
 				if (_game.version <= 6)
 					continue;
-				// V8: Let FLOBJs proceed to culling check below.
-				// The culling will skip rendering if there are < 2 foreground
-				// pixels in the object's area. This replaces the old isLocked() gate.
+				// V8 COMI: inventory FLOBJs always have state=0 and locked=1.
+				// Don't gate on state - rely on pixel culling + inventory active flag.
 			}
 			// Non-FLOBJ state=0: skip (8-bit engine never draws them)
 			if (od.fl_object_index == 0 && (od.state & 0xF) == 0)
@@ -1563,6 +1601,14 @@ void ScummEngine::renderHDComposite() {
 					}
 				}
 				if (visiblePixels < 2) { // no significant foreground content
+				// For FLOBJs: increase threshold to 2% of area to filter out
+				// small foreground changes from overlapping objects (cursor,
+				// dialog icons at position 0,0). Real inventory open/close
+				// changes 15-20% of pixels (40k-55k for 640x472 area).
+				int threshold = 2;
+				if (od.fl_object_index != 0 && sw > 0 && sh > 0)
+					threshold = MAX(2, sw * sh / 50); // 2% of object area
+				if (visiblePixels < threshold) {
 					step25_culled++;
 					if (od.fl_object_index != 0)
 						warning("HDDBG step2.5 CULL: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
@@ -1575,6 +1621,20 @@ void ScummEngine::renderHDComposite() {
 					warning("HDDBG step2.5 RENDER: obj=%d fl=%d visible=%d/%dx%d area=%dx%d valid=%s",
 						od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
 						_hdCleanValid ? "yes" : "NO");
+				}
+			}
+
+			// Gate large FLOBJs (>50% screen area) on inventory activity.
+			// Pixel culling can't distinguish inventory content from scene
+			// content for full-screen objects (obj=114, 640x472).
+			// Use canary pre-scan of cursor area (obj=105, 80x56 at 0,0).
+			if (od.fl_object_index != 0 && od.width * od.height >= visW * visH / 2 && !inventoryActive) {
+				step25_culled++;
+				if (od.fl_object_index != 0 && _hdFrameCount % 30 == 0)
+					warning("HDDBG step2.5 INVGATE: obj=%d fl=%d sz=%dx%d invActive=%d",
+						od.obj_nr, od.fl_object_index, od.width, od.height, inventoryActive ? 1 : 0);
+				hdObjSurf.free();
+				continue;
 			}
 
 			// Blit HD object with alpha transparency
