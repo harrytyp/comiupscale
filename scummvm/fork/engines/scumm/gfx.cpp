@@ -1591,16 +1591,16 @@ void ScummEngine::renderHDComposite() {
 				}
 				if (visiblePixels < threshold) {
 					step25_culled++;
-					if (od.fl_object_index != 0 && od.obj_nr == 114)
-						hdPrintf("CULL obj=114 fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-								od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+					if (od.fl_object_index != 0)
+						hdPrintf("CULL obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
+								od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
 								threshold, inventoryActive ? 1 : 0);
 					hdObjSurf.free();
 					continue;
 				}
-				if (od.fl_object_index != 0 && od.obj_nr == 114)
-					hdPrintf("RENDER obj=114 fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-							od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+				if (od.fl_object_index != 0)
+					hdPrintf("RENDER obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
+							od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
 							threshold, inventoryActive ? 1 : 0);
 			}
 
@@ -2004,13 +2004,14 @@ void ScummEngine::renderHDComposite() {
 	
 	// ── HD Debug Logging (buffer-based) ────────────────
 	// _hdDebugLog accumulates hdPrintf events + frame headers across frames.
-	// Written to disk every ~100 frames when buffer reaches 24KB.
-	// No read-modify-write — always a clean snapshot of recent history.
+	// Written to disk every 60 frames OR when buffer hits 96KB.
 	{
 		char line[128];
 		int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
 		hdAppendDebugLog(line, n);
-		if (_hdDebugLog.size() > 24576) {
+		bool bufFull = (_hdDebugLog.size() > 98304);
+		bool timeUp = (_hdFrameCount % 60 == 0 && _hdDebugLog.size() > 0);
+		if (bufFull || timeUp) {
 			Common::DumpFile df;
 			df.open(Common::Path("hd_state.log"));
 			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
@@ -2021,7 +2022,7 @@ void ScummEngine::renderHDComposite() {
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	if (_hdDebugLog.size() > 24576)
+	if (_hdDebugLog.size() > 98304)
 		return;
 	_hdDebugLog += Common::String(msg, len);
 }
