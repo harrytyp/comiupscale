@@ -1243,13 +1243,7 @@ void ScummEngine::renderHDComposite() {
 
 	// ── HD Debug Summary (once per frame) ──────────────────────
 	if (_hdFrameCount % 30 == 0) {
-		hdPrintf("room=%d hdRoom=%d bg=%d objMgr=%d/%d costMgr=%d/%d fontMgr=%d/%d fontChars=%d",
-			_currentRoom, _hdCurrentRoom,
-			_hdBackgroundSurface.getPixels() ? 1 : 0,
-			_hdObjectManager ? 1 : 0, _hdObjectManager ? _hdObjectManager->isEnabled() : 0,
-			_hdCostumeManager ? 1 : 0, _hdCostumeManager ? _hdCostumeManager->isEnabled() : 0,
-			_hdFontManager ? 1 : 0, _hdFontManager ? _hdFontManager->isEnabled() : 0,
-			(int)_hdFontChars.size());
+//		// [room debug removed]
 	}
 
 	// If no HD background for this room, scale 8-bit content to HD
@@ -1376,10 +1370,9 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	}
-	if (_hdFrameCount % 30 == 0)
-		hdPrintf("step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
-			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
-			_hdCleanValid ? 1 : 0);
+	if (_hdFrameCount % 30 == 0) {
+		// [step2 debug removed]
+	}
 
 	// Step 2 debug: count foreground pixels in inventory area (0,0 to 640,280 in 8-bit)
 	// Inventory-bg-object (114) sits at (0,0) size 640x472.
@@ -1410,9 +1403,7 @@ void ScummEngine::renderHDComposite() {
 				invTotal++;
 			}
 		}
-		hdPrintf("step2 invArea: fg=%d/%d (%.1f%%) hdRoom=%d curRoom=%d cleanValid=%d verbDraw=%d",
-			invFg, invTotal, invTotal > 0 ? invFg * 100.0 / invTotal : 0.0,
-			_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount);
+//		// [invArea debug removed]
 	}
 
 	// Allocate HD alpha mask early — Step 2.5 (objects) and Step 2.6 (costumes)
@@ -1426,14 +1417,14 @@ void ScummEngine::renderHDComposite() {
 		static int prevRoom = -1;
 		if (_currentRoom != prevRoom) {
 			prevRoom = _currentRoom;
-			hdPrintf("ROOM CHANGE: entering room %d, %d objects:", _currentRoom, _numLocalObjects);
+//			// [ROOM CHANGE debug removed]
 			for (int di = _numLocalObjects - 1; di > 0; di--) {
 				ObjectData &dod = _objs[di];
 				if (dod.obj_nr == 0) continue;
-				hdPrintf("ROOM OBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) name=%s",
-					di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
-					dod.x_pos, dod.y_pos, dod.width, dod.height,
-					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
+//				hdPrintf("ROOM OBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) name=%s",
+//					di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
+//					dod.x_pos, dod.y_pos, dod.width, dod.height,
+//					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 		}
 	// ── Inventory Active Detection ──────────────────────────
@@ -1451,8 +1442,7 @@ void ScummEngine::renderHDComposite() {
 
 			// Debug: log every object entering Step 2.5 for the first 10 frames
 			if (_hdFrameCount <= 10 && od.fl_object_index != 0) {
-				hdPrintf("step2.5 FLOBJ: oi=%d obj=%d fl=%d state=%d pos=(%d,%d) sz=(%dx%d) room=%d",
-					oi, od.obj_nr, od.fl_object_index, od.state & 0xF, od.x_pos, od.y_pos, od.width, od.height, _currentRoom);
+//				// [step2.5 FLOBJ removed]
 			}
 
 			// Skip objects with state == 0 in the 8-bit engine (they are invisible)
@@ -1497,8 +1487,7 @@ void ScummEngine::renderHDComposite() {
 						step25_skipped++;
 						if (_hdFrameCount % 30 == 0) {
 							const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-							hdPrintf("step2.5 SKIP: obj=%d(%s) state=%d pos=(%d,%d) sz=(%d,%d) room=%d fl=%d",
-								od.obj_nr, name, objState, od.x_pos, od.y_pos, od.width, od.height, _currentRoom, od.fl_object_index);
+//							// [SKIP debug removed]
 						}
 						continue;
 					}
@@ -1615,8 +1604,7 @@ void ScummEngine::renderHDComposite() {
 			step25_loaded++;
 			if (od.obj_nr == 114 && _hdFrameCount % 60 == 0) {
 				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-				hdPrintf("LOAD obj=114(%s) pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
-					name, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+//				// [LOAD removed]
 			}
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
@@ -1641,9 +1629,9 @@ void ScummEngine::renderHDComposite() {
 			hdObjSurf.free();
 		}
 	}
-	if (_hdFrameCount % 30 == 0)
-		hdPrintf("step2.5 objects: loaded=%d skipped=%d culled=%d",
-			step25_loaded, step25_skipped, step25_culled);
+	if (_hdFrameCount % 30 == 0) {
+	// [step2.5 summary removed]
+}
 
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
@@ -1654,6 +1642,7 @@ void ScummEngine::renderHDComposite() {
 	// actors in the 8-bit engine will correctly appear ON TOP of HD costumes.
 	int step26_loaded = 0, step26_skipped = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
+	(void)step26_loaded; (void)step26_skipped; (void)step26_noCostume; (void)step26_noCel; (void)step26_noHdCostume; (void)step26_loadFail;
 	// HD alpha mask was allocated before Step 2.5; objects already marked it.
 	// Dump all actors with costumes on first frame for debugging
 	if (_hdFrameCount == 1 || _hdFrameCount == 30) {
@@ -1662,11 +1651,11 @@ void ScummEngine::renderHDComposite() {
 			if (a && a->_costume != 0 && a->_visible) {
 				int cel = a->_hdCurrentCel;
 				bool hasHd = _hdCostumeManager && _hdCostumeManager->isEnabled() && _hdCostumeManager->hasCostume(a->_costume, cel);
-				hdPrintf("ACTOR: id=%d costume=%04d cel=%d pos=(%d,%d) elev=%d xstart=%d scale=(%d,%d) w=%d top=%d bot=%d room=%d hd=%d rel=(%d,%d)",
-					ai, a->_costume, cel, (int)a->getPos().x, (int)a->getPos().y,
-					a->getElevation(), vs->xstart,
-					a->_scalex, a->_scaley, a->_width, a->_top, a->_bottom,
-					a->_room, hasHd ? 1 : 0, a->_hdRelX, a->_hdRelY);
+//				hdPrintf("ACTOR: id=%d costume=%04d cel=%d pos=(%d,%d) elev=%d xstart=%d scale=(%d,%d) w=%d top=%d bot=%d room=%d hd=%d rel=(%d,%d)",
+//					ai, a->_costume, cel, (int)a->getPos().x, (int)a->getPos().y,
+//					a->getElevation(), vs->xstart,
+//					a->_scalex, a->_scaley, a->_width, a->_top, a->_bottom,
+//					a->_room, hasHd ? 1 : 0, a->_hdRelX, a->_hdRelY);
 			}
 		}
 	}
@@ -1750,6 +1739,7 @@ void ScummEngine::renderHDComposite() {
 		for (int ei = 0; ei < numEntries; ei++) {
 			Actor *a = entries[ei].actor;
 			int ai = entries[ei].ai;
+			(void)ai;
 			int cel = entries[ei].cel;
 
 			Graphics::Surface hdCostumeSurf;
@@ -1808,8 +1798,8 @@ void ScummEngine::renderHDComposite() {
 
 			step26_loaded++;
 			if (_hdFrameCount % 30 == 0)
-				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
-					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
+//				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
+//					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
 			for (int oy = 0; oy < blitH; oy++) {
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
@@ -1868,8 +1858,9 @@ void ScummEngine::renderHDComposite() {
 
 			hdCostumeSurf.free();
 		}
-		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
+		if (_hdFrameCount % 30 == 0) {
+			// [step2.6 costumes removed]
+		}
 	}
 
 	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes.
@@ -1934,8 +1925,9 @@ void ScummEngine::renderHDComposite() {
 			}
 			free(actorBBoxMask);
 		}
-		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6b ui-overlay: pixels=%d", step26b_count);
+		if (_hdFrameCount % 30 == 0) {
+			// [ui-overlay removed]
+		}
 	}
 	// Free alpha mask after Step 2.6b
 	if (hdAlphaMask) { free(hdAlphaMask); hdAlphaMask = NULL; }
@@ -1950,9 +1942,9 @@ void ScummEngine::renderHDComposite() {
 			if (_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY))
 				step27_drawn++;
 		}
-		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.7 fonts: chars=%d drawn=%d fontMgr=%d",
-				(int)_hdFontChars.size(), step27_drawn, _hdFontManager->isEnabled());
+		if (_hdFrameCount % 30 == 0) {
+			// [font debug removed]
+		}
 		_hdFontChars.clear();
 	}
 
@@ -1963,8 +1955,7 @@ void ScummEngine::renderHDComposite() {
 	if (_hdVerbSurfaceValid && _hdVerbSurface.getPixels()) {
 		int overlayW = MIN((int)_hdVerbSurface.w, hdW);
 		int overlayH = MIN((int)_hdVerbSurface.h, hdH);
-		hdPrintf("step2.8 verb-overlay: size=%dx%d hdCanvas=%dx%d valid=%d",
-			overlayW, overlayH, hdW, hdH, _hdVerbSurfaceValid);
+//		// [verb-overlay debug removed]
 		for (int oy = 0; oy < overlayH; oy++) {
 			uint32 *srcRow = (uint32 *)_hdVerbSurface.getBasePtr(0, oy);
 			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, oy);
@@ -2006,10 +1997,9 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Event Logging (changes-only, flushed every 60 frames) ─
-	// Logs frame header ONLY on room change. For each FLOBJ, logs CULL/RENDER
-	// only when the decision CHANGES (not every frame). KEY/MOUSE events
-	// are always logged (they only fire when something happens).
+	// ── HD Event Logging (changes-only, appended to file) ─
+	// Logs room changes, CULL↔RENDER transitions, and KEY/MOUSE events.
+	// File grows via read-modify-write (append), capped at 64KB.
 	{
 		static int lastRoom = -1;
 		if (_currentRoom != lastRoom) {
@@ -2018,10 +2008,27 @@ void ScummEngine::renderHDComposite() {
 			int n = snprintf(line, sizeof(line), "@%d room=%d\n", _hdFrameCount, _currentRoom);
 			hdAppendDebugLog(line, n);
 		}
-		// Flush every ~60 frames (2 seconds at 30fps)
-		if (_hdFrameCount % 60 == 0 && _hdDebugLog.size() > 0) {
+		// Flush every ~120 frames (4 seconds) via append
+		if (_hdFrameCount % 120 == 0 && _hdDebugLog.size() > 0) {
+			// Read existing log (keep under 64KB)
+			byte *oldBuf = nullptr;
+			uint32 oldSize = 0;
+			{
+				Common::File rf;
+				if (rf.open("hd_state.log") && rf.size() < 65536) {
+					oldSize = (uint32)rf.size();
+					oldBuf = new byte[oldSize + 1];
+					rf.read(oldBuf, oldSize);
+					rf.close();
+				}
+			}
+			// Write old + new
 			Common::DumpFile df;
 			df.open(Common::Path("hd_state.log"));
+			if (oldBuf) {
+				df.write(oldBuf, oldSize);
+				delete[] oldBuf;
+			}
 			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
 			df.close();
 			_hdDebugLog.clear();
@@ -2192,6 +2199,7 @@ void ScummEngine::hdDumpSDComposite() {
     // Compute pixel diff between HD composite and SD composite
     int diffPixels = 0;
     int totalPixels = hdW * hdH;
+    (void)totalPixels; // keep for debug use
     // Also count per-region diffs
     int bgDiffPixels = 0;   // top 75% (background region)
     int fgDiffPixels = 0;   // bottom 25% (foreground/UI region)
@@ -2269,9 +2277,9 @@ void ScummEngine::hdDumpSDComposite() {
 
     // Dump each visible actor's costume from the 8-bit virtual screen as PNG
     if (_hdFrameCount == 30) {
-        VirtScreen &vs = _virtscr[kMainVirtScreen];
-        int visW = vs.w;
-        int visH = vs.h;
+        VirtScreen &vs2 = _virtscr[kMainVirtScreen];
+        int visW2 = vs2.w;
+        int visH2 = vs2.h;
         // Save palette for Python renderer
         snprintf(path, sizeof(path), "%s/hd_dump_palette.txt", dumpDir.c_str());
         df.open(Common::Path(path));
@@ -2286,11 +2294,11 @@ void ScummEngine::hdDumpSDComposite() {
         // Save the full 8-bit virtual screen as raw (palette-indexed)
         snprintf(path, sizeof(path), "%s/hd_dump_virtual_screen.raw", dumpDir.c_str());
         df.open(Common::Path(path));
-        for (int y = 0; y < visH; y++) {
-            df.write(vs.getBasePtr(0, y), visW);
+        for (int y = 0; y < visH2; y++) {
+            df.write(vs2.getBasePtr(0, y), visW2);
         }
         df.close();
-        hdPrintf("actor_dump: virtual screen %dx%d saved, palette saved", visW, visH);
+//        hdPrintf("actor_dump: virtual screen %dx%d saved, palette saved", visW, visH);
     }
 
     // Save diff visualization
@@ -2299,9 +2307,9 @@ void ScummEngine::hdDumpSDComposite() {
     df.write(diffVis.getPixels(), diffVis.h * diffVis.pitch);
     df.close();
 
-    hdPrintf("SDvsHD: diff=%d/%d (%.1f%%) bgDiff=%d fgDiff=%d room=%d",
-        diffPixels, totalPixels, diffPixels * 100.0 / totalPixels,
-        bgDiffPixels, fgDiffPixels, _currentRoom);
+//    hdPrintf("SDvsHD: diff=%d/%d (%.1f%%) bgDiff=%d fgDiff=%d room=%d",
+//        diffPixels, totalPixels, diffPixels * 100.0 / totalPixels,
+//        bgDiffPixels, fgDiffPixels, _currentRoom);
 
     sdComposite.free();
     diffVis.free();
