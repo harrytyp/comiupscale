@@ -1566,9 +1566,9 @@ void ScummEngine::renderHDComposite() {
 							for (int di = _numLocalObjects - 1; di > 0; di--) {
 								ObjectData &dod = _objs[di];
 								if (dod.obj_nr == 0) continue;
-								hdPrintf("INVOBJ: oi=%d obj=%d fl=%d state=%d owner=%d pos=(%d,%d) sz=(%dx%d)",
+								hdPrintf("INVOBJ: oi=%d obj=%d fl=%d state=%d parent=%d pos=(%d,%d) sz=(%dx%d)",
 									di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
-									dod.owner, dod.x_pos, dod.y_pos, dod.width, dod.height);
+									dod.parent, dod.x_pos, dod.y_pos, dod.width, dod.height);
 							}
 						}
 					}
