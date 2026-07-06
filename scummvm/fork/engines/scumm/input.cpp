@@ -166,6 +166,11 @@ void ScummEngine::parseEvent(Common::Event event) {
 			// Normal key press, pass on to the game.
 			_keyPressed = event.kbd;
 		}
+		// HD debug: log keyboard events
+		if (event.kbd.ascii >= 32 && event.kbd.ascii < 127)
+			hdPrintf("KEY '%c' (0x%x)", (char)event.kbd.ascii, event.kbd.keycode);
+		else
+			hdPrintf("KEY 0x%x", event.kbd.keycode);
 
 		// HACK: Because we use ASCII values here, it's necessary to
 		// remap keypad keys to always have a corresponding ASCII value.
@@ -240,6 +245,11 @@ void ScummEngine::parseEvent(Common::Event event) {
 					_mouse.x /= _hdScale;
 					_mouse.y /= _hdScale;
 				}
+				// HD debug: log mouse events
+				if (event.type == Common::EVENT_LBUTTONDOWN)
+					hdPrintf("MOUSE LCLICK pos=(%d,%d)", _mouse.x, _mouse.y);
+				else if (event.type == Common::EVENT_RBUTTONDOWN)
+					hdPrintf("MOUSE RCLICK pos=(%d,%d)", _mouse.x, _mouse.y);
 
 		if (_renderMode == Common::kRenderHercA || _renderMode == Common::kRenderHercG) {
 			_mouse.x -= (kHercWidth - _screenWidth * 2) / 2;

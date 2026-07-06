@@ -2002,77 +2002,26 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// State debug log: always active — only produces output when inventory-related
-	// state changes. Logs non-zero _objectStateTable entries and verb slots with
-	// hd_obj_nr (inventory verbs). Naturally stays small/empty when nothing happens.
+	// ── HD Debug Logging (buffer-based) ────────────────
+	// _hdDebugLog accumulates hdPrintf events + frame headers across frames.
+	// Written to disk every ~100 frames when buffer reaches 24KB.
+	// No read-modify-write — always a clean snapshot of recent history.
 	{
-		// Quick scan: is there anything interesting this frame?
-		bool hasStateChanges = (_hdDebugLog.size() > 0);
-		for (int i = 0; i < _numGlobalObjects && !hasStateChanges; i++) {
-			if (_objectStateTable[i] != 0)
-				hasStateChanges = true;
-		}
-		if (!hasStateChanges) {
-			for (int vi = 0; vi < _numVerbs && !hasStateChanges; vi++) {
-				if (_verbs[vi].hd_obj_nr > 0)
-					hasStateChanges = true;
-			}
-		}
-		// Only write when hdPrintf events occurred (setVerbObject, etc.), or every 120 frames
-		if (hasStateChanges) {
-			bool hasEvents = (_hdDebugLog.size() > 0);
-			bool timeForSnapshot = (_hdFrameCount - _hdLastLogWrite >= 120);
-			if (hasEvents || timeForSnapshot) {
-				char line[1024];
-				Common::String frameData;
-				int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
-				frameData += Common::String(line, n);
-
-				// STATE entries: only first 15 frames (initial capture)
-				if (_hdFrameCount <= 15) {
-					for (int i = 0; i < _numGlobalObjects && frameData.size() < 1500; i++) {
-						if (_objectStateTable[i] != 0) {
-							const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
-							n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
-							frameData += Common::String(line, n);
-						}
-					}
-				}
-
-				// Read existing log (keep under 64KB)
-				byte *oldBuf = nullptr;
-				uint32 oldSize = 0;
-				{
-					Common::File rf;
-					if (rf.open("hd_state.log") && rf.size() < 65536) {
-						oldSize = (uint32)rf.size();
-						oldBuf = new byte[oldSize + 1];
-						rf.read(oldBuf, oldSize);
-						rf.close();
-					}
-				}
-
-				// Write: old + frame header + hdPrintf events
-				Common::DumpFile df;
-				df.open(Common::Path("hd_state.log"));
-				if (oldBuf) {
-					df.write(oldBuf, oldSize);
-					delete[] oldBuf;
-				}
-				df.write(frameData.c_str(), frameData.size());
-				if (_hdDebugLog.size() > 0) {
-					df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
-					_hdDebugLog.clear();
-				}
-				df.close();
-				_hdLastLogWrite = _hdFrameCount;
-			}
+		char line[128];
+		int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
+		hdAppendDebugLog(line, n);
+		if (_hdDebugLog.size() > 24576) {
+			Common::DumpFile df;
+			df.open(Common::Path("hd_state.log"));
+			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+			df.close();
+			_hdDebugLog.clear();
 		}
 	}
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	if (_hdDebugLog.size() > 16384)
+	if (_hdDebugLog.size() > 24576)
 		return;
 	_hdDebugLog += Common::String(msg, len);
 }

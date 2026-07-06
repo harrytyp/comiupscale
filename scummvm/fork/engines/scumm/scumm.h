@@ -580,7 +580,6 @@ public:
 	int _hdObjectMaskSize = 0;
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
-	int _hdLastLogWrite = 0; // frame number when hd_state.log was last written
 	Common::String _hdDebugLog; // HD debug log buffer (flushed to hd_state.log each frame)
 	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
 	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
