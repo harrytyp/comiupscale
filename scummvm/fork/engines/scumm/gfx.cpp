@@ -2006,9 +2006,9 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Debug Log (buffer, append at 256KB) ──────────
-	// Buffer accumulates across frames. Written to disk ONLY when full
-	// (>256KB), using read-modify-write so old data survives.
+	// ── HD Debug Log (buffer, append every 30 frames) ───
+	// Buffer accumulates across frames. Flushed to disk every 30 frames (~1s)
+	// using read-modify-write so old data survives. Also flushed when >256KB.
 	{
 		static int lastRoom = -1;
 		if (_currentRoom != lastRoom) {
@@ -2017,8 +2017,10 @@ void ScummEngine::renderHDComposite() {
 			int n = snprintf(line, sizeof(line), "@%d room=%d\n", _hdFrameCount, _currentRoom);
 			hdAppendDebugLog(line, n);
 		}
-		// Only write when buffer exceeds cap (never periodically)
-		if (_hdDebugLog.size() > 262144) {
+		// Flush every 30 frames (~1s) OR when buffer > 256KB
+		if (_hdFrameCount % 30 == 0 || _hdDebugLog.size() > 262144) {
+			if (_hdDebugLog.empty())
+				goto skipFlush; // nothing to write
 			// Read existing log (keep under 512KB)
 			byte *oldBuf = nullptr;
 			uint32 oldSize = 0;
@@ -2041,6 +2043,7 @@ void ScummEngine::renderHDComposite() {
 			df.close();
 			_hdDebugLog.clear();
 		}
+skipFlush:;
 	}
 }
 
