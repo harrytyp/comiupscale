@@ -1572,6 +1572,7 @@ void ScummEngine::renderHDComposite() {
 							}
 						}
 					}
+				}
 
 				// Determine threshold: for FLOBJs use 2% of object area,
 				// for normal objects just 2 pixels (noise floor).
