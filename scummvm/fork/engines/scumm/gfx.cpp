@@ -2015,54 +2015,79 @@ void ScummEngine::renderHDComposite() {
 		}
 		// Only write if there's something interesting
 		if (hasStateChanges) {
-			char line[1024];
-			// Append frame state data to the persistent _hdDebugLog buffer.
-			// Buffer accumulates across frames so we don't lose inventory events
-			// that happened in earlier frames (file would be overwritten each frame).
-			Common::String frameData;
-			int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
-			frameData += Common::String(line, n);
-			// Non-zero _objectStateTable entries
-			for (int i = 0; i < _numGlobalObjects; i++) {
-				if (_objectStateTable[i] != 0) {
-					const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
-					n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
+			// Always write when hdPrintf events occurred, or every 30 frames as snapshot
+			bool hasEvents = (_hdDebugLog.size() > 0);
+			bool timeForSnapshot = (_hdFrameCount - _hdLastLogWrite >= 30);
+			if (hasEvents || timeForSnapshot) {
+				char line[1024];
+
+				// Build frame state data
+				Common::String frameData;
+				int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
+				frameData += Common::String(line, n);
+
+				// Non-zero _objectStateTable entries — only first 15 frames (initial state)
+				if (_hdFrameCount <= 15) {
+					for (int i = 0; i < _numGlobalObjects && frameData.size() < 1500; i++) {
+						if (_objectStateTable[i] != 0) {
+							const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(i).c_str() : "";
+							n = snprintf(line, sizeof(line), "  STATE[%d] = %d name=%s\n", i, _objectStateTable[i], name);
+							frameData += Common::String(line, n);
+						}
+					}
+				}
+
+				// FLOBJ status (always)
+				for (int oi = 1; oi < _numLocalObjects; oi++) {
+					ObjectData &od2 = _objs[oi];
+					if (od2.obj_nr == 0 || !od2.fl_object_index)
+						continue;
+					bool locked = _res->isLocked(rtFlObject, od2.fl_object_index);
+					const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(od2.obj_nr).c_str() : "";
+					n = snprintf(line, sizeof(line), "  FLOBJ[%d] obj=%d fl=%d locked=%d state=%d name=%s\n",
+						oi, od2.obj_nr, od2.fl_object_index, locked ? 1 : 0, od2.state & 0xF, name);
 					frameData += Common::String(line, n);
 				}
-			}
-			// Script drawObject tracking (last o8_drawObject call)
-			int scriptObj = _hdLastScriptObj;
-			int scriptX = _hdLastScriptX;
-			int scriptY = _hdLastScriptY;
-			int scriptState = _hdLastScriptState;
-			if (scriptObj != 0) {
-				n = snprintf(line, sizeof(line), "  SCRIPT_DRAW: obj=%d x=%d y=%d state=%d\n",
-					scriptObj, scriptX, scriptY, scriptState);
-				frameData += Common::String(line, n);
-			}
-			// FLOBJ lock status check
-			for (int oi = 1; oi < _numLocalObjects; oi++) {
-				ObjectData &od2 = _objs[oi];
-				if (od2.obj_nr == 0 || !od2.fl_object_index)
-					continue;
-				bool locked = _res->isLocked(rtFlObject, od2.fl_object_index);
-				const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(od2.obj_nr).c_str() : "";
-				n = snprintf(line, sizeof(line), "  FLOBJ[%d] obj=%d fl=%d locked=%d state=%d name=%s\n",
-					oi, od2.obj_nr, od2.fl_object_index, locked ? 1 : 0, od2.state & 0xF, name);
-				frameData += Common::String(line, n);
-			}
-			// Append frame state data to the persistent debug log buffer
-			_hdDebugLog += frameData;
-			// Write to file when buffer is full or every 30 frames
-			bool shouldWrite = (_hdDebugLog.size() > 16384);
-			if (!shouldWrite && (_hdFrameCount % 30 == 0))
-				shouldWrite = (_hdDebugLog.size() > 0);
-			if (shouldWrite) {
+
+				// Script drawObject tracking
+				int scriptObj = _hdLastScriptObj;
+				int scriptX = _hdLastScriptX;
+				int scriptY = _hdLastScriptY;
+				int scriptState = _hdLastScriptState;
+				if (scriptObj != 0) {
+					n = snprintf(line, sizeof(line), "  SCRIPT_DRAW: obj=%d x=%d y=%d state=%d\n",
+						scriptObj, scriptX, scriptY, scriptState);
+					frameData += Common::String(line, n);
+				}
+
+				// Read existing log content (to achieve append semantics)
+				byte *oldBuf = nullptr;
+				uint32 oldSize = 0;
+				{
+					Common::File rf;
+					if (rf.open("hd_state.log") && rf.size() < 131072) {
+						oldSize = (uint32)rf.size();
+						oldBuf = new byte[oldSize + 1];
+						rf.read(oldBuf, oldSize);
+						rf.close();
+					}
+				}
+
+				// Write everything: old content + frame data + hdPrintf events
 				Common::DumpFile df;
 				df.open(Common::Path("hd_state.log"));
-				df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+				if (oldBuf) {
+					df.write(oldBuf, oldSize);
+					delete[] oldBuf;
+				}
+				df.write(frameData.c_str(), frameData.size());
+				// hdPrintf events accumulated across frames
+				if (_hdDebugLog.size() > 0) {
+					df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+					_hdDebugLog.clear();
+				}
 				df.close();
-				_hdDebugLog.clear();
+				_hdLastLogWrite = _hdFrameCount;
 			}
 		}
 	}
