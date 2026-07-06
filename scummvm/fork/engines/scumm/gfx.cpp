@@ -1437,13 +1437,9 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	// ── Inventory Active Detection ──────────────────────────
-		// COMI V8 inventory FLOBJs (obj=114,115,116,105,120,188,189)
-		// all have odPos=(0,0) in ObjectData. Their actual positions
-		// are set by the game script via GDI draw calls, not through
-		// the standard object rendering path.
-		// Step 2 (8-bit compositing) renders them correctly.
-		// Step 2.5 should skip FLOBJs at (0,0) to avoid rendering
-		// HD textures at wrong positions (fragments at top-left).
+		// Uses cursor (obj=105) visibility in the 8-bit composite:
+		// cursor FLOBJ has 0 visible pixels when inventory is closed,
+		// ~3000 visible pixels when open. Checked per-object in the loop.
 		bool inventoryActive = false;
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
@@ -1529,9 +1525,10 @@ void ScummEngine::renderHDComposite() {
 			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _screenHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
-			hdPrintf("step2.5 POS: obj=%d odPos=(%d,%d) hdPos=(%lld,%lld) sz=(%dx%d) screen=(%dx%d) hdCanvas=(%dx%d) room=%d hdRoom=%d rW=%d rH=%d fl=%d",
-				od.obj_nr, od.x_pos, od.y_pos, (long long)hdX, (long long)hdY, hdObjW, hdObjH,
-				_screenWidth, _screenHeight, hdW, hdH, _currentRoom, objRoom, _roomWidth, _roomHeight, od.fl_object_index);
+			if (od.obj_nr == 114)
+				hdPrintf("POS obj=114 odPos=(%d,%d) hdPos=(%lld,%lld) sz=(%dx%d) hdRoom=%d fl=%d",
+					od.x_pos, od.y_pos, (long long)hdX, (long long)hdY, hdObjW, hdObjH,
+					objRoom, od.fl_object_index);
 
 			// CULL: only render HD object if the 8-bit screen has visible
 			// foreground pixels in this area. For FLOBJs (floating objects
@@ -1558,6 +1555,14 @@ void ScummEngine::renderHDComposite() {
 						}
 					}
 				}
+				// Real-time inventory detection using cursor (obj=105) visibility.
+				// In the 8-bit composite, the system-cursor-icon FLOBJ only has
+				// visible pixels when the inventory overlay is open. When closed,
+				// the cursor is drawn by the hardware/software cursor, not in the
+				// 8-bit composite at (0,0). This is the most reliable binary signal.
+				if (od.obj_nr == 105 && od.fl_object_index != 0 && visiblePixels > 100)
+					inventoryActive = true;
+
 				// Determine threshold: for FLOBJs use 2% of object area,
 				// for normal objects just 2 pixels (noise floor).
 				int threshold = 2;
@@ -1586,17 +1591,17 @@ void ScummEngine::renderHDComposite() {
 				}
 				if (visiblePixels < threshold) {
 					step25_culled++;
-					if (od.fl_object_index != 0)
-						hdPrintf("step2.5 CULL: obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-							od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-							threshold, inventoryActive ? 1 : 0);
+					if (od.fl_object_index != 0 && od.obj_nr == 114)
+						hdPrintf("CULL obj=114 fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
+								od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+								threshold, inventoryActive ? 1 : 0);
 					hdObjSurf.free();
 					continue;
 				}
-				if (od.fl_object_index != 0)
-					hdPrintf("step2.5 RENDER: obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-						od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-						threshold, inventoryActive ? 1 : 0);
+				if (od.fl_object_index != 0 && od.obj_nr == 114)
+					hdPrintf("RENDER obj=114 fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
+							od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
+							threshold, inventoryActive ? 1 : 0);
 			}
 
 			// Remove the old large-FLOBJ gate since culling now handles it
@@ -1604,10 +1609,10 @@ void ScummEngine::renderHDComposite() {
 
 			// Blit HD object with alpha transparency
 			step25_loaded++;
-			if (_hdFrameCount % 30 == 0) {
+			if (od.obj_nr == 114 && _hdFrameCount % 60 == 0) {
 				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-				hdPrintf("step2.5 LOAD: obj=%d(%s) state=%d pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
-					od.obj_nr, name, objState, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+				hdPrintf("LOAD obj=114(%s) pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
+					name, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
 			}
 			for (int oy = 0; oy < hdObjH; oy++) {
 				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
@@ -2013,20 +2018,17 @@ void ScummEngine::renderHDComposite() {
 					hasStateChanges = true;
 			}
 		}
-		// Only write if there's something interesting
+		// Only write when hdPrintf events occurred (setVerbObject, etc.), or every 120 frames
 		if (hasStateChanges) {
-			// Always write when hdPrintf events occurred, or every 30 frames as snapshot
 			bool hasEvents = (_hdDebugLog.size() > 0);
-			bool timeForSnapshot = (_hdFrameCount - _hdLastLogWrite >= 30);
+			bool timeForSnapshot = (_hdFrameCount - _hdLastLogWrite >= 120);
 			if (hasEvents || timeForSnapshot) {
 				char line[1024];
-
-				// Build frame state data
 				Common::String frameData;
 				int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
 				frameData += Common::String(line, n);
 
-				// Non-zero _objectStateTable entries — only first 15 frames (initial state)
+				// STATE entries: only first 15 frames (initial capture)
 				if (_hdFrameCount <= 15) {
 					for (int i = 0; i < _numGlobalObjects && frameData.size() < 1500; i++) {
 						if (_objectStateTable[i] != 0) {
@@ -2037,35 +2039,12 @@ void ScummEngine::renderHDComposite() {
 					}
 				}
 
-				// FLOBJ status (always)
-				for (int oi = 1; oi < _numLocalObjects; oi++) {
-					ObjectData &od2 = _objs[oi];
-					if (od2.obj_nr == 0 || !od2.fl_object_index)
-						continue;
-					bool locked = _res->isLocked(rtFlObject, od2.fl_object_index);
-					const char *name = _hdObjectManager ? _hdObjectManager->getObjectName(od2.obj_nr).c_str() : "";
-					n = snprintf(line, sizeof(line), "  FLOBJ[%d] obj=%d fl=%d locked=%d state=%d name=%s\n",
-						oi, od2.obj_nr, od2.fl_object_index, locked ? 1 : 0, od2.state & 0xF, name);
-					frameData += Common::String(line, n);
-				}
-
-				// Script drawObject tracking
-				int scriptObj = _hdLastScriptObj;
-				int scriptX = _hdLastScriptX;
-				int scriptY = _hdLastScriptY;
-				int scriptState = _hdLastScriptState;
-				if (scriptObj != 0) {
-					n = snprintf(line, sizeof(line), "  SCRIPT_DRAW: obj=%d x=%d y=%d state=%d\n",
-						scriptObj, scriptX, scriptY, scriptState);
-					frameData += Common::String(line, n);
-				}
-
-				// Read existing log content (to achieve append semantics)
+				// Read existing log (keep under 64KB)
 				byte *oldBuf = nullptr;
 				uint32 oldSize = 0;
 				{
 					Common::File rf;
-					if (rf.open("hd_state.log") && rf.size() < 131072) {
+					if (rf.open("hd_state.log") && rf.size() < 65536) {
 						oldSize = (uint32)rf.size();
 						oldBuf = new byte[oldSize + 1];
 						rf.read(oldBuf, oldSize);
@@ -2073,7 +2052,7 @@ void ScummEngine::renderHDComposite() {
 					}
 				}
 
-				// Write everything: old content + frame data + hdPrintf events
+				// Write: old + frame header + hdPrintf events
 				Common::DumpFile df;
 				df.open(Common::Path("hd_state.log"));
 				if (oldBuf) {
@@ -2081,7 +2060,6 @@ void ScummEngine::renderHDComposite() {
 					delete[] oldBuf;
 				}
 				df.write(frameData.c_str(), frameData.size());
-				// hdPrintf events accumulated across frames
 				if (_hdDebugLog.size() > 0) {
 					df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
 					_hdDebugLog.clear();
