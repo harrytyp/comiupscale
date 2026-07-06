@@ -2006,17 +2006,40 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
+	// ── HD Debug Log: flush buffer to file every frame ──
+	// Buffer accumulates ALL hdPrintf calls during the frame.
+	// Written to disk at end of frame via read-modify-write (append).
+	// No frame wait, no size limit — EVERY event is captured.
+	{
+		if (!_hdDebugLog.empty()) {
+			byte *oldBuf = nullptr;
+			uint32 oldSize = 0;
+			{
+				Common::File rf;
+				if (rf.open("hd_state.log") && rf.size() < 4194304) {
+					oldSize = (uint32)rf.size();
+					oldBuf = new byte[oldSize + 1];
+					rf.read(oldBuf, oldSize);
+					rf.close();
+				}
+			}
+			Common::DumpFile df;
+			df.open(Common::Path("hd_state.log"));
+			if (oldBuf) {
+				df.write(oldBuf, oldSize);
+				delete[] oldBuf;
+			}
+			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+			df.close();
+			_hdDebugLog.clear();
+		}
+	}
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	// Direct file append — every message is written immediately, no buffer.
-	// The file is opened/closed each time to avoid stale handles on Windows.
-	// This guarantees EVERY event is captured. No data is ever lost.
-	FILE *f = fopen("hd_state.log", "a");
-	if (f) {
-		fwrite(msg, 1, len, f);
-		fclose(f);
-	}
+	// Append to buffer. Flushed to file at end of each frame in renderHDComposite.
+	// No size limit — buffer is cleared every frame so it never grows unbounded.
+	_hdDebugLog += Common::String(msg, len);
 }
 
 void ScummEngine::hdPrintf(const char* fmt, ...) {
