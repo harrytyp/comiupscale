@@ -1525,10 +1525,6 @@ void ScummEngine::renderHDComposite() {
 			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _screenHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
-			if (od.obj_nr == 114)
-				hdPrintf("POS obj=114 odPos=(%d,%d) hdPos=(%lld,%lld) sz=(%dx%d) hdRoom=%d fl=%d",
-					od.x_pos, od.y_pos, (long long)hdX, (long long)hdY, hdObjW, hdObjH,
-					objRoom, od.fl_object_index);
 
 			// CULL: only render HD object if the 8-bit screen has visible
 			// foreground pixels in this area. For FLOBJs (floating objects
@@ -1589,19 +1585,27 @@ void ScummEngine::renderHDComposite() {
 					if (!inventoryActive)
 						threshold = MAX(threshold, visiblePixels + 1); // force cull
 				}
+				// Track CULL/RENDER transitions for FLOBJs (log only changes)
+				static int flCullState[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
 				if (visiblePixels < threshold) {
 					step25_culled++;
-					if (od.fl_object_index != 0)
-						hdPrintf("CULL obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-								od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-								threshold, inventoryActive ? 1 : 0);
+					if (od.fl_object_index != 0) {
+						int fli = od.fl_object_index;
+						if (fli >= 0 && fli < 8 && flCullState[fli] != 0) {
+							flCullState[fli] = 0;
+							hdPrintf("@%d CULL obj=%d fl=%d visible=%d invActive=%d", _hdFrameCount, od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
+						}
+					}
 					hdObjSurf.free();
 					continue;
 				}
-				if (od.fl_object_index != 0)
-					hdPrintf("RENDER obj=%d fl=%d visible=%d/%dx%d area=%dx%d thresh=%d invActive=%d",
-							od.obj_nr, od.fl_object_index, visiblePixels, sw, sh, od.width, od.height,
-							threshold, inventoryActive ? 1 : 0);
+				if (od.fl_object_index != 0) {
+					int fli = od.fl_object_index;
+					if (fli >= 0 && fli < 8 && flCullState[fli] != 1) {
+						flCullState[fli] = 1;
+						hdPrintf("@%d RENDER obj=%d fl=%d visible=%d invActive=%d", _hdFrameCount, od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
+					}
+				}
 			}
 
 			// Remove the old large-FLOBJ gate since culling now handles it
@@ -2002,16 +2006,20 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Debug Logging (buffer-based) ────────────────
-	// _hdDebugLog accumulates hdPrintf events + frame headers across frames.
-	// Written to disk every 60 frames OR when buffer hits 96KB.
+	// ── HD Event Logging (changes-only, flushed every 60 frames) ─
+	// Logs frame header ONLY on room change. For each FLOBJ, logs CULL/RENDER
+	// only when the decision CHANGES (not every frame). KEY/MOUSE events
+	// are always logged (they only fire when something happens).
 	{
-		char line[128];
-		int n = snprintf(line, sizeof(line), "--- frame=%d room=%d ---\n", _hdFrameCount, _currentRoom);
-		hdAppendDebugLog(line, n);
-		bool bufFull = (_hdDebugLog.size() > 98304);
-		bool timeUp = (_hdFrameCount % 60 == 0 && _hdDebugLog.size() > 0);
-		if (bufFull || timeUp) {
+		static int lastRoom = -1;
+		if (_currentRoom != lastRoom) {
+			lastRoom = _currentRoom;
+			char line[64];
+			int n = snprintf(line, sizeof(line), "@%d room=%d\n", _hdFrameCount, _currentRoom);
+			hdAppendDebugLog(line, n);
+		}
+		// Flush every ~60 frames (2 seconds at 30fps)
+		if (_hdFrameCount % 60 == 0 && _hdDebugLog.size() > 0) {
 			Common::DumpFile df;
 			df.open(Common::Path("hd_state.log"));
 			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
