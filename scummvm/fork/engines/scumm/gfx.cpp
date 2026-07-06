@@ -2006,10 +2006,9 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Event Logging (changes-only, flushed every 60 frames) ─
-	// Logs frame header ONLY on room change. For each FLOBJ, logs CULL/RENDER
-	// only when the decision CHANGES (not every frame). KEY/MOUSE events
-	// are always logged (they only fire when something happens).
+	// ── HD Debug Log (buffer, append at 256KB) ──────────
+	// Buffer accumulates across frames. Written to disk ONLY when full
+	// (>256KB), using read-modify-write so old data survives.
 	{
 		static int lastRoom = -1;
 		if (_currentRoom != lastRoom) {
@@ -2018,10 +2017,26 @@ void ScummEngine::renderHDComposite() {
 			int n = snprintf(line, sizeof(line), "@%d room=%d\n", _hdFrameCount, _currentRoom);
 			hdAppendDebugLog(line, n);
 		}
-		// Flush every ~60 frames (2 seconds at 30fps)
-		if (_hdFrameCount % 60 == 0 && _hdDebugLog.size() > 0) {
+		// Only write when buffer exceeds cap (never periodically)
+		if (_hdDebugLog.size() > 262144) {
+			// Read existing log (keep under 512KB)
+			byte *oldBuf = nullptr;
+			uint32 oldSize = 0;
+			{
+				Common::File rf;
+				if (rf.open("hd_state.log") && rf.size() < 524288) {
+					oldSize = (uint32)rf.size();
+					oldBuf = new byte[oldSize + 1];
+					rf.read(oldBuf, oldSize);
+					rf.close();
+				}
+			}
 			Common::DumpFile df;
 			df.open(Common::Path("hd_state.log"));
+			if (oldBuf) {
+				df.write(oldBuf, oldSize);
+				delete[] oldBuf;
+			}
 			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
 			df.close();
 			_hdDebugLog.clear();
@@ -2030,7 +2045,7 @@ void ScummEngine::renderHDComposite() {
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	if (_hdDebugLog.size() > 98304)
+	if (_hdDebugLog.size() > 262144)
 		return;
 	_hdDebugLog += Common::String(msg, len);
 }
