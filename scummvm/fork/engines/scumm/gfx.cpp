@@ -1556,8 +1556,22 @@ void ScummEngine::renderHDComposite() {
 				// visible pixels when the inventory overlay is open. When closed,
 				// the cursor is drawn by the hardware/software cursor, not in the
 				// 8-bit composite at (0,0). This is the most reliable binary signal.
-				if (od.obj_nr == 105 && od.fl_object_index != 0 && visiblePixels > 100)
+				if (od.obj_nr == 105 && od.fl_object_index != 0 && visiblePixels > 100) {
 					inventoryActive = true;
+					// One-shot dump of ALL objects when inventory first opens
+					{
+						static bool invDumped = false;
+						if (!invDumped) {
+							invDumped = true;
+							for (int di = _numLocalObjects - 1; di > 0; di--) {
+								ObjectData &dod = _objs[di];
+								if (dod.obj_nr == 0) continue;
+								hdPrintf("INVOBJ: oi=%d obj=%d fl=%d state=%d owner=%d pos=(%d,%d) sz=(%dx%d)",
+									di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
+									dod.owner, dod.x_pos, dod.y_pos, dod.width, dod.height);
+							}
+						}
+					}
 
 				// Determine threshold: for FLOBJs use 2% of object area,
 				// for normal objects just 2 pixels (noise floor).
