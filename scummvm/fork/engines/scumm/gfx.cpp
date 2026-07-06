@@ -2006,51 +2006,17 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Debug Log (buffer, append every 30 frames) ───
-	// Buffer accumulates across frames. Flushed to disk every 30 frames (~1s)
-	// using read-modify-write so old data survives. Also flushed when >256KB.
-	{
-		static int lastRoom = -1;
-		if (_currentRoom != lastRoom) {
-			lastRoom = _currentRoom;
-			char line[64];
-			int n = snprintf(line, sizeof(line), "@%d room=%d\n", _hdFrameCount, _currentRoom);
-			hdAppendDebugLog(line, n);
-		}
-		// Flush every 30 frames (~1s) OR when buffer > 256KB
-		if (_hdFrameCount % 30 == 0 || _hdDebugLog.size() > 262144) {
-			if (_hdDebugLog.empty())
-				goto skipFlush; // nothing to write
-			// Read existing log (keep under 512KB)
-			byte *oldBuf = nullptr;
-			uint32 oldSize = 0;
-			{
-				Common::File rf;
-				if (rf.open("hd_state.log") && rf.size() < 524288) {
-					oldSize = (uint32)rf.size();
-					oldBuf = new byte[oldSize + 1];
-					rf.read(oldBuf, oldSize);
-					rf.close();
-				}
-			}
-			Common::DumpFile df;
-			df.open(Common::Path("hd_state.log"));
-			if (oldBuf) {
-				df.write(oldBuf, oldSize);
-				delete[] oldBuf;
-			}
-			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
-			df.close();
-			_hdDebugLog.clear();
-		}
-skipFlush:;
-	}
 }
 
 void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
-	if (_hdDebugLog.size() > 262144)
-		return;
-	_hdDebugLog += Common::String(msg, len);
+	// Direct file append — every message is written immediately, no buffer.
+	// The file is opened/closed each time to avoid stale handles on Windows.
+	// This guarantees EVERY event is captured. No data is ever lost.
+	FILE *f = fopen("hd_state.log", "a");
+	if (f) {
+		fwrite(msg, 1, len, f);
+		fclose(f);
+	}
 }
 
 void ScummEngine::hdPrintf(const char* fmt, ...) {
