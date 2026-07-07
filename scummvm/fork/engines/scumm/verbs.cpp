@@ -1248,86 +1248,76 @@ void ScummEngine::drawVerbBitmap(int verb, int x, int y) {
 	// draw FLOBJ overlays (only when verbs are actively being drawn).
 	_hdVerbDrawCount++;
 
-	// HD mod: try to load HD texture for this verb
-	if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
-		_hdVerbDrawCount++;
-		_hdVerbScreenTimestamp = _hdFrameCount; // mark verb screen as active
-		int state = 0;
-		int hdRoom = vst->hd_room;
-		if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
-			Graphics::Surface hdSurf;
-			if (_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdSurf)) {
-				// Check if this is a large overlay (e.g. inventory background).
-				// Large textures (>90% of HD canvas) should be composited directly in HD via
-				// _hdVerbSurface, not scaled down to SD and back up (quality loss).
-				int expectedHDW = _hdBackgroundSurface.w > 0 ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
-				int expectedHDH = _hdBackgroundSurface.h > 0 ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
-				bool isLarge = (hdSurf.w * 10 >= expectedHDW * 9 && hdSurf.h * 10 >= expectedHDH * 9);
-				hdPrintf("drawVerbBitmap: verb=%d obj=%d room=%d surf=%dx%d expected=%dx%d hdScale=%d isLarge=%d",
-					verb, vst->hd_obj_nr, hdRoom, hdSurf.w, hdSurf.h, expectedHDW, expectedHDH, _hdScale, isLarge ? 1 : 0);
+		// HD mod: try to load HD texture for this verb
+		if (_hdObjectManager && _hdObjectManager->isEnabled() && vst->hd_obj_nr > 0) {
+			_hdVerbDrawCount++;
+			_hdVerbScreenTimestamp = _hdFrameCount; // mark verb screen as active
+			int state = 0;
+			int hdRoom = vst->hd_room;
+			if (_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
+				Graphics::Surface hdSurf;
+				if (_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdSurf)) {
+					// Check if this is a large overlay (e.g. inventory background).
+					// Large textures (>90% of HD canvas) should be composited directly in HD via
+					// _hdVerbSurface, not scaled down to SD and back up (quality loss).
+					int expectedHDW = _hdBackgroundSurface.w > 0 ? _hdBackgroundSurface.w : _screenWidth * _hdScale;
+					int expectedHDH = _hdBackgroundSurface.h > 0 ? _hdBackgroundSurface.h : _screenHeight * _hdScale;
+					bool isLarge = (hdSurf.w * 10 >= expectedHDW * 9 && hdSurf.h * 10 >= expectedHDH * 9);
+					hdPrintf("drawVerbBitmap: verb=%d obj=%d room=%d surf=%dx%d expected=%dx%d hdScale=%d isLarge=%d",
+						verb, vst->hd_obj_nr, hdRoom, hdSurf.w, hdSurf.h, expectedHDW, expectedHDH, _hdScale, isLarge ? 1 : 0);
 
-				if (isLarge) {
-					// Store for later HD compositing (Step 2.8 in renderHDComposite)
-					int fw = hdSurf.w, fh = hdSurf.h;
-					_hdVerbSurface.free();
-					_hdVerbSurface.copyFrom(hdSurf);
-					_hdVerbSurfaceValid = true;
+					if (isLarge) {
+						// Store for later HD compositing (Step 2.8 in renderHDComposite)
+						int fw = hdSurf.w, fh = hdSurf.h;
+						_hdVerbSurface.free();
+						_hdVerbSurface.copyFrom(hdSurf);
+						_hdVerbSurfaceValid = true;
+						hdSurf.free();
+						// Update verb rect (for redraw tracking)
+						vst->curRect.left = x;
+						vst->curRect.top = y;
+						vst->curRect.right = x + fw / _hdScale;
+						vst->curRect.bottom = y + fh / _hdScale;
+						vst->oldRect = vst->curRect;
+						// Sync verb position to ObjectData for Step 2.5
+						if (vst->hd_obj_nr > 0) {
+							int oi = getObjectIndex(vst->hd_obj_nr);
+							if (oi != -1) {
+								_objs[oi].x_pos = x;
+								_objs[oi].y_pos = y;
+							}
+						}
+						return;
+					}
+
+					// Inventory items (not large enough for _hdVerbSurface):
+					// Skip HD→SD scaling — they will be composited in HD by Step 2.8b
+					// (renderHDComposite). Let the original SD verb image draw instead,
+					// so the 8-bit composite still has something to show. The HD version
+					// will overlay on top at the correct HD position.
+					int hdW = hdSurf.w;
+					int hdH = hdSurf.h;
 					hdSurf.free();
 					// Update verb rect (for redraw tracking)
 					vst->curRect.left = x;
 					vst->curRect.top = y;
-					vst->curRect.right = x + fw / _hdScale;
-					vst->curRect.bottom = y + fh / _hdScale;
+					vst->curRect.right = x + hdW / _hdScale;
+					vst->curRect.bottom = y + hdH / _hdScale;
 					vst->oldRect = vst->curRect;
 					// Sync verb position to ObjectData for Step 2.5
 					if (vst->hd_obj_nr > 0) {
 						int oi = getObjectIndex(vst->hd_obj_nr);
 						if (oi != -1) {
-							_objs[oi].x_pos = x;
-							_objs[oi].y_pos = y;
+							_objs[oi].x_pos = vst->curRect.left;
+							_objs[oi].y_pos = vst->curRect.top;
 						}
 					}
-					return;
+					// DON'T return early — fall through to normal SD verb drawing
+					// The SD version shows at correct position in the 8-bit composite;
+					// the HD version will be drawn on top by Step 2.8b
 				}
-
-				if ((vs = findVirtScreen(y)) != nullptr && _hdScale > 1) {
-					// Scale HD surface down to SD verb screen
-					int sdW = hdSurf.w / _hdScale;
-					int sdH = hdSurf.h / _hdScale;
-					int verbX = x;
-					int verbY = y - vs->topline;
-					for (int row = 0; row < sdH && verbY + row < vs->h; row++) {
-						uint32 *srcRow = (uint32 *)hdSurf.getBasePtr(0, row * _hdScale);
-						uint32 *dstRow = (uint32 *)vs->getBasePtr(verbX, verbY + row);
-						for (int col = 0; col < sdW && verbX + col < vs->w; col++) {
-							uint32 pix = srcRow[col * _hdScale];
-							uint8 alpha = (pix >> 24) & 0xFF;
-							if (alpha >= 128)
-								dstRow[col] = pix;
-						}
-					}
-				}
-				int hdW = hdSurf.w;
-				int hdH = hdSurf.h;
-				hdSurf.free();
-				// Update verb rect (for redraw tracking)
-				vst->curRect.left = x;
-				vst->curRect.top = y;
-				vst->curRect.right = x + hdW / _hdScale;
-				vst->curRect.bottom = y + hdH / _hdScale;
-				vst->oldRect = vst->curRect;
-				// Sync verb position to ObjectData for Step 2.5
-				if (vst->hd_obj_nr > 0) {
-					int oi = getObjectIndex(vst->hd_obj_nr);
-					if (oi != -1) {
-						_objs[oi].x_pos = vst->curRect.left;
-						_objs[oi].y_pos = vst->curRect.top;
-					}
-				}
-				return;
 			}
 		}
-	}
 
 	if ((vs = findVirtScreen(y)) == nullptr)
 		return;

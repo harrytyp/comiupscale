@@ -1285,6 +1285,29 @@ void ScummEngine::renderHDComposite() {
 				_hdDebugDumpCount = 30; // periodic
 			}
 		}
+		// Flush HD debug log even without HD background
+		if (!_hdDebugLog.empty()) {
+			byte *oldBuf = nullptr;
+			uint32 oldSize = 0;
+			{
+				Common::File rf;
+				if (rf.open("hd_state.log") && rf.size() < 4194304) {
+					oldSize = (uint32)rf.size();
+					oldBuf = new byte[oldSize + 1];
+					rf.read(oldBuf, oldSize);
+					rf.close();
+				}
+			}
+			Common::DumpFile df;
+			df.open(Common::Path("hd_state.log"));
+			if (oldBuf) {
+				df.write(oldBuf, oldSize);
+				delete[] oldBuf;
+			}
+			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
+			df.close();
+			_hdDebugLog.clear();
+		}
 		return;
 	}
 
@@ -1991,6 +2014,50 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	}
+	// Step 2.8b: Composite HD inventory item icons at verb positions.
+	// Inventory items are drawn by drawVerbBitmap but no longer scaled HD→SD.
+	// Instead, the original SD verb images show in the 8-bit composite, and we
+	// overlay the HD versions here at the correct HD positions.
+	{
+		int step28b_drawn = 0;
+		for (int vi = 0; vi < _numVerbs; vi++) {
+			VerbSlot *vst = &_verbs[vi];
+			if (!vst->hd_obj_nr || vst->hd_obj_nr == 114) // skip bg (handled by 2.8)
+				continue;
+			int hdRoom = vst->hd_room;
+			// Try current room first, then fall back to alternate room
+			if (!_hdObjectManager->hasObject(vst->hd_obj_nr, hdRoom, 0)) {
+				int altRoom = _hdObjectManager->findObjectRoom(vst->hd_obj_nr);
+				if (altRoom < 0 || !_hdObjectManager->hasObject(vst->hd_obj_nr, altRoom, 0))
+					continue;
+				hdRoom = altRoom;
+			}
+			Graphics::Surface hdItemSurf;
+			if (!_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdItemSurf))
+				continue;
+			// Scale verb SD position to HD
+			int64 hdX = (int64)vst->curRect.left * hdW / MAX(1, _screenWidth);
+			int64 hdY = (int64)vst->curRect.top * hdH / MAX(1, _screenHeight);
+			int maxW = MIN<int>(hdItemSurf.w, (int)(hdW - hdX));
+			int maxH = MIN<int>(hdItemSurf.h, (int)(hdH - hdY));
+			for (int oy = 0; oy < maxH; oy++) {
+				uint32 *srcRow = (uint32 *)hdItemSurf.getBasePtr(0, oy);
+				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+				for (int ox = 0; ox < maxW; ox++) {
+					uint32 pix = srcRow[ox];
+					if ((pix >> 24) >= 128)
+						dstRow[ox] = pix;
+				}
+			}
+			hdItemSurf.free();
+			step28b_drawn++;
+		}
+		if (_hdFrameCount % 30 == 0 && step28b_drawn > 0)
+			hdPrintf("step2.8b verb-items: drawn=%d", step28b_drawn);
+	}
+
+	// Step 2.9: (reserved — currently unused)
+
 	// drawVerbBitmap may have set it before the background was ready, or it may
 	// have been set in a previous frame when the inventory was open.
 	if (_hdVerbSurfaceValid) {

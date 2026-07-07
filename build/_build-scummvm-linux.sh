@@ -32,6 +32,28 @@ else
     exit 1
 fi
 
+# ── Build libpng + zlib natively (if not already) ────────
+NATIVE_PREFIX="$INSTALL_DIR/native-prefix"
+if [ ! -f "$NATIVE_PREFIX/lib/libpng16.a" ] || [ ! -f "$NATIVE_PREFIX/lib/libz.a" ]; then
+    info "Building zlib natively..."
+    cd "$DEPS_DIR/zlib-1.3.1"
+    CC=gcc CXX=g++ ./configure --prefix="$NATIVE_PREFIX" --static 2>&1 | tail -3
+    make -j$(ncores) 2>&1 | tail -3
+    make install 2>&1 | tail -3
+
+    info "Building libpng natively..."
+    cd "$DEPS_DIR/libpng-1.6.44"
+    CC=gcc CXX=g++ LDFLAGS="-L$NATIVE_PREFIX/lib" CPPFLAGS="-I$NATIVE_PREFIX/include" \
+        ./configure --prefix="$NATIVE_PREFIX" --enable-static --disable-shared 2>&1 | tail -3
+    make -j$(ncores) 2>&1 | tail -3
+    make install 2>&1 | tail -3
+
+    ok "libpng + zlib built natively"
+fi
+export CPPFLAGS="-I$NATIVE_PREFIX/include"
+export LDFLAGS="-L$NATIVE_PREFIX/lib"
+export PKG_CONFIG_PATH="$NATIVE_PREFIX/lib/pkgconfig"
+
 # Create build directory in fork
 BUILD_DIR_LINUX="$FORK_DIR/build-linux"
 mkdir -p "$BUILD_DIR_LINUX"
@@ -48,6 +70,8 @@ if [ ! -f "config.mk" ]; then
         --disable-all-engines \
         --enable-engine=scumm \
         --enable-engine=scumm_7_8 \
+        --with-png-prefix="$NATIVE_PREFIX" \
+        --with-zlib-prefix="$NATIVE_PREFIX" \
         2>&1 | tail -5
 
     # Verify scumm_7_8 is enabled
@@ -59,6 +83,21 @@ if [ ! -f "config.mk" ]; then
     ok "ScummVM configured for Linux"
 else
     info "Already configured — reusing config.mk"
+    # Verify PNG support is enabled (reconfigure if not)
+    if ! grep -q "USE_PNG = 1" config.mk 2>/dev/null; then
+        info "PNG support not enabled — reconfiguring..."
+        rm -f config.mk config.h config.log
+        "$FORK_DIR/configure" \
+            --opengl-mode=gl \
+            --enable-verbose-build \
+            --disable-nasm \
+            --disable-all-engines \
+            --enable-engine=scumm \
+            --enable-engine=scumm_7_8 \
+            --with-png-prefix="$NATIVE_PREFIX" \
+            --with-zlib-prefix="$NATIVE_PREFIX" \
+            2>&1 | tail -5
+    fi
 fi
 
 info "Building ScummVM (Linux)..."
