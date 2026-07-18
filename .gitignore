@@ -14,14 +14,14 @@ CMI UPSCALED/demo_stage/
 CMI UPSCALED/repackaged/
 
 # Third-party tool source
-nutcracker/
+# NUTcracker (custom fork with AKOS decoder — tracked in tools/nutcracker/)
+# nutcracker-Windows_X64/ is a pre-built binary, not tracked
 nutcracker-Windows_X64/
-MMUCS/
-scummvm-tools/
-scummeditor/
 
-# Downloaded binary tools
-tools/
+# Third-party tools (binaries, not source)
+tools/nutcracker-Windows_X64/
+tools/realesrgan-ncnn-vulkan/
+scummeditor/
 
 # Old planning / session artifacts
 initial_prompt.txt
