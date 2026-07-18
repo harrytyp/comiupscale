@@ -7,123 +7,177 @@
 
 ## Overview
 
-COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts) from an `hd/` directory and scales coordinates at runtime — no original game file patching required.
+COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts, videos) from an `hd/` directory and scales coordinates at runtime — no original game file patching required.
 
 ### Features
 - ⚡ **4x HD** (2560×1920) — AI-upscaled textures via RealESRGAN
 - 🎭 **25,303 costume frames** — HD characters in full detail
 - 🖼️ **81 HD backgrounds** — every room upscaled
-- 🎬 **15 HD videos** — AI-upscaled cutscenes
+- 🎬 **15 HD videos** — AI-upscaled cutscenes (optional)
 - 🔧 **No patching** — original game files remain untouched
 
 ---
 
-## Prerequisites
+## Quick Start
 
-You need a **legal copy of "The Curse of Monkey Island"** to play. The original game files (`COMI.LA0`, `COMI.LA1`, `COMI.LA2`, `RESOURCE/`) are **not included** in this release.
+### 1. Get the Game
+
+You need a **legal copy of "The Curse of Monkey Island"**.
 
 | Source | Link | Price |
 |--------|------|:-----:|
 | **Steam** | https://store.steampowered.com/app/730820/ | ~€5 |
 | **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | ~€5, DRM-free |
 
-## Downloads
+Copy the game data into the `game/` subdirectory. You need these files:
+- `COMI.LA0`, `COMI.LA1`, `COMI.LA2`, `RESOURCE/`
 
-This release contains the **ScummVM fork** and **HD texture packs** — no game data.
+### 2. Get the HD Assets
 
-👉 **[Download the latest release](https://github.com/harrytyp/comiupscale/releases/latest)**
+Download the HD texture packs from the [COMI-HD Release on Archive.org](https://archive.org/details/...) (link pending — assets are being prepared for upload).
 
-| File | Contents |
-|------|----------|
-| `comi_hd_build.zip` | ScummVM fork (`scummvm.exe`, `SDL2.dll`, `zlib1.dll`), launcher scripts, config |
-| `hd_assets_part1–6.zip` | HD textures (6 parts, ~8.8 GB total) — extract all into `hd/` |
+Extract the `hd/` directory next to `game/`:
+```
+your-game-folder/
+├── game/          ← your COMI game data
+├── hd/            ← HD textures (backgrounds, objects, costumes, fonts)
+├── scummvm.exe    ← this fork
+├── SDL2.dll       ← Windows only
+├── scummvm.ini    ← preconfigured
+└── start_comi_hd.bat
+```
 
-→ Download all 6 HD part ZIPs and extract into the same directory (next to `game/hd/`).
+### 3. Run
+
+**Windows:** Double-click `start_comi_hd.bat`
+**Linux:** `./start_comi_hd.sh`
+
+First launch shows the difficulty selection screen. Select a difficulty and the game starts with HD textures.
 
 ---
 
-## Installation
+## Downloads
 
-### Windows
-1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-2. Extract `comi_hd_build.zip` → your game folder
-3. Download & extract all 6 `hd_assets_part*.zip` → same folder's `hd/`
-4. Copy your COMI game data into the `game/` subdirectory
-5. Run `start_comi_hd.bat`
+### GitHub Releases
+Pre-built binaries are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases). Each release contains:
 
-### Linux
-1. Buy & install COMI from [Steam](https://store.steampowered.com/app/730820/) or [GOG](https://www.gog.com/en/game/the_curse_of_monkey_island)
-2. Extract `comi_hd_build.zip` → your game folder
-3. Download & extract all 6 `hd_assets_part*.zip` → same folder's `hd/`
-4. Copy your COMI game data into the `game/` subdirectory
-5. `chmod +x scummvm start_comi_hd.sh`
-6. Run `./start_comi_hd.sh`
+| File | Contents |
+|------|----------|
+| `scummvm.exe` | Windows binary (minimal — no SDL2.dll included) |
+
+> **Note:** The Windows release only includes the `.exe`. You also need `SDL2.dll` (with audio support) and the config files. These are in the repo under [`release/windows/`](release/windows/):
+> - `SDL2.dll` — must be built with audio support (see [Building SDL2](#building-sdl2))
+> - `scummvm.ini` — preconfigured for COMI
+> - `start_comi_hd.bat` / `playback_comi_hd.bat` — launcher scripts
+
+### HD Assets
+The HD texture packs (~9 GB) are hosted on Archive.org (link pending). This includes:
+- Backgrounds, objects, costumes, fonts at 4x resolution
+- 25,303 HD costume frames
+- 1,365 HD object textures
+
+### 4K Cutscenes (Optional)
+For 4K upscaled cutscenes (additional ~6 GB):
+📥 https://archive.org/details/COMI_4k
+Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 
 ---
 
 ## Building from Source
 
-The repo includes a **self-contained build system** in `build/` that downloads all dependencies (LLVM MinGW, SDL2, zlib, libpng) from their official sources and builds everything from scratch — no system packages beyond the basic C++ toolchain are needed.
-
-### Quick Start
-
+### Prerequisites
 ```bash
-# Install system build tools (Ubuntu/Debian)
 sudo apt install build-essential cmake pkg-config curl
+```
 
-# Clone the repo
+### Build
+```bash
 git clone https://github.com/harrytyp/comiupscale.git
 cd comiupscale
 
-# Build Windows binary (cross-compile from Linux)
-bash build/build-all.sh windows
-
-# — OR — Build Linux binary
-bash build/build-all.sh linux
-
-# — OR — Build both
+# Build both Linux + Windows binaries
 bash build/build-all.sh
+
+# Or individually:
+bash build/build-all.sh linux    # Linux only
+bash build/build-all.sh windows  # Windows only
 ```
 
-**Build artifacts appear in `build/out/`:**
+**Artifacts appear in `build/out/`:**
 - `build/out/scummvm` — Linux binary
 - `build/out/scummvm.exe` — Windows binary
 
-### What the build system does
+### Building SDL2 (Windows only)
 
-| Step | What | For |
-|------|------|-----|
-| 1 | Downloads LLVM MinGW toolchain | Windows cross-compile |
-| 1 | Downloads SDL2 source | Both |
-| 1 | Downloads zlib + libpng source | Windows cross-compile |
-| 2 | Builds SDL2 from source | Linux native |
-| 3 | Builds SDL2 from source (MinGW) | Windows cross-compile |
-| 4 | Builds zlib + libpng (MinGW) | Windows cross-compile |
-| 5 | Configures + builds ScummVM | Linux + Windows |
-
-All downloaded tarballs go to `build/deps/` and built libraries to `build/install/` — subsequent runs are incremental. To force a clean rebuild:
+The SDL2.dll distributed with releases must be built with audio support:
 
 ```bash
-rm -rf build/deps build/install build/out
-bash build/build-all.sh
+cd build/deps/SDL2-2.30.11
+./configure --host=x86_64-w64-mingw32 \
+    --enable-audio --enable-directsound --enable-wasapi --enable-winmm \
+    --disable-joystick --disable-haptic
+make -j4
+make install
 ```
 
-See [`build/BUILD.md`](build/BUILD.md) for detailed documentation.
+The resulting `SDL2.dll` is at `build/install/sdl2-mingw/bin/SDL2.dll`.
 
 ---
 
-## Documentation
+## Installation (Manual)
 
-| File | Contents |
-|------|----------|
-| [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline — FLOBJs, AKOS, Verb-System, HD-Compositing. Technische Analyse der SCUMM-Engine |
+If you're building from source or downloading a release without the full asset pack:
+
+```
+your-game-folder/
+├── game/              ← your COMI game data
+├── hd/                ← HD textures
+├── scummvm.exe        ← from build/out/ or GitHub Releases
+├── SDL2.dll           ← Windows: built with audio (see above)
+├── zlib1.dll          ← Windows: from MinGW
+├── scummvm.ini        ← from release/windows/scummvm.ini
+├── start_comi_hd.bat  ← from release/windows/
+├── playback_comi_hd.bat
+└── start_comi_hd.sh   ← Linux launcher
+```
+
+The `.bat` files use `pushd` to handle UNC/network paths correctly.
 
 ---
 
-## HD Comparison
+## Controls
 
-![HD Background Room 9](docs/screenshots/hd_background_room9.png)
-*HD Background for Room 9 (2560×1920) — 4x upscale*
+| Key | Action |
+|-----|--------|
+| `F5` | Menu (Save/Load) |
+| `Ctrl` + `F5` | ScummVM Menu |
+| `Ctrl` + `d` | Debug Console |
+| `Alt` + `Enter` | Toggle Fullscreen |
+| `Esc` | Skip/Back |
+| Mouse | Classic Point-and-Click |
+
+---
+
+## Configuration
+
+Key options in `scummvm.ini` under `[comi]`:
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `hd_path` | `hd` | Path to HD textures (relative to game dir) |
+| `path` | `game` | Path to COMI game data |
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| No sound, no video | SDL2.dll built without audio | Rebuild SDL2 with `--enable-audio` |
+| Black screen on startup | Missing game data | Check `game/` has `COMI.LA0` etc. |
+| HD textures not loading | Missing `hd/` directory | Download HD asset pack |
+| Persistent dark overlay at top | Old build | Update to latest (includes inventory fix) |
+| High GPU usage | No frame limiter in old builds | Update to latest (has ~30fps cap) |
 
 ---
 
@@ -142,84 +196,30 @@ See [`build/BUILD.md`](build/BUILD.md) for detailed documentation.
 - **Costumes:** AKOS → PNG frames → 4x upscale → PNG
 - **Videos:** HNM → MP4 → 4x upscale (Topaz) → MP4
 
----
-
-## Changelog
-
-### Current
-- ✅ scumm_7_8 engine enabled
-- ✅ Room-warp debug feature removed
-- ✅ Relative game path in `start_comi_hd.bat`
-- ✅ SDL2.dll + zlib1.dll included
-
-### v1.0.1
-- HD asset pipeline stabilized
-- Costume rendering optimized
-
-### v1.0.0
-- Initial release with HD backgrounds
-- Basic costume support
+### Known Issues
+- **Inventory FLOBJ positioning:** Inventory HD textures all render at (0,0) because V8 uses a draw queue for positioning, not object coordinates. Items are visible but at the wrong position.
+- **SMUSH video skip:** Fixed in latest build — `_hdDebugDumpCount` no longer affects the SMUSH player.
 
 ---
 
 ## Acknowledgments
 
-This project builds on the work of many people in the SCUMM modding community:
-
-### Tools & Libraries
-- **ScummVM Team** — The amazing engine that makes all this possible. [scummvm.org](https://www.scummvm.org/)
-- **NUTcracker** ([BLooperZ](https://github.com/BLooperZ/nutcracker) / pycd02) — Asset extraction toolkit for SCUMM games. The AKOS costume decoder was added specifically for COMI upscaling.
-- **RealESRGAN** ([xinntao](https://github.com/xinntao/Real-ESRGAN)) — AI upscaling model (`x4plus_anime_6B`) used for all backgrounds, objects, and costumes.
-- **MMUCS** ([haywirephoenix](https://github.com/haywirephoenix/MMUCS)) — Godot-powered SCUMM V8 content explorer. Groundbreaking work on COMI modding and AKOS rendering.
-
-### Research & Predecessors
-- **Happy-Ferret (Mark Bauermeister)** — Pioneering work on a ScummVM v6 HD fork with external texture loading. [patreon.com/HappyFerret](https://patreon.com/HappyFerret)
-- **Laserschwert** — Early ESRGAN upscales of COMI assets (2020). MixnMojo veteran.
-- **haywirephoenix** — Requested and tested AKOS support in NUTcracker, created ScummRev (AKOS viewer predecessor), built MMUCS.
-- **ubertrout** — 4K Topaz Video upscale of all COMI cutscenes. [archive.org/details/COMI_4k](https://archive.org/details/COMI_4k)
-
-### HD Assets
-- **Original Game:** © LucasArts / Disney (1998). Game data not included.
-- **4K Videos:** Upscaled by ubertrout using Topaz Video AI. Available at the link above.
+| Person/Project | For | Link |
+|----------------|-----|:----:|
+| **ScummVM Team** | The engine that makes this possible | [scummvm.org](https://www.scummvm.org/) |
+| **NUTcracker (BLooperZ / pycd02)** | Asset extraction toolkit (AKOS decoder) | [GitHub](https://github.com/BLooperZ/nutcracker) |
+| **RealESRGAN (xinntao)** | AI upscaling model (x4plus_anime_6B) | [GitHub](https://github.com/xinntao/Real-ESRGAN) |
+| **MMUCS (haywirephoenix)** | Godot-powered SCUMM V8 content explorer | [GitHub](https://github.com/haywirephoenix/MMUCS) |
+| **Happy-Ferret (Mark Bauermeister)** | Pioneering ScummVM v6 HD fork | [Patreon](https://patreon.com/HappyFerret) |
+| **Laserschwert** | Early ESRGAN upscales (2020) | MixnMojo |
+| **ubertrout** | 4K Topaz Video upscale of all COMI cutscenes | [Archive](https://archive.org/details/COMI_4k) |
 
 ---
+
+## License
+
+- **ScummVM fork:** GPL v2 — https://www.scummvm.org/
+- **Documentation:** MIT License
+- **Game Data:** © LucasArts / Disney — not included
 
 *COMI-HD is a fan project. Not affiliated with LucasArts, Disney, or ScummVM.*
-
----
-
-## Legal
-
-### Disclaimer & Legal Analysis
-
-This project is provided for **educational and archival purposes only**. We believe it falls within the boundaries of fair use / fair dealing, but we are not lawyers — this is not legal advice.
-
-#### What this project IS:
-- ✅ A **modified version of ScummVM** (GPL v2 licensed) that loads external HD textures
-- ✅ **AI-upscaled textures** created by running artwork through RealESRGAN — a transformative process that produces new, higher-resolution image data
-- ✅ **Configuration files** and **launcher scripts** to make everything work together
-
-#### What this project does NOT distribute:
-- ❌ **No original game code** from "The Curse of Monkey Island" (© LucasArts / Disney)
-- ❌ **No original game assets** — no .LA0, .LA1, .LA2 files, no original room data
-- ❌ **No ROMs, ISOs, or disk images**
-- ❌ **No decryption keys or copy protection circumvention**
-
-#### The User Must Provide:
-The user must own a legitimate copy of "The Curse of Monkey Island" and extract the game data files themselves. This can be purchased from:
-- [Steam](https://store.steampowered.com/app/730820/)
-- [GOG.com](https://www.gog.com/en/game/the_curse_of_monkey_island)
-- The original CD release
-
-#### Trademarks
-
-"Curse of Monkey Island", "Monkey Island", "LucasArts", and "Disney" are registered trademarks of their respective owners. This project is not endorsed by or affiliated with Disney, LucasArts, or any of their subsidiaries. All trademarks and copyrights are property of their respective holders.
-
-#### License
-
-- **ScummVM fork:** GPL v2 — [https://www.scummvm.org/](https://www.scummvm.org/)
-- **Documentation:** MIT License
-
----
-
-*This project is a labor of love by fans, for fans. We respect the rights of copyright holders and will comply with legitimate requests.*
