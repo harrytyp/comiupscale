@@ -19,6 +19,9 @@
  *
  */
 
+// We need raw fopen/fwrite for HD debug log (append mode)
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "common/system.h"
 #include "scumm/actor.h"
 #include "common/translation.h"
@@ -31,6 +34,7 @@
 #include "scumm/scumm_v0.h"
 #include "scumm/scumm_v5.h"
 #include "scumm/scumm_v6.h"
+#include "scumm/scumm_v7.h"
 #include "scumm/usage_bits.h"
 #include "scumm/hd_asset_manager.h"
 #include "scumm/hd_costume_manager.h"
@@ -41,6 +45,8 @@
 #include "scumm/he/wiz_he.h"
 #include "image/png.h"
 #include "scumm/util.h"
+#include <cstdlib>
+#include <cmath>
 
 #ifdef USE_ARM_GFX_ASM
 
@@ -1252,64 +1258,7 @@ void ScummEngine::renderHDComposite() {
 			(int)_hdFontChars.size());
 	}
 
-	// If no HD background for this room, scale 8-bit content to HD
-	if (!_hdBackgroundSurface.getPixels()) {
-		hdW = _screenWidth * _hdScale;
-		hdH = _screenHeight * _hdScale;
-		Graphics::PixelFormat rgbaFmt(4, 8, 8, 8, 8, 0, 8, 16, 24);
-		if (!_hdComposite.getPixels() || _hdComposite.w != hdW || _hdComposite.h != hdH) {
-			_hdComposite.free();
-			_hdComposite.create(hdW, hdH, rgbaFmt);
-		}
-		for (int dy = 0; dy < hdH; dy++) {
-			int sy = dy * _screenHeight / hdH;
-			sy = CLIP(sy, 0, _screenHeight - 1);
-			uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, dy);
-			for (int dx = 0; dx < hdW; dx++) {
-				int sx = dx * _screenWidth / hdW;
-				sx = CLIP(sx, 0, _screenWidth - 1);
-				uint8 p = *(const uint8 *)vs->getBasePtr(sx, sy);
-				uint8 r = _currentPalette[p * 3 + 0];
-				uint8 g = _currentPalette[p * 3 + 1];
-				uint8 b = _currentPalette[p * 3 + 2];
-				dstRow[dx] = r | (g << 8) | (b << 16) | (0xFF << 24);
-			}
-		}
-		_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch, 0, 0, MIN(hdW, (int)_system->getWidth()), MIN(hdH, (int)_system->getHeight()));
-		// Trigger dump even without HD background
-		_hdFrameCount++;
-		if (_hdDebugDumpCount > 0) {
-			if (_hdFrameCount == _hdDebugDumpCount || 
-			    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
-				hdDebugDump();
-				_hdDebugDumpCount = 30; // periodic
-			}
-		}
-		// Flush HD debug log even without HD background
-		if (!_hdDebugLog.empty()) {
-			byte *oldBuf = nullptr;
-			uint32 oldSize = 0;
-			{
-				Common::File rf;
-				if (rf.open("hd_state.log") && rf.size() < 4194304) {
-					oldSize = (uint32)rf.size();
-					oldBuf = new byte[oldSize + 1];
-					rf.read(oldBuf, oldSize);
-					rf.close();
-				}
-			}
-			Common::DumpFile df;
-			df.open(Common::Path("hd_state.log"));
-			if (oldBuf) {
-				df.write(oldBuf, oldSize);
-				delete[] oldBuf;
-			}
-			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
-			df.close();
-			_hdDebugLog.clear();
-		}
-		return;
-	}
+	// HD background is guaranteed by caller (gfx.cpp:557), no early-return needed.
 
 	hdW = _hdBackgroundSurface.w;
 	hdH = _hdBackgroundSurface.h;
@@ -1331,22 +1280,22 @@ void ScummEngine::renderHDComposite() {
 
 	// Step 1: Copy HD background to composite surface (RGB→RGBA)
 	// PNG decoder returns 3-bpp RGB; composite uses 4-bpp RGBA.
+	// Fast path: for 4-bpp sources, just memcpy (no pixel conversion needed)
 	for (int y = 0; y < _hdBackgroundSurface.h && y < _hdComposite.h; y++) {
 		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(0, y);
 		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
 		int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
-		for (int x = 0; x < _hdBackgroundSurface.w && x < _hdComposite.w; x++) {
-			uint8 r, g, b;
-			if (bgBpp == 4) {
-				r = src[x * 4 + 0];
-				g = src[x * 4 + 1];
-				b = src[x * 4 + 2];
-			} else {
-				r = src[x * 3 + 0];
-				g = src[x * 3 + 1];
-				b = src[x * 3 + 2];
+		if (bgBpp == 4) {
+			// Fast path: RGBA → RGBA (no conversion needed)
+			memcpy(dst, src, _hdBackgroundSurface.w * 4);
+		} else {
+			// Slow path: 24-bit RGB → 32-bit RGBA (pixel-by-pixel)
+			for (int x = 0; x < _hdBackgroundSurface.w && x < _hdComposite.w; x++) {
+				uint8 r = src[x * 3 + 0];
+				uint8 g = src[x * 3 + 1];
+				uint8 b = src[x * 3 + 2];
+				dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
 			}
-			dst[x] = r | (g << 8) | (b << 16) | (0xFF << 24);
 		}
 	}
 
@@ -1355,12 +1304,21 @@ void ScummEngine::renderHDComposite() {
 
 	int step2_fgPixels = 0;
 	int step2_invFg = 0, step2_invTotal = 0;
+
+	// Precompute lookup tables to avoid per-pixel integer division
+	int *sxLookup = new int[hdW];
+	for (int dx = 0; dx < hdW; dx++)
+		sxLookup[dx] = dx * visW / hdW;
+	int *syLookup = new int[hdH];
+	for (int dy = 0; dy < hdH; dy++)
+		syLookup[dy] = dy * visH / hdH;
+
 	for (int dy = 0; dy < hdH; dy++) {
-		int sy = dy * visH / hdH;
+		int sy = syLookup[dy];
 		sy = CLIP(sy, 0, visH - 1);
 
 		for (int dx = 0; dx < hdW; dx++) {
-			int sx = dx * visW / hdW;
+			int sx = sxLookup[dx];
 			sx = CLIP(sx, 0, visW - 1);
 
 			uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
@@ -1399,6 +1357,9 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	}
+	delete[] sxLookup;
+	delete[] syLookup;
+
 	if (_hdFrameCount % 30 == 0)
 		hdPrintf("step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
 			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
@@ -1528,8 +1489,12 @@ void ScummEngine::renderHDComposite() {
 			}
 
 			Graphics::Surface hdObjSurf;
-			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf))
+			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf)) {
+				hdPrintf("MISS obj=%d(%s) room=%d state=%d fl=%d — loadObject failed",
+					od.obj_nr, _hdObjectManager->getObjectName(od.obj_nr).c_str(),
+					objRoom, objState, od.fl_object_index);
 				continue;
+			}
 
 			// Skip full-HD textures (pre-composited layer files).
 			// Layer files are the exact size of the HD canvas and
@@ -1617,6 +1582,9 @@ void ScummEngine::renderHDComposite() {
 				// 15-20% foreground pixels even with inventory closed.
 				// Use a higher threshold (50% of area) for these,
 				// AND gate on inventory activity signal.
+				// NOTE: obj=114 (inventory-bg-object) was previously special-cased
+				// to always render, causing a persistent HD inventory overlay even
+				// when the inventory was closed. Now it follows the same logic.
 				if (od.fl_object_index != 0 && sw * sh >= visW * visH / 2) {
 					threshold = MAX(threshold, sw * sh / 2); // 50% of area for full-screen objects
 					// When inventory is NOT active, use stricter threshold
@@ -1631,7 +1599,7 @@ void ScummEngine::renderHDComposite() {
 						int fli = od.fl_object_index;
 						if (fli >= 0 && fli < 8 && flCullState[fli] != 0) {
 							flCullState[fli] = 0;
-							hdPrintf("@%d CULL obj=%d fl=%d visible=%d invActive=%d", _hdFrameCount, od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
+							hdPrintf("CULL obj=%d fl=%d visible=%d invActive=%d", od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
 						}
 					}
 					hdObjSurf.free();
@@ -1641,7 +1609,7 @@ void ScummEngine::renderHDComposite() {
 					int fli = od.fl_object_index;
 					if (fli >= 0 && fli < 8 && flCullState[fli] != 1) {
 						flCullState[fli] = 1;
-						hdPrintf("@%d RENDER obj=%d fl=%d visible=%d invActive=%d", _hdFrameCount, od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
+						hdPrintf("RENDER obj=%d fl=%d visible=%d invActive=%d", od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
 					}
 				}
 			}
@@ -1674,6 +1642,45 @@ void ScummEngine::renderHDComposite() {
 					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
 						hdAlphaMask[maskY * hdW + maskX] = 1;
 				}
+			}
+
+			// ── VERIFY Block ──────────────────────────────────────
+			// In-memory pixel verification: is the loaded texture HD, right size,
+			// and positioned correctly? Uses three checks instead of vision models.
+			{
+				const char *vname = _hdObjectManager->getObjectName(od.obj_nr).c_str();
+				int srcW = (int)hdObjSurf.w, srcH = (int)hdObjSurf.h;
+				int expW = od.width * _hdScale, expH = od.height * _hdScale;
+
+				// 1. SIZE: does texture size match expected (±4px tolerance)?
+				bool sizeOK = (abs(srcW - expW) <= 4 && abs(srcH - expH) <= 4);
+
+				// 2. IS_HD: unique color count → >256 colors = real HD texture
+				Common::HashMap<uint32, bool> seen;
+				int step = MAX(1, (srcW * srcH) / 5000);
+				for (int sy = 0; sy < srcH; sy += step)
+					for (int sx = 0; sx < srcW; sx += step) {
+						uint32 px = *(uint32*)hdObjSurf.getBasePtr(sx, sy);
+						if (((px >> 24) & 0xFF) >= 128) seen.setVal(px & 0x00FFFFFF, true);
+					}
+				bool isHD = seen.size() > 256;
+
+				// 3. POSITION: sample opaque source pixels, check they landed in composite
+				int matches = 0, checks = 0;
+				for (int i = 0; i < 40 && checks < 20; i++) {
+					int sx = _rnd.getRandomNumber(srcW - 1), sy = _rnd.getRandomNumber(srcH - 1);
+					uint32 srcPx = *(uint32*)hdObjSurf.getBasePtr(sx, sy);
+					if (((srcPx >> 24) & 0xFF) < 128) continue;
+					int dx = (int)hdX + sx, dy = (int)hdY + sy;
+					if (dx < 0 || dx >= hdW || dy < 0 || dy >= hdH) { checks++; continue; }
+					uint32 cmpPx = *(uint32*)_hdComposite.getBasePtr(dx, dy);
+					if ((srcPx & 0x00FFFFFF) == (cmpPx & 0x00FFFFFF)) matches++;
+					checks++;
+				}
+				bool posOK = (matches > 0);
+
+				hdPrintf("VERIFY obj=%d(%s) src=%dx%d exp=%dx%d sizeOK=%d isHD=%d colors=%d posOK=%d matches=%d/%d",
+					od.obj_nr, vname, srcW, srcH, expW, expH, sizeOK, isHD, (int)seen.size(), posOK, matches, checks);
 			}
 
 			hdObjSurf.free();
@@ -2078,41 +2085,25 @@ void ScummEngine::renderHDComposite() {
 			                          0, 0, copyW, copyH);
 	}
 
-	// HD debug dump — trigger dump at configured room/frame
+	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
 	_hdFrameCount++;
-	if (_hdDebugDumpCount > 0) {
-		if (_hdFrameCount == _hdDebugDumpCount || 
-		    (_hdFrameCount > 10 && _currentRoom == _hdDebugDumpCount)) {
+	if (_hdDebugDumpCount >= 3) {
+		if (_hdFrameCount > 10) {
 			hdDebugDump();
-			_hdDebugDumpCount = 30; // periodic
 		}
 	}
 	
 	// ── HD Debug Log: flush buffer to file every frame ──
 	// Buffer accumulates ALL hdPrintf calls during the frame.
-	// Written to disk at end of frame via read-modify-write (append).
+	// Written to disk at end of frame via raw fopen append.
 	// No frame wait, no size limit — EVERY event is captured.
 	{
 		if (!_hdDebugLog.empty()) {
-			byte *oldBuf = nullptr;
-			uint32 oldSize = 0;
-			{
-				Common::File rf;
-				if (rf.open("hd_state.log") && rf.size() < 4194304) {
-					oldSize = (uint32)rf.size();
-					oldBuf = new byte[oldSize + 1];
-					rf.read(oldBuf, oldSize);
-					rf.close();
-				}
+			FILE *logFile = fopen("hd_state.log", "a");
+			if (logFile) {
+				fwrite(_hdDebugLog.c_str(), 1, _hdDebugLog.size(), logFile);
+				fclose(logFile);
 			}
-			Common::DumpFile df;
-			df.open(Common::Path("hd_state.log"));
-			if (oldBuf) {
-				df.write(oldBuf, oldSize);
-				delete[] oldBuf;
-			}
-			df.write(_hdDebugLog.c_str(), _hdDebugLog.size());
-			df.close();
 			_hdDebugLog.clear();
 		}
 	}
@@ -2126,17 +2117,19 @@ void ScummEngine::hdAppendDebugLog(const char *msg, int len) {
 
 void ScummEngine::hdPrintf(const char* fmt, ...) {
 	char buf[512];
+	int prefix = snprintf(buf, sizeof(buf), "F=%d ", _hdFrameCount);
 	va_list args;
 	va_start(args, fmt);
-	int n = vsnprintf(buf, sizeof(buf) - 1, fmt, args);
+	int n = vsnprintf(buf + prefix, sizeof(buf) - prefix - 1, fmt, args);
 	va_end(args);
 	if (n > 0) {
-		buf[n] = '\n';
-		hdAppendDebugLog(buf, n + 1);
+		buf[prefix + n] = '\n';
+		hdAppendDebugLog(buf, prefix + n + 1);
 	}
 }
 
 void ScummEngine::hdDebugDump() {
+	return; // DISABLED: was writing ~60MB per frame — no-op to stop I/O
 	Common::DumpFile df;
 	char path[256];
 
@@ -2144,8 +2137,18 @@ void ScummEngine::hdDebugDump() {
 	Common::String dumpDir;
 	if (_hdAssetManager->isEnabled()) {
 		Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
-		Common::FSNode project = hdNode.getParent().getParent();
-		dumpDir = project.getPath().toString('/');
+		// Use Common::Path for safe string-based directory traversal instead of
+		// FSNode::getParent(), which can assert on empty paths at Windows UNC
+		// share roots (e.g. \\server\share). On such paths, getParent().getParent()
+		// walks past the share root and produces an empty path.
+		Common::Path hdNodePath = hdNode.getPath();
+		Common::Path parentPath = hdNodePath.getParent();
+		Common::Path grandparentPath = parentPath.getParent();
+		dumpDir = grandparentPath.toString('/');
+		if (dumpDir.empty()) {
+			// Cannot resolve project root (UNC path too short); use hd_path directly
+			dumpDir = _hdAssetManager->getHDPath();
+		}
 		while (dumpDir.size() > 0 && (dumpDir.lastChar() == '/' || dumpDir.lastChar() == '\\'))
 			dumpDir.deleteLastChar();
 		dumpDir += "/logs";
@@ -2341,8 +2344,18 @@ void ScummEngine::hdDumpSDComposite() {
     Common::String dumpDir;
     if (_hdAssetManager->isEnabled()) {
         Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
-        Common::FSNode project = hdNode.getParent().getParent();
-        dumpDir = project.getPath().toString('/');
+        // Use Common::Path for safe string-based directory traversal instead of
+        // FSNode::getParent(), which can assert on empty paths at Windows UNC
+        // share roots (e.g. \\server\share). On such paths, getParent().getParent()
+        // walks past the share root and produces an empty path.
+        Common::Path hdNodePath = hdNode.getPath();
+        Common::Path parentPath = hdNodePath.getParent();
+        Common::Path grandparentPath = parentPath.getParent();
+        dumpDir = grandparentPath.toString('/');
+        if (dumpDir.empty()) {
+            // Cannot resolve project root (UNC path too short); use hd_path directly
+            dumpDir = _hdAssetManager->getHDPath();
+        }
         while (dumpDir.size() > 0 && (dumpDir.lastChar() == '/' || dumpDir.lastChar() == '\\'))
             dumpDir.deleteLastChar();
         dumpDir += "/logs";

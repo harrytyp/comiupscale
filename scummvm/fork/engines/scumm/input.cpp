@@ -168,9 +168,9 @@ void ScummEngine::parseEvent(Common::Event event) {
 		}
 		// HD debug: log keyboard events
 		if (event.kbd.ascii >= 32 && event.kbd.ascii < 127)
-			hdPrintf("@%d KEY '%c' (0x%x)", _hdFrameCount, (char)event.kbd.ascii, event.kbd.keycode);
+			hdPrintf("KEY '%c' (0x%x)", (char)event.kbd.ascii, event.kbd.keycode);
 		else
-			hdPrintf("@%d KEY 0x%x", _hdFrameCount, event.kbd.keycode);
+			hdPrintf("KEY 0x%x", event.kbd.keycode);
 
 		// HACK: Because we use ASCII values here, it's necessary to
 		// remap keypad keys to always have a corresponding ASCII value.
@@ -247,9 +247,9 @@ void ScummEngine::parseEvent(Common::Event event) {
 				}
 				// HD debug: log mouse events
 				if (event.type == Common::EVENT_LBUTTONDOWN)
-					hdPrintf("@%d MOUSE LCLICK pos=(%d,%d)", _hdFrameCount, _mouse.x, _mouse.y);
+					hdPrintf("MOUSE LCLICK pos=(%d,%d)", _mouse.x, _mouse.y);
 				else if (event.type == Common::EVENT_RBUTTONDOWN)
-					hdPrintf("@%d MOUSE RCLICK pos=(%d,%d)", _hdFrameCount, _mouse.x, _mouse.y);
+					hdPrintf("MOUSE RCLICK pos=(%d,%d)", _mouse.x, _mouse.y);
 
 		if (_renderMode == Common::kRenderHercA || _renderMode == Common::kRenderHercG) {
 			_mouse.x -= (kHercWidth - _screenWidth * 2) / 2;

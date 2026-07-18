@@ -1036,8 +1036,7 @@ Common::Error ScummEngine::init() {
 		_hdScale = _hdAssetManager->getScale();
 		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());
 
-		// HD debug: set dump frame (disabled for release)
-		_hdDebugDumpCount = 0;
+		_hdDebugDumpCount = 0; // no auto-injection, user plays normally
 
 		// Preload test pattern (room 0)
 		_hdBackgroundSurface.free();
@@ -2879,6 +2878,14 @@ Common::Error ScummEngine::go() {
 
 			if (VAR_LAST_FRAME_SCUMM_TIME != 0xFF)
 				VAR(VAR_LAST_FRAME_SCUMM_TIME) = _system->getMillis() - _lastWaitTime;
+
+			// HD mode frame limiter: limit to ~30fps to prevent GPU saturation
+			// on fast gaming hardware. _hdScale > 1 means HD rendering is active.
+			if (_hdScale > 1) {
+				uint32 elapsed = _system->getMillis() - _lastWaitTime;
+				if (elapsed < 33)
+					_system->delayMillis(33 - elapsed);
+			}
 		}
 
 		if (shouldQuit()) {
@@ -3098,20 +3105,25 @@ void ScummEngine::scummLoop(int delta) {
 		}
 	}
 
-	// HD DEBUG: auto-start new game from menu (disabled for release)
-	if (false && _hdAssetManager && _hdAssetManager->isEnabled() && _currentRoom == 87) {
+	// HD DEBUG: auto-load save slot — DISABLED, using auto-start instead
+	if (false && _currentRoom == 87 && _hdAssetManager && _hdAssetManager->isEnabled()) {
 		static int menuCount = 0;
 		menuCount++;
-		if (menuCount > 30) {
-			warning("HD DEBUG: Starting new game from menu");
-			startScene(1, nullptr, 0);
-			menuCount = 0;
-		}
+			if (menuCount > 5) {
+				warning("HD DEBUG: Loading save slot 1 (Chapter 2)");
+				_saveLoadFlag = 2;  // 2 = trigger load
+				_saveLoadSlot = 1;  // tentakelvilla save (Chapter 2)
+				menuCount = 0;
+			}
 	}
 	
-	if (delta > 15)
+	// HD DEBUG: inventory events removed — now uses direct _mouseAndKeyboardStat
+	// injection between processInput and checkExecVerbs (see below).
+	if (false && _hdDebugDumpCount > 0) {}
+	
+	if (delta > 15 && _hdScale <= 1)
 		delta = 15;
-
+	
 	decreaseScriptDelay(delta);
 
 	_talkDelay -= delta;
@@ -3158,6 +3170,39 @@ void ScummEngine::scummLoop(int delta) {
 	// Several time-based effects (e.g. shaking) depend on this...
 	if (_game.version != 7 || isFTDOSDemo) {
 		processInput();
+
+		// HD DEBUG: force left-click to start game, then right-click to close inventory
+		if (_game.version == 8 && _hdDebugDumpCount > 0) {
+			static int clickFrame = 0;
+			clickFrame++;
+			// Left-click at frame 50 to dismiss difficulty selection (room 87)
+			// Use _leftBtnPressed directly since room scripts check this, not _mouseAndKeyboardStat
+			// Also force load save slot 1 to skip room 87 entirely
+			if (clickFrame == 50) {
+				_userPut = 120;
+				_leftBtnPressed = 3; // pressed + clicked flags
+				_mouseAndKeyboardStat = MBS_LEFT_CLICK;
+				// Force-load save slot 1 (tentakelvilla save -> room 14)
+				if (ConfMan.hasKey("save_slot")) {
+					requestLoad(ConfMan.getInt("save_slot"));
+					warning("HD DEBUG: requestLoad(%d) from injection", ConfMan.getInt("save_slot"));
+				} else {
+					requestLoad(1);
+					warning("HD DEBUG: requestLoad(1) from injection (default)");
+				}
+				warning("HD DEBUG: Forced LEFT_CLICK for V8 at frame 50 (_userPut=%d _leftBtnPressed=%d)", _userPut, _leftBtnPressed);
+			}
+			// Right-click at frame 150 to close inventory (well after game start + cutscenes)
+			// Also enable dumps from this point on
+			if (clickFrame == 150) {
+				// Force _userPut positive so checkExecVerbs processes the click
+				_userPut = 120;
+				_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
+				// Enable dumps to capture the aftermath
+				_hdDebugDumpCount = 3;
+				warning("HD DEBUG: Forced MBS_RIGHT_CLICK for V8 at frame 150 (_userPut=%d)", _userPut);
+			}
+		}
 
 		// Additionally, v8 runs checkExecVerbs() at the end of processInput()...
 		if (_game.version == 8) {
@@ -3304,6 +3349,20 @@ load_game:
 	// by exactly one frame.
 	if (_game.version == 7 && !isFTDOSDemo) {
 		processInput();
+
+		// HD DEBUG: force right-click to close inventory (after processInput to bypass skipVideo)
+		if (_hdDebugDumpCount > 0) {
+			static int clickFrame = 0;
+			clickFrame++;
+			// Force right-click at frame 310 (well after game startup)
+			// This sets _mouseAndKeyboardStat AFTER processInput() has already run,
+			// so V7 _skipVideo override won't overwrite it.
+			if (clickFrame == 310) {
+				_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
+				warning("HD DEBUG: Forced MBS_RIGHT_CLICK at frame 310 (post-processInput)");
+			}
+		}
+
 		checkExecVerbs();
 	}
 

@@ -61,7 +61,9 @@ AbstractFSNode *POSIXFilesystemFactory::makeCurrentDirectoryFileNode() const {
 }
 
 AbstractFSNode *POSIXFilesystemFactory::makeFileNodePath(const Common::String &path) const {
-	assert(!path.empty());
+	if (path.empty()) {
+		return makeRootFileNode();
+	}
 	return new POSIXFilesystemNode(path);
 }
 #endif

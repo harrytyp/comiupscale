@@ -1,0 +1,6 @@
+COMI HD — Installation
+
+1. Download comi_hd_windows.zip from the NAS
+2. Extract to a local folder on your Windows PC (e.g. C:\Games\COMI-HD\)
+3. Run start_comi_hd.bat
+4. Do NOT run from the network share directly — it will be very slow

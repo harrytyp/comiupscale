@@ -75,7 +75,13 @@ void POSIXFilesystemNode::setFlags() {
 }
 
 POSIXFilesystemNode::POSIXFilesystemNode(const Common::String &p) {
-	assert(p.size() > 0);
+	if (p.empty()) {
+		// Empty path: treat as root instead of crashing
+		_path = "/";
+		_displayName = "/";
+		setFlags();
+		return;
+	}
 
 	// Expand "~/" to the value of the HOME env variable
 	if (p.hasPrefix("~/") || p == "~") {

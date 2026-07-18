@@ -108,8 +108,14 @@ WindowsFilesystemNode::WindowsFilesystemNode(const Common::String &p, const bool
 		TCHAR path[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, path);
 		_path = tcharToChar(path);
+	} else if (p.empty()) {
+		// Empty path: treat as pseudo-root instead of crashing
+		_isDirectory = true;
+		_isValid = false;
+		_path = "";
+		_isPseudoRoot = true;
+		return;
 	} else {
-		assert(p.size() > 0);
 		_path = p;
 	}
 
