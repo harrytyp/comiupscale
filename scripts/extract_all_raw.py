@@ -9,8 +9,11 @@ Usage:
   python extract_all_raw.py /path/to/COMI/ [--outdir ./raw_extracted]
 """
 
-import sys, os, glob
+import sys, os, glob, logging
 from pathlib import Path
+
+# Suppress NUTcracker debug noise
+logging.disable(logging.CRITICAL)
 
 # NUTcracker path — use repo's tools/nutcracker/
 NUT_SRC = Path(__file__).resolve().parent.parent / 'tools'
@@ -63,6 +66,8 @@ def extract_all(game_path, outdir):
         for lflf in get_rooms(t.children()):
             header, palette, room, rmim = read_room_settings(lflf)
             room_id = lflf.attribs.get('gid', 0)
+            if room_id is None:
+                room_id = 0
             room_bg_image = None
 
             # Backgrounds
