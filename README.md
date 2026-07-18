@@ -59,25 +59,19 @@ First launch shows the difficulty selection screen. Select a difficulty and the 
 ## Downloads
 
 ### GitHub Releases
-Pre-built binaries are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases). Each release contains:
+Pre-built binaries are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases).
 
-| File | Contents |
-|------|----------|
-| `scummvm.exe` | Windows binary (minimal — no SDL2.dll included) |
+| Release | Contents |
+|---------|----------|
+| **Binary releases** (`v*.*.*`) | `scummvm.exe` (Windows binary) + `scummvm` (Linux binary) |
+| **Asset releases** (`hd_assets_*`) | HD texture packs (backgrounds, objects, costumes, fonts) — extract into `hd/` |
 
-> **Note:** The Windows release only includes the `.exe`. You also need `SDL2.dll` (with audio support) and the config files. These are in the repo under [`release/windows/`](release/windows/):
+> **Note:** Windows also needs `SDL2.dll` (with audio support) and config files from [`release/windows/`](release/windows/):
 > - `SDL2.dll` — must be built with audio support (see [Building SDL2](#building-sdl2))
-> - `scummvm.ini` — preconfigured for COMI
-> - `start_comi_hd.bat` / `playback_comi_hd.bat` — launcher scripts
-
-### HD Assets
-The HD texture packs (~9 GB) are hosted on Archive.org (link pending). This includes:
-- Backgrounds, objects, costumes, fonts at 4x resolution
-- 25,303 HD costume frames
-- 1,365 HD object textures
+> - `scummvm.ini`, `start_comi_hd.bat`, `playback_comi_hd.bat`
 
 ### 4K Cutscenes (Optional)
-For 4K upscaled cutscenes (additional ~6 GB):
+For 4K upscaled cutscenes by **ubertrout** (additional ~6 GB):
 📥 https://archive.org/details/COMI_4k
 Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 
