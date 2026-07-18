@@ -2,14 +2,22 @@
 """
 Minimal AKOS costume extractor for COMI (SCUMM v8).
 Extracts costume frames as PNG with correct palette colors.
+
+Usage:
+  python scripts/extract_akos.py /path/to/COMI.LA0 [output_dir]
 """
 import struct
 import os
 import zlib
+import sys
 from collections import defaultdict
 
-GAME_DIR = '/opt/data/local/scummvm-build'
-OUTPUT_DIR = '/opt/data/local/scummvm-build/sd_costumes'
+if len(sys.argv) < 2:
+    print("Usage: python extract_akos.py /path/to/COMI.LA0 [output_dir]")
+    sys.exit(1)
+
+GAME_DIR = os.path.dirname(os.path.abspath(sys.argv[1]))
+OUTPUT_DIR = sys.argv[2] if len(sys.argv) > 2 else os.path.join(GAME_DIR, 'extracted_costumes')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 

@@ -12,8 +12,8 @@ Usage:
 import sys, os, glob
 from pathlib import Path
 
-# NUTcracker path
-NUT_SRC = Path(__file__).resolve().parent.parent.parent / 'nutcracker_src'
+# NUTcracker path — use repo's tools/nutcracker/
+NUT_SRC = Path(__file__).resolve().parent.parent / 'tools'
 sys.path.insert(0, str(NUT_SRC))
 
 from nutcracker.sputm.tree import open_game_resource

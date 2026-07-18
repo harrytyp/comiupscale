@@ -94,14 +94,14 @@ Requirements: Python 3 with `numpy` and `Pillow`, plus the custom NUTcracker for
 
 ```bash
 # Install Python dependencies
-pip install numpy Pillow
+pip install numpy Pillow parse deal
 
 # Add the custom NUTcracker to your Python path
 export PYTHONPATH=tools:$PYTHONPATH
 
 # Extract all assets (backgrounds, objects, costumes, fonts)
-python scripts/extract_all_raw.py --game /path/to/COMI --output extracted/
-python scripts/extract_akos.py --game /path/to/COMI --output extracted/
+python scripts/extract_all_raw.py /path/to/COMI --outdir extracted/
+python scripts/extract_akos.py /path/to/COMI/COMI.LA0 extracted/
 ```
 
 > **Note:** This repo includes a **custom NUTcracker fork** at `tools/nutcracker/` with AKOS costume decoder support added specifically for COMI HD. The original NUTcracker does not support AKOS decoding. See [`docs/SCRIPT_INVENTORY.md`](docs/SCRIPT_INVENTORY.md) for details on all extraction scripts.

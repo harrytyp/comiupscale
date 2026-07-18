@@ -28,7 +28,7 @@ import numpy as np
 from PIL import Image
 
 # Add nutcracker to path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / 'nutcracker_src'))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'tools'))
 
 from nutcracker.sputm.tree import open_game_resource
 from nutcracker.sputm.costume.akos import (
