@@ -90,13 +90,18 @@ First launch shows the difficulty selection screen. Select a difficulty and the 
 
 ### B1. Extract Original Assets
 
-Requirements: [NUTcracker](https://github.com/BLooperZ/nutcracker) (Python + binary)
+Requirements: Python 3 with `numpy` and `Pillow`, plus the custom NUTcracker fork (included in this repo at `tools/nutcracker/`).
 
 ```bash
-# Extract all backgrounds, objects, costumes, and fonts from COMI.LA0/1/2
-python scripts/extract_akos.py --game /path/to/COMI --output extracted/
+# Add the custom NUTcracker to your Python path
+export PYTHONPATH=tools:$PYTHONPATH
+
+# Extract all assets (backgrounds, objects, costumes, fonts)
 python scripts/extract_all_raw.py --game /path/to/COMI --output extracted/
+python scripts/extract_akos.py --game /path/to/COMI --output extracted/
 ```
+
+> **Note:** This repo includes a **custom NUTcracker fork** at `tools/nutcracker/` with AKOS costume decoder support added specifically for COMI HD. The original NUTcracker does not support AKOS decoding. See [`docs/SCRIPT_INVENTORY.md`](docs/SCRIPT_INVENTORY.md) for details on all extraction scripts.
 
 See `scripts/full_pipeline.sh` for the full automated extraction pipeline:
 ```bash

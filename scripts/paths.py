@@ -60,7 +60,7 @@ HD_MANIFEST = _path('config', 'hd_manifest.json')
 OBJECT_MAP = _path('config', 'object_map.json')
 
 # ── Tools ──
-NUTCRACKER_SRC = _path('tools', 'nutcracker', 'src')
+NUTCRACKER_SRC = _path('tools', 'nutcracker')
 NUTCRACKER_BIN = _path('tools', 'nutcracker-Windows_X64')
 REALESRGAN_DIR = _path('tools',
                         'realesrgan-ncnn-vulkan-v0.2.0-windows')
