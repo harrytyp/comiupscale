@@ -18,7 +18,19 @@ COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM 
 
 ---
 
-## Quick Start
+## Choose Your Path
+
+There are two ways to get COMI-HD running — pick the one that suits you:
+
+### 🚀 Path A: Quick Start (Pre-built)
+Download everything — game files from your legal copy, HD assets from GitHub, binaries from releases.
+
+### 🛠️ Path B: Build Everything Yourself
+Extract original assets, upscale with RealESRGAN, build the ScummVM fork from source — full control.
+
+---
+
+## Path A: Quick Start — Download & Play
 
 ### 1. Get the Game
 
@@ -29,118 +41,139 @@ You need a **legal copy of "The Curse of Monkey Island"**.
 | **Steam** | https://store.steampowered.com/app/730820/ | ~€5 |
 | **GOG** | https://www.gog.com/en/game/the_curse_of_monkey_island | ~€5, DRM-free |
 
-Copy the game data into the `game/` subdirectory. You need these files:
+Copy these files into a `game/` folder:
 - `COMI.LA0`, `COMI.LA1`, `COMI.LA2`, `RESOURCE/`
 
-### 2. Get the HD Assets
+### 2. Download HD Assets
 
-Download the HD texture packs from the [COMI-HD Release on Archive.org](https://archive.org/details/...) (link pending — assets are being prepared for upload).
+**Binary + HD textures from GitHub Releases:**
 
-Extract the `hd/` directory next to `game/`:
+| Release | Link | Contents | Size |
+|---------|------|----------|:----:|
+| **Binary** | [Latest release](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) or `scummvm` (Linux) | ~70 MB |
+| **HD Assets** | [hd_assets_v1.0.3](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.3) | Backgrounds, objects, costumes, fonts (3 ZIP parts) | ~4.8 GB |
+
+**Installation:**
+1. Download the binary for your OS from the latest release
+2. Download all 3 parts from `hd_assets_v1.0.3`
+3. Extract each ZIP into the same folder — they merge into `hd/`
+4. Also grab config files from the repo: [`release/windows/`](release/windows/) — `scummvm.ini`, `start_comi_hd.bat`
+5. **Windows only:** Build `SDL2.dll` with audio (see [Building SDL2](#building-sdl2-for-windows))
+
+**Final folder structure:**
 ```
 your-game-folder/
-├── game/          ← your COMI game data
-├── hd/            ← HD textures (backgrounds, objects, costumes, fonts)
-├── scummvm.exe    ← this fork
-├── SDL2.dll       ← Windows only
-├── scummvm.ini    ← preconfigured
-└── start_comi_hd.bat
+├── game/              ← your COMI game data (COMI.LA0, etc.)
+├── hd/                ← HD textures (from release ZIPs)
+├── scummvm.exe        ← from GitHub Releases
+├── SDL2.dll           ← Windows: built with audio support
+├── zlib1.dll          ← Windows: from MinGW
+├── scummvm.ini        ← from release/windows/
+├── start_comi_hd.bat  ← from release/windows/
+└── playback_comi_hd.bat
 ```
 
-### 3. Run
+### 3. 4K Cutscenes (Optional)
+For 4K upscaled cutscenes by **ubertrout** (~6 GB):
+📥 https://archive.org/details/COMI_4k
+Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 
+### 4. Run
 **Windows:** Double-click `start_comi_hd.bat`
-**Linux:** `./start_comi_hd.sh`
+**Linux:** `chmod +x scummvm && ./start_comi_hd.sh`
 
 First launch shows the difficulty selection screen. Select a difficulty and the game starts with HD textures.
 
 ---
 
-## Downloads
+## Path B: Build Everything Yourself
 
-### GitHub Releases
-Pre-built binaries and HD texture packs are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases).
+### B1. Extract Original Assets
 
-| Release | Contents | Size |
-|---------|----------|:----:|
-| **Binary releases** (`v*.*.*`) | `scummvm.exe` (Windows) + `scummvm` (Linux) | ~70 MB |
-| **HD Assets** (`hd_assets_v1.0.3`) | HD textures: backgrounds, objects, costumes, fonts (3 parts) | ~4.8 GB |
+Requirements: [NUTcracker](https://github.com/BLooperZ/nutcracker) (Python + binary)
 
-**Installation — HD Assets:**
-1. Download all 3 parts from the [HD Assets release](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.3)
-2. Extract each into the same directory — they merge into a single `hd/` folder
-3. Place `hd/` next to your `game/` folder
-
-> **Note:** Windows also needs `SDL2.dll` (with audio support) and config files from [`release/windows/`](release/windows/):
-> - `SDL2.dll` — must be built with audio support (see [Building SDL2](#building-sdl2))
-> - `scummvm.ini`, `start_comi_hd.bat`, `playback_comi_hd.bat`
-
-### 4K Cutscenes (Optional)
-For 4K upscaled cutscenes by **ubertrout** (additional ~6 GB):
-📥 https://archive.org/details/COMI_4k
-Extract into `hd/videos/`. Without these, cutscenes play in original SD.
-
----
-
-## Building from Source
-
-### Prerequisites
 ```bash
-sudo apt install build-essential cmake pkg-config curl
+# Extract all backgrounds, objects, costumes, and fonts from COMI.LA0/1/2
+python scripts/extract_akos.py --game /path/to/COMI --output extracted/
+python scripts/extract_all_raw.py --game /path/to/COMI --output extracted/
 ```
 
-### Build
+See `scripts/full_pipeline.sh` for the full automated extraction pipeline:
 ```bash
-git clone https://github.com/harrytyp/comiupscale.git
-cd comiupscale
+bash scripts/full_pipeline.sh --game /path/to/COMI --skip-upscale --skip-build
+```
+
+Extracted assets (~38,000 PNGs):
+- 40 backgrounds (room images)
+- 600 object textures
+- 234 object layer textures
+- 25,304 costume frames
+- 5 fonts
+- 12,506 cutscene frames
+
+### B2. Upscale with RealESRGAN
+
+Requirements: [RealESRGAN-NCNN-Vulkan](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan)
+
+```bash
+# Batch upscale all extracted assets
+python scripts/batch_upscale_costumes.py --input extracted/ --output hd/ --model realesrgan-x4plus-anime
+
+# Or use the full pipeline with upscaling:
+bash scripts/full_pipeline.sh --game /path/to/COMI --skip-build
+```
+
+The build uses the `realesrgan-x4plus-anime` model (or `realesrgan-x4plus` for photorealism). Each asset is upscaled 4× independently.
+
+### B3. Build the ScummVM Fork
+
+See [`build/BUILD.md`](build/BUILD.md) for the complete build guide.
+
+```bash
+# Prerequisites (Ubuntu/Debian)
+sudo apt install build-essential cmake pkg-config curl
 
 # Build both Linux + Windows binaries
 bash build/build-all.sh
 
-# Or individually:
+# Build individually:
 bash build/build-all.sh linux    # Linux only
-bash build/build-all.sh windows  # Windows only
+bash build/build-all.sh windows  # Windows only (cross-compile from Linux)
 ```
 
 **Artifacts appear in `build/out/`:**
 - `build/out/scummvm` — Linux binary
 - `build/out/scummvm.exe` — Windows binary
 
-### Building SDL2 (Windows only)
+The build system is fully self-contained — it downloads LLVM MinGW, SDL2, zlib, and libpng from source. No system packages beyond build-essential are required.
 
-The SDL2.dll distributed with releases must be built with audio support:
+#### Building SDL2 for Windows
+
+The Windows binary needs `SDL2.dll` with audio support:
 
 ```bash
 cd build/deps/SDL2-2.30.11
 ./configure --host=x86_64-w64-mingw32 \
     --enable-audio --enable-directsound --enable-wasapi --enable-winmm \
     --disable-joystick --disable-haptic
-make -j4
-make install
+make -j4 && make install
 ```
 
-The resulting `SDL2.dll` is at `build/install/sdl2-mingw/bin/SDL2.dll`.
+Result: `build/install/sdl2-mingw/bin/SDL2.dll` (7.4 MB, with directsound/wasapi/winmm)
 
----
-
-## Installation (Manual)
-
-If you're building from source or downloading a release without the full asset pack:
+### B4. Assemble & Play
 
 ```
 your-game-folder/
 ├── game/              ← your COMI game data
-├── hd/                ← HD textures
-├── scummvm.exe        ← from build/out/ or GitHub Releases
-├── SDL2.dll           ← Windows: built with audio (see above)
-├── zlib1.dll          ← Windows: from MinGW
+├── hd/                ← your upscaled HD textures (from step B2)
+├── scummvm.exe        ← from build/out/ (step B3)
+├── SDL2.dll           ← built with audio (step B3)
+├── zlib1.dll          ← from MinGW (build/install/mingw-prefix/bin/)
 ├── scummvm.ini        ← from release/windows/scummvm.ini
 ├── start_comi_hd.bat  ← from release/windows/
-├── playback_comi_hd.bat
-└── start_comi_hd.sh   ← Linux launcher
+└── playback_comi_hd.bat
 ```
-
-The `.bat` files use `pushd` to handle UNC/network paths correctly.
 
 ---
 
@@ -174,7 +207,7 @@ Key options in `scummvm.ini` under `[comi]`:
 |---------|-------|-----|
 | No sound, no video | SDL2.dll built without audio | Rebuild SDL2 with `--enable-audio` |
 | Black screen on startup | Missing game data | Check `game/` has `COMI.LA0` etc. |
-| HD textures not loading | Missing `hd/` directory | Download HD asset pack |
+| HD textures not loading | Missing `hd/` directory | Download or generate HD asset pack |
 | Persistent dark overlay at top | Old build | Update to latest (includes inventory fix) |
 | High GPU usage | No frame limiter in old builds | Update to latest (has ~30fps cap) |
 
@@ -193,11 +226,45 @@ Key options in `scummvm.ini` under `[comi]`:
 - **Upscaling:** RealESRGAN `x4plus_anime_6B` model
 - **Backgrounds:** Original ROOM/IMAG → PNG → 4x upscale → PNG
 - **Costumes:** AKOS → PNG frames → 4x upscale → PNG
+- **Objects:** 600 foreground + 234 layer textures
 - **Videos:** HNM → MP4 → 4x upscale (Topaz) → MP4
 
 ### Known Issues
 - **Inventory FLOBJ positioning:** Inventory HD textures all render at (0,0) because V8 uses a draw queue for positioning, not object coordinates. Items are visible but at the wrong position.
 - **SMUSH video skip:** Fixed in latest build — `_hdDebugDumpCount` no longer affects the SMUSH player.
+
+---
+
+## Repository Structure
+
+```
+comiupscale/
+├── README.md                  ← This file
+├── build/                     ← Build system (self-contained)
+│   ├── BUILD.md               ← Detailed build guide
+│   └── build-all.sh           ← Main build script
+├── release/windows/           ← Config files, launchers
+├── scummvm/fork/              ← Modified ScummVM source
+│   └── engines/scumm/         ← HD rendering engine
+├── scripts/                   ← Extraction, upscaling, testing
+│   ├── full_pipeline.sh       ← End-to-end: extract → upscale → build
+│   ├── extract_akos.py        ← AKOS costume extraction
+│   ├── upscale_esrgan.py      ← RealESRGAN batch upscale
+│   └── ...
+└── docs/                      ← Technical documentation
+```
+
+---
+
+## Documentation Index
+
+| File | Contents |
+|------|----------|
+| [`build/BUILD.md`](build/BUILD.md) | Detailed build guide (prerequisites, steps, troubleshooting) |
+| [`scripts/full_pipeline.sh`](scripts/full_pipeline.sh) | End-to-end automation: extract → upscale → build → play |
+| [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline — FLOBJs, AKOS, Verb-System, HD-Compositing |
+| [`docs/HD_MANIFEST_SPEC.md`](docs/HD_MANIFEST_SPEC.md) | HD manifest format for custom asset mapping |
+| [`setup.sh`](setup.sh) | Quick setup script (downloads binary + assets) |
 
 ---
 
