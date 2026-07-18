@@ -59,12 +59,17 @@ First launch shows the difficulty selection screen. Select a difficulty and the 
 ## Downloads
 
 ### GitHub Releases
-Pre-built binaries are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases).
+Pre-built binaries and HD texture packs are available on the [Releases page](https://github.com/harrytyp/comiupscale/releases).
 
-| Release | Contents |
-|---------|----------|
-| **Binary releases** (`v*.*.*`) | `scummvm.exe` (Windows binary) + `scummvm` (Linux binary) |
-| **Asset releases** (`hd_assets_*`) | HD texture packs (backgrounds, objects, costumes, fonts) — extract into `hd/` |
+| Release | Contents | Size |
+|---------|----------|:----:|
+| **Binary releases** (`v*.*.*`) | `scummvm.exe` (Windows) + `scummvm` (Linux) | ~70 MB |
+| **HD Assets** (`hd_assets_v1.0.3`) | HD textures: backgrounds, objects, costumes, fonts (3 parts) | ~4.8 GB |
+
+**Installation — HD Assets:**
+1. Download all 3 parts from the [HD Assets release](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.3)
+2. Extract each into the same directory — they merge into a single `hd/` folder
+3. Place `hd/` next to your `game/` folder
 
 > **Note:** Windows also needs `SDL2.dll` (with audio support) and config files from [`release/windows/`](release/windows/):
 > - `SDL2.dll` — must be built with audio support (see [Building SDL2](#building-sdl2))
