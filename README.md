@@ -50,7 +50,7 @@ Copy these files into a `game/` folder:
 
 | Release | Link | Contents | Size |
 |---------|------|----------|:----:|
-| **Binary** | [Latest release](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) or `scummvm` (Linux) | ~70 MB |
+| **Binary** | [v0.0.64](https://github.com/harrytyp/comiupscale/releases/tag/v0.0.64) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
 | **HD Assets** | [hd_assets_v1.0.3](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.3) | Backgrounds, objects, costumes, fonts (3 ZIP parts) | ~4.8 GB |
 
 **Installation:**
