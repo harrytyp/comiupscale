@@ -93,6 +93,9 @@ First launch shows the difficulty selection screen. Select a difficulty and the 
 Requirements: Python 3 with `numpy` and `Pillow`, plus the custom NUTcracker fork (included in this repo at `tools/nutcracker/`).
 
 ```bash
+# Install Python dependencies
+pip install numpy Pillow
+
 # Add the custom NUTcracker to your Python path
 export PYTHONPATH=tools:$PYTHONPATH
 
