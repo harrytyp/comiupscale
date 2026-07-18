@@ -23,10 +23,10 @@
 #   --help          Show this message
 #
 # Requires:
-#   - NUTcracker binary (.exe)
-#   - RealESRGAN-NCNN-Vulkan
-#   - MSYS2 MinGW64 build environment (for ScummVM build)
 #   - Python 3 with numpy, pillow
+#   - tools/nutcracker/ (included in repo)
+#   - RealESRGAN-NCNN-Vulkan (for --skip-upscale, set ESRGAN env var)
+#   - Linux build environment (for --skip-build, see build/BUILD.md)
 # ============================================================================
 
 set -euo pipefail
@@ -39,9 +39,10 @@ SKIP_UPSCALE=false
 SKIP_BUILD=false
 ESRGAN_MODEL="realesrgan-x4plus-anime"
 
-NUTCRACKER="$PROJECT_ROOT/nutcracker-Windows_X64/nutcracker.exe"
-ESRGAN="$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/realesrgan-ncnn-vulkan.exe"
-ESRGAN_MODELS="$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows/models"
+# Use Python NUTcracker module from repo
+NUTCRACKER_PYTHON="PYTHONPATH=$PROJECT_ROOT/tools python3"
+ESRGAN="${ESRGAN:-$PROJECT_ROOT/tools/realesrgan-ncnn-vulkan/realesrgan-ncnn-vulkan}"
+ESRGAN_MODELS=""
 
 SCRATCH="$PROJECT_ROOT/.pipeline"
 ORIGINAL_DIR="$SCRATCH/original"
@@ -79,8 +80,9 @@ if [ "$SKIP_EXTRACT" = false ]; then
     echo "[1/4] Extracting original backgrounds from game files..."
     mkdir -p "$ORIGINAL_DIR"
     
-    if [ ! -f "$NUTCRACKER" ]; then
-        echo "ERROR: NUTcracker not found at $NUTCRACKER"
+    if ! python3 -c "import nutcracker" 2>/dev/null; then
+        echo "ERROR: NUTcracker module not found. Set PYTHONPATH=tools first:"
+        echo "  export PYTHONPATH=$PROJECT_ROOT/tools"
         exit 1
     fi
     
@@ -117,10 +119,13 @@ if [ "$SKIP_UPSCALE" = false ]; then
     echo "[2/4] AI-upscaling backgrounds 4× with RealESRGAN..."
     mkdir -p "$UPSCALED_DIR"
     
-    if [ ! -f "$ESRGAN" ]; then
-        echo "ERROR: RealESRGAN not found at $ESRGAN"
-        echo "Download from: https://github.com/xinntao/Real-ESRGAN/releases"
-        exit 1
+    if [ ! -f "$ESRGAN" ] && [ -z "$(command -v realesrgan-ncnn-vulkan 2>/dev/null || true)" ]; then
+        echo "WARNING: RealESRGAN not found at $ESRGAN or in PATH"
+        echo "  Install RealESRGAN-NCNN-Vulkan and set ESRGAN env var,"
+        echo "  or run scripts/upscale_esrgan.py directly:"
+        echo "    PYTHONPATH=$PROJECT_ROOT/tools python3 scripts/upscale_esrgan.py --input ..."
+        echo "  Skipping upscale."
+        SKIP_UPSCALE=true
     fi
     
     # Process each original PNG
@@ -155,43 +160,22 @@ echo "  ✓ $COUNT HD backgrounds placed in $HD_DIR"
 # --- Step 4: Build ScummVM fork (optional) ---
 if [ "$SKIP_BUILD" = false ]; then
     echo "[4/4] Building ScummVM HD fork..."
+    echo "  See build/BUILD.md for detailed instructions"
     
-    FORK_DIR="$PROJECT_ROOT/../scummvm-fork"
-    if [ ! -d "$FORK_DIR" ]; then
-        echo "  Cloning ScummVM..."
-        git clone --depth 1 --single-branch https://github.com/scummvm/scummvm.git "$FORK_DIR"
+    cd "$PROJECT_ROOT"
+    bash build/build-all.sh linux 2>&1
+    
+    if [ -f build/out/scummvm ]; then
+        cp build/out/scummvm "$PROJECT_ROOT/game/scummvm"
+        chmod +x "$PROJECT_ROOT/game/scummvm"
+        echo "  ✓ Linux binary deployed to game/scummvm"
     fi
-    
-    cd "$FORK_DIR"
-    
-    # Apply patches
-    git checkout . 2>/dev/null || true
-    git apply "$PROJECT_ROOT/patches/scumm-hd-fork.patch" 2>/dev/null || true
-    cp "$PROJECT_ROOT/patches/hd_asset_manager.h" engines/scumm/
-    cp "$PROJECT_ROOT/patches/hd_asset_manager.cpp" engines/scumm/
-    
-    # Configure and build
-    ./configure --host=mingw64 --backend=opengl \
-        --disable-all-engines --enable-engine=scumm --enable-engine=scumm_7_8 2>&1 | tail -3
-    mingw32-make -j$(nproc) 2>&1 | tail -5
-    
-    # Copy binary to game dir
-    cp scummvm.exe "$PROJECT_ROOT/game/scummvm-hd.exe"
-    echo "  Binary deployed to $PROJECT_ROOT/game/scummvm-hd.exe"
-
-    # Copy required runtime DLLs (MSYS2 MinGW64)
-    if [ -f "/mingw64/bin/SDL2.dll" ]; then
-        cp /mingw64/bin/SDL2.dll "$PROJECT_ROOT/game/"
-        echo "  SDL2.dll copied"
-    else
-        echo "  WARNING: SDL2.dll not found at /mingw64/bin/"
+    if [ -f build/out/scummvm.exe ]; then
+        cp build/out/scummvm.exe "$PROJECT_ROOT/game/scummvm.exe"
+        echo "  ✓ Windows binary deployed to game/scummvm.exe"
     fi
-    if [ -f "/mingw64/bin/zlib1.dll" ]; then
-        cp /mingw64/bin/zlib1.dll "$PROJECT_ROOT/game/"
-        echo "  zlib1.dll copied"
-    else
-        echo "  WARNING: zlib1.dll not found at /mingw64/bin/"
-    fi
+else
+    echo "[4/4] Skipping build"
 fi
 
 echo ""

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Analyze Room 9 objects and their extraction status."""
-import sys, os
-sys.path.insert(0, '/opt/data/local/nutcracker_src')
-
+import sys
+from pathlib import Path
+# Add tools/nutcracker to path (custom fork with AKOS decoder)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'tools'))
+from nutcracker.sputm.tree import open_game_resource
 import logging
 logging.disable(logging.CRITICAL)  # suppress spam
 
