@@ -1785,9 +1785,19 @@ void ScummEngine::renderHDComposite() {
 				}
 			}
 			hdObjSurf.free();
-			if (_hdFrameCount <= 10)
-				hdPrintf("INV-BLAST obj=%d blit pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d)",
-					obj_nr, blastX, blastY, (int)hdX, (int)hdY, hdObjW, hdObjH);
+			hdPrintf("INV-BLAST obj=%d mode=%d pos=(%d,%d) loaded=%d skip=%d sz=(%dx%d)",
+				obj_nr, eo.mode, blastX, blastY, step25b_loaded, step25b_skipped, hdObjW, hdObjH);
+		}
+		// Debug: dump ALL blast entries every 30 frames (including skipped/non-inventory)
+		if (_hdFrameCount % 30 == 0 && blastCount > 0) {
+			ScummEngine_v6 *v6b = static_cast<ScummEngine_v6 *>(this);
+			int bc = v6b->getBlastCount();
+			for (int bi = 0; bi < bc; bi++) {
+				const auto &be = v6b->getBlastObject(bi);
+				if (be.number != 0)
+					hdPrintf("BLAST_DUMP[%d] obj=%d mode=%d pos=(%d,%d) img=%d",
+						bi, be.number, be.mode, be.rect.left, be.rect.top, be.image);
+			}
 		}
 		if (_hdFrameCount % 30 == 0 && step25b_loaded > 0)
 			hdPrintf("step2.5b blast-inventory: loaded=%d skipped=%d", step25b_loaded, step25b_skipped);
