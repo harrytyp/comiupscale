@@ -2192,7 +2192,7 @@ void ScummEngine::renderHDComposite() {
 	// render its HD texture at the cursor position with hotspot offset.
 	// MUST be last rendering step (before copy to screen) to appear on top of everything.
 	if (_hdCursorObject > 0) {
-		CursorMan.showMouse(false);
+		CursorMan.showMouse(false);												// CursorMan.showMouse(false);
 		int cursorObj = _hdCursorObject;
 		// _hdCursorObject persists across frames; setCursorFromImg clears it
 		int objState = getState(cursorObj);
@@ -2226,7 +2226,7 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	if (_hdCursorObject == 0) {
-		CursorMan.showMouse(true);
+		CursorMan.showMouse(true);												// CursorMan.showMouse(true);
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
@@ -2237,6 +2237,19 @@ void ScummEngine::renderHDComposite() {
 		if (copyW > 0 && copyH > 0)
 			_system->copyRectToScreen(_hdComposite.getPixels(), _hdComposite.pitch,
 			                          0, 0, copyW, copyH);
+	}
+	// Step 3b: Overwrite SD cursor area with HD pixels (post-composite overlay fix)
+	if (_hdCursorObject > 0) {
+		int cx = _mouse.x - _cursor.hotspotX;
+		int cy = _mouse.y - _cursor.hotspotY;
+		int64 chdX = (int64)cx * hdW / MAX(1, _screenWidth);
+		int64 chdY = (int64)cy * hdH / MAX(1, _screenHeight);
+		int chdW = MIN<int>(_hdComposite.w - (int)chdX, hdW);
+		int chdH = MIN<int>(_hdComposite.h - (int)chdY, hdH);
+		if (chdW > 0 && chdH > 0)
+			_system->copyRectToScreen(
+				_hdComposite.getBasePtr((int)chdX, (int)chdY),
+				_hdComposite.pitch, (int)chdX, (int)chdY, chdW, chdH);
 	}
 
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
