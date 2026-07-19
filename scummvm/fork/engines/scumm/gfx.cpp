@@ -2192,7 +2192,7 @@ void ScummEngine::renderHDComposite() {
 	// render its HD texture at the cursor position with hotspot offset.
 	// MUST be last rendering step (before copy to screen) to appear on top of everything.
 	if (_hdCursorObject > 0) {
-		CursorMan.showMouse(false);												// CursorMan.showMouse(false);
+		byte blank[4] = {0,0,0,0}; CursorMan.replaceCursor(blank, 1, 1, 0, 0, 0, true);																																																																																										// blank cursor instead of hiding
 		int cursorObj = _hdCursorObject;
 		// _hdCursorObject persists across frames; setCursorFromImg clears it
 		int objState = getState(cursorObj);
@@ -2224,9 +2224,6 @@ void ScummEngine::renderHDComposite() {
 			}
 			hdObjSurf.free();
 		}
-	}
-	if (_hdCursorObject == 0) {
-		CursorMan.showMouse(true);												// CursorMan.showMouse(true);
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
