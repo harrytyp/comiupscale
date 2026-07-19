@@ -787,19 +787,17 @@ void ScummEngine_v6::setCursorFromImg(uint img, uint room, uint imgindex) {
 void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 	ScummEngine_v6::setCursorFromImg(img, room, imgindex);
 
-				// Track inventory items shown on cursor (obj_nr > 105 for COMI V8)
-				if (_game.version == 8) {
-					if (img > 105 && img <= 274) {
-						_hdCursorObject = img;
-						_hdCursorImage = imgindex;
-						CursorMan.showMouse(false);
-						hdPrintf("CURSOR_ITEM obj=%d room=%d img=%d pos=(%d,%d)",
-							img, room, imgindex, _mouse.x, _mouse.y);
-					} else {
-						_hdCursorObject = 0;
-						CursorMan.showMouse(true);
-					}
-				}
+						// Track inventory items shown on cursor (obj_nr > 105 for COMI V8)
+						if (_game.version == 8) {
+							if (img > 105 && img <= 274) {
+								_hdCursorObject = img;
+								_hdCursorImage = imgindex;
+								hdPrintf("CURSOR_ITEM obj=%d room=%d img=%d pos=(%d,%d)",
+									img, room, imgindex, _mouse.x, _mouse.y);
+							} else {
+								_hdCursorObject = 0;
+							}
+						}
 
 	// There are several occasions in which the screen is not updated
 	// between subsequent cursor changes, and as a result we would never

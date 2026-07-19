@@ -27,6 +27,7 @@
 #include "common/translation.h"
 #include "common/file.h"
 #include "scumm/charset.h"
+#include "graphics/cursorman.h"
 #ifdef ENABLE_HE
 #include "scumm/he/intern_he.h"
 #endif
@@ -2191,6 +2192,7 @@ void ScummEngine::renderHDComposite() {
 	// render its HD texture at the cursor position with hotspot offset.
 	// MUST be last rendering step (before copy to screen) to appear on top of everything.
 	if (_hdCursorObject > 0) {
+		CursorMan.showMouse(false);
 		int cursorObj = _hdCursorObject;
 		// _hdCursorObject persists across frames; setCursorFromImg clears it
 		int objState = getState(cursorObj);
@@ -2222,6 +2224,9 @@ void ScummEngine::renderHDComposite() {
 			}
 			hdObjSurf.free();
 		}
+	}
+	if (_hdCursorObject == 0) {
+		CursorMan.showMouse(true);
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
