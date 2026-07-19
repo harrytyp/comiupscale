@@ -788,7 +788,7 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 	ScummEngine_v6::setCursorFromImg(img, room, imgindex);
 
 	// Track inventory items shown on cursor (obj_nr 105-274 for COMI V8)
-	if (_game.version == 8 && img >= 105 && img <= 274) {
+	if (_game.version == 8 && img > 105 && img <= 274) {
 		_hdCursorObject = img;
 		_hdCursorImage = imgindex;
 		hdPrintf("CURSOR_ITEM obj=%d room=%d img=%d pos=(%d,%d)",

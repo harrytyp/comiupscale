@@ -2219,6 +2219,43 @@ void ScummEngine::renderHDComposite() {
 	// Reset verb draw counter — will be incremented again next frame if
 	// drawVerbBitmap is called (indicating the verb menu is active).
 	_hdVerbDrawCount = 0;
+	// Step 2.9: HD cursor overlay — render drag item at mouse position
+	// When an inventory item is dragged (setCursorFromImg fired with obj_nr > 105),
+	// render its HD texture at the cursor position with hotspot offset.
+	// MUST be last rendering step (before copy to screen) to appear on top of everything.
+	if (_hdCursorObject > 0) {
+		int cursorObj = _hdCursorObject;
+		_hdCursorObject = 0;
+		int objState = getState(cursorObj);
+		if (objState < 0) objState = 0;
+		int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
+		if (objRoom < 0) objRoom = _currentRoom;
+		Graphics::Surface hdObjSurf;
+		if (_hdObjectManager->hasObject(cursorObj, objRoom, objState) &&
+			_hdObjectManager->loadObject(cursorObj, objRoom, objState, hdObjSurf)) {
+			int imageX = _mouse.x - _cursor.hotspotX;
+			int imageY = _mouse.y - _cursor.hotspotY;
+			int64 hdX = (int64)imageX * hdW / MAX(1, _screenWidth);
+			int64 hdY = (int64)imageY * hdH / MAX(1, _screenHeight);
+			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
+			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			if (hdObjW > 0 && hdObjH > 0) {
+				for (int oy = 0; oy < hdObjH; oy++) {
+					uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+					uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+					for (int ox = 0; ox < hdObjW; ox++) {
+						uint32 pix = srcRow[ox];
+						if (((pix >> 24) & 0xFF) >= 128)
+							dstRow[ox] = pix;
+					}
+				}
+				hdPrintf("CURSOR_HD obj=%d mpos=(%d,%d) hotspot=(%d,%d) imgPos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d)",
+					cursorObj, _mouse.x, _mouse.y, _cursor.hotspotX, _cursor.hotspotY,
+					imageX, imageY, (int)hdX, (int)hdY, hdObjW, hdObjH);
+			}
+			hdObjSurf.free();
+		}
+	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
 	// Clamp to screen dimensions to avoid assertion failure on small displays
