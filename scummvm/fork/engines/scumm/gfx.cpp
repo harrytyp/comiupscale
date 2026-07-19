@@ -1801,7 +1801,40 @@ void ScummEngine::renderHDComposite() {
 		}
 		if (_hdFrameCount % 30 == 0 && step25b_loaded > 0)
 			hdPrintf("step2.5b blast-inventory: loaded=%d skipped=%d", step25b_loaded, step25b_skipped);
-	}
+		// Step 2.5c: HD cursor item — render at mouse position when inventory item on cursor
+		if (_hdCursorObject > 0) {
+			int cursorObj = _hdCursorObject;
+			_hdCursorObject = 0; // consume — cursor changes every frame
+			int objState = getState(cursorObj);
+			if (objState < 0) objState = 0;
+			int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
+			if (objRoom < 0) objRoom = _currentRoom;
+			Graphics::Surface hdObjSurf;
+			if (_hdObjectManager->hasObject(cursorObj, objRoom, objState) &&
+				_hdObjectManager->loadObject(cursorObj, objRoom, objState, hdObjSurf)) {
+				int cursorX = _mouse.x;
+				int cursorY = _mouse.y;
+				int64 hdX = (int64)cursorX * hdW / MAX(1, _screenWidth);
+				int64 hdY = (int64)cursorY * hdH / MAX(1, _screenHeight);
+				int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
+				int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+				if (hdObjW > 0 && hdObjH > 0) {
+					for (int oy = 0; oy < hdObjH; oy++) {
+						uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+						uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+						for (int ox = 0; ox < hdObjW; ox++) {
+							uint32 pix = srcRow[ox];
+							if (((pix >> 24) & 0xFF) >= 128)
+								dstRow[ox] = pix;
+						}
+					}
+			hdPrintf("CURSOR_HD obj=%d pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d)",
+					cursorObj, cursorX, cursorY, (int)hdX, (int)hdY, hdObjW, hdObjH);
+				}
+			hdObjSurf.free();
+					}
+				}
+			}
 
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.

@@ -584,6 +584,9 @@ public:
 	void *_hdLogFile = nullptr; // Persistent log file handle (avoids open/close per frame)
 	byte *_hdAlphaMask = nullptr; // Persistent HD alpha mask (avoids calloc/free per frame)
 	int _hdAlphaMaskSize = 0; // Allocated size of _hdAlphaMask
+	int _hdCursorObject = 0; // Inventory item obj_nr currently shown on cursor (set by setCursorFromImg)
+	int _hdCursorImage = 0; // Original image index for cursor
+
 	// Inventory HD position cache: populated by superBlastObject() for obj_nr 105-274
 	Common::HashMap<int, Common::Point> _inventoryHDPositions;
 	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
