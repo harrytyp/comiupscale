@@ -1532,8 +1532,20 @@ void ScummEngine::renderHDComposite() {
 			// the 8-bit compositing coordinate system in Step 2. _roomWidth/_roomHeight
 			// can differ from _screenWidth/_screenHeight for some rooms (e.g. room 87,
 			// the easyhard screen), which would offset HD object positions incorrectly.
-			int64 hdX = (int64)od.x_pos * hdW / MAX(1, _screenWidth);
-			int64 hdY = (int64)od.y_pos * hdH / MAX(1, _screenHeight);
+			// Inventory FLOBJs (obj_nr >= 105) have their real screen position in the
+			// blast queue cache. Override the FLOBJ's (0,0) position with it.
+			int blastX = -1, blastY = -1;
+			if (od.x_pos == 0 && od.y_pos == 0 && od.obj_nr >= 105) {
+				Common::HashMap<int, Common::Point>::iterator it = _inventoryHDPositions.find(od.obj_nr);
+				if (it != _inventoryHDPositions.end()) {
+					blastX = it->_value.x;
+					blastY = it->_value.y;
+				}
+			}
+			int xPos = (blastX >= 0) ? blastX : od.x_pos;
+			int yPos = (blastY >= 0) ? blastY : od.y_pos;
+			int64 hdX = (int64)xPos * hdW / MAX(1, _screenWidth);
+			int64 hdY = (int64)yPos * hdH / MAX(1, _screenHeight);
 			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
 
@@ -1546,6 +1558,8 @@ void ScummEngine::renderHDComposite() {
 			{
 				int sx = od.x_pos;
 				int sy = od.y_pos;
+				// Override with cached blast position if available (inventory items)
+				if (blastX >= 0) { sx = blastX; sy = blastY; }
 				int sw = MIN<int>(od.width, visW - sx);
 				int sh = MIN<int>(od.height, visH - sy);
 				int visiblePixels = 0;

@@ -1226,6 +1226,10 @@ void ScummEngine_v8::o8_kernelSetFunctions() {
 		break;
 	case 119:	// superBlastObject
 		enqueueObject(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], 0);
+		// Cache blast position for HD rendering — overrides FLOBJ (0,0) position.
+		// obj_nr 105-274 covers all inventory/cursor objects. Shadow (mode 3) is excluded.
+		if (args[1] >= 105 && args[1] <= 274)
+			_inventoryHDPositions[args[1]] = Common::Point(args[2], args[3] + _screenTop);
 		break;
 
 	default:
