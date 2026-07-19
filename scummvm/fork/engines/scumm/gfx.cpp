@@ -1305,60 +1305,75 @@ void ScummEngine::renderHDComposite() {
 	int step2_fgPixels = 0;
 	int step2_invFg = 0, step2_invTotal = 0;
 
-	// Precompute lookup tables to avoid per-pixel integer division
-	int *sxLookup = new int[hdW];
-	for (int dx = 0; dx < hdW; dx++)
-		sxLookup[dx] = dx * visW / hdW;
-	int *syLookup = new int[hdH];
-	for (int dy = 0; dy < hdH; dy++)
-		syLookup[dy] = dy * visH / hdH;
-
-	for (int dy = 0; dy < hdH; dy++) {
-		int sy = syLookup[dy];
-		sy = CLIP(sy, 0, visH - 1);
-
-		for (int dx = 0; dx < hdW; dx++) {
-			int sx = sxLookup[dx];
-			sx = CLIP(sx, 0, visW - 1);
-
-			uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
-
-			bool isForeground = true;
-			// Only use clean background diffing when the HD background matches
-			// the current room. For overlay menus (room != hdRoom), render all
-			// 8-bit pixels to cover the stale background behind.
-			if (_hdCurrentRoom == _currentRoom && _hdCleanValid && sy < _hdCleanValidSize / visW) {
-				int pos = sy * visW + sx;
-				if (_hdCleanValid[pos]) {
-					uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
-					isForeground = (curPix != cleanPix);
+	// Step 2 (optimized): Composite 8-bit foreground over HD background
+	// Instead of iterating HD pixels (5M for 2560x1920), iterate 8-bit pixels (307K)
+	// and expand each foreground 8-bit pixel to its covering HD rect.
+	// This reduces the outer loop by ~16× for our 4× scale.
+	{
+		// Precompute HD rect for each 8-bit pixel line to avoid per-pixel division
+		int *hdYStart = new int[visH + 1];
+		int *hdXStart = new int[visW + 1];
+		for (int sy = 0; sy <= visH; sy++)
+			hdYStart[sy] = sy * hdH / visH;
+		for (int sx = 0; sx <= visW; sx++)
+			hdXStart[sx] = sx * hdW / visW;
+		int dirtyCount = 0;
+		// Flag array: mark which 8-bit rows have at least one foreground pixel
+		// so we can later skip fully-empty rows
+		bool *rowHasFg = new bool[visH]();
+		for (int sy = 0; sy < visH; sy++) {
+			int hdY0 = hdYStart[sy], hdY1 = hdYStart[sy + 1];
+			if (hdY1 <= hdY0) continue;
+			const uint8 *visRow = (const uint8 *)vs->getBasePtr(0, sy);
+			const uint8 *cleanRow = (const uint8 *)_hdCleanBackground.getPixels()
+				? (const uint8 *)_hdCleanBackground.getBasePtr(0, sy) : nullptr;
+			bool useClean = (_hdCurrentRoom == _currentRoom && _hdCleanValid && cleanRow);
+			bool rowHadFg = false;
+			for (int sx = 0; sx < visW; sx++) {
+				uint8 curPix = visRow[sx];
+				// Check if pixel differs from clean background
+				bool isForeground;
+				if (useClean) {
+					int pos = sy * visW + sx;
+					if (_hdCleanValid[pos]) {
+						isForeground = (curPix != cleanRow[sx]);
+					} else {
+						isForeground = false;
+					}
+				} else {
+					isForeground = true;
+				}
+				// Skip AKOS transparent color (index 255)
+				if (isForeground && curPix == 255)
+					isForeground = false;
+				// Track foreground pixels in inventory area (top-left 640x280 in 8-bit)
+				if (sx < 640 && sy < 280) {
+					step2_invTotal++;
+					if (isForeground)
+						step2_invFg++;
+				}
+				if (isForeground) {
+					rowHadFg = true;
+					step2_fgPixels++;
+					uint8 r = _currentPalette[curPix * 3 + 0];
+					uint8 g = _currentPalette[curPix * 3 + 1];
+					uint8 b = _currentPalette[curPix * 3 + 2];
+					uint32 color = r | (g << 8) | (b << 16) | (0xFF << 24);
+					int hdX0 = hdXStart[sx], hdX1 = hdXStart[sx + 1];
+					for (int dy = hdY0; dy < hdY1; dy++) {
+						uint32 *dst = (uint32 *)_hdComposite.getBasePtr(hdX0, dy);
+						for (int dx = hdX0; dx < hdX1; dx++)
+							dst[dx - hdX0] = color;
+					}
+					dirtyCount++;
 				}
 			}
-
-			// Skip index 255 — AKOS transparent color (_transparentColor = 255).
-			// Without this, palette[255] appears as opaque garbage.
-			if (isForeground && curPix == 255)
-				isForeground = false;
-
-			// Track foreground pixels in inventory area (top-left 640x280 in 8-bit)
-			if (sx < 640 && sy < 280) {
-				step2_invTotal++;
-				if (isForeground)
-					step2_invFg++;
-			}
-
-			if (isForeground) {
-				step2_fgPixels++;
-				uint8 r = _currentPalette[curPix * 3 + 0];
-				uint8 g = _currentPalette[curPix * 3 + 1];
-				uint8 b = _currentPalette[curPix * 3 + 2];
-				*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
-					r | (g << 8) | (b << 16) | (0xFF << 24);
-			}
+			if (rowHadFg) rowHasFg[sy] = true;
 		}
-	}
-	delete[] sxLookup;
-	delete[] syLookup;
+		delete[] hdYStart;
+		delete[] hdXStart;
+		delete[] rowHasFg;
+		}
 
 	if (_hdFrameCount % 30 == 0)
 		hdPrintf("step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
@@ -1398,10 +1413,18 @@ void ScummEngine::renderHDComposite() {
 			invFg, invTotal, invTotal > 0 ? invFg * 100.0 / invTotal : 0.0,
 			_hdCurrentRoom, _currentRoom, _hdCleanValid ? 1 : 0, _hdVerbDrawCount);
 	}
-
+	
 	// Allocate HD alpha mask early — Step 2.5 (objects) and Step 2.6 (costumes)
 	// both need to mark their pixels so Step 2.6b doesn't overwrite them.
-	byte *hdAlphaMask = (byte *)calloc(hdW * hdH, 1);
+	// Pool-reuse: _hdAlphaMask persists across frames to avoid calloc/free per frame.
+	int alphaMaskBytes = hdW * hdH;
+	if (alphaMaskBytes > _hdAlphaMaskSize) {
+		free(_hdAlphaMask);
+		_hdAlphaMask = (byte *)malloc(alphaMaskBytes);
+		_hdAlphaMaskSize = alphaMaskBytes;
+	}
+	memset(_hdAlphaMask, 0, alphaMaskBytes);
+	byte *hdAlphaMask = _hdAlphaMask;
 
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
@@ -1526,9 +1549,13 @@ void ScummEngine::renderHDComposite() {
 				int sw = MIN<int>(od.width, visW - sx);
 				int sh = MIN<int>(od.height, visH - sy);
 				int visiblePixels = 0;
+				// Sparse sampling: stride=4 reduces pixel checks by 16x
+				// (every 4th row, every 4th column). visiblePixels * stride^2
+				// approximates the real count for threshold comparisons.
+				const int pxStep = 4;
 				if (sw > 0 && sh > 0 && _hdCleanValid) {
-					for (int row = 0; row < sh; row++) {
-						for (int col = 0; col < sw; col++) {
+					for (int row = 0; row < sh; row += pxStep) {
+						for (int col = 0; col < sw; col += pxStep) {
 							int pos = (sy + row) * visW + (sx + col);
 							if (_hdCleanValid[pos]) {
 								byte curPix = *(const byte *)vs->getBasePtr(vs->xstart + sx + col, sy + row);
@@ -1538,6 +1565,8 @@ void ScummEngine::renderHDComposite() {
 							}
 						}
 					}
+					// Scale up to approximate full-resolution count
+					visiblePixels *= (pxStep * pxStep);
 				}
 				// Real-time inventory detection using cursor (obj=105) visibility.
 				// In the 8-bit composite, the system-cursor-icon FLOBJ only has
@@ -1644,7 +1673,8 @@ void ScummEngine::renderHDComposite() {
 				}
 			}
 
-			// ── VERIFY Block ──────────────────────────────────────
+#ifndef NDEBUG
+			// ── VERIFY Block (debug-only) ──────────────────────────
 			// In-memory pixel verification: is the loaded texture HD, right size,
 			// and positioned correctly? Uses three checks instead of vision models.
 			{
@@ -1682,6 +1712,7 @@ void ScummEngine::renderHDComposite() {
 				hdPrintf("VERIFY obj=%d(%s) src=%dx%d exp=%dx%d sizeOK=%d isHD=%d colors=%d posOK=%d matches=%d/%d",
 					od.obj_nr, vname, srcW, srcH, expW, expH, sizeOK, isHD, (int)seen.size(), posOK, matches, checks);
 			}
+#endif
 
 			hdObjSurf.free();
 		}
@@ -1982,10 +2013,9 @@ void ScummEngine::renderHDComposite() {
 		if (_hdFrameCount % 30 == 0)
 			hdPrintf("step2.6b ui-overlay: pixels=%d", step26b_count);
 	}
-	// Free alpha mask after Step 2.6b
-	if (hdAlphaMask) { free(hdAlphaMask); hdAlphaMask = NULL; }
+	// Alpha mask persists across frames (pool-reuse in _hdAlphaMask)
 
-// Step 2.7: Render HD font characters recorded during 8-bit drawing
+	// Step 2.7: Render HD font characters recorded during 8-bit drawing
 	int step27_drawn = 0;
 	if (_hdFontManager && _hdFontManager->isEnabled() && !_hdFontChars.empty()) {
 		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
@@ -2093,16 +2123,17 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 	
-	// ── HD Debug Log: flush buffer to file every frame ──
-	// Buffer accumulates ALL hdPrintf calls during the frame.
-	// Written to disk at end of frame via raw fopen append.
-	// No frame wait, no size limit — EVERY event is captured.
+		// ── HD Debug Log: flush buffer to file every frame ──
+	// Uses persistent file handle to avoid fopen/fclose overhead (60 ops/s).
+	// File is opened lazily on first write and stays open for the session.
 	{
 		if (!_hdDebugLog.empty()) {
-			FILE *logFile = fopen("hd_state.log", "a");
-			if (logFile) {
-				fwrite(_hdDebugLog.c_str(), 1, _hdDebugLog.size(), logFile);
-				fclose(logFile);
+			if (!_hdLogFile)
+				_hdLogFile = fopen("hd_state.log", "a");
+			if (_hdLogFile) {
+				FILE *lf = (FILE *)_hdLogFile;
+				fwrite(_hdDebugLog.c_str(), 1, _hdDebugLog.size(), lf);
+				fflush(lf);
 			}
 			_hdDebugLog.clear();
 		}

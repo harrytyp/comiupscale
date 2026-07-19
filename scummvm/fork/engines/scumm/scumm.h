@@ -581,8 +581,11 @@ public:
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
 	Common::String _hdDebugLog; // HD debug log buffer (flushed to hd_state.log each frame)
-	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
+	void *_hdLogFile = nullptr; // Persistent log file handle (avoids open/close per frame)
+	byte *_hdAlphaMask = nullptr; // Persistent HD alpha mask (avoids calloc/free per frame)
+	int _hdAlphaMaskSize = 0; // Allocated size of _hdAlphaMask
 	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
+	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
 	bool _hdScreenshotDone = false;
 
 	/** Central resource data. */
