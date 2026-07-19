@@ -282,6 +282,9 @@ protected:
 	byte *defineArray(int array, int type, int dim2, int dim1);
 	int findFreeArrayId();
 public: // FIXME. TODO
+	int getBlastCount() const { return _blastObjectQueuePos; }
+	const BlastObject &getBlastObject(int index) const { return _blastObjectQueue[index]; }
+
 	void nukeArray(int array);
 	void removeBlastObjects();
 	void restoreBlastObjectsRects();

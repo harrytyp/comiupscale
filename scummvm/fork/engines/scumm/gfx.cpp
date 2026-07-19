@@ -1735,6 +1735,64 @@ void ScummEngine::renderHDComposite() {
 		hdPrintf("step2.5 objects: loaded=%d skipped=%d culled=%d",
 			step25_loaded, step25_skipped, step25_culled);
 
+	// Step 2.5b: Render inventory items from blast queue
+	// Inventory items (obj_nr 117-274) are NOT in _objs[] for the current room.
+	// They exist only in the blast queue, drawn by superBlastObject().
+	{
+		ScummEngine_v6 *v6 = static_cast<ScummEngine_v6 *>(this);
+		int blastCount = v6->getBlastCount();
+		int step25b_loaded = 0, step25b_skipped = 0;
+		for (int bi = 0; bi < blastCount; bi++) {
+			const auto &eo = v6->getBlastObject(bi);
+			int obj_nr = eo.number;
+			if (obj_nr < 105 || obj_nr > 274 || eo.mode == 3)
+				continue;
+			int objState = getState(obj_nr);
+			if (objState < 0) objState = 0;
+			int objRoom = _hdObjectManager->findObjectRoom(obj_nr);
+			if (objRoom < 0) objRoom = _currentRoom;
+			if (!_hdObjectManager->hasObject(obj_nr, objRoom, objState)) {
+				step25b_skipped++;
+				continue;
+			}
+			Graphics::Surface hdObjSurf;
+			if (!_hdObjectManager->loadObject(obj_nr, objRoom, objState, hdObjSurf)) {
+				step25b_skipped++;
+				continue;
+			}
+			int blastX = eo.rect.left;
+			int blastY = eo.rect.top;
+			int64 hdX = (int64)blastX * hdW / MAX(1, _screenWidth);
+			int64 hdY = (int64)blastY * hdH / MAX(1, _screenHeight);
+			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
+			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			if (hdObjW <= 0 || hdObjH <= 0) {
+				hdObjSurf.free();
+				continue;
+			}
+			step25b_loaded++;
+			for (int oy = 0; oy < hdObjH; oy++) {
+				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
+				int maskY = (int)hdY + oy;
+				for (int ox = 0; ox < hdObjW; ox++) {
+					uint32 pix = srcRow[ox];
+					if (((pix >> 24) & 0xFF) >= 128)
+						dstRow[ox] = pix;
+					int maskX = (int)hdX + ox;
+					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
+						hdAlphaMask[maskY * hdW + maskX] = 1;
+				}
+			}
+			hdObjSurf.free();
+			if (_hdFrameCount <= 10)
+				hdPrintf("INV-BLAST obj=%d blit pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d)",
+					obj_nr, blastX, blastY, (int)hdX, (int)hdY, hdObjW, hdObjH);
+		}
+		if (_hdFrameCount % 30 == 0 && step25b_loaded > 0)
+			hdPrintf("step2.5b blast-inventory: loaded=%d skipped=%d", step25b_loaded, step25b_skipped);
+	}
+
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
