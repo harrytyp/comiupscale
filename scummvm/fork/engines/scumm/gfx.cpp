@@ -1234,6 +1234,7 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 }
 
 void ScummEngine::renderHDComposite() {
+	uint32 _hdFrameStartTime = _system->getMillis();
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 
 	// COMI V8 uses the Verb system (drawVerbBitmap) for inventory rendering.
@@ -2030,71 +2031,106 @@ void ScummEngine::renderHDComposite() {
 		if (_hdFrameCount % 30 == 0)
 			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
 	}
-
-	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes.
-	// Combined alpha mask + bounding box approach:
-	// - HD costume pixel (alpha mask=1) → keep HD, never touch
-	// - Actor bbox area but NO HD pixel → DON'T re-overlay (prevents
-	//   SD costume parts from appearing where HD costume is transparent,
-	//   e.g. heads, arms that the HD extraction missed)
-	// - Outside all actor bboxes AND foreground → re-overlay (UI elements:
-	//   title cards, verbs, text)
+	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes. [OPTIMIZED]
+	// Instead of scanning all 4.8M HD pixels, iterate 8-bit pixels (302K)
+	// Only pixels that differ from the clean background are processed.
+	// For each dirty 8-bit pixel, fill the corresponding 4x4 HD block.
+	// This is 16x fewer outer loop iterations + pre-computed palette lookup.
 	if (_hdCleanBackground.getPixels() && _hdCleanValid && hdAlphaMask) {
 		int step26b_count = 0;
-		// Build actor bounding box mask in 8-bit coordinates
-		int bboxMaskSize = visW * visH;
-		byte *actorBBoxMask = (byte *)calloc(bboxMaskSize, 1);
-		if (actorBBoxMask) {
-			for (int ai = 0; ai < _numActors; ai++) {
-				Actor *a = _actors[ai];
-				if (!a || a->_costume == 0 || !a->_visible)
+
+		// Pre-compute palette lookup table (8-bit index → 32-bit RGBA)
+		uint32 palLookup[256];
+		for (int pi = 0; pi < 256; pi++) {
+			palLookup[pi] = _currentPalette[pi * 3 + 0]
+				| (_currentPalette[pi * 3 + 1] << 8)
+				| (_currentPalette[pi * 3 + 2] << 16)
+				| (0xFF << 24);
+		}
+
+		// Build actor bounding box mask (P2: static buffer, no calloc per frame)
+		const int bboxMaskSize = visW * visH;
+		static byte *actorBBoxMask = nullptr;
+		static int actorBBoxMaskSize = 0;
+		if (!actorBBoxMask || actorBBoxMaskSize < bboxMaskSize) {
+			actorBBoxMask = (byte *)realloc(actorBBoxMask, bboxMaskSize);
+			actorBBoxMaskSize = bboxMaskSize;
+		}
+		memset(actorBBoxMask, 0, bboxMaskSize);
+		for (int ai = 0; ai < _numActors; ai++) {
+			Actor *a = _actors[ai];
+			if (!a || a->_costume == 0 || !a->_visible)
+				continue;
+			Common::Point pos = a->getPos();
+			int actX = pos.x - a->_width / 2 - 40;
+			int actY = a->_top - 40;
+			int actH = (a->_bottom - a->_top) + 80;
+			int actW = a->_width + 80;
+			if (actH <= 0) actH = a->_width;
+			int startX = MAX(0, actX);
+			int startY = MAX(0, actY);
+			int endX = MIN(visW, actX + actW);
+			int endY = MIN(visH, actY + actH);
+			for (int y = startY; y < endY; y++)
+				for (int x = startX; x < endX; x++)
+					actorBBoxMask[y * visW + x] = 1;
+		}
+
+		// Iterate 8-bit pixels instead of HD pixels — 16x fewer iterations
+		for (int sy = 0; sy < visH; sy++) {
+			// Pre-compute HD Y range for this 8-bit row
+			int dy_start = sy * hdH / visH;
+			int dy_end = (sy + 1) * hdH / visH;
+			if (dy_end > hdH) dy_end = hdH;
+
+			const uint8 *srcRow = (const uint8 *)vs->getBasePtr(0, sy);
+			for (int sx = 0; sx < visW; sx++) {
+				int mpos = sy * visW + sx;
+
+				// Skip if clean background not captured for this pixel
+				if (mpos >= _hdCleanValidSize || !_hdCleanValid[mpos])
 					continue;
-				Common::Point pos = a->getPos();
-				int actX = pos.x - a->_width / 2 - 40; // extra margin
-				int actY = a->_top - 40; // extra margin
-				int actH = (a->_bottom - a->_top) + 80;
-				int actW = a->_width + 80;
-				if (actH <= 0) actH = a->_width;
-				int startX = MAX(0, actX);
-				int startY = MAX(0, actY);
-				int endX = MIN(visW, actX + actW);
-				int endY = MIN(visH, actY + actH);
-				for (int y = startY; y < endY; y++)
-					for (int x = startX; x < endX; x++)
-						actorBBoxMask[y * visW + x] = 1;
-			}
-			// Re-overlay: only outside actor bboxes + not covered by HD costume
-			for (int dy = 0; dy < hdH; dy++) {
-				int sy = dy * visH / hdH;
-				sy = CLIP(sy, 0, visH - 1);
-				for (int dx = 0; dx < hdW; dx++) {
-					int sx = dx * visW / hdW;
-					sx = CLIP(sx, 0, visW - 1);
-					// Skip if HD costume covers this pixel
-					if (hdAlphaMask[dy * hdW + dx])
-						continue;
-					// Skip if inside any actor bounding box (prevents SD overlay)
-					int mpos = sy * visW + sx;
-					if (actorBBoxMask[mpos])
-						continue;
-					if (mpos < _hdCleanValidSize && _hdCleanValid[mpos]) {
-						uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
-						uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
-						if (curPix != cleanPix) {
-							uint8 r = _currentPalette[curPix * 3 + 0];
-							uint8 g = _currentPalette[curPix * 3 + 1];
-							uint8 b = _currentPalette[curPix * 3 + 2];
-							*((uint32 *)_hdComposite.getBasePtr(dx, dy)) =
-								r | (g << 8) | (b << 16) | (0xFF << 24);
-							step26b_count++;
-						}
+
+				// Read 8-bit pixel value
+				uint8 curPix = srcRow[sx];
+
+				// Check if pixel differs from clean background
+				uint8 cleanPix = *(const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
+				if (curPix == cleanPix)
+					continue;
+
+				// Skip if inside any actor bounding box
+				if (actorBBoxMask[mpos])
+					continue;
+
+				// Pre-compute HD X range for this 8-bit column
+				int dx_start = sx * hdW / visW;
+				int dx_end = (sx + 1) * hdW / visW;
+				if (dx_end > hdW) dx_end = hdW;
+
+				// Look up 32-bit RGBA from pre-computed palette table
+				uint32 rgba = palLookup[curPix];
+
+				// Fill HD block (scaled pixels)
+				// Skip HD pixels protected by alpha mask (HD costume/object)
+				bool wroteAny = false;
+				for (int dy = dy_start; dy < dy_end; dy++) {
+					uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(dx_start, dy);
+					int maskOff = dy * hdW;
+					for (int dx = dx_start; dx < dx_end; dx++) {
+						if (hdAlphaMask[maskOff + dx])
+							continue;
+						dstRow[dx - dx_start] = rgba;
+						wroteAny = true;
 					}
 				}
+				if (wroteAny)
+					step26b_count++;
 			}
-			free(actorBBoxMask);
 		}
+
 		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6b ui-overlay: pixels=%d", step26b_count);
+			hdPrintf("step2.6b ui-overlay: pixels=%d (optimized: 8-bit scan)", step26b_count);
 	}
 	// Alpha mask persists across frames (pool-reuse in _hdAlphaMask)
 
@@ -2271,6 +2307,23 @@ void ScummEngine::renderHDComposite() {
 			}
 			_hdDebugLog.clear();
 		}
+	}
+
+	// HD frame timing
+	static uint32 hdAccumMs = 0;
+	static int hdAccumFrames = 0;
+	static int hdMaxMs = 0;
+	uint32 hdNow = _system->getMillis();
+	uint32 hdThisMs = hdNow - _hdFrameStartTime;
+	hdAccumMs += hdThisMs;
+	hdAccumFrames++;
+	if (hdThisMs > (uint32)hdMaxMs) hdMaxMs = hdThisMs;
+	if (hdAccumFrames >= 30) {
+		int avgMs = hdAccumMs / hdAccumFrames;
+		hdPrintf("FRAME-TIMING: avg=%dms max=%dms FPS=%.1f (%d frames)", avgMs, hdMaxMs, avgMs > 0 ? 1000.0/avgMs : 0.0, hdAccumFrames);
+		hdAccumMs = 0;
+		hdAccumFrames = 0;
+		hdMaxMs = 0;
 	}
 }
 
