@@ -799,12 +799,17 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 							}
 						}
 
-	// There are several occasions in which the screen is not updated
-	// between subsequent cursor changes, and as a result we would never
-	// be able to see some of those updates (i.e. the loading cursors in
-	// The Dig and The Curse of Monkey Island). This forced screen update
-	// addresses that.
-	_system->updateScreen();
+		// There are several occasions in which the screen is not updated
+		// between subsequent cursor changes, and as a result we would never
+		// be able to see some of those updates (i.e. the loading cursors in
+		// The Dig and The Curse of Monkey Island). This forced screen update
+		// addresses that.
+		// HOWEVER: when HD inventory cursor is active, DO NOT updateScreen here
+		// because it would show the SD cursor without the HD composite overlay
+		// (the HD composite is rendered later in renderHDComposite).
+		// The normal updateScreen in the frame loop handles the HD cursor frame.
+		if (!(_game.version == 8 && img > 105 && img <= 274))
+			_system->updateScreen();
 }
 #endif
 

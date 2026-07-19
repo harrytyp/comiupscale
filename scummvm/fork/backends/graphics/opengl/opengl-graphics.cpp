@@ -700,6 +700,8 @@ void OpenGLGraphicsManager::fillScreen(const Common::Rect &r, uint32 col) {
 }
 
 void OpenGLGraphicsManager::renderCursor() {
+	if (!_cursorVisible)
+		return;
 	if (_cursorMask) {
 		_targetBuffer->enableBlend(Framebuffer::kBlendModeMaskAlphaAndInvertByColor);
 
