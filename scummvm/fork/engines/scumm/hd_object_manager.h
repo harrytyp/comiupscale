@@ -53,11 +53,16 @@ public:
 	/** Set an additional fallback path for HD object textures. */
 	void setFallbackPath(const Common::String &path) { _fallbackPath = path; }
 
-	/** Load the HD object PNG for a given obj_nr and state.
-	 *  Returns true if a matching PNG was loaded into dest. */
-	bool loadObject(int obj_nr, int room, int state, Graphics::Surface &dest);
+		/** Load the HD object PNG for a given obj_nr and state.
+		 *  Returns true if a matching PNG was loaded into dest. */
+		bool loadObject(int obj_nr, int room, int state, Graphics::Surface &dest);
 
-	/** Check if an HD version exists for a given obj_nr/room/state. */
+		/** Get const pointer to cached HD object surface (avoids copyFrom overhead).
+		 *  Returns nullptr if the object is not available. The returned surface
+		 *  is owned by the cache — do NOT free or modify it. */
+		const Graphics::Surface *getObjectSurface(int obj_nr, int room, int state);
+
+		/** Check if an HD version exists for a given obj_nr/room/state. */
 	bool hasObject(int obj_nr, int room, int state) const;
 
 	/** Get the name associated with an obj_nr (from DOBJ mapping). */

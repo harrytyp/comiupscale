@@ -266,14 +266,46 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 	TextureCacheEntry entry;
 	entry.surface.copyFrom(surf);
 	entry.lastUsed = ++_lruCounter;
-	_textureCache[cacheKey] = entry;
+	_textureCache[objPath] = entry;
 
-	dest.copyFrom(surf);
-	surf.free();
-	return true;
-}
+		dest.copyFrom(surf);
+		surf.free();
+		return true;
+	}
 
-Common::String HdObjectManager::getObjectName(int obj_nr) const {
+	const Graphics::Surface *HdObjectManager::getObjectSurface(int obj_nr, int room, int state) {
+		if (!_enabled)
+			return nullptr;
+
+		Common::HashMap<int, ObjectInfo>::iterator it = _objectMap.find(obj_nr);
+		if (it == _objectMap.end())
+			return nullptr;
+
+		const ObjectInfo &info = it->_value;
+		Common::String objPath = buildObjectPath(room, info.name, state);
+
+		// Check cache
+		Common::HashMap<Common::String, TextureCacheEntry>::iterator cacheIt = _textureCache.find(objPath);
+		if (cacheIt != _textureCache.end()) {
+			cacheIt->_value.lastUsed = ++_lruCounter;
+			return &cacheIt->_value.surface;
+		}
+
+		// Not in cache — load from disk and add to cache
+		Graphics::Surface surf;
+		if (!loadPNG(objPath, surf))
+			return nullptr;
+
+		pruneCache();
+		TextureCacheEntry entry;
+		entry.surface.copyFrom(surf);
+		entry.lastUsed = ++_lruCounter;
+		_textureCache[objPath] = entry;
+
+		return &_textureCache[objPath].surface;
+	}
+
+	Common::String HdObjectManager::getObjectName(int obj_nr) const {
 	const Common::HashMap<int, ObjectInfo>::const_iterator it = _objectMap.find(obj_nr);
 	if (it != _objectMap.end())
 		return it->_value.name;

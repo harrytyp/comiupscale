@@ -1513,8 +1513,8 @@ void ScummEngine::renderHDComposite() {
 					}
 			}
 
-			Graphics::Surface hdObjSurf;
-			if (!_hdObjectManager->loadObject(od.obj_nr, objRoom, objState, hdObjSurf)) {
+			const Graphics::Surface *hdObjSurfPtr = _hdObjectManager->getObjectSurface(od.obj_nr, objRoom, objState);
+			if (!hdObjSurfPtr) {
 				hdPrintf("MISS obj=%d(%s) room=%d state=%d fl=%d — loadObject failed",
 					od.obj_nr, _hdObjectManager->getObjectName(od.obj_nr).c_str(),
 					objRoom, objState, od.fl_object_index);
@@ -1525,8 +1525,8 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			if (hdObjSurf.w >= hdW && hdObjSurf.h >= hdH && od.fl_object_index == 0) {
-				hdObjSurf.free();
+			if (hdObjSurfPtr->w >= hdW && hdObjSurfPtr->h >= hdH && od.fl_object_index == 0) {
+				
 				continue;
 			}
 
@@ -1548,8 +1548,8 @@ void ScummEngine::renderHDComposite() {
 			int yPos = (blastY >= 0) ? blastY : od.y_pos;
 			int64 hdX = (int64)xPos * hdW / MAX(1, _screenWidth);
 			int64 hdY = (int64)yPos * hdH / MAX(1, _screenHeight);
-			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
-			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
+			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 
 			// CULL: only render HD object if the 8-bit screen has visible
 			// foreground pixels in this area. For FLOBJs (floating objects
@@ -1647,7 +1647,7 @@ void ScummEngine::renderHDComposite() {
 							hdPrintf("CULL obj=%d fl=%d visible=%d invActive=%d", od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
 						}
 					}
-					hdObjSurf.free();
+					
 					continue;
 				}
 				if (od.fl_object_index != 0) {
@@ -1667,10 +1667,10 @@ void ScummEngine::renderHDComposite() {
 			if (od.obj_nr == 114 && _hdFrameCount % 60 == 0) {
 				const char *name = _hdObjectManager->getObjectName(od.obj_nr).c_str();
 				hdPrintf("LOAD obj=114(%s) pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
-					name, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurf.w, (int)hdObjSurf.h);
+					name, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurfPtr->w, (int)hdObjSurfPtr->h);
 			}
 			for (int oy = 0; oy < hdObjH; oy++) {
-				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
 				int maskY = (int)hdY + oy;
 				for (int ox = 0; ox < hdObjW; ox++) {
@@ -1695,7 +1695,7 @@ void ScummEngine::renderHDComposite() {
 			// and positioned correctly? Uses three checks instead of vision models.
 			{
 				const char *vname = _hdObjectManager->getObjectName(od.obj_nr).c_str();
-				int srcW = (int)hdObjSurf.w, srcH = (int)hdObjSurf.h;
+				int srcW = (int)hdObjSurfPtr->w, srcH = (int)hdObjSurfPtr->h;
 				int expW = od.width * _hdScale, expH = od.height * _hdScale;
 
 				// 1. SIZE: does texture size match expected (±4px tolerance)?
@@ -1706,7 +1706,7 @@ void ScummEngine::renderHDComposite() {
 				int step = MAX(1, (srcW * srcH) / 5000);
 				for (int sy = 0; sy < srcH; sy += step)
 					for (int sx = 0; sx < srcW; sx += step) {
-						uint32 px = *(uint32*)hdObjSurf.getBasePtr(sx, sy);
+						uint32 px = *(uint32*)hdObjSurfPtr->getBasePtr(sx, sy);
 						if (((px >> 24) & 0xFF) >= 128) seen.setVal(px & 0x00FFFFFF, true);
 					}
 				bool isHD = seen.size() > 256;
@@ -1715,7 +1715,7 @@ void ScummEngine::renderHDComposite() {
 				int matches = 0, checks = 0;
 				for (int i = 0; i < 40 && checks < 20; i++) {
 					int sx = _rnd.getRandomNumber(srcW - 1), sy = _rnd.getRandomNumber(srcH - 1);
-					uint32 srcPx = *(uint32*)hdObjSurf.getBasePtr(sx, sy);
+					uint32 srcPx = *(uint32*)hdObjSurfPtr->getBasePtr(sx, sy);
 					if (((srcPx >> 24) & 0xFF) < 128) continue;
 					int dx = (int)hdX + sx, dy = (int)hdY + sy;
 					if (dx < 0 || dx >= hdW || dy < 0 || dy >= hdH) { checks++; continue; }
@@ -1730,7 +1730,7 @@ void ScummEngine::renderHDComposite() {
 			}
 #endif
 
-			hdObjSurf.free();
+			
 		}
 	}
 	if (_hdFrameCount % 30 == 0)
@@ -1757,8 +1757,8 @@ void ScummEngine::renderHDComposite() {
 				step25b_skipped++;
 				continue;
 			}
-			Graphics::Surface hdObjSurf;
-			if (!_hdObjectManager->loadObject(obj_nr, objRoom, objState, hdObjSurf)) {
+			const Graphics::Surface *hdObjSurfPtr = _hdObjectManager->getObjectSurface(obj_nr, objRoom, objState);
+			if (!hdObjSurfPtr) {
 				step25b_skipped++;
 				continue;
 			}
@@ -1766,15 +1766,15 @@ void ScummEngine::renderHDComposite() {
 			int blastY = eo.rect.top;
 			int64 hdX = (int64)blastX * hdW / MAX(1, _screenWidth);
 			int64 hdY = (int64)blastY * hdH / MAX(1, _screenHeight);
-			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
-			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
+			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 			if (hdObjW <= 0 || hdObjH <= 0) {
-				hdObjSurf.free();
+				
 				continue;
 			}
 			step25b_loaded++;
 			for (int oy = 0; oy < hdObjH; oy++) {
-				uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
 				int maskY = (int)hdY + oy;
 				for (int ox = 0; ox < hdObjW; ox++) {
@@ -1786,7 +1786,7 @@ void ScummEngine::renderHDComposite() {
 						hdAlphaMask[maskY * hdW + maskX] = 1;
 				}
 			}
-			hdObjSurf.free();
+			
 			hdPrintf("INV-BLAST obj=%d mode=%d pos=(%d,%d) loaded=%d skip=%d sz=(%dx%d)",
 				obj_nr, eo.mode, blastX, blastY, step25b_loaded, step25b_skipped, hdObjW, hdObjH);
 		}
@@ -2188,16 +2188,16 @@ void ScummEngine::renderHDComposite() {
 					continue;
 				hdRoom = altRoom;
 			}
-			Graphics::Surface hdItemSurf;
-			if (!_hdObjectManager->loadObject(vst->hd_obj_nr, hdRoom, 0, hdItemSurf))
+			const Graphics::Surface *hdItemSurfPtr = _hdObjectManager->getObjectSurface(vst->hd_obj_nr, hdRoom, 0);
+			if (!hdItemSurfPtr)
 				continue;
 			// Scale verb SD position to HD
 			int64 hdX = (int64)vst->curRect.left * hdW / MAX(1, _screenWidth);
 			int64 hdY = (int64)vst->curRect.top * hdH / MAX(1, _screenHeight);
-			int maxW = MIN<int>(hdItemSurf.w, (int)(hdW - hdX));
-			int maxH = MIN<int>(hdItemSurf.h, (int)(hdH - hdY));
+			int maxW = MIN<int>(hdItemSurfPtr->w, (int)(hdW - hdX));
+			int maxH = MIN<int>(hdItemSurfPtr->h, (int)(hdH - hdY));
 			for (int oy = 0; oy < maxH; oy++) {
-				uint32 *srcRow = (uint32 *)hdItemSurf.getBasePtr(0, oy);
+				uint32 *srcRow = (uint32 *)hdItemSurfPtr->getBasePtr(0, oy);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
 				for (int ox = 0; ox < maxW; ox++) {
 					uint32 pix = srcRow[ox];
@@ -2205,7 +2205,7 @@ void ScummEngine::renderHDComposite() {
 						dstRow[ox] = pix;
 				}
 			}
-			hdItemSurf.free();
+			
 			step28b_drawn++;
 		}
 		if (_hdFrameCount % 30 == 0 && step28b_drawn > 0)
@@ -2235,18 +2235,17 @@ void ScummEngine::renderHDComposite() {
 		if (objState < 0) objState = 0;
 		int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
 		if (objRoom < 0) objRoom = _currentRoom;
-		Graphics::Surface hdObjSurf;
-		if (_hdObjectManager->hasObject(cursorObj, objRoom, objState) &&
-			_hdObjectManager->loadObject(cursorObj, objRoom, objState, hdObjSurf)) {
+		const Graphics::Surface *hdObjSurfPtr = _hdObjectManager->getObjectSurface(cursorObj, objRoom, objState);
+		if (hdObjSurfPtr) {
 			int imageX = _mouse.x - _cursor.hotspotX;
 			int imageY = _mouse.y - _cursor.hotspotY;
 			int64 hdX = (int64)imageX * hdW / MAX(1, _screenWidth);
 			int64 hdY = (int64)imageY * hdH / MAX(1, _screenHeight);
-			int hdObjW = MIN<int>(hdObjSurf.w, (int)(hdW - hdX));
-			int hdObjH = MIN<int>(hdObjSurf.h, (int)(hdH - hdY));
+			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
+			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 			if (hdObjW > 0 && hdObjH > 0) {
 				for (int oy = 0; oy < hdObjH; oy++) {
-					uint32 *srcRow = (uint32 *)hdObjSurf.getBasePtr(0, oy);
+					uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, oy);
 					uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
 					for (int ox = 0; ox < hdObjW; ox++) {
 						uint32 pix = srcRow[ox];
@@ -2258,7 +2257,7 @@ void ScummEngine::renderHDComposite() {
 					cursorObj, _mouse.x, _mouse.y, _cursor.hotspotX, _cursor.hotspotY,
 					imageX, imageY, (int)hdX, (int)hdY, hdObjW, hdObjH);
 			}
-			hdObjSurf.free();
+			
 		}
 	}
 

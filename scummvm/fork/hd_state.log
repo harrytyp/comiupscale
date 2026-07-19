@@ -1,0 +1,982 @@
+F=0 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=0 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 87, 200 objects:
+F=0 ROOM OBJ: oi=10 obj=1367 fl=0 state=1 pos=(0,0) sz=(640x480) name=foreign-placard-object
+F=0 ROOM OBJ: oi=9 obj=1366 fl=0 state=0 pos=(112,88) sz=(360x64) name=easyhard-choice-object
+F=0 ROOM OBJ: oi=8 obj=1365 fl=0 state=0 pos=(64,72) sz=(512x80) name=
+F=0 ROOM OBJ: oi=7 obj=1364 fl=0 state=0 pos=(64,176) sz=(512x96) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=0 RENDER obj=114 fl=3 visible=42709 invActive=0
+F=0 LOAD obj=114(inventory-bg-object) pos=(0,0) hdPos=(0,0) sz=(640x472) surf=(2560x1888)
+F=0 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=1 skipped=0 culled=5
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=0
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=1 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=2 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=3 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=4 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=5 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=6 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=7 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=8 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=9 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=10 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=11 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=12 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=13 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=14 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=15 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=16 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=17 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=18 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=19 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=20 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=21 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=22 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=23 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=24 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=25 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=26 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=27 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=28 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=29 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=30 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=30 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 step2.5 objects: loaded=1 skipped=0 culled=5
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=0
+F=31 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=32 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=33 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=34 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=35 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=36 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=37 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=38 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=39 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=40 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=41 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=42 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=43 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=44 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=45 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=46 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=47 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=48 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=49 ROOM CHANGE: entering room 5, 200 objects:
+F=49 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=49 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=49 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=49 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=49 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=49 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=49 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=0 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 87, 200 objects:
+F=0 ROOM OBJ: oi=10 obj=1367 fl=0 state=1 pos=(0,0) sz=(640x480) name=foreign-placard-object
+F=0 ROOM OBJ: oi=9 obj=1366 fl=0 state=0 pos=(112,88) sz=(360x64) name=easyhard-choice-object
+F=0 ROOM OBJ: oi=8 obj=1365 fl=0 state=0 pos=(64,72) sz=(512x80) name=
+F=0 ROOM OBJ: oi=7 obj=1364 fl=0 state=0 pos=(64,176) sz=(512x96) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=0 RENDER obj=114 fl=3 visible=42709 invActive=0
+F=0 LOAD obj=114(inventory-bg-object) pos=(0,0) hdPos=(0,0) sz=(640x472) surf=(2560x1888)
+F=0 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=1 skipped=0 culled=5
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=0
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=1 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=2 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=3 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=4 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=5 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=6 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=7 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=8 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=9 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=10 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=11 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=12 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=13 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=14 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=15 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=16 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=17 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=18 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=19 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=20 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=21 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=22 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=23 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=24 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=25 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=26 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=27 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=28 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=29 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=30 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=30 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 step2.5 objects: loaded=1 skipped=0 culled=5
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=0
+F=31 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=32 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=33 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=34 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=35 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=36 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=37 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=38 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=39 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=40 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=41 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=42 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=43 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=44 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=45 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=46 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=47 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=48 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=49 ROOM CHANGE: entering room 5, 200 objects:
+F=49 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=49 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=49 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=49 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=49 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=49 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=49 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=50 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=0 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 87, 200 objects:
+F=0 ROOM OBJ: oi=10 obj=1367 fl=0 state=1 pos=(0,0) sz=(640x480) name=foreign-placard-object
+F=0 ROOM OBJ: oi=9 obj=1366 fl=0 state=0 pos=(112,88) sz=(360x64) name=easyhard-choice-object
+F=0 ROOM OBJ: oi=8 obj=1365 fl=0 state=0 pos=(64,72) sz=(512x80) name=
+F=0 ROOM OBJ: oi=7 obj=1364 fl=0 state=0 pos=(64,176) sz=(512x96) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=0 RENDER obj=114 fl=3 visible=42709 invActive=0
+F=0 LOAD obj=114(inventory-bg-object) pos=(0,0) hdPos=(0,0) sz=(640x472) surf=(2560x1888)
+F=0 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=1 skipped=0 culled=5
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=0
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=1 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=2 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=3 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=4 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=5 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=6 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=7 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=8 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=9 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=10 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=11 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=12 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=13 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=14 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=15 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=16 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=17 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=18 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=19 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=20 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=21 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=22 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=23 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=24 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=25 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=26 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=27 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=28 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=29 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=30 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=30 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=30 step2.5 objects: loaded=1 skipped=0 culled=5
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=0
+F=31 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=32 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=33 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=34 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=35 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=36 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=37 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=38 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=39 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=40 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=41 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=42 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=43 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=44 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=45 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=46 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=47 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=48 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=49 ROOM CHANGE: entering room 5, 200 objects:
+F=49 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=49 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=49 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=49 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=49 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=49 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=49 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=50 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=51 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=52 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=53 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=54 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=55 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=56 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=57 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=58 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=59 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=60 room=5 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 step2: fgPixels=4915200/4915200 (100.0%) cleanValid=1
+F=60 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=87 curRoom=5 cleanValid=1 verbDraw=0
+F=60 LOAD obj=114(inventory-bg-object) pos=(0,0) hdPos=(0,0) sz=(640x472) surf=(2560x1888)
+F=60 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=60 step2.5 objects: loaded=1 skipped=0 culled=5
+F=60 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=0
+F=61 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=62 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=63 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=64 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=65 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=66 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=67 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=68 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=69 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=70 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=71 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=72 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=73 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=74 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=75 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=76 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=77 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=78 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=79 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=80 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=81 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=82 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=83 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=84 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=85 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=86 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=87 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=88 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=89 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=90 room=5 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 step2: fgPixels=4915200/4915200 (100.0%) cleanValid=1
+F=90 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=87 curRoom=5 cleanValid=1 verbDraw=0
+F=90 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=90 step2.5 objects: loaded=1 skipped=0 culled=5
+F=90 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=0
+F=91 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=92 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=93 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=94 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=95 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=96 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=97 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=98 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=99 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=100 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=101 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=102 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=103 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=104 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=105 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=106 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=107 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=108 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=109 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=110 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=111 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=112 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=113 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=114 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=115 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=116 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=117 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=118 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=119 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=2560x1888 sizeOK=1 isHD=0 colors=4 posOK=1 matches=20/20
+F=0 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=0 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 87, 200 objects:
+F=0 ROOM OBJ: oi=10 obj=1367 fl=0 state=1 pos=(0,0) sz=(640x480) name=foreign-placard-object
+F=0 ROOM OBJ: oi=9 obj=1366 fl=0 state=0 pos=(112,88) sz=(360x64) name=easyhard-choice-object
+F=0 ROOM OBJ: oi=8 obj=1365 fl=0 state=0 pos=(64,72) sz=(512x80) name=
+F=0 ROOM OBJ: oi=7 obj=1364 fl=0 state=0 pos=(64,176) sz=(512x96) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=0 CULL obj=114 fl=3 visible=42709 invActive=0
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=0 skipped=0 culled=6
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=683344
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=30 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 step2: fgPixels=683344/4915200 (13.9%) cleanValid=1
+F=30 step2 invArea: fg=591312/2867200 (20.6%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=30 step2.5 objects: loaded=0 skipped=0 culled=6
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=683344
+F=49 ROOM CHANGE: entering room 5, 200 objects:
+F=49 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=49 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=49 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=49 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=49 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=49 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=60 room=5 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 step2: fgPixels=4915200/4915200 (100.0%) cleanValid=1
+F=60 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=87 curRoom=5 cleanValid=1 verbDraw=0
+F=60 step2.5 objects: loaded=0 skipped=0 culled=6
+F=60 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=51648
+F=90 room=5 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 step2: fgPixels=4915200/4915200 (100.0%) cleanValid=1
+F=90 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=87 curRoom=5 cleanValid=1 verbDraw=0
+F=90 step2.5 objects: loaded=0 skipped=0 culled=6
+F=90 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=51648
+F=120 room=5 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=120 step2: fgPixels=4915200/4915200 (100.0%) cleanValid=1
+F=120 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=87 curRoom=5 cleanValid=1 verbDraw=0
+F=120 step2.5 objects: loaded=0 skipped=0 culled=6
+F=120 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=120 step2.6b ui-overlay: pixels=51648
+F=122 ROOM CHANGE: entering room 14, 200 objects:
+F=122 ROOM OBJ: oi=28 obj=395 fl=0 state=0 pos=(232,88) sz=(96x160) name=
+F=122 ROOM OBJ: oi=27 obj=394 fl=0 state=0 pos=(1336,232) sz=(64x32) name=
+F=122 ROOM OBJ: oi=26 obj=377 fl=0 state=0 pos=(544,384) sz=(208x48) name=fortbase-monkey-prints
+F=122 ROOM OBJ: oi=25 obj=392 fl=0 state=0 pos=(1224,112) sz=(56x56) name=
+F=122 ROOM OBJ: oi=24 obj=391 fl=0 state=0 pos=(1264,328) sz=(64x64) name=
+F=122 ROOM OBJ: oi=23 obj=390 fl=0 state=0 pos=(1040,312) sz=(72x64) name=
+F=122 ROOM OBJ: oi=22 obj=389 fl=0 state=0 pos=(360,120) sz=(64x72) name=
+F=122 ROOM OBJ: oi=21 obj=388 fl=0 state=0 pos=(288,56) sz=(64x56) name=
+F=122 ROOM OBJ: oi=20 obj=387 fl=0 state=0 pos=(128,96) sz=(64x56) name=
+F=122 ROOM OBJ: oi=19 obj=382 fl=0 state=0 pos=(1000,320) sz=(48x56) name=
+F=122 ROOM OBJ: oi=18 obj=381 fl=0 state=0 pos=(56,208) sz=(160x152) name=
+F=122 ROOM OBJ: oi=17 obj=378 fl=0 state=0 pos=(1416,0) sz=(88x480) name=
+F=122 ROOM OBJ: oi=16 obj=375 fl=0 state=0 pos=(0,0) sz=(80x480) name=
+F=122 ROOM OBJ: oi=15 obj=393 fl=0 state=0 pos=(1408,128) sz=(48x40) name=
+F=122 ROOM OBJ: oi=14 obj=386 fl=0 state=0 pos=(8,96) sz=(64x64) name=
+F=122 ROOM OBJ: oi=13 obj=379 fl=0 state=0 pos=(464,40) sz=(352x296) name=
+F=122 ROOM OBJ: oi=12 obj=380 fl=0 state=0 pos=(800,232) sz=(104x96) name=
+F=122 ROOM OBJ: oi=11 obj=384 fl=0 state=0 pos=(808,272) sz=(16x24) name=
+F=122 ROOM OBJ: oi=10 obj=376 fl=0 state=1 pos=(584,264) sz=(104x160) name=fortbase-elaine-statue
+F=122 ROOM OBJ: oi=9 obj=383 fl=0 state=0 pos=(512,376) sz=(48x40) name=fortbase-elaine-plaque
+F=122 ROOM OBJ: oi=8 obj=385 fl=0 state=0 pos=(776,368) sz=(56x56) name=glowing-ember-object
+F=122 ROOM OBJ: oi=7 obj=396 fl=0 state=0 pos=(776,368) sz=(56x56) name=big-glowing-ember-object
+F=122 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=122 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=122 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=122 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=122 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=122 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=149 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=149 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=9/9
+F=149 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=149 RENDER obj=120 fl=7 visible=3045 invActive=0
+F=149 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=20/20
+F=149 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=12/12
+F=149 INVOBJ: oi=32 obj=124 fl=10 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=149 INVOBJ: oi=31 obj=118 fl=9 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=149 INVOBJ: oi=30 obj=231 fl=8 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=149 INVOBJ: oi=29 obj=120 fl=7 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=149 INVOBJ: oi=28 obj=395 fl=0 state=0 parent=0 pos=(232,88) sz=(96x160)
+F=149 INVOBJ: oi=27 obj=394 fl=0 state=0 parent=0 pos=(1336,232) sz=(64x32)
+F=149 INVOBJ: oi=26 obj=377 fl=0 state=0 parent=0 pos=(544,384) sz=(208x48)
+F=149 INVOBJ: oi=25 obj=392 fl=0 state=0 parent=0 pos=(1224,112) sz=(56x56)
+F=149 INVOBJ: oi=24 obj=391 fl=0 state=0 parent=0 pos=(1264,328) sz=(64x64)
+F=149 INVOBJ: oi=23 obj=390 fl=0 state=0 parent=0 pos=(1040,312) sz=(72x64)
+F=149 INVOBJ: oi=22 obj=389 fl=0 state=0 parent=0 pos=(360,120) sz=(64x72)
+F=149 INVOBJ: oi=21 obj=388 fl=0 state=0 parent=0 pos=(288,56) sz=(64x56)
+F=149 INVOBJ: oi=20 obj=387 fl=0 state=0 parent=0 pos=(128,96) sz=(64x56)
+F=149 INVOBJ: oi=19 obj=382 fl=0 state=0 parent=0 pos=(1000,320) sz=(48x56)
+F=149 INVOBJ: oi=18 obj=381 fl=0 state=0 parent=0 pos=(56,208) sz=(160x152)
+F=149 INVOBJ: oi=17 obj=378 fl=0 state=0 parent=0 pos=(1416,0) sz=(88x480)
+F=149 INVOBJ: oi=16 obj=375 fl=0 state=0 parent=0 pos=(0,0) sz=(80x480)
+F=149 INVOBJ: oi=15 obj=393 fl=0 state=0 parent=0 pos=(1408,128) sz=(48x40)
+F=149 INVOBJ: oi=14 obj=386 fl=0 state=0 parent=0 pos=(8,96) sz=(64x64)
+F=149 INVOBJ: oi=13 obj=379 fl=0 state=0 parent=0 pos=(464,40) sz=(352x296)
+F=149 INVOBJ: oi=12 obj=380 fl=0 state=0 parent=0 pos=(800,232) sz=(104x96)
+F=149 INVOBJ: oi=11 obj=384 fl=0 state=0 parent=0 pos=(808,272) sz=(16x24)
+F=149 INVOBJ: oi=10 obj=376 fl=0 state=1 parent=0 pos=(584,264) sz=(104x160)
+F=149 INVOBJ: oi=9 obj=383 fl=0 state=0 parent=0 pos=(512,376) sz=(48x40)
+F=149 INVOBJ: oi=8 obj=385 fl=0 state=0 parent=0 pos=(776,368) sz=(56x56)
+F=149 INVOBJ: oi=7 obj=396 fl=0 state=0 parent=0 pos=(776,368) sz=(56x56)
+F=149 INVOBJ: oi=6 obj=189 fl=6 state=0 parent=0 pos=(0,0) sz=(32x32)
+F=149 INVOBJ: oi=5 obj=188 fl=5 state=0 parent=0 pos=(0,0) sz=(32x40)
+F=149 INVOBJ: oi=4 obj=105 fl=4 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=149 INVOBJ: oi=3 obj=114 fl=3 state=0 parent=0 pos=(0,0) sz=(640x472)
+F=149 INVOBJ: oi=2 obj=115 fl=2 state=0 parent=0 pos=(0,0) sz=(80x40)
+F=149 INVOBJ: oi=1 obj=116 fl=1 state=0 parent=0 pos=(0,0) sz=(80x40)
+F=149 RENDER obj=105 fl=4 visible=3045 invActive=1
+F=149 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=149 RENDER obj=114 fl=3 visible=258551 invActive=1
+F=149 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=149 RENDER obj=115 fl=2 visible=1914 invActive=1
+F=149 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=149 RENDER obj=116 fl=1 visible=1914 invActive=1
+F=149 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=150 room=14 hdRoom=14 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=150 step2: fgPixels=11460652/11489280 (99.8%) cleanValid=1
+F=150 step2 invArea: fg=6685888/6702080 (99.8%) hdRoom=14 curRoom=14 cleanValid=1 verbDraw=0
+F=150 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=14/14
+F=150 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=15/15
+F=150 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=150 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=20/20
+F=150 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=11/11
+F=150 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=150 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=150 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=150 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=150 step2.5 objects: loaded=9 skipped=0 culled=2
+F=150 costume HIT: actor=43 costume=0074 cel=28 pos=(2805,1336) surf=760x236 sort=0
+F=150 costume HIT: actor=2 costume=0072 cel=3 pos=(3122,1140) surf=32x28 sort=240
+F=150 costume HIT: actor=1 costume=0002 cel=19 pos=(1972,956) surf=276x848 sort=434
+F=150 costume HIT: actor=1 costume=0002 cel=47 pos=(2197,708) surf=144x248 sort=434
+F=150 step2.6 costumes: loaded=4 skipped=75 (noCostume=75 noCel=0 noHdCostume=0 loadFail=0)
+F=150 step2.6b ui-overlay: pixels=5407552
+F=151 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=151 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=11/11
+F=151 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=151 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=19/19
+F=151 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=151 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=4/4
+F=151 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=151 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=151 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=152 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=19/19
+F=152 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=8/8
+F=152 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=19/19
+F=152 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=16/16
+F=152 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=15/15
+F=152 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=1/1
+F=152 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=152 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=152 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=153 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=153 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=9/9
+F=153 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=153 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=17/17
+F=153 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=11/11
+F=153 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=3/3
+F=153 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=153 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=153 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=154 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=154 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=15/15
+F=154 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=154 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=14/14
+F=154 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=154 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=4/4
+F=154 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=154 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=154 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=155 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=17/17
+F=155 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=11/11
+F=155 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=155 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=18/18
+F=155 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=155 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=1/1
+F=155 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=155 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=155 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=156 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=156 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=12/12
+F=156 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=156 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=9/9
+F=156 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=13/13
+F=156 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=3/3
+F=156 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=156 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=156 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=157 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=157 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=10/10
+F=157 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=157 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=14/14
+F=157 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=13/13
+F=157 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=157 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=157 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=157 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=158 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=158 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=12/12
+F=158 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=158 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=15/15
+F=158 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=15/15
+F=158 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=3/3
+F=158 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=158 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=158 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=13/13
+F=159 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=159 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=12/12
+F=159 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=159 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=17/17
+F=159 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=13/13
+F=159 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=159 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=159 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=159 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=160 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=17/17
+F=160 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=11/11
+F=160 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=17/17
+F=160 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=20/20
+F=160 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=12/12
+F=160 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=5/5
+F=160 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=160 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=160 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=161 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=13/13
+F=161 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=7/7
+F=161 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=14/14
+F=161 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=20/20
+F=161 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=17/17
+F=161 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=1/1
+F=161 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=161 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=161 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=162 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=13/13
+F=162 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=18/18
+F=162 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=19/19
+F=162 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=14/14
+F=162 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=15/15
+F=162 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=4/4
+F=162 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=162 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=162 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=163 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=13/13
+F=163 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=11/11
+F=163 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=17/17
+F=163 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=14/14
+F=163 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=15/15
+F=163 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=163 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=163 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=163 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=164 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=13/13
+F=164 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=8/8
+F=164 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=18/18
+F=164 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=17/17
+F=164 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=16/16
+F=164 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=1/1
+F=164 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=164 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=164 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=165 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=165 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=15/15
+F=165 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=165 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=14/14
+F=165 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=13/13
+F=165 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=165 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=165 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=165 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=15/15
+F=166 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=19/19
+F=166 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=9/9
+F=166 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=166 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=19/19
+F=166 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=166 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=166 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=166 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=166 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=167 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=167 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=13/13
+F=167 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=15/15
+F=167 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=16/16
+F=167 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=16/16
+F=167 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=3/3
+F=167 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=167 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=167 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=168 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=168 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=16/16
+F=168 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=168 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=19/19
+F=168 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=16/16
+F=168 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=4/4
+F=168 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=168 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=168 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=169 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=11/11
+F=169 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=15/15
+F=169 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=169 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=12/12
+F=169 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=17/17
+F=169 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=2/2
+F=169 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=169 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=18/18
+F=169 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=170 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=19/19
+F=170 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=16/16
+F=170 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=170 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=16/16
+F=170 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=18/18
+F=170 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=5/5
+F=170 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=170 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=170 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=171 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=18/18
+F=171 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=12/12
+F=171 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=171 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=18/18
+F=171 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=171 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=0 matches=0/0
+F=171 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=171 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=171 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=15/15
+F=172 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=17/17
+F=172 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=18/18
+F=172 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=172 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=17/17
+F=172 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=19/19
+F=172 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=5/5
+F=172 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=172 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=172 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=173 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=173 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=10/10
+F=173 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=173 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=20/20
+F=173 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=173 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=3/3
+F=173 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=173 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=14/14
+F=173 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=16/16
+F=174 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=20/20
+F=174 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=11/11
+F=174 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=174 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=17/17
+F=174 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=15/15
+F=174 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=1/1
+F=174 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=174 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=19/19
+F=174 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
+F=175 VERIFY obj=124(nickel-bag-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=156 posOK=1 matches=14/14
+F=175 VERIFY obj=118(skeleton-arm-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=106 posOK=1 matches=14/14
+F=175 VERIFY obj=231(pirate-literature-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=185 posOK=1 matches=20/20
+F=175 VERIFY obj=120(two-balloons-icon-object) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=142 posOK=1 matches=18/18
+F=175 VERIFY obj=376(fortbase-elaine-statue) src=416x640 exp=936x1440 sizeOK=0 isHD=0 colors=35 posOK=1 matches=14/14
+F=175 VERIFY obj=105(system-cursor-icon) src=320x224 exp=720x504 sizeOK=0 isHD=0 colors=29 posOK=1 matches=4/4
+F=175 VERIFY obj=114(inventory-bg-object) src=2560x1888 exp=5760x4248 sizeOK=0 isHD=0 colors=4 posOK=1 matches=20/20
+F=175 VERIFY obj=115(increment-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=11/11
+F=175 VERIFY obj=116(decrement-inventory-arrow) src=320x160 exp=720x360 sizeOK=0 isHD=0 colors=244 posOK=1 matches=20/20
