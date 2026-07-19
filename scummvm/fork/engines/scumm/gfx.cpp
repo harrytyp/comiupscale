@@ -1745,7 +1745,7 @@ void ScummEngine::renderHDComposite() {
 		for (int bi = 0; bi < blastCount; bi++) {
 			const auto &eo = v6->getBlastObject(bi);
 			int obj_nr = eo.number;
-			if (obj_nr < 105 || obj_nr > 274 || eo.mode == 3)
+			if (obj_nr < 105 || obj_nr > 274 )
 				continue;
 			int objState = getState(obj_nr);
 			if (objState < 0) objState = 0;
