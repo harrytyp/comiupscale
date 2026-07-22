@@ -2286,6 +2286,27 @@ void ScummEngine::renderHDComposite() {
 
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
 	_hdFrameCount++;
+
+	// HD screenshot on F10
+	if (_keyPressed.keycode == Common::KEYCODE_F10) {
+		FILE *f = fopen("/tmp/hd_screenshot.ppm", "wb");
+		if (f) {
+			int shotW = _hdComposite.w;
+			int shotH = _hdComposite.h;
+			fprintf(f, "P6\n%d %d\n255\n", shotW, shotH);
+			for (int y = 0; y < shotH; y++) {
+				uint32 *row = (uint32 *)_hdComposite.getBasePtr(0, y);
+				for (int x = 0; x < shotW; x++) {
+					uint32 px = row[x];
+					fputc((px >> 16) & 0xFF, f);
+					fputc((px >> 8) & 0xFF, f);
+					fputc(px & 0xFF, f);
+				}
+			}
+			fclose(f);
+			warning("HD SCREENSHOT: F10 pressed, saved /tmp/hd_screenshot.ppm (%dx%d)", shotW, shotH);
+		}
+	}
 	if (_hdDebugDumpCount >= 3) {
 		if (_hdFrameCount > 10) {
 			hdDebugDump();
