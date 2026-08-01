@@ -29,6 +29,11 @@
 #include "common/file.h"
 #include "common/savefile.h"
 #include "common/keyboard.h"
+// Forward declarations
+namespace Scumm {
+class ScummFile;
+}
+
 #include "common/mutex.h"
 #include "common/random.h"
 #include "common/rect.h"

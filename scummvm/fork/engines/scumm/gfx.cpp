@@ -46,6 +46,7 @@
 #include "scumm/he/wiz_he.h"
 #include "image/png.h"
 #include "scumm/util.h"
+#include "common/config-manager.h"
 #include <cstdlib>
 #include <cmath>
 
@@ -1822,11 +1823,13 @@ void ScummEngine::renderHDComposite() {
 			if (a && a->_costume != 0 && a->_visible) {
 				int cel = a->_hdCurrentCel;
 				bool hasHd = _hdCostumeManager && _hdCostumeManager->isEnabled() && _hdCostumeManager->hasCostume(a->_costume, cel);
-				hdPrintf("ACTOR: id=%d costume=%04d cel=%d pos=(%d,%d) elev=%d xstart=%d scale=(%d,%d) w=%d top=%d bot=%d room=%d hd=%d rel=(%d,%d)",
+				hdPrintf("ACTOR: id=%d costume=%04d cel=%d pos=(%d,%d) elev=%d xstart=%d scale=(%d,%d) w=%d top=%d bot=%d room=%d hd=%d rel=(%d,%d) limb0=(%d,%d) nLimb=%d face=%d",
 					ai, a->_costume, cel, (int)a->getPos().x, (int)a->getPos().y,
 					a->getElevation(), vs->xstart,
 					a->_scalex, a->_scaley, a->_width, a->_top, a->_bottom,
-					a->_room, hasHd ? 1 : 0, a->_hdRelX, a->_hdRelY);
+					a->_room, hasHd ? 1 : 0, a->_hdRelX, a->_hdRelY,
+					a->_hdLimbDrawX[0], a->_hdLimbDrawY[0], a->_hdNumLimbs,
+					a->_hdFacingRight ? 1 : 0);
 			}
 		}
 	}
@@ -1852,25 +1855,54 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			// Collect per-limb HD cels (multi-limb support: body + head, etc.)
-			bool foundAnyLimb = false;
-			for (int li = 0; li < a->_hdNumLimbs && li < 16 && numEntries < 256; li++) {
-				int cel = a->_hdLimbCel[li];
-				if (cel <= 0) continue;
-				if (!_hdCostumeManager->hasCostume(a->_costume, cel)) {
-					step26_noHdCostume++;
-					continue;
+			// ── Complete character heuristic ──────────────────────────
+			// If all limbs reference the same cel, the HD texture contains the
+			// complete character pre-composited into one PNG. Draw it once at
+			// the actor's base position. If limbs reference different cels,
+			// draw each limb separately (individual parts mode).
+			bool sameCel = true;
+			int firstCel = a->_hdLimbCel[0];
+			for (int li = 1; li < a->_hdNumLimbs && li < 16; li++) {
+				if (a->_hdLimbCel[li] > 0 && a->_hdLimbCel[li] != firstCel) {
+					sameCel = false;
+					break;
 				}
+			}
+
+			bool foundAnyLimb = false;
+
+			if (sameCel && firstCel > 0 && _hdCostumeManager->hasCostume(a->_costume, firstCel)) {
+				// Complete character: single entry at actor's base position
 				int sortKey = (int)a->getPos().y - (int)a->_layer * 2000;
 				entries[numEntries].actor = a;
 				entries[numEntries].ai = ai;
-				entries[numEntries].cel = cel;
-				entries[numEntries].limb = li;
-				entries[numEntries].drawX = a->_hdLimbDrawX[li];
-				entries[numEntries].drawY = a->_hdLimbDrawY[li];
+				entries[numEntries].cel = firstCel;
+				entries[numEntries].limb = 0;
+				entries[numEntries].drawX = a->_hdRelX;
+				entries[numEntries].drawY = a->_hdRelY;
 				entries[numEntries].sortKey = sortKey;
 				numEntries++;
 				foundAnyLimb = true;
+			} else {
+				// Individual limbs: collect per-limb entries at accumulated positions
+				for (int li = 0; li < a->_hdNumLimbs && li < 16 && numEntries < 256; li++) {
+					int cel = a->_hdLimbCel[li];
+					if (cel <= 0) continue;
+					if (!_hdCostumeManager->hasCostume(a->_costume, cel)) {
+						step26_noHdCostume++;
+						continue;
+					}
+					int sortKey = (int)a->getPos().y - (int)a->_layer * 2000;
+					entries[numEntries].actor = a;
+					entries[numEntries].ai = ai;
+					entries[numEntries].cel = cel;
+					entries[numEntries].limb = li;
+					entries[numEntries].drawX = a->_hdLimbDrawX[li];
+					entries[numEntries].drawY = a->_hdLimbDrawY[li];
+					entries[numEntries].sortKey = sortKey;
+					numEntries++;
+					foundAnyLimb = true;
+				}
 			}
 			// Fallback: if no limb was found but costume exists, try frame 0
 			if (!foundAnyLimb && a->_costume != 0) {
@@ -1931,11 +1963,18 @@ void ScummEngine::renderHDComposite() {
 			// xMoveCur when !_drawActorToRight, then compData.x += xMoveCur.
 			// This means: facing right → screenX = actorX + xMoveCur
 			//             facing left  → screenX = actorX - xMoveCur
+			// Actor scaling: the 8-bit engine scales costumes via the scale
+			// table (paintCelByleRLECommon). HD must apply the same scale to
+			// position AND blit size, otherwise scaled actors (e.g. distant
+			// boats in room 10, scale 100-220) render far too large.
+			int sclX = MAX(1, (int)a->_scalex);
+			int sclY = MAX(1, (int)a->_scaley);
+			bool mirror = !a->_hdFacingRight;
 			int limbDrawX = entries[ei].drawX;
-			if (!a->_hdFacingRight)
+			if (mirror)
 				limbDrawX = -limbDrawX;
-			int64 hdCX = (int64)(drawX + limbDrawX) * hdW / MAX(1, _screenWidth);
-			int64 hdCY = (int64)(drawY + entries[ei].drawY) * hdH / MAX(1, _screenHeight);
+			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, _screenWidth);
+			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, _screenHeight);
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
 			if (hdCX <= 0 && hdCY <= 0) {
@@ -1943,13 +1982,19 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			// Clamp blit region AND source offset to prevent OOB access
-			int blitX = MAX(0, (int)hdCX);
+			// Scaled blit size. In 8-bit, a mirrored costume is drawn from
+			// (compData.x - width) to compData.x — the anchor is the RIGHT
+			// edge and the image is horizontally flipped. Without this,
+			// mirrored actors (facing left) render offset by a full width.
+			int blitW = hdCostumeSurf.w * sclX / 255;
+			int blitH = hdCostumeSurf.h * sclY / 255;
+			int64 hdX0 = mirror ? (hdCX - blitW) : hdCX;
+			int blitX = MAX(0, (int)hdX0);
 			int blitY = MAX(0, (int)hdCY);
-			int srcOffX = MAX(0, (int)(blitX - hdCX));
+			int srcOffX = MAX(0, (int)(blitX - hdX0));
 			int srcOffY = MAX(0, (int)(blitY - hdCY));
-			int blitW = MIN((int)hdCostumeSurf.w - srcOffX, (int)(hdW - blitX));
-			int blitH = MIN((int)hdCostumeSurf.h - srcOffY, (int)(hdH - blitY));
+			blitW = MIN(blitW - srcOffX, (int)(hdW - blitX));
+			blitH = MIN(blitH - srcOffY, (int)(hdH - blitY));
 
 			if (blitW <= 0 || blitH <= 0) {
 				warning("hd_trace: costume %04d frame %d off-screen (pos=%d,%d surf=%dx%d blit=%dx%d)",
@@ -1959,22 +2004,19 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 
-			// Safety: validate source bounds before blitting
-			if (srcOffX + blitW > hdCostumeSurf.w || srcOffY + blitH > hdCostumeSurf.h ||
-				blitX + blitW > (int)hdW || blitY + blitH > (int)hdH) {
-				hdCostumeSurf.free();
-				continue;
-			}
-
 			step26_loaded++;
 			if (_hdFrameCount % 30 == 0)
 				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
 					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
 			for (int oy = 0; oy < blitH; oy++) {
-				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(srcOffX, srcOffY + oy);
+				int srcY = MIN(hdCostumeSurf.h - 1, (srcOffY + oy) * 255 / sclY);
+				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(0, srcY);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
 				for (int ox = 0; ox < blitW; ox++) {
-					uint32 pix = srcRow[ox];
+					int srcX = MIN(hdCostumeSurf.w - 1, (srcOffX + ox) * 255 / sclX);
+					if (mirror)
+						srcX = hdCostumeSurf.w - 1 - srcX;
+					uint32 pix = srcRow[srcX];
 					uint8 alpha = (pix >> 24) & 0xFF;
 					int maskX = blitX + ox;
 					int maskY = blitY + oy;
@@ -2030,6 +2072,48 @@ void ScummEngine::renderHDComposite() {
 		}
 		if (_hdFrameCount % 30 == 0)
 			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
+
+		// ── HD Debug Overlay ──────────────────────────────────────
+		// Visualizes costume entry positioning on screen.
+		// Gated behind 'hd_debug_overlay' config (set it like 'hd_trace').
+		if (ConfMan.getBool("hd_debug_overlay", _targetName)) {
+			auto drawRect = [&](int x, int y, int w, int h, uint32 color) {
+				int l = MAX(0, x), t = MAX(0, y);
+				int r = MIN(hdW - 1, x + w), b = MIN(hdH - 1, y + h);
+				for (int px = l; px <= r; px++) {
+					*((uint32*)_hdComposite.getBasePtr(px, t)) = color;
+					*((uint32*)_hdComposite.getBasePtr(px, b)) = color;
+				}
+				for (int py = t + 1; py < b; py++) {
+					*((uint32*)_hdComposite.getBasePtr(l, py)) = color;
+					*((uint32*)_hdComposite.getBasePtr(r, py)) = color;
+				}
+			};
+			auto drawLabel = [&](int x, int y, const char *text) {
+				int lx = MAX(0, x), ly = MAX(0, y);
+				int len = (int)strlen(text);
+				for (int dy = 0; dy < 7 && ly + dy < hdH; dy++)
+					for (int dx = 0; dx < len * 6 && lx + dx < hdW; dx++)
+						*((uint32*)_hdComposite.getBasePtr(lx + dx, ly + dy)) = 0xFFFFFFFF;
+			};
+			// Summary
+			char sum[128];
+			snprintf(sum, sizeof(sum), "HD STEP2.6 F%d actors=%d/%d entries=%d", _hdFrameCount, _numActors, numEntries, numEntries);
+			drawLabel(8, 8, sum);
+			// Per-entry overlay
+			for (int ei = 0; ei < numEntries; ei++) {
+				Actor *ea = entries[ei].actor;
+				int64 hdEX = (int64)(ea->getPos().x - vs->xstart + entries[ei].drawX) * hdW / MAX(1, _screenWidth);
+				int64 hdEY = (int64)(ea->getPos().y - ea->getElevation() + entries[ei].drawY) * hdH / MAX(1, _screenHeight);
+				bool isComplete = (entries[ei].drawX == ea->_hdRelX);
+				uint32 boxCol = isComplete ? 0x00FF00FF : 0x00FFFF80;
+				drawRect((int)hdEX, (int)hdEY, 6, 6, boxCol);
+				char label[64];
+				snprintf(label, sizeof(label), "A%d C%d F%d %s",
+					ea->_number, ea->_costume, entries[ei].cel, isComplete ? "C" : "I");
+				drawLabel((int)hdEX + 8, (int)hdEY, label);
+			}
+		}
 	}
 	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes. [OPTIMIZED]
 	// Instead of scanning all 4.8M HD pixels, iterate 8-bit pixels (302K)
@@ -2212,10 +2296,10 @@ void ScummEngine::renderHDComposite() {
 			hdPrintf("step2.8b verb-items: drawn=%d", step28b_drawn);
 	}
 
-	// Step 2.9: (reserved — currently unused)
+	// Step 2.9: (reserved)
 
 	// drawVerbBitmap may have set it before the background was ready, or it may
-	// have been set in a previous frame when the inventory was open.
+	// have been set in a previous frame when the inventory was closed.
 	if (_hdVerbSurfaceValid) {
 		_hdVerbSurface.free();
 		_hdVerbSurfaceValid = false;
