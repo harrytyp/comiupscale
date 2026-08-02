@@ -20,6 +20,7 @@
  */
 
 #include "scumm/hd_costume_manager.h"
+#include "scumm/hd_fringe.h"
 #include "scumm/scumm.h"
 #include "common/config-manager.h"
 #include "common/debug.h"
@@ -172,6 +173,10 @@ bool HdCostumeManager::loadPNG(const Common::String &path, Graphics::Surface &su
 				sw2, sh2, bgR, bgG, bgB, transparentPixels, sw2 * sh2);
 		}
 	}
+
+	// Remove white fringe halos from AI upscaling (alpha-edge artifacts).
+	removeWhiteFringe(surf);
+
 	png.destroy();
 	return true;
 }
