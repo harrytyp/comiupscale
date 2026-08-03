@@ -1446,6 +1446,27 @@ void ScummEngine::renderHDComposite() {
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 
+			// ── HD wait cursor (hourglass) during room-enter loading ──
+			// The original game shows an hourglass while loading; we show
+			// the HD wait icon (obj 257 = 0003_system-wait-icon, room 3)
+			// as the OS cursor during the prewarm decode. The SDL cursor
+			// is an overlay, so it stays visible live while the frame is
+			// being composited; the next frame's setCursorFromImg
+			// restores the normal cursor automatically.
+			{
+				const Graphics::Surface *waitSurf = _hdObjectManager->getObjectSurface(257, 3, 0);
+				if (waitSurf && waitSurf->getPixels()) {
+					int cw = MAX(1, waitSurf->w / 4), ch = MAX(1, waitSurf->h / 4);
+					Graphics::Surface scaled;
+					scaled.create(cw, ch, waitSurf->format);
+					for (int y = 0; y < ch; y++)
+						for (int x = 0; x < cw; x++)
+							*(uint32 *)scaled.getBasePtr(x, y) = *(const uint32 *)waitSurf->getBasePtr(x * 4, y * 4);
+					CursorMan.replaceCursor(scaled, cw / 2, ch / 2, 0, true);
+					scaled.free();
+				}
+			}
+
 			// ── HD room prewarm (Issue #14 v2) ───────────────────
 			// Only the current room's OBJECT textures load synchronously
 			// (small, needed immediately). Costumes are prefetched
