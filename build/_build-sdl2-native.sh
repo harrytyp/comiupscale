@@ -104,7 +104,8 @@ SDLCONF
 fi
 
 # Verify X11 made it into the static lib (the whole point of this build)
-if ! strings "$SDL2_NATIVE_DIR/lib/libSDL2.a" 2>/dev/null | grep -q XOpenDisplay; then
+# NOTE: grep -c, not grep -q (pipefail + SIGPIPE issue, see windows script).
+if [ "$(strings "$SDL2_NATIVE_DIR/lib/libSDL2.a" 2>/dev/null | grep -c XOpenDisplay)" -eq 0 ]; then
     err "SDL2 static lib built WITHOUT X11 support — check the cmake output above"
     exit 1
 fi

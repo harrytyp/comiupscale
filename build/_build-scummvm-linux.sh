@@ -83,8 +83,9 @@ if [ ! -f "config.mk" ]; then
     ok "ScummVM configured for Linux"
 else
     info "Already configured — reusing config.mk"
-    # Verify PNG support is enabled (reconfigure if not)
-    if ! grep -q "USE_PNG = 1" config.mk 2>/dev/null; then
+    # Verify PNG support (anchored: the commented '# USE_PNG = 1' line
+    # must NOT count as enabled — that silent failure broke Linux builds)
+    if ! grep -qE "^USE_PNG = 1" config.mk 2>/dev/null; then
         info "PNG support not enabled — reconfiguring..."
         rm -f config.mk config.h config.log
         "$FORK_DIR/configure" \
@@ -112,7 +113,8 @@ fi
 # Verify static SDL2: the released Linux binary must be self-contained
 # (sdl2-config --libs returns -Bstatic flags). Dynamic SDL2 means desktop
 # users need a matching system SDL2 — we ship static instead.
-if ldd scummvm 2>/dev/null | grep -q libSDL2; then
+# NOTE: grep -c, not grep -q (pipefail + SIGPIPE issue, see windows script).
+if [ "$(ldd scummvm 2>/dev/null | grep -c libSDL2)" -ne 0 ]; then
     err "Linux binary still links dynamic SDL2 — sdl2-config --libs must return the static flags"
     exit 1
 fi
