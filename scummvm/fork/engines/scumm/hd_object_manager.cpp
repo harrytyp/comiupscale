@@ -326,12 +326,86 @@ int HdObjectManager::findObjectRoom(int obj_nr) const {
 	return rooms.begin()->_key;
 }
 
-void HdObjectManager::pruneCache(int maxEntries) {
-	// Simple LRU: when cache exceeds maxEntries, remove oldest entries
-	while ((int)_textureCache.size() > maxEntries) {
+int HdObjectManager::preloadRoom(int room) {
+	if (!_enabled)
+		return 0;
+
+	int loaded = 0;
+	for (Common::HashMap<int, ObjectInfo>::iterator it = _objectMap.begin(); it != _objectMap.end(); ++it) {
+		const ObjectInfo &info = it->_value;
+		Common::HashMap<int, Common::List<int>>::const_iterator rs = info.roomStates.find(room);
+		if (rs == info.roomStates.end())
+			continue;
+		for (Common::List<int>::const_iterator st = rs->_value.begin(); st != rs->_value.end(); ++st) {
+			Common::String path = buildObjectPath(room, info.name, *st);
+			if (_textureCache.contains(path))
+				continue;
+			Graphics::Surface surf;
+			if (loadPNG(path, surf)) {
+				pruneCache();
+				TextureCacheEntry entry;
+				entry.surface.copyFrom(surf);
+				entry.lastUsed = ++_lruCounter;
+				_textureCache[path] = entry;
+				surf.free();
+				loaded++;
+			}
+		}
+	}
+	return loaded;
+}
+
+void HdObjectManager::queueAllObjects() {
+	_pendingObjects.clear();
+	_pendingIdx = 0;
+	for (Common::HashMap<int, ObjectInfo>::iterator it = _objectMap.begin(); it != _objectMap.end(); ++it) {
+		const ObjectInfo &info = it->_value;
+		for (Common::HashMap<int, Common::List<int>>::const_iterator rs = info.roomStates.begin();
+		     rs != info.roomStates.end(); ++rs) {
+			for (Common::List<int>::const_iterator st = rs->_value.begin(); st != rs->_value.end(); ++st)
+				_pendingObjects.push_back(buildObjectPath(rs->_key, info.name, *st));
+		}
+	}
+	warning("OBJQUEUE: %d object textures queued for lazy loading", _pendingObjects.size());
+}
+
+int HdObjectManager::loadNextQueued(int budget) {
+	if (!_enabled || budget <= 0)
+		return 0;
+	int loaded = 0;
+	while (budget > 0 && _pendingIdx < (int)_pendingObjects.size()) {
+		Common::String path = _pendingObjects[_pendingIdx++];
+		if (_textureCache.contains(path))
+			continue;
+		Graphics::Surface surf;
+		if (loadPNG(path, surf)) {
+			pruneCache();
+			TextureCacheEntry entry;
+			entry.surface.copyFrom(surf);
+			entry.lastUsed = ++_lruCounter;
+			_textureCache[path] = entry;
+			surf.free();
+			loaded++;
+			budget--;
+		}
+	}
+	return loaded;
+}
+
+void HdObjectManager::pruneCache() {
+	// Byte-budget LRU: evict oldest entries only while the total cache
+	// size exceeds the budget. With 1.5 GB, all 600 object textures
+	// (~300 MB) stay cached permanently — no re-loading on room switches.
+	while (true) {
+		uint32 total = 0;
+		for (Common::HashMap<Common::String, TextureCacheEntry>::const_iterator it = _textureCache.begin();
+		     it != _textureCache.end(); ++it)
+			total += it->_value.surface.w * it->_value.surface.h * 4;
+		if (total <= _cacheBudgetBytes)
+			break;
 		Common::HashMap<Common::String, TextureCacheEntry>::iterator oldest = _textureCache.begin();
 		for (Common::HashMap<Common::String, TextureCacheEntry>::iterator it = _textureCache.begin();
-			 it != _textureCache.end(); ++it) {
+		     it != _textureCache.end(); ++it) {
 			if (it->_value.lastUsed < oldest->_value.lastUsed)
 				oldest = it;
 		}

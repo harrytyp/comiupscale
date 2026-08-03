@@ -284,26 +284,92 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 	return false;
 }
 
-// Preload ALL available frames of a costume into the cache (Issue #14).
-// Called on room enter so animation cel changes don't hit the render path.
-int HdCostumeManager::preloadCostume(int akosId) {
-	if (!_enabled)
+int HdCostumeManager::preloadCostumeRange(int akosId, int from, int to) {
+	if (!_enabled || !_akosSubs.contains(akosId))
 		return 0;
-	if (!_akosSubs.contains(akosId))
-		return 0;
-
 	int loaded = 0;
 	Graphics::Surface tmp;
-	for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
-	     it != _availableCostumes.end(); ++it) {
-		if (it->_key.akosId != akosId)
+	for (int f = from; f <= to; f++) {
+		bool allCached = true;
+		for (Common::List<int>::const_iterator si = _akosSubs[akosId].begin(); si != _akosSubs[akosId].end(); ++si) {
+			if (!_textureCache.contains(CostumeKey{akosId, *si, f})) {
+				allCached = false;
+				break;
+			}
+		}
+		if (allCached)
 			continue;
-		if (loadCostume(akosId, it->_key.frame, tmp)) {
+		if (loadCostume(akosId, f, tmp)) {
 			tmp.free();
 			loaded++;
 		}
 	}
 	return loaded;
+}
+
+bool HdCostumeManager::isFrameCached(int akosId, int frame) const {
+	for (Common::HashMap<int, Common::List<int>>::const_iterator it = _akosSubs.begin(); it != _akosSubs.end(); ++it) {
+		if (it->_key != akosId)
+			continue;
+		for (Common::List<int>::const_iterator si = it->_value.begin(); si != it->_value.end(); ++si) {
+			if (!_textureCache.contains(CostumeKey{akosId, *si, frame}))
+				return false;
+		}
+	}
+	return true;
+}
+
+// Time-sliced prefetch: load ONE uncached frame of a costume per call
+// (Issue #14 v2). Called between frames for visible actors — animations
+// cycle through their frames, so after one or two cycles the whole
+// animation is cached and the render path never hits a cache miss.
+int HdCostumeManager::preloadNext(int akosId) {
+	if (!_enabled)
+		return 0;
+	if (!_akosSubs.contains(akosId))
+		return 0;
+
+	// Lazily build the sorted frame list for this costume
+	if (!_framesByCostume.contains(akosId)) {
+		Common::Array<int> frames;
+		for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+		     it != _availableCostumes.end(); ++it) {
+			if (it->_key.akosId != akosId)
+				continue;
+			if (Common::find(frames.begin(), frames.end(), it->_key.frame) == frames.end())
+				frames.push_back(it->_key.frame);
+		}
+		Common::sort(frames.begin(), frames.end());
+		_framesByCostume[akosId] = frames;
+		_preloadCursor[akosId] = 0;
+	}
+
+	Common::Array<int> &frames = _framesByCostume[akosId];
+	if (frames.empty())
+		return 0;
+
+	int &cursor = _preloadCursor[akosId];
+	int start = cursor;
+	Graphics::Surface tmp;
+	do {
+		int frame = frames[cursor];
+		cursor = (cursor + 1) % frames.size();
+		// Skip if ALL subs of this frame are already cached
+		bool allCached = true;
+		for (Common::List<int>::const_iterator si = _akosSubs[akosId].begin(); si != _akosSubs[akosId].end(); ++si) {
+			if (!_textureCache.contains(CostumeKey{akosId, *si, frame})) {
+				allCached = false;
+				break;
+			}
+		}
+		if (allCached)
+			continue;
+		if (loadCostume(akosId, frame, tmp)) {
+			tmp.free();
+			return 1;
+		}
+	} while (cursor != start);
+	return 0;
 }
 
 bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest) {
@@ -355,19 +421,28 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		_textureCache[key] = entry;
 		dest.copyFrom(surf);
 		surf.free();
-		pruneCache(2000);
+		pruneCache();
 		return true;
 	}
 	return false;
 }
 
-void HdCostumeManager::pruneCache(int maxEntries) {
-	while ((int)_textureCache.size() > maxEntries) {
+void HdCostumeManager::pruneCache() {
+	// Byte-budget LRU: evict oldest entries only while the total cache
+	// size exceeds the budget. With 1.5 GB, the current + previous room's
+	// costumes stay cached — switching back doesn't reload anything.
+	while (true) {
+		uint32 total = 0;
+		for (Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::const_iterator it = _textureCache.begin();
+		     it != _textureCache.end(); ++it)
+			total += it->_value.surface.w * it->_value.surface.h * 4;
+		if (total <= _cacheBudgetBytes)
+			break;
 		// Find least recently used
 		CostumeKey oldestKey = _textureCache.begin()->_key;
 		int oldestTime = _lruCounter;
 		for (Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::iterator it = _textureCache.begin();
-			 it != _textureCache.end(); ++it) {
+		     it != _textureCache.end(); ++it) {
 			if (it->_value.lastUsed < oldestTime) {
 				oldestTime = it->_value.lastUsed;
 				oldestKey = it->_key;

@@ -1446,35 +1446,51 @@ void ScummEngine::renderHDComposite() {
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
 
-			// ── HD Prewarm (Issue #14) ────────────────────────────
-			// Load this room's objects (all states — room scripts change
-			// object states during the first frames of initialization)
-			// and ALL frames of the visible actors' costumes into the
-			// texture caches NOW, so the first rendered frames don't
-			// hitch on synchronous PNG decode. The one-time cost lands
-			// in the room transition instead of gameplay.
-			int prewarmObjs = 0, prewarmCostumes = 0;
-			for (int di = _numLocalObjects - 1; di > 0; di--) {
-				ObjectData &dod = _objs[di];
-				if (dod.obj_nr == 0) continue;
-				for (int st = 0; st < 16; st++) {
-					if (_hdObjectManager->hasObject(dod.obj_nr, _currentRoom, st)) {
-						_hdObjectManager->getObjectSurface(dod.obj_nr, _currentRoom, st);
-						prewarmObjs++;
-					}
-				}
+			// ── HD room prewarm (Issue #14 v2) ───────────────────
+			// Only the current room's OBJECT textures load synchronously
+			// (small, needed immediately). Costumes are prefetched
+			// time-sliced per frame (see prefetch loop at frame end);
+			// other rooms' objects load lazily in the background when
+			// the prefetch budget has nothing better to do.
+			static bool hdObjQueueInit = false;
+			if (!hdObjQueueInit && _hdObjectManager) {
+				hdObjQueueInit = true;
+				_hdObjectManager->queueAllObjects();
 			}
+			int prewarmObjs = 0;
+			if (_hdObjectManager && _hdObjectManager->isEnabled())
+				prewarmObjs = _hdObjectManager->preloadRoom(_currentRoom);
+
+			// Costumes: preload the CURRENT cels of visible actors plus
+			// the next ~30 frames of their playing animation — enough to
+			// cover the room's intro animation without decoding all 25k
+			// frames (v1 mistake). The per-frame prefetch fills in any
+			// gaps afterwards; the budget cache keeps it all resident,
+			// so switching back to this room costs nothing.
+			int prewarmCostumes = 0;
 			if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+				Graphics::Surface tmpSurf;
 				for (int ai = 0; ai < _numActors; ai++) {
 					Actor *a = _actors[ai];
-					// Only prewarm visible actors — hidden/not-yet-spawned
-					// actors would waste decode time on unused frames.
-					if (!a || a->_costume == 0 || !a->_visible) continue;
-					prewarmCostumes += _hdCostumeManager->preloadCostume(a->_costume);
+					if (!a || a->_costume == 0 || !a->_visible)
+						continue;
+					int maxCel = 0;
+					for (int li = 0; li < a->_hdNumLimbs && li < 16; li++) {
+						int cel = a->_hdLimbCel[li];
+						if (cel <= 0)
+							continue;
+						maxCel = MAX(maxCel, cel);
+						if (!_hdCostumeManager->isFrameCached(a->_costume, cel)) {
+							_hdCostumeManager->loadCostume(a->_costume, cel, tmpSurf);
+							tmpSurf.free();
+							prewarmCostumes++;
+						}
+					}
+					prewarmCostumes += _hdCostumeManager->preloadCostumeRange(a->_costume, maxCel + 1, maxCel + 30);
 				}
 			}
 			if (prewarmObjs || prewarmCostumes)
-				hdPrintf("PREWARM: room %d — %d object states, %d costume frames cached", _currentRoom, prewarmObjs, prewarmCostumes);
+				hdPrintf("PREWARM: room %d — %d objects, %d costume frames cached", _currentRoom, prewarmObjs, prewarmCostumes);
 		}
 	// ── Inventory Active Detection ──────────────────────────
 		// Uses cursor (obj=105) visibility in the 8-bit composite:
@@ -2458,6 +2474,56 @@ void ScummEngine::renderHDComposite() {
 		hdAccumMs = 0;
 		hdAccumFrames = 0;
 		hdMaxMs = 0;
+	}
+
+	// ── Time-sliced prefetch (Issue #14 v2) ──────────────────────────
+	// Runs AFTER the frame was composited and timed, so it never blocks
+	// rendering and stays out of the FRAME-TIMING measurement.
+	// Priority 1: the CURRENT cels of visible actors (needed next frame).
+	// Priority 2: future frames of their animations (preloadNext).
+	// Priority 3 (leftover time): lazy object queue (other rooms).
+	// Hard time slice: at most ~12 ms per frame — when nothing needs
+	// loading the whole block costs only a few cache lookups.
+	{
+		uint32 pfStart = _system->getMillis();
+		const uint32 pfSliceMs = 12;
+		bool pfBudget = true;
+		if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+			for (int ai = 0; ai < _numActors && pfBudget; ai++) {
+				Actor *a = _actors[ai];
+				if (!a || a->_costume == 0 || !a->_visible)
+					continue;
+				// 1) current cels first — the animation needs them NOW
+				Graphics::Surface tmpSurf;
+				for (int li = 0; li < a->_hdNumLimbs && li < 16; li++) {
+					int cel = a->_hdLimbCel[li];
+					if (cel <= 0)
+						continue;
+					if (!_hdCostumeManager->isFrameCached(a->_costume, cel)) {
+						_hdCostumeManager->loadCostume(a->_costume, cel, tmpSurf);
+						tmpSurf.free();
+						if (_system->getMillis() - pfStart >= pfSliceMs) {
+							pfBudget = false;
+							break;
+						}
+					}
+				}
+				// 2) future frames (time permitting)
+				if (pfBudget && _hdCostumeManager->preloadNext(a->_costume)) {
+					if (_system->getMillis() - pfStart >= pfSliceMs)
+						pfBudget = false;
+				}
+			}
+		}
+		// 3) lazy object queue with leftover time
+		if (pfBudget && _hdObjectManager && _hdObjectManager->isEnabled()) {
+			uint32 budget = 4;
+			while (budget > 0 && _system->getMillis() - pfStart < pfSliceMs) {
+				if (!_hdObjectManager->loadNextQueued(1))
+					break;
+				budget--;
+			}
+		}
 	}
 }
 

@@ -60,7 +60,13 @@ public:
 	 * Returns true on success.
 	 */
 	bool loadCostume(int akosId, int frame, Graphics::Surface &dest);
-	int preloadCostume(int akosId);
+	bool isFrameCached(int akosId, int frame) const;
+	int preloadNext(int akosId);
+
+	/** Load all uncached frames of a costume in [from..to] (wraps via
+	 *  loadCostume's modulo). Called on room enter for the animation
+	 *  range the actors are currently playing. Returns frames loaded. */
+	int preloadCostumeRange(int akosId, int from, int to);
 
 	/** Returns true if HD costume mode is active. */
 	bool isEnabled() const { return _enabled; }
@@ -100,6 +106,14 @@ private:
 	Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash> _textureCache;
 	int _lruCounter;
 
+	// Time-sliced prefetch state: per-costume frame list + cursor
+	Common::HashMap<int, Common::Array<int>> _framesByCostume;
+	Common::HashMap<int, int> _preloadCursor;
+
+	// Cache eviction budget (bytes) — current + previous room's costumes
+	// stay cached; eviction only when the budget is exceeded.
+	static const uint32 _cacheBudgetBytes = 1500 * 1024 * 1024;
+
 	// Base HD path
 	Common::String _hdPath;
 
@@ -110,7 +124,7 @@ private:
 	bool loadPNG(const Common::String &path, Graphics::Surface &surf);
 
 	/** Evict old cache entries when over limit. */
-	void pruneCache(int maxEntries = 128);
+	void pruneCache();
 };
 
 } // End of namespace Scumm

@@ -68,6 +68,19 @@ public:
 	/** Get the name associated with an obj_nr (from DOBJ mapping). */
 	Common::String getObjectName(int obj_nr) const;
 
+	/** Load all object textures of one room into the cache (synchronous,
+	 *  called on room enter — the room's objects are needed immediately). */
+	int preloadRoom(int room);
+
+	/** Build the lazy background queue: every object texture of every
+	 *  room that isn't cached yet, in room order. Called once at HD init. */
+	void queueAllObjects();
+
+	/** Lazily load up to @p budget uncached objects from the queue.
+	 *  Returns the number actually decoded. Called between frames with
+	 *  leftover prefetch budget (costumes have priority). */
+	int loadNextQueued(int budget);
+
 	/** Find the first room that has this object in the mapping.
 	 *  Returns -1 if the object is not in the map at all.
 	 *  Used for inventory items whose files reside in a different
@@ -101,6 +114,15 @@ private:
 	Common::HashMap<Common::String, TextureCacheEntry> _textureCache;
 	int _lruCounter;
 
+	// Lazy background queue: object paths of all rooms not yet cached
+	Common::Array<Common::String> _pendingObjects;
+	int _pendingIdx;
+
+	// Cache eviction budget (bytes) — evict oldest entries only when
+	// the total cache size exceeds this. 1.5 GB fits all object textures
+	// of all rooms plus a couple of rooms' worth of costumes.
+	static const uint32 _cacheBudgetBytes = 1500 * 1024 * 1024;
+
 	// Base path for HD assets (e.g. "game/hd")
 	Common::String _hdPath;
 	Common::String _fallbackPath;
@@ -113,7 +135,7 @@ private:
 	bool loadPNG(const Common::String &path, Graphics::Surface &surf);
 
 	// Clean old cache entries
-	void pruneCache(int maxEntries = 2000);
+	void pruneCache();
 };
 
 } // End of namespace Scumm
