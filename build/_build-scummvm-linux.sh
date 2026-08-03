@@ -109,6 +109,14 @@ if [ ! -f "scummvm" ]; then
     exit 1
 fi
 
+# Verify static SDL2: the released Linux binary must be self-contained
+# (sdl2-config --libs returns -Bstatic flags). Dynamic SDL2 means desktop
+# users need a matching system SDL2 — we ship static instead.
+if ldd scummvm 2>/dev/null | grep -q libSDL2; then
+    err "Linux binary still links dynamic SDL2 — sdl2-config --libs must return the static flags"
+    exit 1
+fi
+
 # Copy to output
 cp scummvm "$SCUMMVM_LINUX"
 

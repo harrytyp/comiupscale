@@ -68,10 +68,15 @@ bash build/build-all.sh
 | pkg-config | Library detection | `sudo apt install pkg-config` |
 | make | Build orchestrator | (included in build-essential) |
 | curl | File download | `sudo apt install curl` |
+| X11 dev headers | Required for SDL2 X11 video (desktop window) | `sudo apt install libx11-dev libxext-dev libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxinerama-dev libxss-dev` |
+| ALSA dev headers | Required for SDL2 audio | `sudo apt install libasound2-dev` |
 
-**Note:** The build script builds SDL2 from source using cmake. If SDL2
-development headers are already installed on your system (from
-`libsdl2-dev`), the script will detect and use them instead.
+**Note:** The Linux binary links SDL2 **statically** (with X11 + ALSA), so
+the released binary is self-contained. The X11/ALSA dev headers are needed
+at build time only — the runtime uses the system's dynamic X11/ALSA libs,
+which every desktop distro ships. The SDL2 build script fails hard if
+these headers are missing, instead of silently producing a headless-only
+binary.
 
 ### 2. Linux Build
 

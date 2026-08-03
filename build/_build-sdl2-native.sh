@@ -26,19 +26,21 @@ BUILD_DIR_SDL2="$SDL2_SRC/build-native"
 mkdir -p "$BUILD_DIR_SDL2"
 
 info "Configuring SDL2 (native)..."
-# Build SDL2 with X11 and OpenGL support.
-# We try to use system X11 if available; if not, we build without X11
-# (will fall back to offscreen driver for headless builds).
+# Build SDL2 with X11 and OpenGL support. X11 is REQUIRED — a build
+# without it produces a binary that cannot open a window on desktop
+# systems. Fail hard instead of silently degrading.
 X11_OPT="ON"
 if ! has_pkg x11; then
-    warn "X11 development headers not found (libx11-dev / libX11-devel)"
-    warn "Building SDL2 without X11 — only offscreen/software rendering will work."
-    warn ""
-    warn "For desktop use, install X11 dev headers and rebuild:"
-    warn "  sudo apt install libx11-dev libxext-dev libxcursor-dev \\"
-    warn "                     libxi-dev libxfixes-dev libxrandr-dev"
-    warn ""
-    X11_OPT="OFF"
+    err "X11 development headers not found (libx11-dev / libX11-devel)"
+    err "Desktop users need X11 video support. Install:"
+    err "  sudo apt install libx11-dev libxext-dev libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxinerama-dev libxss-dev"
+    exit 1
+fi
+if ! has_pkg alsound; then
+    err "ALSA development headers not found (libasound2-dev)"
+    err "Audio is required. Install:"
+    err "  sudo apt install libasound2-dev"
+    exit 1
 fi
 
 # OpenGL check (needed by ScummVM)
@@ -91,8 +93,8 @@ while [ "$#" -gt 0 ]; do
         --exec-prefix) echo "$prefix" ;;
         --version) echo "2.30.11" ;;
         --cflags) echo "-I${includedir}/SDL2 -D_REENTRANT" ;;
-        --libs) echo "-L${libdir} -lSDL2" ;;
-        --static-libs) echo "-L${libdir} -lSDL2 -lm -ldl -lpthread" ;;
+        --libs) echo "-L${libdir} -Wl,-Bstatic -lSDL2 -Wl,-Bdynamic -lX11 -lXext -lXrandr -lXinerama -lXi -lXcursor -lXfixes -lXss -lasound -ldl -lpthread -lm" ;;
+        --static-libs) echo "-L${libdir} -Wl,-Bstatic -lSDL2 -Wl,-Bdynamic -lX11 -lXext -lXrandr -lXinerama -lXi -lXcursor -lXfixes -lXss -lasound -ldl -lpthread -lm" ;;
         *) echo "${usage}" 1>&2; exit 1 ;;
     esac
     shift
@@ -101,4 +103,9 @@ SDLCONF
     chmod +x "$SDL2_NATIVE_DIR/bin/sdl2-config"
 fi
 
-ok "SDL2 (native) built and installed to $SDL2_NATIVE_DIR"
+# Verify X11 made it into the static lib (the whole point of this build)
+if ! strings "$SDL2_NATIVE_DIR/lib/libSDL2.a" 2>/dev/null | grep -q XOpenDisplay; then
+    err "SDL2 static lib built WITHOUT X11 support — check the cmake output above"
+    exit 1
+fi
+ok "SDL2 (native) built with X11 + ALSA, installed to $SDL2_NATIVE_DIR"
