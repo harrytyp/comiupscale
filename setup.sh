@@ -20,7 +20,7 @@ set -euo pipefail
 
 GH_REPO="harrytyp/comiupscale"
 GAME_DIR=""
-BINARY_TAG="v0.0.65"
+BINARY_TAG="v0.0.66"
 ASSETS_TAG="hd_assets_v1.0.3"
 NO_VIDEOS=false
 
