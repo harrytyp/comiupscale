@@ -113,7 +113,7 @@ private:
 	bool loadPNG(const Common::String &path, Graphics::Surface &surf);
 
 	// Clean old cache entries
-	void pruneCache(int maxEntries = 64);
+	void pruneCache(int maxEntries = 2000);
 };
 
 } // End of namespace Scumm

@@ -1445,6 +1445,36 @@ void ScummEngine::renderHDComposite() {
 					dod.x_pos, dod.y_pos, dod.width, dod.height,
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
 			}
+
+			// ── HD Prewarm (Issue #14) ────────────────────────────
+			// Load this room's objects (all states — room scripts change
+			// object states during the first frames of initialization)
+			// and ALL frames of the visible actors' costumes into the
+			// texture caches NOW, so the first rendered frames don't
+			// hitch on synchronous PNG decode. The one-time cost lands
+			// in the room transition instead of gameplay.
+			int prewarmObjs = 0, prewarmCostumes = 0;
+			for (int di = _numLocalObjects - 1; di > 0; di--) {
+				ObjectData &dod = _objs[di];
+				if (dod.obj_nr == 0) continue;
+				for (int st = 0; st < 16; st++) {
+					if (_hdObjectManager->hasObject(dod.obj_nr, _currentRoom, st)) {
+						_hdObjectManager->getObjectSurface(dod.obj_nr, _currentRoom, st);
+						prewarmObjs++;
+					}
+				}
+			}
+			if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
+				for (int ai = 0; ai < _numActors; ai++) {
+					Actor *a = _actors[ai];
+					// Only prewarm visible actors — hidden/not-yet-spawned
+					// actors would waste decode time on unused frames.
+					if (!a || a->_costume == 0 || !a->_visible) continue;
+					prewarmCostumes += _hdCostumeManager->preloadCostume(a->_costume);
+				}
+			}
+			if (prewarmObjs || prewarmCostumes)
+				hdPrintf("PREWARM: room %d — %d object states, %d costume frames cached", _currentRoom, prewarmObjs, prewarmCostumes);
 		}
 	// ── Inventory Active Detection ──────────────────────────
 		// Uses cursor (obj=105) visibility in the 8-bit composite:

@@ -284,6 +284,28 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 	return false;
 }
 
+// Preload ALL available frames of a costume into the cache (Issue #14).
+// Called on room enter so animation cel changes don't hit the render path.
+int HdCostumeManager::preloadCostume(int akosId) {
+	if (!_enabled)
+		return 0;
+	if (!_akosSubs.contains(akosId))
+		return 0;
+
+	int loaded = 0;
+	Graphics::Surface tmp;
+	for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+	     it != _availableCostumes.end(); ++it) {
+		if (it->_key.akosId != akosId)
+			continue;
+		if (loadCostume(akosId, it->_key.frame, tmp)) {
+			tmp.free();
+			loaded++;
+		}
+	}
+	return loaded;
+}
+
 bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest) {
 	if (!_enabled)
 		return false;
@@ -333,7 +355,7 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		_textureCache[key] = entry;
 		dest.copyFrom(surf);
 		surf.free();
-		pruneCache(512);
+		pruneCache(2000);
 		return true;
 	}
 	return false;

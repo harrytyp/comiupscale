@@ -60,6 +60,7 @@ public:
 	 * Returns true on success.
 	 */
 	bool loadCostume(int akosId, int frame, Graphics::Surface &dest);
+	int preloadCostume(int akosId);
 
 	/** Returns true if HD costume mode is active. */
 	bool isEnabled() const { return _enabled; }
