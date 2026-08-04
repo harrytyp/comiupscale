@@ -2142,6 +2142,20 @@ int CharsetRendererNut::draw2byte(byte *buffer, Common::Rect &clipRect, int x, i
 }
 
 int CharsetRendererNut::drawCharV7(byte *buffer, Common::Rect &clipRect, int x, int y, int pitch, int16 col, TextStyleFlags flags, byte chr) {
+	// Record HD font character for the HD composite pass (Step 2.7).
+	// COMI (v8) renders all text through this Nut path; without this the
+	// HD font sheets were never drawn (Issue #17) - same pattern as the
+	// Classic renderer hook.
+	if (_vm->_hdFontManager && _vm->_hdFontManager->isEnabled() && _curId >= 0 && _curId <= 4) {
+		if (_vm->_hdFontManager->hasFont(_curId)) {
+			ScummEngine::HdFontChar fc;
+			fc.chr = chr;
+			fc.fontSlot = _curId;
+			fc.x = x;
+			fc.y = y;
+			_vm->_hdFontChars.push_back(fc);
+		}
+	}
 	assert(_current);
 	return _current->drawCharV7(buffer, clipRect, x, y, pitch, col, flags, chr);
 }
