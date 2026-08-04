@@ -19,6 +19,9 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
+#include "scumm/hd_batch_decode.h"
 #include "scumm/hd_costume_manager.h"
 #include "scumm/hd_fringe.h"
 #include "scumm/scumm.h"
@@ -287,23 +290,43 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 int HdCostumeManager::preloadCostumeRange(int akosId, int from, int to) {
 	if (!_enabled || !_akosSubs.contains(akosId))
 		return 0;
-	int loaded = 0;
-	Graphics::Surface tmp;
-	for (int f = from; f <= to; f++) {
-		bool allCached = true;
-		for (Common::List<int>::const_iterator si = _akosSubs[akosId].begin(); si != _akosSubs[akosId].end(); ++si) {
-			if (!_textureCache.contains(CostumeKey{akosId, *si, f})) {
-				allCached = false;
-				break;
-			}
-		}
-		if (allCached)
+
+	// Collect uncached frames in [from..to] (only frames that exist)
+	Common::Array<CostumeKey> keys;
+	Common::Array<HdDecodeJob> jobs;
+	for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+	     it != _availableCostumes.end(); ++it) {
+		if (it->_key.akosId != akosId)
 			continue;
-		if (loadCostume(akosId, f, tmp)) {
-			tmp.free();
+		if (it->_key.frame < from || it->_key.frame > to)
+			continue;
+		if (_textureCache.contains(it->_key))
+			continue;
+		keys.push_back(it->_key);
+		HdDecodeJob job;
+		job.path = buildCostumePath(akosId, it->_key.akosSub, it->_key.frame);
+		job.ok = false;
+		jobs.push_back(job);
+	}
+	if (jobs.empty())
+		return 0;
+
+	// Parallel decode (Issue #14 — PNG decode is the dominant load cost)
+	hdDecodeBatch(jobs, 4);
+
+	int loaded = 0;
+	for (uint i = 0; i < jobs.size(); i++) {
+		if (jobs[i].ok) {
+			TextureCacheEntry entry;
+			entry.surface.copyFrom(jobs[i].surface);
+			entry.lastUsed = ++_lruCounter;
+			_textureCache[keys[i]] = entry;
 			loaded++;
 		}
+		jobs[i].surface.free();
 	}
+	if (loaded)
+		pruneCache();
 	return loaded;
 }
 

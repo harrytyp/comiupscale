@@ -19,6 +19,9 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
+#include "scumm/hd_batch_decode.h"
 #include "scumm/hd_object_manager.h"
 #include "scumm/hd_fringe.h"
 #include "scumm/scumm.h"
@@ -330,7 +333,7 @@ int HdObjectManager::preloadRoom(int room) {
 	if (!_enabled)
 		return 0;
 
-	int loaded = 0;
+	Common::Array<Common::String> paths;
 	for (Common::HashMap<int, ObjectInfo>::iterator it = _objectMap.begin(); it != _objectMap.end(); ++it) {
 		const ObjectInfo &info = it->_value;
 		Common::HashMap<int, Common::List<int>>::const_iterator rs = info.roomStates.find(room);
@@ -340,18 +343,34 @@ int HdObjectManager::preloadRoom(int room) {
 			Common::String path = buildObjectPath(room, info.name, *st);
 			if (_textureCache.contains(path))
 				continue;
-			Graphics::Surface surf;
-			if (loadPNG(path, surf)) {
-				pruneCache();
-				TextureCacheEntry entry;
-				entry.surface.copyFrom(surf);
-				entry.lastUsed = ++_lruCounter;
-				_textureCache[path] = entry;
-				surf.free();
-				loaded++;
-			}
+			paths.push_back(path);
 		}
 	}
+	if (paths.empty())
+		return 0;
+
+	// Parallel decode (Issue #14 — PNG decode is the dominant load cost)
+	Common::Array<HdDecodeJob> jobs;
+	jobs.resize(paths.size());
+	for (uint i = 0; i < paths.size(); i++) {
+		jobs[i].path = paths[i];
+		jobs[i].ok = false;
+	}
+	hdDecodeBatch(jobs, 4);
+
+	int loaded = 0;
+	for (uint i = 0; i < jobs.size(); i++) {
+		if (jobs[i].ok) {
+			TextureCacheEntry entry;
+			entry.surface.copyFrom(jobs[i].surface);
+			entry.lastUsed = ++_lruCounter;
+			_textureCache[paths[i]] = entry;
+			loaded++;
+		}
+		jobs[i].surface.free();
+	}
+	if (loaded)
+		pruneCache();
 	return loaded;
 }
 
