@@ -243,6 +243,20 @@ int NutRenderer::drawCharV7(byte *buffer, Common::Rect &clipRect, int x, int y, 
 	if (_direction < 0)
 		x -= _chars[chr].width;
 
+	// Record HD font character for the HD composite pass (Step 2.7).
+	// The Classic renderer already did this; COMI (v8) uses NutRenderer,
+	// so without this the HD font sheets were never drawn (Issue #17).
+	if (_vm->_hdFontManager && _vm->_hdFontManager->isEnabled() && _curId >= 0 && _curId <= 4) {
+		if (_vm->_hdFontManager->hasFont(_curId)) {
+			ScummEngine::HdFontChar fc;
+			fc.chr = chr;
+			fc.fontSlot = _curId;
+			fc.x = x;
+			fc.y = y;
+			_vm->_hdFontChars.push_back(fc);
+		}
+	}
+
 	int width = MIN((int)_chars[chr].width, clipRect.right - x);
 	int height = MIN((int)_chars[chr].height, clipRect.bottom - y);
 	int minX = x < clipRect.left ? clipRect.left - x : 0;
