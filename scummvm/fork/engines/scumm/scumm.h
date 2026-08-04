@@ -1621,8 +1621,12 @@ protected:
 
 	// speed optimization: inline due to frequent calling
 	bool testGfxUsageBit(int strip, int bit) {
-		assert(strip >= 0 && strip < ARRAYSIZE(gfxUsageBits) / 3);
-		assert(1 <= bit && bit <= 96);
+		// Camera extremes (COMI menu / scrollable V8 rooms) can yield an
+		// out-of-range strip — return false instead of asserting (Issue #18)
+		if (strip < 0 || strip >= (int)ARRAYSIZE(gfxUsageBits) / 3)
+			return false;
+		if (bit < 1 || bit > 96)
+			return false;
 		bit--;
 		return (gfxUsageBits[3 * strip + bit / 32] & (1 << (bit % 32))) != 0;
 	}

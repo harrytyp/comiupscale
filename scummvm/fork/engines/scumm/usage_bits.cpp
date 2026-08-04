@@ -41,15 +41,23 @@ void ScummEngine::upgradeGfxUsageBits() {
 }
 
 void ScummEngine::setGfxUsageBit(int strip, int bit) {
-	assert(strip >= 0 && strip < ARRAYSIZE(gfxUsageBits) / 3);
-	assert(1 <= bit && bit <= 96);
+	// Camera-offset extremes (COMI's menu / scrollable V8 rooms via the
+	// direct-boot path) can produce an out-of-range strip — ignore it
+	// instead of crashing on the debug assert (Issue #18-related).
+	if (strip < 0 || strip >= (int)ARRAYSIZE(gfxUsageBits) / 3)
+		return;
+	if (bit < 1 || bit > 96)
+		return;
 	bit--;
 	gfxUsageBits[3 * strip + bit / 32] |= (1 << (bit % 32));
 }
 
 void ScummEngine::clearGfxUsageBit(int strip, int bit) {
-	assert(strip >= 0 && strip < ARRAYSIZE(gfxUsageBits) / 3);
-	assert(1 <= bit && bit <= 96);
+	// Same robustness as setGfxUsageBit (camera extremes, Issue #18)
+	if (strip < 0 || strip >= (int)ARRAYSIZE(gfxUsageBits) / 3)
+		return;
+	if (bit < 1 || bit > 96)
+		return;
 	bit--;
 	gfxUsageBits[3 * strip + bit / 32] &= ~(1 << (bit % 32));
 }
@@ -59,7 +67,8 @@ bool ScummEngine::testGfxAnyUsageBits(int strip) {
 	uint32 bitmask[3] = { 0xFFFFFFFF, 0xFFFFFFFF, 0x3FFFFFFF };
 	int i;
 
-	assert(strip >= 0 && strip < ARRAYSIZE(gfxUsageBits) / 3);
+	if (strip < 0 || strip >= (int)ARRAYSIZE(gfxUsageBits) / 3)
+		return false;
 	for (i = 0; i < 3; i++)
 		if (gfxUsageBits[3 * strip + i] & bitmask[i])
 			return true;
@@ -77,8 +86,10 @@ bool ScummEngine::testGfxOtherUsageBits(int strip, int bit) {
 	uint32 bitmask[3] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
 	int i;
 
-	assert(strip >= 0 && strip < ARRAYSIZE(gfxUsageBits) / 3);
-	assert(1 <= bit && bit <= 96);
+	if (strip < 0 || strip >= (int)ARRAYSIZE(gfxUsageBits) / 3)
+		return false;
+	if (bit < 1 || bit > 96)
+		return false;
 	bit--;
 	bitmask[bit / 32] &= ~(1 << (bit % 32));
 

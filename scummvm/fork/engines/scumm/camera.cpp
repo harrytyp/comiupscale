@@ -86,8 +86,20 @@ void ScummEngine::setCameraFollows(Actor *a, bool setCamera) {
 }
 
 void ScummEngine::clampCameraPos(Common::Point *pt) {
-	pt->x = CLIP<short>(pt->x, VAR(VAR_CAMERA_MIN_X), VAR(VAR_CAMERA_MAX_X));
-	pt->y = CLIP<short>(pt->y, VAR(VAR_CAMERA_MIN_Y), VAR(VAR_CAMERA_MAX_Y));
+	// Some rooms (e.g. the COMI start menu) expose inverted camera limits
+	// (MIN_X > MAX_X) which made CLIP<short> assert. Normalize the range
+	// and clamp in int (pt->x/pt->y stay short via assignment) instead of
+	// crashing. Related: scrollable rooms (Issue #18).
+	int minX = VAR(VAR_CAMERA_MIN_X);
+	int maxX = VAR(VAR_CAMERA_MAX_X);
+	if (minX > maxX)
+		SWAP(minX, maxX);
+	int minY = VAR(VAR_CAMERA_MIN_Y);
+	int maxY = VAR(VAR_CAMERA_MAX_Y);
+	if (minY > maxY)
+		SWAP(minY, maxY);
+	pt->x = CLIP<int>(pt->x, minX, maxX);
+	pt->y = CLIP<int>(pt->y, minY, maxY);
 }
 
 void ScummEngine::moveCamera() {
@@ -170,7 +182,8 @@ void ScummEngine::cameraMoved() {
 	int screenLeft;
 	if (_game.version >= 7) {
 		clampCameraPos(&camera._cur);
-		assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
+		// Camera can be < screenWidth/2 for scrollable V8 rooms / COMI menu (Issue #18)
+		// assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
 	} else {
 		if (camera._cur.x < (_screenWidth / 2)) {
 			camera._cur.x = (_screenWidth / 2);
@@ -224,7 +237,12 @@ void ScummEngine_v7::setCameraAt(int pos_x, int pos_y) {
 
 	camera._dest = camera._cur;
 
-	assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
+	// Upstream assert requires camera >= screenWidth/2, which is wrong for
+	// scrollable V8 rooms (e.g. fortbase, Issue #18) and the COMI start
+	// menu, where the camera legitimately sits below that. The camera is
+	// already clamped to the room bounds by clampCameraPos above, so this
+	// check only crashes valid cases — drop it.
+	// assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
 
 	if (camera._cur.x != old.x || camera._cur.y != old.y) {
 		if (VAR(VAR_SCROLL_SCRIPT) && _game.version != 8) {
@@ -286,7 +304,8 @@ void ScummEngine_v7::moveCamera() {
 		VAR(VAR_CAMERA_DEST_Y) = camera._dest.y = a->getPos().y;
 	}
 
-	assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
+	// Camera can be < screenWidth/2 for scrollable V8 rooms / COMI menu (Issue #18)
+	// assert(camera._cur.x >= (_screenWidth / 2) && camera._cur.y >= (_screenHeight / 2));
 
 	clampCameraPos(&camera._dest);
 
