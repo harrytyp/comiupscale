@@ -26,6 +26,7 @@
 #include "scumm/file.h"
 #include "scumm/imuse_digi/dimuse_bndmgr.h"
 #include "scumm/imuse_digi/dimuse_codecs.h"
+#include "common/debug.h"
 
 namespace Scumm {
 
@@ -155,6 +156,114 @@ BundleMgr::~BundleMgr() {
 	delete _file;
 }
 
+// Issue #19: try to open "<name>.wav" as a CD-quality external music track.
+// Builds a synthetic iMUS/MAP/FRMT header so the iMUSE dispatch parser sees
+// a normal stream: the header describes 16-bit PCM at the WAV's rate.
+void BundleMgr::openExternal(const char *name) {
+	closeExternal();
+	_extTrackName = name;
+
+	Common::String base(name);
+	Common::Path wavPath(base + ".wav");
+
+	// Parse RIFF/WAVE header (also serves as existence + format check)
+	Common::File f;
+	if (!f.open(wavPath))
+		return;
+
+	// Walk chunks to find fmt + data
+	uint32 dataOffset = 0, dataLen = 0;
+	uint16 channels = 1, bits = 16;
+	uint32 sampleRate = 22050;
+	// Skip the 12-byte RIFF header ('RIFF' + size + 'WAVE')
+	f.skip(12);
+	// RIFF header already consumed: pos = 12 (after 'RIFF' size 'WAVE')
+	while (f.pos() + 8 <= f.size()) {
+		uint32 cid = f.readUint32BE();
+		uint32 clen = f.readUint32LE();
+		uint32 chunkStart = f.pos() - 8;           // where this chunk began
+		uint32 next = chunkStart + 8 + clen + (clen & 1);  // next chunk
+		debug(3, "HQ-MUSIC: chunk '%c%c%c%c' clen=%u at %u", (cid>>24)&0xff, (cid>>16)&0xff, (cid>>8)&0xff, cid&0xff, clen, chunkStart);
+		if (cid == MKTAG('f','m','t',' ')) {
+			f.readUint16LE();  // format tag (must be 1 = PCM, assumed)
+			channels = f.readUint16LE();
+			sampleRate = f.readUint32LE();
+			f.skip(6);         // byteRate(4) + blockAlign(2)
+			bits = f.readUint16LE();
+		} else if (cid == MKTAG('d','a','t','a')) {
+			dataOffset = chunkStart + 8;
+			dataLen = clen;
+			break;
+		}
+		if (next > f.size())
+			break;
+		f.seek(next);
+	}
+	if (!dataOffset || !dataLen) {
+		warning("HQ-MUSIC: %s has no data chunk", name);
+		return;
+	}
+
+	// Store the raw stream (re-open at the data offset)
+	_extStream = new Common::File();
+	if (!((Common::File *)_extStream)->open(wavPath)) {
+		delete _extStream;
+		_extStream = nullptr;
+		return;
+	}
+	_extStream->seek(dataOffset);
+	_extStreamDataOffset = dataOffset;
+	_extStreamDataLen = dataLen;
+
+	// Only 16-bit PCM is supported (the FRMT header describes 16-bit words).
+	if (bits != 16) {
+		warning("HQ-MUSIC: %s is not 16-bit PCM (%d bit)", name, bits);
+		closeExternal();
+		return;
+	}
+
+	// Build the FULL synthetic stream header (mapSize + MAP + FRMT):
+	// The engine reads offset 0..0x10 for the iMUS/MAP check, then reads
+	// size = mapSize + 24 bytes as the map. map[4] (= stream offset 24)
+	// MUST equal size (52) — it marks where the audio data begins.
+	// Layout (big-endian):
+	//   0: 'iMUS'   4: mapSize(28)   8: 'MAP '  12: mapSize(28)
+	//  16: 'FRMT'  20: blkSize-8(20) 24: offset(52 = data start)
+	//  28: empty(0) 32: wordSize(16) 36: rate    40: channels  44..51: 0
+	const int hdrSize = 52;
+	memset(_extHeader, 0, sizeof(_extHeader));
+	memcpy(_extHeader + 0, "iMUS", 4);
+	WRITE_BE_UINT32(_extHeader + 4, 28);
+	memcpy(_extHeader + 8, "MAP ", 4);
+	WRITE_BE_UINT32(_extHeader + 12, 28);
+	memcpy(_extHeader + 16, "FRMT", 4);
+	WRITE_BE_UINT32(_extHeader + 20, 20);   // block size - 8
+	WRITE_BE_UINT32(_extHeader + 24, hdrSize);  // data start offset (=52)
+	WRITE_BE_UINT32(_extHeader + 28, 0);    // empty
+	WRITE_BE_UINT32(_extHeader + 32, 16);   // wordSize
+	WRITE_BE_UINT32(_extHeader + 36, sampleRate);
+	WRITE_BE_UINT32(_extHeader + 40, channels);
+	// 44..51 padding zero
+
+	_extHeaderSent = false;
+	_extReadTotal = 0;
+	_extStreamDataOffset = dataOffset;
+	_extStreamDataLen = dataLen;
+	debug(3, "HQ-MUSIC: external track %s.wav (%d Hz, %d ch, %d bytes PCM)", name, sampleRate, channels, dataLen);
+}
+
+void BundleMgr::closeExternal() {
+	if (_extStream) {
+		delete _extStream;
+		_extStream = nullptr;
+	}
+	_extTrackName = "";
+	_extStreamDataOffset = 0;
+	_extStreamDataLen = 0;
+	_extHeaderSent = false;
+	_extReadTotal = 0;
+}
+
 Common::SeekableReadStream *BundleMgr::getFile(const char *filename, int32 &offset, int32 &size) {
 	BundleDirCache::IndexNode target;
 	Common::strlcpy(target.filename, filename, sizeof(target.filename));
@@ -219,6 +328,7 @@ void BundleMgr::close() {
 		free(_compInputBuff);
 		_compInputBuff = nullptr;
 	}
+	closeExternal();
 }
 
 bool BundleMgr::loadCompTable(int32 index) {
@@ -261,6 +371,26 @@ int32 BundleMgr::seekFile(int32 offset, int mode) {
 	// We don't actually seek the file, but instead try to find that the specified offset exists
 	// within the decompressed blocks, and save that offset in _curDecompressedFilePos
 	int result = 0;
+
+	// Issue #19: external WAV track — position is the PCM data offset.
+	if (_extStream) {
+		switch (mode) {
+		case SEEK_END:
+			result = offset + _extStreamDataLen;
+			break;
+		case SEEK_SET:
+		default:
+			result = offset;
+			break;
+		}
+		if (result < 0)
+			result = 0;
+		if (result > _extStreamDataLen)
+			result = _extStreamDataLen;
+		_curDecompressedFilePos = result;
+		return result;
+	}
+
 	switch (mode) {
 	case SEEK_END:
 		if (_isUncompressed) {
@@ -288,11 +418,23 @@ int32 BundleMgr::seekFile(int32 offset, int mode) {
 }
 
 int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool header_outside) {
-	int32 final_size = 0;
 
 	if (!_file->isOpen()) {
 		error("BundleMgr::readFile() File is not open");
 		return 0;
+	}
+
+	// Issue #19: CD-quality replacement — if "<name>.wav" exists next to the
+	// game data, stream that instead of the bundle's IMX-ADPCM audio.
+	// Checked first so external files take priority over the bundle.
+	{
+		Common::Path extPath(Common::String(name) + ".wav");
+		if (Common::File::exists(extPath)) {
+			if (!_extStream || _extTrackName != name)
+				openExternal(name);   // (re)open for this track
+			if (_extStream)
+				return readFileExternal(name, size, comp_final);
+		}
 	}
 
 	// Find the sound in the bundle
@@ -395,7 +537,82 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 	}
 
 	debug(2, "BundleMgr::readFile() Failed finding sound %s", name);
-	return final_size;
+	return readFileExternal(name, size, comp_final);
+}
+
+// Issue #19 fallback: sound not in bundle -> try external WAV.
+// The streamer calls seek() then read(); we serve the WAV PCM at the
+// position set by seekFile (position = byte offset into the PCM data).
+// The first openSound() readFile(0x2000) serves the synthetic iMUS/MAP/FRMT
+// header (52 bytes); after that, all reads are raw PCM from the WAV.
+int32 BundleMgr::readFileExternal(const char *name, int32 size, byte **comp_final) {
+	if (!_extStream) {
+		// First call for this sound: try to open the WAV
+		openExternal(name);
+		if (!_extStream) {
+			debug(2, "HQ-MUSIC: no external track for %s", name);
+			return 0;
+		}
+	}
+
+	const int hdrSize = 52;  // synthetic iMUS/MAP/FRMT header length
+
+	// Serve the synthetic header first (only once).
+	if (!_extHeaderSent) {
+		int avail = hdrSize - _extReadTotal;
+		int take = MIN(avail, size);
+		*comp_final = (byte *)malloc(take ? take : 1);
+		memcpy(*comp_final, _extHeader + _extReadTotal, take);
+		_extReadTotal += take;
+		_extHeaderSent = (_extReadTotal >= hdrSize);
+		_curDecompressedFilePos = 0;   // audio data starts at 0 after header
+		debug(3, "HQ-MUSIC: served header %d bytes for %s (total %d)", take, name, _extReadTotal);
+		// Append audio if the caller asked for more than the header.
+		if (take < size && _extHeaderSent) {
+			int32 take2 = MIN(_extStreamDataLen, size - take);
+			if (take2 > 0) {
+				byte *extended = (byte *)realloc(*comp_final, take + take2);
+				if (extended) {
+					*comp_final = extended;
+					_extStream->seek(_extStreamDataOffset);
+					uint32 got = _extStream->read(*comp_final + take, take2);
+					_extReadTotal += got;
+					_curDecompressedFilePos = got;
+					debug(3, "HQ-MUSIC: %s header+audio served %d+%d bytes", name, take, got);
+					return take + got;
+				}
+			}
+		}
+		return take;
+	}
+
+	// Audio data: read from the position set by seekFile().
+	int32 wantPos = _curDecompressedFilePos;
+	if (wantPos >= _extStreamDataLen) {
+		// Loop: restart from 0 (iMUSE loops the stream)
+		wantPos = 0;
+		_curDecompressedFilePos = 0;
+	}
+	_extStream->seek(_extStreamDataOffset + wantPos);
+
+	int32 remaining = _extStreamDataLen - wantPos;
+	int32 take = MIN(remaining, size);
+	if (take <= 0)
+		return 0;
+
+	*comp_final = (byte *)malloc(take);
+	uint32 got = _extStream->read(*comp_final, take);
+	_curDecompressedFilePos += got;
+	// Verify: hash the first 256 bytes served at pos 0 against the WAV.
+	if (wantPos == 0 && !_extHashLogged) {
+		uint32 h = 0;
+		for (int i = 0; i < 256 && i < (int)got; i++)
+			h = (h << 5) + h + (*comp_final)[i];
+		debug(3, "HQ-MUSIC: %s first-bytes-hash=%08x (pos0, %d bytes)", name, h, MIN(256, (int)got));
+		_extHashLogged = true;
+	}
+	debug(3, "HQ-MUSIC: %s served %d bytes at pos %d/%d", name, got, wantPos, _extStreamDataLen);
+	return got;
 }
 
 bool BundleMgr::isExtCompBun(byte gameId) {

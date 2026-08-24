@@ -94,6 +94,22 @@ private:
 	int _lastBlock = 0;
 	bool loadCompTable(int32 index);
 
+	// Issue #19: CD-quality external music tracks (WAV drop-in).
+	// When a sound is not found in the bundle, try "<name>.wav" next to the
+	// game data. The WAV (44.1k/22.05k 16-bit stereo/mono PCM) is streamed
+	// through the same readFile() path with a synthetic iMUS/MAP/FRMT header
+	// so the iMUSE dispatch parser is unchanged.
+	Common::SeekableReadStream *_extStream = nullptr;
+	Common::String _extTrackName;        // which track the external stream is for
+	int32 _extStreamDataOffset = 0;  // byte offset of PCM data inside the WAV
+	int32 _extStreamDataLen = 0;     // PCM data length in bytes
+	byte _extHeader[64];             // synthetic iMUS/MAP/FRMT header (52 bytes used)
+	bool _extHeaderSent = false;
+	bool _extHashLogged = false;      // hash of first bytes logged once
+	int32 _extReadTotal = 0;         // bytes of header+PCM handed out so far
+	void openExternal(const char *name);
+	void closeExternal();
+
 public:
 
 	BundleMgr(const ScummEngine *vm, BundleDirCache *_cache);
@@ -104,6 +120,7 @@ public:
 	Common::SeekableReadStream *getFile(const char *filename, int32 &offset, int32 &size);
 	int32 seekFile(int32 offset, int size);
 	int32 readFile(const char *name, int32 size, byte **compFinal, bool headerOutside);
+	int32 readFileExternal(const char *name, int32 size, byte **compFinal);
 	bool isExtCompBun(byte gameId);
 };
 
