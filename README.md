@@ -14,7 +14,61 @@ COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM 
 - 🎭 **25,303 costume frames** — HD characters in full detail
 - 🖼️ **81 HD backgrounds** — every room upscaled
 - 🎬 **15 HD videos** — AI-upscaled cutscenes (optional)
+- 🎵 **CD-quality music** — replace the compressed in-game music with the lossless soundtrack (optional)
 - 🔧 **No patching** — original game files remain untouched
+
+---
+
+## 🎵 CD-Quality Music (Issue #19)
+
+Replace the game's compressed music (IMX-ADPCM, 22 kHz) with the **lossless CD-quality soundtrack**. The game automatically plays a WAV file whenever one exists with the matching name — everything else stays on the original music.
+
+### 1. Get the soundtrack
+
+Download the official soundtrack rip from the Internet Archive (free, legal fan rip of the commercial OST):
+
+- **Archive.org:** [The Curse of Monkey Island Soundtrack](https://archive.org/details/the-curse-of-monkey-island-soundtrack) (FLAC + MP3)
+
+### 2. Convert to WAV
+
+The game reads **16-bit PCM WAV** files. Convert the FLACs you need:
+
+```bash
+# Example: convert track 18 (The Voodoo Lady) to a WAV
+ffmpeg -i "18 The Voodoo Lady.flac" -ac 2 -ar 44100 "1215-V~1.IMX.wav"
+```
+
+**Which files to create?** The game looks for files named after its internal music cues. The most useful ones (room music):
+
+| Game cue (room) | OST track |
+|-----------------|-----------|
+| `1099-M~1.IMX` (Melee Town) | 01 The Adventure Continues |
+| `1100-H~1.IMX` (Deck) | 06 Bloodnose the Pirate |
+| `1215-V~1.IMX` (Voodoo Lady) | 18 The Voodoo Lady |
+| `1285-B~1.IMX` (Barber Shop) | 26 Three Barbers and a Captain |
+| `1435-H~1.IMX` (Hotel Bar) | 58 The Goodsoup Hotel |
+| `1450-W~1.IMX` (Windmill) | 55 Western Windmill |
+
+A full mapping of all 129 cues is in [`tools/music_map/`](tools/music_map/) (`hq_music_map.json`).
+
+### 3. Install
+
+Copy the converted WAV files into your **`game/` folder** (next to `COMI.LA0`):
+
+```
+game/
+├── COMI.LA0
+├── COMI.LA1
+├── COMI.LA2
+├── RESOURCE/
+├── 1099-M~1.IMX.wav      ← music replacement
+├── 1215-V~1.IMX.wav      ← music replacement
+└── ...
+```
+
+**That's it.** The next time that music cue plays, you hear the CD-quality version. Cues without a matching WAV keep the original music. No settings, no config.
+
+> **Note:** 16-bit PCM WAV at any sample rate works (22.05 kHz and 44.1 kHz both tested). Stereo or mono both work.
 
 ---
 

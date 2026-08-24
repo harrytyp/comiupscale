@@ -1,0 +1,502 @@
+{
+  "1098-C~1IMX": {
+    "offset_sec": -29.51,
+    "ost": "ost_10_A_Cartographer_Reformed.wav"
+  },
+  "1099-M~1IMX": {
+    "offset_sec": 11.26,
+    "ost": "ost_01_The_Adventure_Continues.wav"
+  },
+  "1100-H~1IMX": {
+    "offset_sec": -1.7,
+    "ost": "ost_06_Bloodnose_the_Pirate.wav"
+  },
+  "1101-W~1IMX": {
+    "offset_sec": -2.24,
+    "ost": "ost_08_The_Death_Starfish.wav"
+  },
+  "1102-H~1IMX": {
+    "offset_sec": 26.11,
+    "ost": "ost_78_Ending_Credits.wav"
+  },
+  "1103-W~1IMX": {
+    "offset_sec": -2.36,
+    "ost": "ost_09_An_Arm,_a_Cutlass,_and_Murray.wav"
+  },
+  "1104-C~1IMX": {
+    "offset_sec": -2.15,
+    "ost": "ost_07_It_Must_Come_Down.wav"
+  },
+  "1105-T~1IMX": {
+    "offset_sec": 20.77,
+    "ost": "ost_11_Taste_Cold_Steel.wav"
+  },
+  "1200-F~1IMX": {
+    "offset_sec": -2.47,
+    "ost": "ost_14_Welcome_to_Plunder_Island.wav"
+  },
+  "1201-P~1IMX": {
+    "offset_sec": -2.48,
+    "ost": "ost_14_Welcome_to_Plunder_Island.wav"
+  },
+  "1202-P~1IMX": {
+    "offset_sec": -0.02,
+    "ost": "ost_16_The_International_Ship_of_Mojo.wav"
+  },
+  "1203-P~1IMX": {
+    "offset_sec": 32.47,
+    "ost": "ost_16_The_International_Ship_of_Mojo.wav"
+  },
+  "1204-P~1IMX": {
+    "offset_sec": 64.96,
+    "ost": "ost_16_The_International_Ship_of_Mojo.wav"
+  },
+  "1205-V~1IMX": {
+    "offset_sec": -2.51,
+    "ost": "ost_17_Pull_Tongue_for_Service.wav"
+  },
+  "1210-V~1IMX": {
+    "offset_sec": 42.0,
+    "ost": "ost_17_Pull_Tongue_for_Service.wav"
+  },
+  "1215-V~1IMX": {
+    "offset_sec": -2.94,
+    "ost": "ost_18_The_Voodoo_Lady.wav"
+  },
+  "1219-P~1IMX": {
+    "offset_sec": 6.48,
+    "ost": "ost_24_Identification_Required.wav"
+  },
+  "1220-P~1IMX": {
+    "offset_sec": -3.07,
+    "ost": "ost_15_Elaine's_Third.wav"
+  },
+  "1223-C~1IMX": {
+    "offset_sec": -2.91,
+    "ost": "ost_24_Identification_Required.wav"
+  },
+  "1224-P~1IMX": {
+    "offset_sec": -2.11,
+    "ost": "ost_25_Brimstone_Beach_Club.wav"
+  },
+  "1225-B~1IMX": {
+    "offset_sec": -2.1,
+    "ost": "ost_25_Brimstone_Beach_Club.wav"
+  },
+  "1230-C~1IMX": {
+    "offset_sec": -1.95,
+    "ost": "ost_29_Becoming_Snake_Fodder.wav"
+  },
+  "1232-B~1IMX": {
+    "offset_sec": 14.01,
+    "ost": "ost_29_Becoming_Snake_Fodder.wav"
+  },
+  "1235-Q~1IMX": {
+    "offset_sec": -2.29,
+    "ost": "ost_30_Going_Down.wav"
+  },
+  "1240-D~1IMX": {
+    "offset_sec": -3.09,
+    "ost": "ost_32_Beached_Rowboat.wav"
+  },
+  "1245-R~1IMX": {
+    "offset_sec": -1.86,
+    "ost": "ost_34_Crossing_the_Cove.wav"
+  },
+  "1247-A~1IMX": {
+    "offset_sec": -2.39,
+    "ost": "ost_35_The_Sea_Cucumber.wav"
+  },
+  "1250-C~1IMX": {
+    "offset_sec": 28.21,
+    "ost": "ost_35_The_Sea_Cucumber.wav"
+  },
+  "1255-M~1IMX": {
+    "offset_sec": 63.56,
+    "ost": "ost_35_The_Sea_Cucumber.wav"
+  },
+  "1260-T~1IMX": {
+    "offset_sec": -2.41,
+    "ost": "ost_20_Bottomless_Mug_Special.wav"
+  },
+  "1265-M~1IMX": {
+    "offset_sec": -2.24,
+    "ost": "ost_21_A_Serene_Hillock.wav"
+  },
+  "1266-M~1IMX": {
+    "offset_sec": -1.59,
+    "ost": "ost_21_A_Serene_Hillock.wav"
+  },
+  "1270-W~1IMX": {
+    "offset_sec": 0.96,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1272-P~1IMX": {
+    "offset_sec": -1.45,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1274-W~1IMX": {
+    "offset_sec": 29.78,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1276-S~1IMX": {
+    "offset_sec": 29.78,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1277-W~1IMX": {
+    "offset_sec": 75.8,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1278-J~1IMX": {
+    "offset_sec": 75.8,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "1280-C~1IMX": {
+    "offset_sec": -1.02,
+    "ost": "ost_22_Tasty_Buttery_Biscuits.wav"
+  },
+  "1285-B~1IMX": {
+    "offset_sec": -2.55,
+    "ost": "ost_26_Three_Barbers_and_a_Captain.wav"
+  },
+  "1286-V~1IMX": {
+    "offset_sec": 59.44,
+    "ost": "ost_31_Back_for_a_Quick_Snip.wav"
+  },
+  "1287-B~1IMX": {
+    "offset_sec": 59.85,
+    "ost": "ost_26_Three_Barbers_and_a_Captain.wav"
+  },
+  "1288-H~1IMX": {
+    "offset_sec": -3.03,
+    "ost": "ost_31_Back_for_a_Quick_Snip.wav"
+  },
+  "1289-R~1IMX": {
+    "offset_sec": 122.29,
+    "ost": "ost_26_Three_Barbers_and_a_Captain.wav"
+  },
+  "1305-D~1IMX": {
+    "offset_sec": -0.88,
+    "ost": "ost_39_All_Hands_on_Deck.wav"
+  },
+  "1310-C~1IMX": {
+    "offset_sec": -2.02,
+    "ost": "ost_42_Chartering_Destiny.wav"
+  },
+  "1320-S~1IMX": {
+    "offset_sec": -1.96,
+    "ost": "ost_43_Unleash_the_Cannons.wav"
+  },
+  "1325-S~1IMX": {
+    "offset_sec": -1.95,
+    "ost": "ost_44_Mildly_Fearsome_Pirates.wav"
+  },
+  "1327-S~1IMX": {
+    "offset_sec": -1.95,
+    "ost": "ost_47_Guybrush_the_Mighty.wav"
+  },
+  "1330-T~1IMX": {
+    "offset_sec": -2.55,
+    "ost": "ost_45_Kenny's_Cannons.wav"
+  },
+  "1335-S~1IMX": {
+    "offset_sec": 48.92,
+    "ost": "ost_46_Really_Fearsome_Pirates.wav"
+  },
+  "1340-S~1IMX": {
+    "offset_sec": 69.11,
+    "ost": "ost_44_Mildly_Fearsome_Pirates.wav"
+  },
+  "1345-G~1IMX": {
+    "offset_sec": 23.53,
+    "ost": "ost_47_Guybrush_the_Mighty.wav"
+  },
+  "1400-W~1IMX": {
+    "offset_sec": -1.76,
+    "ost": "ost_50_Mutiny_on_the_Shore.wav"
+  },
+  "1405-B~1IMX": {
+    "offset_sec": -4.27,
+    "ost": "ost_51_A_Forgotten_Island.wav"
+  },
+  "1410-C~1IMX": {
+    "offset_sec": -1.17,
+    "ost": "ost_54_Imprisoned_in_Riches.wav"
+  },
+  "1415-L~1IMX": {
+    "offset_sec": -3.44,
+    "ost": "ost_52_Whispers_of_the_Lighthouse.wav"
+  },
+  "1420-V~1IMX": {
+    "offset_sec": -3.23,
+    "ost": "ost_53_Lemonhead's_Domain.wav"
+  },
+  "1423-V~1IMX": {
+    "offset_sec": 86.26,
+    "ost": "ost_53_Lemonhead's_Domain.wav"
+  },
+  "1425-A~1IMX": {
+    "offset_sec": 42.26,
+    "ost": "ost_53_Lemonhead's_Domain.wav"
+  },
+  "1430-H~1IMX": {
+    "offset_sec": -2.76,
+    "ost": "ost_56_Tiki_Lights_and_Cheese.wav"
+  },
+  "1435-H~1IMX": {
+    "offset_sec": -3.97,
+    "ost": "ost_58_The_Goodsoup_Hotel.wav"
+  },
+  "1440-H~1IMX": {
+    "offset_sec": 155.47,
+    "ost": "ost_58_The_Goodsoup_Hotel.wav"
+  },
+  "1445-T~1IMX": {
+    "offset_sec": 103.61,
+    "ost": "ost_58_The_Goodsoup_Hotel.wav"
+  },
+  "1447-G~1IMX": {
+    "offset_sec": 48.02,
+    "ost": "ost_58_The_Goodsoup_Hotel.wav"
+  },
+  "1448-G~1IMX": {
+    "offset_sec": -3.33,
+    "ost": "ost_61_Old_Blind_Pew.wav"
+  },
+  "1450-W~1IMX": {
+    "offset_sec": -4.49,
+    "ost": "ost_55_Western_Windmill.wav"
+  },
+  "1455-C~1IMX": {
+    "offset_sec": -3.34,
+    "ost": "ost_61_Old_Blind_Pew.wav"
+  },
+  "1460-C~1IMX": {
+    "offset_sec": -1.97,
+    "ost": "ost_62_Goodsoup_Family_Crypt.wav"
+  },
+  "1463-G~1IMX": {
+    "offset_sec": -0.79,
+    "ost": "ost_64_Murray_the_Demonic.wav"
+  },
+  "1465-M~1IMX": {
+    "offset_sec": -0.29,
+    "ost": "ost_63_Insert_Disk_23.wav"
+  },
+  "1475-S~1IMX": {
+    "offset_sec": -30.46,
+    "ost": "ost_61_Old_Blind_Pew.wav"
+  },
+  "1477-S~1IMX": {
+    "offset_sec": -2.12,
+    "ost": "ost_60_Stan_the_Man.wav"
+  },
+  "1480-E~1IMX": {
+    "offset_sec": -3.19,
+    "ost": "ost_67_The_Lost_Welshman's_Port.wav"
+  },
+  "1485-S~1IMX": {
+    "offset_sec": 4.39,
+    "ost": "ost_68_A_Rabbit_and_a_Duck.wav"
+  },
+  "1490-S~1IMX": {
+    "offset_sec": -1.92,
+    "ost": "ost_70_Poker_for_a_Diamond.wav"
+  },
+  "1500-L~1IMX": {
+    "offset_sec": -0.3,
+    "ost": "ost_73_Laying_Down_the_Score.wav"
+  },
+  "1505-C~1IMX": {
+    "offset_sec": 3.47,
+    "ost": "ost_74_Pint-Sized_Pirate.wav"
+  },
+  "1511-H~1IMX": {
+    "offset_sec": -2.29,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "1512-RUMIMX": {
+    "offset_sec": 40.8,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "1513-T~1IMX": {
+    "offset_sec": 83.88,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "1514-S~1IMX": {
+    "offset_sec": 126.6,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "1515-C~1IMX": {
+    "offset_sec": -0.98,
+    "ost": "ost_78_Ending_Credits.wav"
+  },
+  "1520-C~1IMX": {
+    "offset_sec": 103.96,
+    "ost": "ost_74_Pint-Sized_Pirate.wav"
+  },
+  "2105-I~1IMX": {
+    "offset_sec": -0.3,
+    "ost": "ost_05_The_Demise_of_LeChuck.wav"
+  },
+  "2200-I~1IMX": {
+    "offset_sec": -0.49,
+    "ost": "ost_13_The_Curse_Gets_Worse.wav"
+  },
+  "2210-K~1IMX": {
+    "offset_sec": -0.8,
+    "ost": "ost_19_To_Danjer_Cove_She_Goes.wav"
+  },
+  "2225-D~1IMX": {
+    "offset_sec": 104.91,
+    "ost": "ost_36_A_Piratey_Show.wav"
+  },
+  "2232-A~1IMX": {
+    "offset_sec": -1.14,
+    "ost": "ost_23_Reserving_a_Seat.wav"
+  },
+  "2233-A~1IMX": {
+    "offset_sec": 17.88,
+    "ost": "ost_23_Reserving_a_Seat.wav"
+  },
+  "2235-S~1IMX": {
+    "offset_sec": 17.88,
+    "ost": "ost_23_Reserving_a_Seat.wav"
+  },
+  "2245-C~1IMX": {
+    "offset_sec": -2.33,
+    "ost": "ost_21_A_Serene_Hillock.wav"
+  },
+  "2250-C~1IMX": {
+    "offset_sec": 10.27,
+    "ost": "ost_28_Rubber_Tree.wav"
+  },
+  "2255-D~1IMX": {
+    "offset_sec": -1.63,
+    "ost": "ost_27_Preparing_for_War.wav"
+  },
+  "2260-B~1IMX": {
+    "offset_sec": -1.09,
+    "ost": "ost_28_Rubber_Tree.wav"
+  },
+  "2275-M~1IMX": {
+    "offset_sec": 90.28,
+    "ost": "ost_35_The_Sea_Cucumber.wav"
+  },
+  "2285-S~1IMX": {
+    "offset_sec": 124.13,
+    "ost": "ost_35_The_Sea_Cucumber.wav"
+  },
+  "2287-T~1IMX": {
+    "offset_sec": 33.76,
+    "ost": "ost_24_Identification_Required.wav"
+  },
+  "2300-T~1IMX": {
+    "offset_sec": -1.29,
+    "ost": "ost_38_Three_Sheets_to_the_Wind.wav"
+  },
+  "2301-I~1IMX": {
+    "offset_sec": 8.65,
+    "ost": "ost_38_Three_Sheets_to_the_Wind.wav"
+  },
+  "2302-R~1IMX": {
+    "offset_sec": -0.87,
+    "ost": "ost_40_Rottingham_Takes_the_Map.wav"
+  },
+  "2311-S~1IMX": {
+    "offset_sec": 15.09,
+    "ost": "ost_41_A_Pirate_I_Was_Meant_to_Be.wav"
+  },
+  "2336-R~1IMX": {
+    "offset_sec": 23.32,
+    "ost": "ost_46_Really_Fearsome_Pirates.wav"
+  },
+  "2337-R~1IMX": {
+    "offset_sec": 23.44,
+    "ost": "ost_44_Mildly_Fearsome_Pirates.wav"
+  },
+  "2338-I~1IMX": {
+    "offset_sec": -1.51,
+    "ost": "ost_46_Really_Fearsome_Pirates.wav"
+  },
+  "2339-I~1IMX": {
+    "offset_sec": 45.92,
+    "ost": "ost_44_Mildly_Fearsome_Pirates.wav"
+  },
+  "2400-I~1IMX": {
+    "offset_sec": -0.37,
+    "ost": "ost_49_Thieves,_The_Bartender,_His_Aunt_And_Her_Lover.wav"
+  },
+  "2408-F~1IMX": {
+    "offset_sec": 19.08,
+    "ost": "ost_59_Death_of_Threepwood.wav"
+  },
+  "2410-P~1IMX": {
+    "offset_sec": -0.49,
+    "ost": "ost_59_Death_of_Threepwood.wav"
+  },
+  "2414-G~1IMX": {
+    "offset_sec": -1.95,
+    "ost": "ost_65_Lovers_Reunited.wav"
+  },
+  "2420-E~1IMX": {
+    "offset_sec": 149.42,
+    "ost": "ost_53_Lemonhead's_Domain.wav"
+  },
+  "2425-S~1IMX": {
+    "offset_sec": 131.15,
+    "ost": "ost_53_Lemonhead's_Domain.wav"
+  },
+  "2430-S~1IMX": {
+    "offset_sec": -0.88,
+    "ost": "ost_64_Murray_the_Demonic.wav"
+  },
+  "2445-S~1IMX": {
+    "offset_sec": -1.73,
+    "ost": "ost_68_A_Rabbit_and_a_Duck.wav"
+  },
+  "2450-C~1IMX": {
+    "offset_sec": -0.82,
+    "ost": "ost_69_Going_Down_2_(Kate_Capsize_Reprise).wav"
+  },
+  "2460-F~1IMX": {
+    "offset_sec": 44.0,
+    "ost": "ost_70_Poker_for_a_Diamond.wav"
+  },
+  "2500-I~1IMX": {
+    "offset_sec": -0.5,
+    "ost": "ost_72_Kiss_of_the_Spider_Monkey.wav"
+  },
+  "2502-E~1IMX": {
+    "offset_sec": -0.39,
+    "ost": "ost_74_Pint-Sized_Pirate.wav"
+  },
+  "2504-G~1IMX": {
+    "offset_sec": -0.91,
+    "ost": "ost_75_Guybrush_Kicks_Butt.wav"
+  },
+  "2508-I~1IMX": {
+    "offset_sec": 10.95,
+    "ost": "ost_75_Guybrush_Kicks_Butt.wav"
+  },
+  "2520-OUTIMX": {
+    "offset_sec": 9.26,
+    "ost": "ost_79_Rumour_Has_It.wav"
+  },
+  "2530-Z~1IMX": {
+    "offset_sec": 27.85,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "2540-Z~1IMX": {
+    "offset_sec": 70.95,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "2550-Z~1IMX": {
+    "offset_sec": 113.74,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  },
+  "2560-Z~1IMX": {
+    "offset_sec": 156.72,
+    "ost": "ost_76_The_Rollercoaster_of_Death.wav"
+  }
+}
