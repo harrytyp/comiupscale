@@ -26,6 +26,8 @@
 #include "scumm/file.h"
 #include "scumm/imuse_digi/dimuse_bndmgr.h"
 #include "scumm/imuse_digi/dimuse_codecs.h"
+#include "scumm/imuse_digi/dimuse_extmusic_table.h"
+#include "scumm/hd_asset_manager.h"
 #include "common/debug.h"
 
 namespace Scumm {
@@ -140,6 +142,7 @@ int BundleDirCache::matchFile(const char *filename) {
 
 BundleMgr::BundleMgr(const ScummEngine *vm, BundleDirCache *cache) {
 	_cache = cache;
+	_vm = vm;
 	_bundleTable = nullptr;
 	_compTable = nullptr;
 	_numFiles = 0;
@@ -156,71 +159,102 @@ BundleMgr::~BundleMgr() {
 	delete _file;
 }
 
-// Issue #19: try to open "<name>.wav" as a CD-quality external music track.
-// Builds a synthetic iMUS/MAP/FRMT header so the iMUSE dispatch parser sees
-// a normal stream: the header describes 16-bit PCM at the WAV's rate.
+// Issue #19: try to open the CD-quality music for a game cue.
+// The cue name (e.g. "1099-M~1.IMX") is looked up in kExtMusicTable to
+// find the OST file base name (e.g. "ost_01_The_Adventure_Continues"),
+// then "<hd>/audio/<ost>.wav" is opened. Files keep their original
+// archive.org names — the mapping table does the translation.
 void BundleMgr::openExternal(const char *name) {
 	closeExternal();
 	_extTrackName = name;
 
-	Common::String base(name);
-	Common::Path wavPath(base + ".wav");
-
-	// Parse RIFF/WAVE header (also serves as existence + format check)
-	Common::File f;
-	if (!f.open(wavPath))
+	// Look up the cue in the music table
+	const char *ostBase = nullptr;
+	for (int i = 0; i < kExtMusicTableSize; i++) {
+		if (scumm_stricmp(kExtMusicTable[i].cue, name) == 0) {
+			ostBase = kExtMusicTable[i].ost;
+			break;
+		}
+	}
+	if (!ostBase) {
+		debug(3, "HQ-MUSIC: no OST mapping for cue %s", name);
 		return;
+	}
+
+	// Build <hd>/audio/<ost>.wav — use FSNode (resolves relative to CWD,
+	// like the HD asset manager does) so game-relative hd paths work.
+	Common::String hdPath = _vm->_hdAssetManager ? _vm->_hdAssetManager->getHDPath() : "";
+	if (hdPath.empty()) {
+		debug(3, "HQ-MUSIC: no HD path, skipping %s", name);
+		return;
+	}
+	Common::Path wavPath(Common::String(hdPath) + "/audio/" + ostBase + ".wav");
+	Common::FSNode wavNode(wavPath);
+	if (!wavNode.exists() || wavNode.isDirectory()) {
+		debug(3, "HQ-MUSIC: no audio file %s (for cue %s)", wavPath.toString().c_str(), name);
+		return;
+	}
+
+	// Open via FSNode (bypasses SearchMan game-path prefixing)
+	Common::SeekableReadStream *fileStream = wavNode.createReadStream();
+	if (!fileStream) {
+		debug(3, "HQ-MUSIC: cannot open %s (cue %s)", wavPath.toString().c_str(), name);
+		return;
+	}
+
+	// Parse RIFF/WAVE header
+	uint32 riffTag = fileStream->readUint32BE();
+	fileStream->readUint32LE(); // file size
+	uint32 waveTag = fileStream->readUint32BE();
+	if (riffTag != MKTAG('R','I','F','F') || waveTag != MKTAG('W','A','V','E')) {
+		debug(3, "HQ-MUSIC: %s is not RIFF/WAVE (cue %s)", wavPath.toString().c_str(), name);
+		delete fileStream;
+		return;
+	}
 
 	// Walk chunks to find fmt + data
 	uint32 dataOffset = 0, dataLen = 0;
 	uint16 channels = 1, bits = 16;
 	uint32 sampleRate = 22050;
-	// Skip the 12-byte RIFF header ('RIFF' + size + 'WAVE')
-	f.skip(12);
-	// RIFF header already consumed: pos = 12 (after 'RIFF' size 'WAVE')
-	while (f.pos() + 8 <= f.size()) {
-		uint32 cid = f.readUint32BE();
-		uint32 clen = f.readUint32LE();
-		uint32 chunkStart = f.pos() - 8;           // where this chunk began
+	// pos is now 12 (after RIFF header)
+	while (fileStream->pos() + 8 <= fileStream->size()) {
+		uint32 cid = fileStream->readUint32BE();
+		uint32 clen = fileStream->readUint32LE();
+		uint32 chunkStart = fileStream->pos() - 8;   // where this chunk began
 		uint32 next = chunkStart + 8 + clen + (clen & 1);  // next chunk
 		debug(3, "HQ-MUSIC: chunk '%c%c%c%c' clen=%u at %u", (cid>>24)&0xff, (cid>>16)&0xff, (cid>>8)&0xff, cid&0xff, clen, chunkStart);
 		if (cid == MKTAG('f','m','t',' ')) {
-			f.readUint16LE();  // format tag (must be 1 = PCM, assumed)
-			channels = f.readUint16LE();
-			sampleRate = f.readUint32LE();
-			f.skip(6);         // byteRate(4) + blockAlign(2)
-			bits = f.readUint16LE();
+			fileStream->readUint16LE();  // format tag (must be 1 = PCM, assumed)
+			channels = fileStream->readUint16LE();
+			sampleRate = fileStream->readUint32LE();
+			fileStream->skip(6);         // byteRate(4) + blockAlign(2)
+			bits = fileStream->readUint16LE();
 		} else if (cid == MKTAG('d','a','t','a')) {
 			dataOffset = chunkStart + 8;
 			dataLen = clen;
 			break;
 		}
-		if (next > f.size())
+		if (next > fileStream->size())
 			break;
-		f.seek(next);
+		fileStream->seek(next);
 	}
 	if (!dataOffset || !dataLen) {
 		warning("HQ-MUSIC: %s has no data chunk", name);
+		delete fileStream;
 		return;
 	}
-
-	// Store the raw stream (re-open at the data offset)
-	_extStream = new Common::File();
-	if (!((Common::File *)_extStream)->open(wavPath)) {
-		delete _extStream;
-		_extStream = nullptr;
-		return;
-	}
-	_extStream->seek(dataOffset);
-	_extStreamDataOffset = dataOffset;
-	_extStreamDataLen = dataLen;
 
 	// Only 16-bit PCM is supported (the FRMT header describes 16-bit words).
 	if (bits != 16) {
 		warning("HQ-MUSIC: %s is not 16-bit PCM (%d bit)", name, bits);
-		closeExternal();
+		delete fileStream;
 		return;
 	}
+
+	// Keep the stream for playback (seeked to data start on each read)
+	_extStream = fileStream;
+	_extStreamDataOffset = dataOffset;
+	_extStreamDataLen = dataLen;
 
 	// Build the FULL synthetic stream header (mapSize + MAP + FRMT):
 	// The engine reads offset 0..0x10 for the iMUS/MAP check, then reads
@@ -424,12 +458,16 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 		return 0;
 	}
 
-	// Issue #19: CD-quality replacement — if "<name>.wav" exists next to the
-	// game data, stream that instead of the bundle's IMX-ADPCM audio.
-	// Checked first so external files take priority over the bundle.
+	// Issue #19: CD-quality replacement — if the cue has an OST mapping and
+	// the file exists in <hd>/audio/, stream that instead of the bundle's
+	// IMX-ADPCM audio. Checked first so external files take priority.
+	// If the mapped file is missing, fall through to the bundle (no breakage).
 	{
-		Common::Path extPath(Common::String(name) + ".wav");
-		if (Common::File::exists(extPath)) {
+		bool mapped = false;
+		for (int i = 0; i < kExtMusicTableSize && !mapped; i++)
+			if (scumm_stricmp(kExtMusicTable[i].cue, name) == 0)
+				mapped = true;
+		if (mapped) {
 			if (!_extStream || _extTrackName != name)
 				openExternal(name);   // (re)open for this track
 			if (_extStream)

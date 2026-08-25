@@ -75,6 +75,7 @@ private:
 	};
 
 	BundleDirCache *_cache;
+	const ScummEngine *_vm;              // for HD path lookup (music replacement)
 	BundleDirCache::AudioTable *_bundleTable;
 	BundleDirCache::IndexNode *_indexTable = nullptr;
 	CompTable *_compTable;
