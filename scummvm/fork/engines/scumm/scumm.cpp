@@ -1019,10 +1019,13 @@ Common::Error ScummEngine::init() {
 		// Strip trailing separator
 		while (!gp.empty() && (gp.lastChar() == '/' || gp.lastChar() == '\\'))
 			gp.deleteLastChar();
-		// Go up one directory (strip last component)
+		// Go up one directory (strip last component). If the game dir is a
+		// bare name (no slash, e.g. "game"), the sibling is the CWD.
 		Common::String::size_type pos = gp.rfind('/');
 		if (pos != Common::String::npos)
 			gp.erase(pos);
+		else
+			gp = ".";   // bare name → sibling is current directory
 		// Append hd
 		hdPath = gp + "/hd";
 		warning("ScummEngine: HD path from game-dir sibling: %s", hdPath.c_str());
