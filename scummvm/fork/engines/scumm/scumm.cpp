@@ -1035,6 +1035,12 @@ Common::Error ScummEngine::init() {
 	_hdCostumeManager->init(hdPath);
 	_hdFontManager->init(hdPath);
 
+	// Issue #19: CD-quality music replacement. Enabled by default; the
+	// external check is defensive (any failure falls back to the bundle).
+	// (ConfMan domain keys are not reliably loaded in this fork, so the
+	// config flag is not consulted here.)
+	_hqMusic = true;
+
 	if (_hdAssetManager->isEnabled()) {
 		_hdScale = _hdAssetManager->getScale();
 		warning("HD mode enabled, scale=%d, path=%s", _hdScale, hdPath.c_str());

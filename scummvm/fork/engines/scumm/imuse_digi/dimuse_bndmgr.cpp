@@ -181,8 +181,8 @@ void BundleMgr::openExternal(const char *name) {
 		return;
 	}
 
-	// Build <hd>/audio/<ost>.wav — use the same Path construction as the
-	// HDAssetManager (kNativeSeparator) so it works on Windows too.
+	// Build <hd>/audio/<ost>.wav — same FSNode pattern as HDAssetManager
+	// (which provably works on Windows for the hd/ assets).
 	Common::String hdPath = _vm->_hdAssetManager ? _vm->_hdAssetManager->getHDPath() : "";
 	if (hdPath.empty()) {
 		warning("HQ-MUSIC: no HD path, skipping %s", name);
@@ -195,7 +195,7 @@ void BundleMgr::openExternal(const char *name) {
 		return;
 	}
 
-	// Open via FSNode (bypasses SearchMan game-path prefixing)
+	// Open via FSNode (same as HDAssetManager; resolves CWD-relative hd)
 	Common::SeekableReadStream *fileStream = wavNode.createReadStream();
 	if (!fileStream) {
 		warning("HQ-MUSIC: cannot open %s (cue %s)", wavPath.toString().c_str(), name);
@@ -458,11 +458,11 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 		return 0;
 	}
 
-	// Issue #19: CD-quality replacement — if the cue has an OST mapping and
-	// the file exists in <hd>/audio/, stream that instead of the bundle's
-	// IMX-ADPCM audio. Checked ONCE per track; any failure falls through to
-	// the bundle so music always plays.
-	{
+	// Issue #19: CD-quality replacement — ONLY when hq_music=1 is set in the
+	// config. If the cue has an OST mapping and the file exists in
+	// <hd>/audio/, stream that instead of the bundle's IMX-ADPCM audio.
+	// Checked ONCE per track; any failure falls through to the bundle.
+	if (_vm && _vm->_hqMusic) {
 		bool mapped = false;
 		for (int i = 0; i < kExtMusicTableSize && !mapped; i++)
 			if (scumm_stricmp(kExtMusicTable[i].cue, name) == 0)

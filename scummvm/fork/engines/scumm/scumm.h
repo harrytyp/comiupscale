@@ -560,6 +560,11 @@ public:
 	HdCostumeManager *_hdCostumeManager = nullptr;
 	HdFontManager *_hdFontManager = nullptr;
 
+	/** Issue #19: CD-quality music replacement (external WAVs in hd/audio).
+	 *  Enabled via hq_music=1 in the config; off by default so the original
+	 *  music path is untouched unless explicitly requested. */
+	bool _hqMusic = false;
+
 	/** Recording buffer for HD font characters (filled by charset renderer, consumed by renderHDComposite) */
 	struct HdFontChar {
 		int chr;
