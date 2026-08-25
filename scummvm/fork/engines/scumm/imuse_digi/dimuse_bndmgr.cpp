@@ -181,14 +181,14 @@ void BundleMgr::openExternal(const char *name) {
 		return;
 	}
 
-	// Build <hd>/audio/<ost>.wav — use FSNode (resolves relative to CWD,
-	// like the HD asset manager does) so game-relative hd paths work.
+	// Build <hd>/audio/<ost>.wav — use the same Path construction as the
+	// HDAssetManager (kNativeSeparator) so it works on Windows too.
 	Common::String hdPath = _vm->_hdAssetManager ? _vm->_hdAssetManager->getHDPath() : "";
 	if (hdPath.empty()) {
-		debug(3, "HQ-MUSIC: no HD path, skipping %s", name);
+		warning("HQ-MUSIC: no HD path, skipping %s", name);
 		return;
 	}
-	Common::Path wavPath(Common::String(hdPath) + "/audio/" + ostBase + ".wav");
+	Common::Path wavPath(Common::String(hdPath) + "/audio/" + ostBase + ".wav", Common::Path::kNativeSeparator);
 	Common::FSNode wavNode(wavPath);
 	if (!wavNode.exists() || wavNode.isDirectory()) {
 		warning("HQ-MUSIC: no audio file %s (for cue %s)", wavPath.toString().c_str(), name);
