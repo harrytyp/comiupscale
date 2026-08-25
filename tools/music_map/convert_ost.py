@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""Convert the archive.org COMI soundtrack to in-game music replacement WAVs.
+"""Convert the archive.org COMI soundtrack to CD-quality music WAVs.
 
-Reads hq_music_map.json (IMX cue -> OST track + offset), converts each
-matched OST FLAC to a 16-bit PCM WAV named after the game cue, and writes
-it into the game directory. Cues without a match keep the original music.
+Reads hq_music_map.json to know which OST tracks the game uses, converts
+each matched OST FLAC to a 16-bit PCM WAV keeping the ORIGINAL archive.org
+name, and writes it into <game>/hd/audio/. The game maps the files to the
+in-game cues automatically via the built-in table.
 
 Usage:
-    python3 convert_ost.py <ost_dir> <game_dir> [--offset]
+    python3 convert_ost.py <ost_dir> <game_dir>
 
-    ost_dir   : folder with the archive.org FLACs (e.g. "NN Title.flac")
-    game_dir  : your COMI game folder (where COMI.LA0 lives)
-    --offset  : also apply the offset from hq_music_map.json (trim leading
-                seconds from the OST track so it aligns with the in-game cue)
+    ost_dir  : folder with the archive.org FLACs (e.g. "NN Title.flac")
+    game_dir : your COMI game folder (the one containing hd/ or game data)
 
 Requires ffmpeg in PATH.
 """
@@ -22,53 +21,52 @@ MAP = json.load(open(os.path.join(HERE, "hq_music_map.json")))
 
 def find_flac(ost_dir, ost_wav_name):
     """ost_wav_name is like 'ost_04_Ye_Pining_of_a_Rotten_Heart.wav'.
-    The FLAC is '04 Ye Pining of a Rotten Heart.flac'."""
-    # strip 'ost_' prefix and '.wav'
+    The original archive.org FLAC is '04 Ye Pining of a Rotten Heart.flac'.
+    Returns (path, original_base_name_with_spaces)."""
     base = ost_wav_name[4:-4] if ost_wav_name.startswith("ost_") else ost_wav_name[:-4]
-    # replace underscores back to spaces? The wav names came from FLACs with
-    # spaces replaced by underscores. Try both.
-    for candidate in (base, base.replace("_", " ")):
+    underscore = base
+    spaced = base.replace("_", " ")
+    # Try underscore version first (what the wav names were derived from),
+    # then the spaced original.
+    for candidate in (underscore, spaced):
         for ext in (".flac", ".FLAC", ".mp3", ".MP3"):
             p = os.path.join(ost_dir, candidate + ext)
             if os.path.exists(p):
-                return p
-    return None
+                # Output name: the ORIGINAL archive.org name (spaces)
+                return p, spaced
+    return None, None
 
 def main():
     if len(sys.argv) < 3:
         print(__doc__)
         sys.exit(1)
     ost_dir, game_dir = sys.argv[1], sys.argv[2]
-    use_offset = "--offset" in sys.argv
+    out_dir = os.path.join(game_dir, "hd", "audio")
+    os.makedirs(out_dir, exist_ok=True)
 
     converted = 0
     missing = []
+    seen = set()
     for cue, info in MAP.items():
         ost_wav = info["ost"]
-        offset = info.get("offset_sec", 0)
-        src = find_flac(ost_dir, ost_wav)
-        if not src:
+        src, orig_name = find_flac(ost_dir, ost_wav)
+        if not src or not orig_name:
             missing.append((cue, ost_wav))
             continue
-        # The game looks up "<IMX-name>.wav" where the IMX name has a dot
-        # before "IMX" (e.g. "1099-M~1.IMX"). The map stores the bundle
-        # short name without the dot — normalize it.
-        game_cue = cue
-        if "~1IMX" in game_cue and ".IMX" not in game_cue:
-            game_cue = game_cue.replace("~1IMX", "~1.IMX")
-        dst = os.path.join(game_dir, game_cue + ".wav")
-        # Convert: 16-bit PCM stereo (keep original rate; game handles any)
+        if orig_name in seen:
+            continue  # same OST track mapped to multiple cues -> one file
+        seen.add(orig_name)
+        dst = os.path.join(out_dir, orig_name + ".wav")
+        if os.path.exists(dst):
+            converted += 1
+            continue
         cmd = ["ffmpeg", "-y", "-v", "error", "-i", src, "-ac", "2",
-               "-sample_fmt", "s16", "-vn"]
-        if use_offset and offset > 0:
-            # Trim the first `offset` seconds (where the in-game cue starts)
-            cmd += ["-ss", f"{offset:.3f}"]
-        cmd += [dst]
+               "-sample_fmt", "s16", "-vn", dst]
         subprocess.run(cmd, check=True)
         converted += 1
-        print(f"  {game_cue}.wav <- {os.path.basename(src)} (offset {offset:+.1f}s)")
+        print(f"  {orig_name}.wav <- {os.path.basename(src)}")
 
-    print(f"\nConverted {converted} tracks into {game_dir}")
+    print(f"\nConverted {converted} tracks into {out_dir}")
     if missing:
         print(f"  {len(missing)} cues: OST file not found (skipped, keep original music)")
         for cue, ost in missing[:10]:

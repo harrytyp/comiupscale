@@ -17,11 +17,16 @@ lines.append("struct ExtMusicEntry { const char *cue; const char *ost; };")
 lines.append("static const ExtMusicEntry kExtMusicTable[] = {")
 for cue, info in sorted(MAP.items()):
     ost = info["ost"].replace(".wav", "")  # "ost_01_The_Adventure_Continues"
+    # Convert to the ORIGINAL archive.org name: strip "ost_" prefix and
+    # turn underscores back into spaces -> "01 The Adventure Continues"
+    if ost.startswith("ost_"):
+        ost = ost[4:]
+    ost = ost.replace("_", " ")
     # normalize the cue name: bundle short names lack the dot before IMX
     game_cue = cue
     if "~1IMX" in game_cue and ".IMX" not in game_cue:
         game_cue = game_cue.replace("~1IMX", "~1.IMX")
-    lines.append(f'\t{{"{game_cue}", "{ost}"}},')
+    lines.append(f'\t{{"{game_cue}", "{ost}"}},');
 lines.append("};")
 lines.append(f"static const int kExtMusicTableSize = {len(MAP)};")
 
