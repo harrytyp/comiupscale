@@ -347,7 +347,12 @@ void ImuseDigiSndMgr::tryPlayExternalMusic(SoundDesc *sound, const char *soundNa
 	// Play through the mixer on the music channel
 	g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, &sound->extHandle, stream);
 	sound->extPlaying = true;
-	warning("HQ-MUSIC: playing external %s for cue %s", wavPath.toString().c_str(), soundName);
+	bool active = g_system->getMixer()->isSoundHandleActive(sound->extHandle);
+	warning("HQ-MUSIC: playing external %s for cue %s (mixer active=%d)", wavPath.toString().c_str(), soundName, (int)active);
+	if (!active) {
+		// Mixer rejected the stream — let the original music play.
+		sound->extPlaying = false;
+	}
 }
 
 void ImuseDigiSndMgr::stopExternalMusic(SoundDesc *sound) {
