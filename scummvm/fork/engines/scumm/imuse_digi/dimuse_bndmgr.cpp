@@ -460,17 +460,21 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 
 	// Issue #19: CD-quality replacement — if the cue has an OST mapping and
 	// the file exists in <hd>/audio/, stream that instead of the bundle's
-	// IMX-ADPCM audio. Checked first so external files take priority.
-	// If the mapped file is missing, fall through to the bundle (no breakage).
+	// IMX-ADPCM audio. Checked ONCE per track; any failure falls through to
+	// the bundle so music always plays.
 	{
 		bool mapped = false;
 		for (int i = 0; i < kExtMusicTableSize && !mapped; i++)
 			if (scumm_stricmp(kExtMusicTable[i].cue, name) == 0)
 				mapped = true;
 		if (mapped) {
-			if (!_extStream || _extTrackName != name)
-				openExternal(name);   // (re)open for this track
-			if (_extStream) {
+			// Only attempt the external file once per track.
+			if (!_extChecked || _extTrackName != name) {
+				_extChecked = true;
+				_extTrackName = name;
+				openExternal(name);
+			}
+			if (_extStream && _extTrackName == name) {
 				int32 ext = readFileExternal(name, size, comp_final);
 				if (ext > 0)
 					return ext;

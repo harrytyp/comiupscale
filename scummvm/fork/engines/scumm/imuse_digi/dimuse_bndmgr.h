@@ -102,6 +102,7 @@ private:
 	// so the iMUSE dispatch parser is unchanged.
 	Common::SeekableReadStream *_extStream = nullptr;
 	Common::String _extTrackName;        // which track the external stream is for
+	bool _extChecked = false;            // external file attempted for current track
 	int32 _extStreamDataOffset = 0;  // byte offset of PCM data inside the WAV
 	int32 _extStreamDataLen = 0;     // PCM data length in bytes
 	byte _extHeader[64];             // synthetic iMUS/MAP/FRMT header (52 bytes used)
