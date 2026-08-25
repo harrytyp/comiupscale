@@ -191,14 +191,14 @@ void BundleMgr::openExternal(const char *name) {
 	Common::Path wavPath(Common::String(hdPath) + "/audio/" + ostBase + ".wav");
 	Common::FSNode wavNode(wavPath);
 	if (!wavNode.exists() || wavNode.isDirectory()) {
-		debug(3, "HQ-MUSIC: no audio file %s (for cue %s)", wavPath.toString().c_str(), name);
+		warning("HQ-MUSIC: no audio file %s (for cue %s)", wavPath.toString().c_str(), name);
 		return;
 	}
 
 	// Open via FSNode (bypasses SearchMan game-path prefixing)
 	Common::SeekableReadStream *fileStream = wavNode.createReadStream();
 	if (!fileStream) {
-		debug(3, "HQ-MUSIC: cannot open %s (cue %s)", wavPath.toString().c_str(), name);
+		warning("HQ-MUSIC: cannot open %s (cue %s)", wavPath.toString().c_str(), name);
 		return;
 	}
 
@@ -470,8 +470,15 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 		if (mapped) {
 			if (!_extStream || _extTrackName != name)
 				openExternal(name);   // (re)open for this track
-			if (_extStream)
-				return readFileExternal(name, size, comp_final);
+			if (_extStream) {
+				int32 ext = readFileExternal(name, size, comp_final);
+				if (ext > 0)
+					return ext;
+				// External stream failed/empty — fall back to the bundle
+				// so music never goes silent.
+				closeExternal();
+				warning("HQ-MUSIC: external stream for %s failed, using bundle", name);
+			}
 		}
 	}
 
