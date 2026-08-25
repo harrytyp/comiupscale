@@ -63,6 +63,10 @@ public:
 		char name[15];
 		int16 soundId;
 		BundleMgr *bundle;
+
+		// Issue #19: CD-quality music replacement state
+		Audio::SoundHandle extHandle;   // mixer handle for the external WAV
+		bool extPlaying = false;        // external stream active
 	};
 
 private:
@@ -77,6 +81,10 @@ private:
 
 	bool openMusicBundle(SoundDesc *sound, int &disk);
 	bool openVoiceBundle(SoundDesc *sound, int &disk);
+
+	// Issue #19: play external CD-quality WAV for a music cue via the mixer
+	void tryPlayExternalMusic(SoundDesc *sound, const char *soundName);
+	void stopExternalMusic(SoundDesc *sound);
 
 public:
 

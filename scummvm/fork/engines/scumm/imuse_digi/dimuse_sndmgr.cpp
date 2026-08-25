@@ -27,11 +27,15 @@
 #include "audio/decoders/voc.h"
 #include "audio/decoders/vorbis.h"
 #include "audio/decoders/mp3.h"
+#include "audio/decoders/wave.h"
+#include "audio/mixer.h"
 
 #include "scumm/resource.h"
 #include "scumm/scumm.h"
+#include "scumm/hd_asset_manager.h"
 #include "scumm/imuse_digi/dimuse_bndmgr.h"
 #include "scumm/imuse_digi/dimuse_codecs.h"
+#include "scumm/imuse_digi/dimuse_extmusic_table.h"
 #include "scumm/imuse_digi/dimuse_sndmgr.h"
 
 namespace Scumm {
@@ -195,6 +199,13 @@ ImuseDigiSndMgr::SoundDesc *ImuseDigiSndMgr::openSound(int32 soundId, const char
 	Common::strlcpy(sound->name, soundName, sizeof(sound->name));
 	sound->soundId = soundId;
 
+	// Issue #19: CD-quality music — for music tracks with an OST mapping,
+	// play the external WAV/FLAC directly through the mixer and mute the
+	// iMUSE track so the original IMX music doesn't play on top.
+	if (soundType == IMUSE_BUNDLE && volGroupId == IMUSE_VOLGRP_MUSIC && soundName[0] != 0) {
+		tryPlayExternalMusic(sound, soundName);
+	}
+
 	if (soundType == IMUSE_BUNDLE) {
 		free(ptr);
 	}
@@ -217,6 +228,7 @@ void ImuseDigiSndMgr::closeSound(SoundDesc *soundDesc) {
 	}
 
 	delete soundDesc->bundle;
+	stopExternalMusic(soundDesc);
 
 	memset(soundDesc, 0, sizeof(SoundDesc));
 }
@@ -267,6 +279,7 @@ void ImuseDigiSndMgr::closeSoundById(int soundId) {
 		}
 
 		delete soundDesc->bundle;
+		stopExternalMusic(soundDesc);
 
 		memset(soundDesc, 0, sizeof(SoundDesc));
 	}
@@ -280,6 +293,68 @@ bool ImuseDigiSndMgr::checkForProperHandle(SoundDesc *soundDesc) {
 			return true;
 	}
 	return false;
+}
+
+// Issue #19: play external CD-quality WAV for a music cue via the mixer.
+// The cue name (e.g. "1099-M~1.IMX") is looked up in kExtMusicTable to
+// find the OST file base name (e.g. "01 The Adventure Continues"), then
+// "<hd>/audio/<ost>.wav" is opened and played through the mixer. The
+// iMUSE track stays silent by keeping the external handle active; any
+// failure silently falls back to the original music.
+void ImuseDigiSndMgr::tryPlayExternalMusic(SoundDesc *sound, const char *soundName) {
+	// Only once per open (guard against re-entry)
+	if (sound->extPlaying)
+		return;
+
+	// Look up the cue in the music table
+	const char *ostBase = nullptr;
+	for (int i = 0; i < kExtMusicTableSize; i++) {
+		if (scumm_stricmp(kExtMusicTable[i].cue, soundName) == 0) {
+			ostBase = kExtMusicTable[i].ost;
+			break;
+		}
+	}
+	if (!ostBase)
+		return;
+
+	// Build <hd>/audio/<ost>.wav (same path pattern as HDAssetManager)
+	Common::String hdPath = _vm->_hdAssetManager ? _vm->_hdAssetManager->getHDPath() : "";
+	if (hdPath.empty())
+		return;
+	Common::Path wavPath(Common::String(hdPath) + "/audio/" + ostBase + ".wav", Common::Path::kNativeSeparator);
+
+	// Open the WAV via FSNode (resolves CWD-relative hd path, like
+	// HDAssetManager; Common::File would search the game path instead).
+	Common::FSNode wavNode(wavPath);
+	if (!wavNode.exists() || wavNode.isDirectory()) {
+		warning("HQ-MUSIC: no audio file %s (cue %s) via mixer path", wavPath.toString().c_str(), soundName);
+		return;
+	}
+	Common::SeekableReadStream *file = wavNode.createReadStream();
+	if (!file) {
+		warning("HQ-MUSIC: cannot open %s (cue %s) via mixer path", wavPath.toString().c_str(), soundName);
+		return;
+	}
+	if (!file)
+		return;
+
+	Audio::SeekableAudioStream *stream = Audio::makeWAVStream(file, DisposeAfterUse::YES);
+	if (!stream) {
+		delete file;
+		return;
+	}
+
+	// Play through the mixer on the music channel
+	g_system->getMixer()->playStream(Audio::Mixer::kMusicSoundType, &sound->extHandle, stream);
+	sound->extPlaying = true;
+	warning("HQ-MUSIC: playing external %s for cue %s", wavPath.toString().c_str(), soundName);
+}
+
+void ImuseDigiSndMgr::stopExternalMusic(SoundDesc *sound) {
+	if (sound->extPlaying) {
+		g_system->getMixer()->stopHandle(sound->extHandle);
+		sound->extPlaying = false;
+	}
 }
 
 } // End of namespace Scumm

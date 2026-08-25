@@ -458,31 +458,23 @@ int32 BundleMgr::readFile(const char *name, int32 size, byte **comp_final, bool 
 		return 0;
 	}
 
-	// Issue #19: CD-quality replacement — ONLY when hq_music=1 is set in the
-	// config. If the cue has an OST mapping and the file exists in
-	// <hd>/audio/, stream that instead of the bundle's IMX-ADPCM audio.
-	// Checked ONCE per track; any failure falls through to the bundle.
+	// Issue #19: CD-quality replacement — for mapped music cues the WAV is
+	// played directly through the mixer (see ImuseDigiSndMgr). Here we keep
+	// the iMUSE track silent by returning 0 bytes, so the original IMX
+	// music doesn't play on top of the external CD-quality stream.
 	if (_vm && _vm->_hqMusic) {
 		bool mapped = false;
 		for (int i = 0; i < kExtMusicTableSize && !mapped; i++)
 			if (scumm_stricmp(kExtMusicTable[i].cue, name) == 0)
 				mapped = true;
 		if (mapped) {
-			// Only attempt the external file once per track.
-			if (!_extChecked || _extTrackName != name) {
-				_extChecked = true;
-				_extTrackName = name;
-				openExternal(name);
-			}
-			if (_extStream && _extTrackName == name) {
-				int32 ext = readFileExternal(name, size, comp_final);
-				if (ext > 0)
-					return ext;
-				// External stream failed/empty — fall back to the bundle
-				// so music never goes silent.
-				closeExternal();
-				warning("HQ-MUSIC: external stream for %s failed, using bundle", name);
-			}
+			// The external stream is managed by the sndmgr mixer path.
+			// Return a tiny non-zero buffer so openSound() doesn't treat
+			// this as a load failure; the iMUSE track stays silent while
+			// the mixer plays the external WAV.
+			*comp_final = (byte *)malloc(1);
+			(*comp_final)[0] = 0;
+			return 1;
 		}
 	}
 
