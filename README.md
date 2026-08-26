@@ -5,6 +5,23 @@
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Choose Your Path](#choose-your-path)
+  - [Path A: Quick Start (Download & Play)](#path-a-quick-start-download--play)
+  - [Path B: Build Everything Yourself](#path-b-build-everything-yourself)
+- [Controls](#controls)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Technical Details](#technical-details)
+- [Repository Structure](#repository-structure)
+- [Documentation Index](#documentation-index)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+---
+
 ## Overview
 
 COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts, videos) from an `hd/` directory and scales coordinates at runtime. No original game file patching is required.
