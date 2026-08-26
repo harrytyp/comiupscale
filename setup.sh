@@ -21,7 +21,7 @@ set -euo pipefail
 GH_REPO="harrytyp/comiupscale"
 GAME_DIR=""
 BINARY_TAG="v0.0.67"
-ASSETS_TAG="hd_assets_v1.0.3"
+ASSETS_TAG="hd_assets_v1.0.4"
 NO_VIDEOS=false
 
 while [[ $# -gt 0 ]]; do

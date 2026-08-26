@@ -51,15 +51,17 @@ Copy these files into a `game/` folder:
 
 | Release | Link | Contents | Size |
 |---------|------|----------|:----:|
-| **Binary** | [v0.0.64](https://github.com/harrytyp/comiupscale/releases/tag/v0.0.64) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
-| **HD Assets** | [hd_assets_v1.0.3](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.3) | Backgrounds, objects, costumes, fonts (3 ZIP parts) | ~4.8 GB |
+| **Binary** | [Releases](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
+| **HD Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | Backgrounds, objects, costumes, fonts (4 ZIP parts) | ~4.8 GB |
 
 **Installation:**
 1. Download the binary for your OS from the latest release
-2. Download all 3 parts from `hd_assets_v1.0.3`
+2. Download all 4 parts from `hd_assets_v1.0.4`
 3. Extract each ZIP into the same folder — they merge into `hd/`
 4. Also grab config files from the repo: [`release/windows/`](release/windows/) — `scummvm.ini`, `start_comi_hd.bat`
 5. **Windows only:** Build `SDL2.dll` with audio (see [Building SDL2](#building-sdl2-for-windows))
+
+> **New in v1.0.4:** The release also includes `comi-original-assets.zip` — the original 1x extracted assets (backgrounds, objects, costumes, fonts) for anyone who wants the un-upscaled source textures.
 
 **Final folder structure:**
 ```
