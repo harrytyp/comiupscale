@@ -1,37 +1,37 @@
-# COMI-HD — Curse of Monkey Island HD Upscale
+# COMI-HD: Curse of Monkey Island HD Upscale
 
 ![COMI-HD Screenshot](docs/screenshots/room9.png)
-*Room 9 (Cannon Gallery) with HD textures — 4x upscale*
+*Room 9 (Cannon Gallery) with HD textures, 4x upscale*
 
 ---
 
 ## Overview
 
-COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts, videos) from an `hd/` directory and scales coordinates at runtime — no original game file patching required.
+COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM v8) in **4x HD**. It loads external HD textures (backgrounds, costumes, objects, fonts, videos) from an `hd/` directory and scales coordinates at runtime. No original game file patching is required.
 
 ### Features
-- ⚡ **4x HD** (2560×1920) — AI-upscaled textures via RealESRGAN
-- 🎭 **25,303 costume frames** — HD characters in full detail
-- 🖼️ **81 HD backgrounds** — every room upscaled
-- 🎬 **15 HD videos** — AI-upscaled cutscenes (optional)
-- 🎵 **CD-quality music** — replace the compressed in-game music with the lossless soundtrack (optional)
-- 🔧 **No patching** — original game files remain untouched
+- ⚡ **4x HD** (2560×1920), AI-upscaled textures via RealESRGAN
+- 🎭 **25,303 costume frames**, HD characters in full detail
+- 🖼️ **81 HD backgrounds**, every room upscaled
+- 🎬 **15 HD videos**, AI-upscaled cutscenes (optional)
+- 🎵 **CD-quality music**, replace the compressed in-game music with the lossless soundtrack (optional)
+- 🔧 **No patching**, original game files remain untouched
 
 ---
 
 ## Choose Your Path
 
-There are two ways to get COMI-HD running — pick the one that suits you:
+There are two ways to get COMI-HD running. Pick the one that suits you:
 
 ### 🚀 Path A: Quick Start (Pre-built)
-Download everything — game files from your legal copy, HD assets from GitHub, binaries from releases.
+Download everything: game files from your legal copy, HD assets from GitHub, binaries from releases.
 
 ### 🛠️ Path B: Build Everything Yourself
-Extract original assets, upscale with RealESRGAN, build the ScummVM fork from source — full control.
+Extract original assets, upscale with RealESRGAN, build the ScummVM fork from source. Full control.
 
 ---
 
-## Path A: Quick Start — Download & Play
+## Path A: Quick Start (Download & Play)
 
 ### 1. Get the Game
 
@@ -57,11 +57,11 @@ Copy these files into a `game/` folder:
 **Installation:**
 1. Download the binary for your OS from the latest release
 2. Download all 4 parts from `hd_assets_v1.0.4`
-3. Extract each ZIP into the same folder — they merge into `hd/`
-4. Also grab config files from the repo: [`release/windows/`](release/windows/) — `scummvm.ini`, `start_comi_hd.bat`
+3. Extract each ZIP into the same folder; they merge into `hd/`
+4. Also grab config files from the repo ([`release/windows/`](release/windows/)): `scummvm.ini`, `start_comi_hd.bat`
 5. **Windows only:** Build `SDL2.dll` with audio (see [Building SDL2](#building-sdl2-for-windows))
 
-> **New in v1.0.4:** The release also includes `comi-original-assets.zip` — the original 1x extracted assets (backgrounds, objects, costumes, fonts) for anyone who wants the un-upscaled source textures.
+> **New in v1.0.4:** The release also includes `comi-original-assets.zip`, the original 1x extracted assets (backgrounds, objects, costumes, fonts), for anyone who wants the un-upscaled source textures.
 
 **Final folder structure:**
 ```
@@ -86,6 +86,48 @@ Extract into `hd/videos/`. Without these, cutscenes play in original SD.
 **Linux:** `chmod +x scummvm && ./start_comi_hd.sh`
 
 First launch shows the difficulty selection screen. Select a difficulty and the game starts with HD textures.
+
+### 5. CD-Quality Music (Optional)
+
+Replace the game's compressed music (IMX-ADPCM, 22 kHz) with the **lossless CD-quality soundtrack**. The game automatically plays a WAV file whenever the matching music cue exists in `hd/audio/`. Everything else stays on the original music.
+
+**Get the soundtrack:** Download the official soundtrack rip from the Internet Archive (free, legal fan rip of the commercial OST):
+- **Archive.org:** [The Curse of Monkey Island Soundtrack](https://archive.org/details/the-curse-of-monkey-island-soundtrack) (FLAC + MP3)
+
+**Convert to WAV:** The game reads **16-bit PCM WAV** files. Convert the FLACs you need, keeping the **original archive.org names** (the game maps them automatically):
+
+```bash
+# Example: convert track 18 (The Voodoo Lady)
+ffmpeg -i "18 The Voodoo Lady.flac" -ac 2 "18 The Voodoo Lady.wav"
+```
+
+**Which tracks?** The game maps these OST tracks to in-game music cues (see `tools/music_map/hq_music_map.json` for all 125):
+
+| OST track | Plays for (cue) |
+|-----------|-----------------|
+| `01 The Adventure Continues` | Melee Town (`1099-M~1.IMX`) |
+| `06 Bloodnose the Pirate` | Ship Deck (`1100-H~1.IMX`) |
+| `18 The Voodoo Lady` | Voodoo Lady (`1215-V~1.IMX`) |
+| `26 Three Barbers and a Captain` | Barber Shop (`1285-B~1.IMX`) |
+| `58 The Goodsoup Hotel` | Hotel Bar (`1435-H~1.IMX`) |
+| `55 Western Windmill` | Windmill (`1450-W~1.IMX`) |
+
+**Install:** Copy the converted WAV files into your **`hd/audio/` folder** (next to the other HD assets, keeping their original names):
+
+```
+hd/
+├── backgrounds/
+├── costumes/
+├── ...
+└── audio/
+    ├── 01 The Adventure Continues.wav      ← music replacement
+    ├── 18 The Voodoo Lady.wav              ← music replacement
+    └── ...
+```
+
+**That's it.** The next time that music cue plays, you hear the CD-quality version. Cues without a matching WAV keep the original music. No settings, no config.
+
+> **Note:** 16-bit PCM WAV at any sample rate works (22.05 kHz and 44.1 kHz both tested). Stereo or mono both work. The conversion tool `tools/music_map/convert_ost.py` can batch-convert the whole OST.
 
 ---
 
@@ -153,10 +195,10 @@ bash build/build-all.sh windows  # Windows only (cross-compile from Linux)
 ```
 
 **Artifacts appear in `build/out/`:**
-- `build/out/scummvm` — Linux binary
-- `build/out/scummvm.exe` — Windows binary
+- `build/out/scummvm`: Linux binary
+- `build/out/scummvm.exe`: Windows binary
 
-The build system is fully self-contained — it downloads LLVM MinGW, SDL2, zlib, and libpng from source. No system packages beyond build-essential are required.
+The build system is fully self-contained. It downloads LLVM MinGW, SDL2, zlib, and libpng from source. No system packages beyond build-essential are required.
 
 #### Building SDL2 for Windows
 
@@ -185,58 +227,6 @@ your-game-folder/
 ├── start_comi_hd.bat  ← from release/windows/
 └── playback_comi_hd.bat
 ```
-
----
-
-## 🎵 CD-Quality Music (Optional)
-
-Replace the game's compressed music (IMX-ADPCM, 22 kHz) with the **lossless CD-quality soundtrack**. The game automatically plays a WAV file whenever the matching music cue exists in `hd/audio/` — everything else stays on the original music.
-
-### 1. Get the soundtrack
-
-Download the official soundtrack rip from the Internet Archive (free, legal fan rip of the commercial OST):
-
-- **Archive.org:** [The Curse of Monkey Island Soundtrack](https://archive.org/details/the-curse-of-monkey-island-soundtrack) (FLAC + MP3)
-
-### 2. Convert to WAV
-
-The game reads **16-bit PCM WAV** files. Convert the FLACs you need, keeping the **original archive.org names** (the game maps them automatically):
-
-```bash
-# Example: convert track 18 (The Voodoo Lady)
-ffmpeg -i "18 The Voodoo Lady.flac" -ac 2 "18 The Voodoo Lady.wav"
-```
-
-**Which tracks?** The game maps these OST tracks to in-game music cues (see `tools/music_map/hq_music_map.json` for all 125):
-
-| OST track | Plays for (cue) |
-|-----------|-----------------|
-| `01 The Adventure Continues` | Melee Town (`1099-M~1.IMX`) |
-| `06 Bloodnose the Pirate` | Ship Deck (`1100-H~1.IMX`) |
-| `18 The Voodoo Lady` | Voodoo Lady (`1215-V~1.IMX`) |
-| `26 Three Barbers and a Captain` | Barber Shop (`1285-B~1.IMX`) |
-| `58 The Goodsoup Hotel` | Hotel Bar (`1435-H~1.IMX`) |
-| `55 Western Windmill` | Windmill (`1450-W~1.IMX`) |
-
-### 3. Install
-
-Copy the converted WAV files into your **`hd/audio/` folder** (next to the other HD assets, keeping their original names):
-
-```
-hd/
-├── backgrounds/
-├── costumes/
-├── ...
-└── audio/
-    ├── 01 The Adventure Continues.wav      ← music replacement
-    ├── 18 The Voodoo Lady.wav              ← music replacement
-    └── ...
-```
-
-**That's it.** The next time that music cue plays, you hear the CD-quality version. Cues without a matching WAV keep the original music. No settings, no config.
-
-> **Note:** 16-bit PCM WAV at any sample rate works (22.05 kHz and 44.1 kHz both tested). Stereo or mono both work. The conversion tool `tools/music_map/convert_ost.py` can batch-convert the whole OST.
-
 
 ---
 
@@ -294,7 +284,7 @@ Key options in `scummvm.ini` under `[comi]`:
 
 ### Known Issues
 - **Inventory FLOBJ positioning:** Inventory HD textures all render at (0,0) because V8 uses a draw queue for positioning, not object coordinates. Items are visible but at the wrong position.
-- **SMUSH video skip:** Fixed in latest build — `_hdDebugDumpCount` no longer affects the SMUSH player.
+- **SMUSH video skip:** Fixed in latest build. `_hdDebugDumpCount` no longer affects the SMUSH player.
 
 ---
 
@@ -325,7 +315,7 @@ comiupscale/
 |------|----------|
 | [`build/BUILD.md`](build/BUILD.md) | Detailed build guide (prerequisites, steps, troubleshooting) |
 | [`scripts/full_pipeline.sh`](scripts/full_pipeline.sh) | End-to-end automation: extract → upscale → build → play |
-| [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline — FLOBJs, AKOS, Verb-System, HD-Compositing |
+| [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline: FLOBJs, AKOS, Verb-System, HD-Compositing |
 | [`docs/HD_MANIFEST_SPEC.md`](docs/HD_MANIFEST_SPEC.md) | HD manifest format for custom asset mapping |
 | [`setup.sh`](setup.sh) | Quick setup script (downloads binary + assets) |
 
@@ -347,8 +337,8 @@ comiupscale/
 
 ## License
 
-- **ScummVM fork:** GPL v2 — https://www.scummvm.org/
+- **ScummVM fork:** GPL v2 (https://www.scummvm.org/)
 - **Documentation:** MIT License
-- **Game Data:** © LucasArts / Disney — not included
+- **Game Data:** © LucasArts / Disney, not included
 
 *COMI-HD is a fan project. Not affiliated with LucasArts, Disney, or ScummVM.*
