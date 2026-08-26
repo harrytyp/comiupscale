@@ -63,6 +63,8 @@ Documents covering scripts, tools, and automation infrastructure.
 | # | File | Purpose | Cross-links | Status |
 |---|------|---------|-------------|--------|
 | 15 | `docs/SCRIPT_INVENTORY.md` | **Complete script inventory** — all 53 files in `scripts/`, `tests/`, `config/upscale/`, `setup_wizard/`, and root. Master inventory table with purpose, size, dependencies, status, and recommendation (keep/delete/archive). Includes consolidation opportunities and cleanup plan. | → `docs/AUDIT_SUMMARY.md` → `docs/REPO_STRUCTURE.md` | **Active** |
+| 15b | `docs/HD_FONTS.md` | **HD fonts pipeline & rendering (Issue #17)** — NUT glyph extraction (outline/fill encoding), CPU upscale via spandrel+animevideov3, 1:1 renderer rules (alpha>128, baseline, tint), hook pitfalls. | → `docs/v8-rendering-pipeline.md` → `scripts/extract_all_raw.py` | **Active** |
+| 15c | `docs/CD_QUALITY_MUSIC.md` | **CD-quality music implementation (Issue #19)** — WAV override in `dimuse_bndmgr`, synthetic 52-byte iMUS header, streamer architecture, audfprint mapping, verification. | → `README.md` → `tools/music_map/` | **Active** |
 | 16 | `scripts/paths.py` | **Central path resolver** — imported by all pipeline scripts for project paths. | → `config/paths.yaml` | **Active** |
 | 17 | `scripts/hd_manifest_gen.py` | **Manifest generator** — scans extracted backgrounds → produces `hd_manifest.json`. | → `docs/HD_MANIFEST_SPEC.md` | **Active** |
 | 18 | `scripts/build_object_map.py` | **Object map builder** — reads DOBJ resources → produces `object_map.json`. | → `config/object_map.json` | **Active** |
