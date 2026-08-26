@@ -19,57 +19,6 @@ COMI-HD is a **ScummVM fork** that renders Curse of Monkey Island (COMI / SCUMM 
 
 ---
 
-## 🎵 CD-Quality Music (Issue #19)
-
-Replace the game's compressed music (IMX-ADPCM, 22 kHz) with the **lossless CD-quality soundtrack**. The game automatically plays a WAV file whenever the matching music cue exists in `hd/audio/` — everything else stays on the original music.
-
-### 1. Get the soundtrack
-
-Download the official soundtrack rip from the Internet Archive (free, legal fan rip of the commercial OST):
-
-- **Archive.org:** [The Curse of Monkey Island Soundtrack](https://archive.org/details/the-curse-of-monkey-island-soundtrack) (FLAC + MP3)
-
-### 2. Convert to WAV
-
-The game reads **16-bit PCM WAV** files. Convert the FLACs you need, keeping the **original archive.org names** (the game maps them automatically):
-
-```bash
-# Example: convert track 18 (The Voodoo Lady)
-ffmpeg -i "18 The Voodoo Lady.flac" -ac 2 "18 The Voodoo Lady.wav"
-```
-
-**Which tracks?** The game maps these OST tracks to in-game music cues (see `tools/music_map/hq_music_map.json` for all 125):
-
-| OST track | Plays for (cue) |
-|-----------|-----------------|
-| `01 The Adventure Continues` | Melee Town (`1099-M~1.IMX`) |
-| `06 Bloodnose the Pirate` | Ship Deck (`1100-H~1.IMX`) |
-| `18 The Voodoo Lady` | Voodoo Lady (`1215-V~1.IMX`) |
-| `26 Three Barbers and a Captain` | Barber Shop (`1285-B~1.IMX`) |
-| `58 The Goodsoup Hotel` | Hotel Bar (`1435-H~1.IMX`) |
-| `55 Western Windmill` | Windmill (`1450-W~1.IMX`) |
-
-### 3. Install
-
-Copy the converted WAV files into your **`hd/audio/` folder** (next to the other HD assets, keeping their original names):
-
-```
-hd/
-├── backgrounds/
-├── costumes/
-├── ...
-└── audio/
-    ├── 01 The Adventure Continues.wav      ← music replacement
-    ├── 18 The Voodoo Lady.wav              ← music replacement
-    └── ...
-```
-
-**That's it.** The next time that music cue plays, you hear the CD-quality version. Cues without a matching WAV keep the original music. No settings, no config.
-
-> **Note:** 16-bit PCM WAV at any sample rate works (22.05 kHz and 44.1 kHz both tested). Stereo or mono both work. The conversion tool `tools/music_map/convert_ost.py` can batch-convert the whole OST.
-
----
-
 ## Choose Your Path
 
 There are two ways to get COMI-HD running — pick the one that suits you:
@@ -234,6 +183,58 @@ your-game-folder/
 ├── start_comi_hd.bat  ← from release/windows/
 └── playback_comi_hd.bat
 ```
+
+---
+
+## 🎵 CD-Quality Music (Optional)
+
+Replace the game's compressed music (IMX-ADPCM, 22 kHz) with the **lossless CD-quality soundtrack**. The game automatically plays a WAV file whenever the matching music cue exists in `hd/audio/` — everything else stays on the original music.
+
+### 1. Get the soundtrack
+
+Download the official soundtrack rip from the Internet Archive (free, legal fan rip of the commercial OST):
+
+- **Archive.org:** [The Curse of Monkey Island Soundtrack](https://archive.org/details/the-curse-of-monkey-island-soundtrack) (FLAC + MP3)
+
+### 2. Convert to WAV
+
+The game reads **16-bit PCM WAV** files. Convert the FLACs you need, keeping the **original archive.org names** (the game maps them automatically):
+
+```bash
+# Example: convert track 18 (The Voodoo Lady)
+ffmpeg -i "18 The Voodoo Lady.flac" -ac 2 "18 The Voodoo Lady.wav"
+```
+
+**Which tracks?** The game maps these OST tracks to in-game music cues (see `tools/music_map/hq_music_map.json` for all 125):
+
+| OST track | Plays for (cue) |
+|-----------|-----------------|
+| `01 The Adventure Continues` | Melee Town (`1099-M~1.IMX`) |
+| `06 Bloodnose the Pirate` | Ship Deck (`1100-H~1.IMX`) |
+| `18 The Voodoo Lady` | Voodoo Lady (`1215-V~1.IMX`) |
+| `26 Three Barbers and a Captain` | Barber Shop (`1285-B~1.IMX`) |
+| `58 The Goodsoup Hotel` | Hotel Bar (`1435-H~1.IMX`) |
+| `55 Western Windmill` | Windmill (`1450-W~1.IMX`) |
+
+### 3. Install
+
+Copy the converted WAV files into your **`hd/audio/` folder** (next to the other HD assets, keeping their original names):
+
+```
+hd/
+├── backgrounds/
+├── costumes/
+├── ...
+└── audio/
+    ├── 01 The Adventure Continues.wav      ← music replacement
+    ├── 18 The Voodoo Lady.wav              ← music replacement
+    └── ...
+```
+
+**That's it.** The next time that music cue plays, you hear the CD-quality version. Cues without a matching WAV keep the original music. No settings, no config.
+
+> **Note:** 16-bit PCM WAV at any sample rate works (22.05 kHz and 44.1 kHz both tested). Stereo or mono both work. The conversion tool `tools/music_map/convert_ost.py` can batch-convert the whole OST.
+
 
 ---
 
