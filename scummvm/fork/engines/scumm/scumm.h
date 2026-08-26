@@ -570,6 +570,7 @@ public:
 		int chr;
 		int fontSlot;
 		int x, y;
+		int col;   // text color palette index (for HD glyph tinting)
 	};
 	Common::List<HdFontChar> _hdFontChars;
 	int _hdScale = 1;

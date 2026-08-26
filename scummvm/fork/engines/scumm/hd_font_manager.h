@@ -59,7 +59,7 @@ public:
 	 * x,y are in HD space (already scaled).
 	 * Returns true if the glyph was drawn from HD source.
 	 */
-	bool drawChar(int fontSlot, int chr, Graphics::Surface &dest, int x, int y);
+	bool drawChar(int fontSlot, int chr, Graphics::Surface &dest, int x, int y, byte tR = 255, byte tG = 255, byte tB = 255);
 
 	/**
 	 * Get the dimensions of a glyph in HD space.

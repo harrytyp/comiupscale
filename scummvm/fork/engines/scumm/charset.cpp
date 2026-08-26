@@ -2153,7 +2153,18 @@ int CharsetRendererNut::drawCharV7(byte *buffer, Common::Rect &clipRect, int x, 
 			fc.fontSlot = _curId;
 			fc.x = x;
 			fc.y = y;
+			fc.col = col;
 			_vm->_hdFontChars.push_back(fc);
+
+			// Issue #17: the HD glyph (drawn in Step 2.7) REPLACES the
+			// 8-bit text. Skip the 8-bit draw so the two don't double up
+			// (ghosting / thick outlines). CRITICAL: return the real
+			// character width — the caller does `x += drawCharV7(...)`,
+			// so returning 1 would stack all letters on top of each other.
+			NutRenderer *nut = dynamic_cast<NutRenderer *>(_current);
+			if (nut)
+				return nut->getCharWidth(chr);
+			return _current->drawCharV7(buffer, clipRect, x, y, pitch, col, flags, chr);
 		}
 	}
 	assert(_current);

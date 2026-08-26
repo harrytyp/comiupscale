@@ -27,6 +27,7 @@ from nutcracker.smush.decode import decode_nut
 from nutcracker.graphics.frame import resize_pil_image
 from nutcracker.graphics.image import ImagePosition
 import numpy as np
+from PIL import Image
 
 sputm = preset.sputm
 
@@ -106,13 +107,84 @@ def extract_all(game_path, outdir):
     font_dir = outdir / 'fonts'
     font_dir.mkdir(parents=True, exist_ok=True)
 
+    # Extract font glyphs directly from the NUT FRME/FOBJ frames into a
+    # clean RGBA sheet (glyph on transparent background, 16x16 grid).
+    # NOTE: decode_nut's create_char_grid is BROKEN for FONT0 (glyphs
+    # become black placeholder boxes). This direct extraction reads the
+    # actual glyph bitmaps from the frames, so all fonts (0-4) get their
+    # real glyphs.
+    from nutcracker.smush.decode import generate_frames, DECODE_FRAME_IMAGE
+    from nutcracker.graphics import image as nut_image
+    import numpy as np
+
+    GRID = 16
+    CELL_W = 56   # base px, matches the waifu/HD convention (56x56 base)
+    CELL_H = 56
+
     for nut_path in sorted(resource_dir.glob('FONT*.NUT')):
         name = nut_path.stem
         print(f"  Decoding {nut_path.name} ...", end=' ', flush=True)
         try:
             root_smush = anim.from_path(str(nut_path))
-            decode_nut(root_smush, str(font_dir / name))
-            print("chars.png" if (font_dir / name / 'chars.png').exists() else "done")
+            header, frames = anim.parse(root_smush)
+            chars = [ctx.screen for ctx in generate_frames(header, frames, DECODE_FRAME_IMAGE)]
+            sheet = Image.new('RGBA', (GRID * CELL_W, GRID * CELL_H), (0, 0, 0, 0))
+            for idx, (loc, im) in enumerate(chars):
+                if idx >= GRID * GRID:
+                    continue
+                img = nut_image.convert_to_pil_image(im)
+                # NUT glyphs are palette images: Index 0 = OUTLINE (black
+                # contour), Index 1 = FILL (replaced with text color by the
+                # 8-bit renderer), Index 39 = transparent. Encode this so
+                # the renderer can tint the fill and keep the outline:
+                #   outline -> black, fill -> WHITE (tint target), rest -> transparent.
+                if img.mode == 'P':
+                    pa = np.array(img)
+                    rgba = img.convert('RGBA')
+                    r_arr, g_arr, b_arr, a_arr = [np.array(c) for c in rgba.split()]
+                    # Build mask: outline = index 0, fill = index 1
+                    is_outline = (pa == 0)
+                    is_fill = (pa == 1)
+                    # Fill pixels -> white, outline pixels -> black
+                    r_out = np.where(is_fill, 255, np.where(is_outline, 0, r_arr))
+                    g_out = np.where(is_fill, 255, np.where(is_outline, 0, g_arr))
+                    b_out = np.where(is_fill, 255, np.where(is_outline, 0, b_arr))
+                    a_out = np.where(pa == 39, 0, 255).astype(np.uint8)
+                    img = Image.merge('RGBA', (
+                        Image.fromarray(r_out.astype(np.uint8), 'L'),
+                        Image.fromarray(g_out.astype(np.uint8), 'L'),
+                        Image.fromarray(b_out.astype(np.uint8), 'L'),
+                        Image.fromarray(a_out.astype(np.uint8), 'L'),
+                    ))
+                else:
+                    img = img.convert('RGBA')
+                # Keep the FULL frame size (loc.x2-loc.x1, loc.y2-loc.y1)
+                # — do NOT crop the transparent top padding away. The
+                # 8-bit renderer draws the glyph at the frame's top edge
+                # (y) and the internal transparent rows above the ink
+                # position it on the text baseline. If we crop the bbox,
+                # the glyph loses that padding and gets top-aligned.
+                # Paste the frame at the cell origin (no padding) so the
+                # renderer can draw cell-top -> ink-bottom with no offset.
+                fw = max(1, loc.x2 - loc.x1)
+                fh = max(1, loc.y2 - loc.y1)
+                if img.size != (fw, fh):
+                    # The decoded image may be smaller than the frame;
+                    # paste it at the frame's offset (xoff/yoff).
+                    pad = Image.new('RGBA', (fw, fh), (0, 0, 0, 0))
+                    pad.paste(img, (loc.x1, loc.y1), img)
+                    img = pad
+                # Paste at cell origin (no padding) — the frame's own top
+                # padding (transparent rows above the ink) is preserved.
+                row = idx // GRID
+                col = idx % GRID
+                cell_x = col * CELL_W
+                cell_y = row * CELL_H
+                sheet.paste(img, (cell_x, cell_y), img)
+            out_sub = font_dir / name
+            out_sub.mkdir(parents=True, exist_ok=True)
+            sheet.save(str(out_sub / 'chars.png'))
+            print("chars.png")
         except Exception as e:
             print(f"error: {e}")
 

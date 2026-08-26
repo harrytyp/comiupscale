@@ -2292,7 +2292,14 @@ void ScummEngine::renderHDComposite() {
 			int hdX = fi->x * hdW / MAX(1, visW);
 			int hdY = fi->y * hdH / MAX(1, visH);
 			hdX += (int)(vs->xstart) * hdW / MAX(1, _roomWidth);
-			if (_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY))
+			// Tint the HD glyph with the game text color (palette index)
+			byte tR = 255, tG = 255, tB = 255;
+			if (fi->col >= 0 && fi->col < 256) {
+				tR = _currentPalette[fi->col * 3 + 0];
+				tG = _currentPalette[fi->col * 3 + 1];
+				tB = _currentPalette[fi->col * 3 + 2];
+			}
+			if (_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY, tR, tG, tB))
 				step27_drawn++;
 		}
 		if (_hdFrameCount % 30 == 0)
@@ -2449,15 +2456,21 @@ void ScummEngine::renderHDComposite() {
 				uint32 *row = (uint32 *)_hdComposite.getBasePtr(0, y);
 				for (int x = 0; x < shotW; x++) {
 					uint32 px = row[x];
-					fputc((px >> 16) & 0xFF, f);
-					fputc((px >> 8) & 0xFF, f);
-					fputc(px & 0xFF, f);
+					// _hdComposite is BGRA (rShift=0, bShift=16): R is the
+					// low byte, B is bits 16-23. PPM wants RGB order.
+					byte pr = px & 0xFF;
+					byte pg = (px >> 8) & 0xFF;
+					byte pb = (px >> 16) & 0xFF;
+					fputc(pr, f);
+					fputc(pg, f);
+					fputc(pb, f);
 				}
 			}
 			fclose(f);
 			warning("HD SCREENSHOT: F10 pressed, saved /tmp/hd_screenshot.ppm (%dx%d)", shotW, shotH);
 		}
 	}
+
 	if (_hdDebugDumpCount >= 3) {
 		if (_hdFrameCount > 10) {
 			hdDebugDump();
