@@ -2494,12 +2494,22 @@ void ScummEngine::renderHDComposite() {
 		int cy = _mouse.y - _cursor.hotspotY;
 		int64 chdX = (int64)cx * hdW / MAX(1, visW);
 		int64 chdY = (int64)cy * hdH / MAX(1, visH);
-		int chdW = MIN<int>(_hdComposite.w - (int)chdX, hdW);
-		int chdH = MIN<int>(_hdComposite.h - (int)chdY, hdH);
+		// The cursor may sit partly or fully outside the screen, and in
+		// windowed mode the system screen can be smaller than the composite.
+		// The backend asserts on out of range destinations, so clip the rect
+		// to both the composite and the system screen.
+		int64 srcX = MAX<int64>(0, chdX);
+		int64 srcY = MAX<int64>(0, chdY);
+		int64 right = MIN<int64>(MIN<int64>((int64)_hdComposite.w, chdX + (int64)hdW),
+		                          (int64)_system->getWidth());
+		int64 bottom = MIN<int64>(MIN<int64>((int64)_hdComposite.h, chdY + (int64)hdH),
+		                           (int64)_system->getHeight());
+		int chdW = (int)(right - srcX);
+		int chdH = (int)(bottom - srcY);
 		if (chdW > 0 && chdH > 0)
 			_system->copyRectToScreen(
-				_hdComposite.getBasePtr((int)chdX, (int)chdY),
-				_hdComposite.pitch, (int)chdX, (int)chdY, chdW, chdH);
+				_hdComposite.getBasePtr((int)srcX, (int)srcY),
+				_hdComposite.pitch, (int)srcX, (int)srcY, chdW, chdH);
 	}
 
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
