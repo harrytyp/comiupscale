@@ -1482,6 +1482,9 @@ protected:
 
 	/** HD mode: render the HD composite to the system buffer (32-bit RGBA). */
 	void renderHDComposite();
+	/** Shift the clean 8-bit background reference + validity mask by dx pixels
+	 *  (viewport space) so it stays aligned when the camera moves. */
+	void hdShiftCleanBackground(int dx);
 	/** HD debug: dump all surfaces and state to files. */
 	void hdDebugDump();
 	void hdDumpSDComposite();

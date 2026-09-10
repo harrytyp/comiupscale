@@ -1234,6 +1234,42 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 	}
 }
 
+/**
+ * Keep the clean 8-bit background reference aligned while the camera moves.
+ * _hdCleanBackground / _hdCleanValid hold viewport-space 8-bit background
+ * pixels; their content is the room, which does not move with the camera, so a
+ * camera move of dx viewport pixels shifts the reference by -dx. Pixels shifted
+ * in from outside the previous viewport are marked invalid.
+ */
+void ScummEngine::hdShiftCleanBackground(int dx) {
+	int w = MIN<int>(_screenWidth, _hdCleanBackground.w);
+	int h = MIN<int>(_screenHeight, _hdCleanBackground.h);
+	if (w <= 0 || h <= 0 || !_hdCleanValid)
+		return;
+	if (dx >= w || dx <= -w) {
+		// Camera jumped by a full screen — nothing can be reused.
+		memset(_hdCleanBackground.getPixels(), 0, w * h);
+		memset(_hdCleanValid, 0, _hdCleanValidSize > 0 ? _hdCleanValidSize : w * h);
+		return;
+	}
+	for (int y = 0; y < h; y++) {
+		byte *row = (byte *)_hdCleanBackground.getBasePtr(0, y);
+		byte *valid = _hdCleanValid + y * w;
+		if (dx > 0) {
+			memmove(row, row + dx, w - dx);
+			memmove(valid, valid + dx, w - dx);
+			memset(row + (w - dx), 0, dx);
+			memset(valid + (w - dx), 0, dx);
+		} else {
+			const int adx = -dx;
+			memmove(row + adx, row, w - adx);
+			memmove(valid + adx, valid, w - adx);
+			memset(row, 0, adx);
+			memset(valid, 0, adx);
+		}
+	}
+}
+
 void ScummEngine::renderHDComposite() {
 	uint32 _hdFrameStartTime = _system->getMillis();
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
@@ -1263,10 +1299,22 @@ void ScummEngine::renderHDComposite() {
 
 	// HD background is guaranteed by caller (gfx.cpp:557), no early-return needed.
 
-	hdW = _hdBackgroundSurface.w;
-	hdH = _hdBackgroundSurface.h;
-	int visW = _screenWidth; // full width (ignore camera offset for compositing)
+	// The composite is the HD *viewport* (screen size x asset scale), exactly
+	// like the 8-bit virt screen, which is also viewport sized. Every 8-bit
+	// coordinate therefore maps to HD with a plain x scale, and only the
+	// background read needs the camera offset. (The old room sized composite
+	// made hdW/_screenWidth give 5984/640 = 9 instead of 4 in wide rooms.)
+	const int scale = MAX(1, (int)_hdScale);
+	int visW = _screenWidth;
 	int visH = _screenHeight;
+	hdW = visW * scale;
+	hdH = visH * scale;
+	const int camX = vs->xstart * scale;	// camera offset in HD pixels
+
+	if (_hdFrameCount % 30 == 0)
+		hdPrintf("hdgeom: scale=%d camX=%d bg=%dx%d room=%dx%d comp=%dx%d xstart=%d",
+			scale, camX, (int)_hdBackgroundSurface.w, (int)_hdBackgroundSurface.h,
+			(int)_roomWidth, (int)_roomHeight, hdW, hdH, (int)vs->xstart);
 
 	if (visW <= 0 || visH <= 0)
 		return;
@@ -1284,16 +1332,19 @@ void ScummEngine::renderHDComposite() {
 	// Step 1: Copy HD background to composite surface (RGB→RGBA)
 	// PNG decoder returns 3-bpp RGB; composite uses 4-bpp RGBA.
 	// Fast path: for 4-bpp sources, just memcpy (no pixel conversion needed)
-	for (int y = 0; y < _hdBackgroundSurface.h && y < _hdComposite.h; y++) {
-		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(0, y);
+	// Copy the visible window of the (room sized) HD background: source is
+	// offset by the camera, destination is always x=0 of the HD viewport.
+	int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
+	int srcBgX = MIN(camX, MAX(0, _hdBackgroundSurface.w - hdW));
+	for (int y = 0; y < _hdBackgroundSurface.h && y < hdH; y++) {
+		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(srcBgX, y);
 		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
-		int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
 		if (bgBpp == 4) {
 			// Fast path: RGBA → RGBA (no conversion needed)
-			memcpy(dst, src, _hdBackgroundSurface.w * 4);
+			memcpy(dst, src, hdW * 4);
 		} else {
 			// Slow path: 24-bit RGB → 32-bit RGBA (pixel-by-pixel)
-			for (int x = 0; x < _hdBackgroundSurface.w && x < _hdComposite.w; x++) {
+			for (int x = 0; x < hdW; x++) {
 				uint8 r = src[x * 3 + 0];
 				uint8 g = src[x * 3 + 1];
 				uint8 b = src[x * 3 + 2];
@@ -1319,7 +1370,7 @@ void ScummEngine::renderHDComposite() {
 		for (int sy = 0; sy <= visH; sy++)
 			hdYStart[sy] = sy * hdH / visH;
 		for (int sx = 0; sx <= visW; sx++)
-			hdXStart[sx] = sx * hdW / visW;
+			hdXStart[sx] = sx * hdW / visW;	// viewport → HD (camera handled in Step 1)
 		int dirtyCount = 0;
 		// Flag array: mark which 8-bit rows have at least one foreground pixel
 		// so we can later skip fully-empty rows
@@ -1327,7 +1378,10 @@ void ScummEngine::renderHDComposite() {
 		for (int sy = 0; sy < visH; sy++) {
 			int hdY0 = hdYStart[sy], hdY1 = hdYStart[sy + 1];
 			if (hdY1 <= hdY0) continue;
-			const uint8 *visRow = (const uint8 *)vs->getBasePtr(0, sy);
+			// The virt screen is stored in room space (buffer offset == room x),
+			// the visible window starts at xstart: reading at sx would compare
+			// the reference against a completely different room region.
+			const uint8 *visRow = (const uint8 *)vs->getBasePtr(vs->xstart, sy);
 			const uint8 *cleanRow = (const uint8 *)_hdCleanBackground.getPixels()
 				? (const uint8 *)_hdCleanBackground.getBasePtr(0, sy) : nullptr;
 			bool useClean = (_hdCurrentRoom == _currentRoom && _hdCleanValid && cleanRow);
@@ -1395,7 +1449,7 @@ void ScummEngine::renderHDComposite() {
 			for (int dx = 0; dx < hdW && dx < invW_8 * hdW / visW; dx++) {
 				int sx = dx * visW / hdW;
 				if (sx < 0 || sx >= visW || sy < 0 || sy >= visH) continue;
-				uint8 curPix = *(const uint8 *)vs->getBasePtr(sx, sy);
+				uint8 curPix = *(const uint8 *)vs->getBasePtr(vs->xstart + sx, sy);
 				bool fg = true;
 				if (_hdCurrentRoom == _currentRoom && _hdCleanValid && sy < _hdCleanValidSize / visW) {
 					int pos = sy * visW + sx;
@@ -1593,7 +1647,7 @@ void ScummEngine::renderHDComposite() {
 			// Layer files are the exact size of the HD canvas and
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
-			if (hdObjSurfPtr->w >= hdW && hdObjSurfPtr->h >= hdH && od.fl_object_index == 0) {
+			if (hdObjSurfPtr->w >= _hdBackgroundSurface.w && hdObjSurfPtr->h >= _hdBackgroundSurface.h && od.fl_object_index == 0) {
 				
 				continue;
 			}
@@ -1612,10 +1666,14 @@ void ScummEngine::renderHDComposite() {
 					blastY = it->_value.y;
 				}
 			}
-			int xPos = (blastX >= 0) ? blastX : od.x_pos;
+			// od.x_pos/y_pos are room coordinates (drawObject blits them via
+			// strips, i.e. relative to _screenStartStrip); the blast-cache
+			// override for inventory FLOBJs is already screen based. Convert
+			// both to HD viewport coordinates.
+			int xPos = (blastX >= 0) ? blastX : od.x_pos - vs->xstart;
 			int yPos = (blastY >= 0) ? blastY : od.y_pos;
-			int64 hdX = (int64)xPos * hdW / MAX(1, _screenWidth);
-			int64 hdY = (int64)yPos * hdH / MAX(1, _screenHeight);
+			int64 hdX = (int64)xPos * hdW / MAX(1, visW);
+			int64 hdY = (int64)yPos * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 
@@ -1626,8 +1684,8 @@ void ScummEngine::renderHDComposite() {
 			// FLOBJs (>50% screen = obj=114), also check inventory state
 			// from verb slot activity.
 			{
-				int sx = od.x_pos;
-				int sy = od.y_pos;
+				int sx = xPos;
+				int sy = yPos;
 				// Override with cached blast position if available (inventory items)
 				if (blastX >= 0) { sx = blastX; sy = blastY; }
 				int sw = MIN<int>(od.width, visW - sx);
@@ -1832,8 +1890,8 @@ void ScummEngine::renderHDComposite() {
 			}
 			int blastX = eo.rect.left;
 			int blastY = eo.rect.top;
-			int64 hdX = (int64)blastX * hdW / MAX(1, _screenWidth);
-			int64 hdY = (int64)blastY * hdH / MAX(1, _screenHeight);
+			int64 hdX = (int64)blastX * hdW / MAX(1, visW);
+			int64 hdY = (int64)blastY * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 			if (hdObjW <= 0 || hdObjH <= 0) {
@@ -2040,8 +2098,8 @@ void ScummEngine::renderHDComposite() {
 			int limbDrawX = entries[ei].drawX;
 			if (mirror)
 				limbDrawX = -limbDrawX;
-			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, _screenWidth);
-			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, _screenHeight);
+			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
+			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, visH);
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
 			if (hdCX <= 0 && hdCY <= 0) {
@@ -2114,7 +2172,8 @@ void ScummEngine::renderHDComposite() {
 							if (hdAlphaMask[maskY * hdW + maskX] == 0) {
 								// Nothing behind → restore HD background
 								int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
-								const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(maskX, maskY);
+								int bgRX = MIN(maskX + camX, _hdBackgroundSurface.w - 1);
+								const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(bgRX, maskY);
 								uint8 bgR = bgRowRaw[0], bgG = bgRowRaw[1], bgB = bgRowRaw[2];
 								dstRow[ox] = bgR | (bgG << 8) | (bgB << 16) | (0xFF << 24);
 								hdAlphaMask[maskY * hdW + maskX] = 1;
@@ -2170,8 +2229,8 @@ void ScummEngine::renderHDComposite() {
 			// Per-entry overlay
 			for (int ei = 0; ei < numEntries; ei++) {
 				Actor *ea = entries[ei].actor;
-				int64 hdEX = (int64)(ea->getPos().x - vs->xstart + entries[ei].drawX) * hdW / MAX(1, _screenWidth);
-				int64 hdEY = (int64)(ea->getPos().y - ea->getElevation() + entries[ei].drawY) * hdH / MAX(1, _screenHeight);
+				int64 hdEX = (int64)(ea->getPos().x - vs->xstart + entries[ei].drawX) * hdW / MAX(1, visW);
+				int64 hdEY = (int64)(ea->getPos().y - ea->getElevation() + entries[ei].drawY) * hdH / MAX(1, visH);
 				bool isComplete = (entries[ei].drawX == ea->_hdRelX);
 				uint32 boxCol = isComplete ? 0x00FF00FF : 0x00FFFF80;
 				drawRect((int)hdEX, (int)hdEY, 6, 6, boxCol);
@@ -2234,7 +2293,7 @@ void ScummEngine::renderHDComposite() {
 			int dy_end = (sy + 1) * hdH / visH;
 			if (dy_end > hdH) dy_end = hdH;
 
-			const uint8 *srcRow = (const uint8 *)vs->getBasePtr(0, sy);
+			const uint8 *srcRow = (const uint8 *)vs->getBasePtr(vs->xstart, sy);
 			for (int sx = 0; sx < visW; sx++) {
 				int mpos = sy * visW + sx;
 
@@ -2291,7 +2350,8 @@ void ScummEngine::renderHDComposite() {
 		for (Common::List<HdFontChar>::iterator fi = _hdFontChars.begin(); fi != _hdFontChars.end(); ++fi) {
 			int hdX = fi->x * hdW / MAX(1, visW);
 			int hdY = fi->y * hdH / MAX(1, visH);
-			hdX += (int)(vs->xstart) * hdW / MAX(1, _roomWidth);
+			// (fi->x is already viewport based: the composite is the HD viewport,
+			// so no camera offset is needed here.)
 			// Tint the HD glyph with the game text color (palette index)
 			byte tR = 255, tG = 255, tB = 255;
 			if (fi->col >= 0 && fi->col < 256) {
@@ -2350,8 +2410,8 @@ void ScummEngine::renderHDComposite() {
 			if (!hdItemSurfPtr)
 				continue;
 			// Scale verb SD position to HD
-			int64 hdX = (int64)vst->curRect.left * hdW / MAX(1, _screenWidth);
-			int64 hdY = (int64)vst->curRect.top * hdH / MAX(1, _screenHeight);
+			int64 hdX = (int64)vst->curRect.left * hdW / MAX(1, visW);
+			int64 hdY = (int64)vst->curRect.top * hdH / MAX(1, visH);
 			int maxW = MIN<int>(hdItemSurfPtr->w, (int)(hdW - hdX));
 			int maxH = MIN<int>(hdItemSurfPtr->h, (int)(hdH - hdY));
 			for (int oy = 0; oy < maxH; oy++) {
@@ -2397,8 +2457,8 @@ void ScummEngine::renderHDComposite() {
 		if (hdObjSurfPtr) {
 			int imageX = _mouse.x - _cursor.hotspotX;
 			int imageY = _mouse.y - _cursor.hotspotY;
-			int64 hdX = (int64)imageX * hdW / MAX(1, _screenWidth);
-			int64 hdY = (int64)imageY * hdH / MAX(1, _screenHeight);
+			int64 hdX = (int64)imageX * hdW / MAX(1, visW);
+			int64 hdY = (int64)imageY * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
 			int hdObjH = MIN<int>(hdObjSurfPtr->h, (int)(hdH - hdY));
 			if (hdObjW > 0 && hdObjH > 0) {
@@ -2432,8 +2492,8 @@ void ScummEngine::renderHDComposite() {
 	if (_hdCursorObject > 0) {
 		int cx = _mouse.x - _cursor.hotspotX;
 		int cy = _mouse.y - _cursor.hotspotY;
-		int64 chdX = (int64)cx * hdW / MAX(1, _screenWidth);
-		int64 chdY = (int64)cy * hdH / MAX(1, _screenHeight);
+		int64 chdX = (int64)cx * hdW / MAX(1, visW);
+		int64 chdY = (int64)cy * hdH / MAX(1, visH);
 		int chdW = MIN<int>(_hdComposite.w - (int)chdX, hdW);
 		int chdH = MIN<int>(_hdComposite.h - (int)chdY, hdH);
 		if (chdW > 0 && chdH > 0)
@@ -2470,6 +2530,7 @@ void ScummEngine::renderHDComposite() {
 			warning("HD SCREENSHOT: F10 pressed, saved /tmp/hd_screenshot.ppm (%dx%d)", shotW, shotH);
 		}
 	}
+
 
 	if (_hdDebugDumpCount >= 3) {
 		if (_hdFrameCount > 10) {
@@ -2725,7 +2786,7 @@ void ScummEngine::hdDumpSDComposite() {
         for (int dx = 0; dx < hdW; dx++) {
             int sx = dx * visW / hdW;
             sx = CLIP(sx, 0, visW - 1);
-            uint8 p = *(const uint8 *)vs->getBasePtr(sx, sy);
+            uint8 p = *(const uint8 *)vs->getBasePtr(vs->xstart + sx, sy);
             uint8 r = _currentPalette[p * 3 + 0];
             uint8 g = _currentPalette[p * 3 + 1];
             uint8 b = _currentPalette[p * 3 + 2];

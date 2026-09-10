@@ -320,7 +320,13 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
-				_hdScale = MAX(1, _hdBackgroundSurface.w / _screenWidth);
+				// The HD pack upscales the FULL room image by an integer factor,
+				// so the scale is bg/room, never bg/screen: for the scrolling
+				// room 14 the old formula gave 5984/640 = 9 instead of 4, which
+				// made every HD sprite ~2.35x too large (Issue #20).
+				// Vertical is used here because it is independent of _roomWidth,
+				// which is only known after setupRoomSubBlocks().
+				_hdScale = MAX(1, _hdBackgroundSurface.h / MAX(1, _screenHeight));
 				_hdAssetManager->setScale(_hdScale);
 				warning("HD: loaded bg for room %d (%dx%d) scale=%d", room,
 					_hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale);

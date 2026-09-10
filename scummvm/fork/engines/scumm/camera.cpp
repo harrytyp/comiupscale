@@ -202,7 +202,19 @@ void ScummEngine::cameraMoved() {
 		screenLeft = _screenStartStrip * 8;
 	}
 
+	const int vsOldXStart = _virtscr[kMainVirtScreen].xstart;
 	_virtscr[kMainVirtScreen].xstart = screenLeft;
+
+	// HD: keep the clean 8-bit background reference aligned with the camera.
+	// Its content is the room (camera independent), so a camera move by dx
+	// pixels only shifts it by -dx. Without this the stale reference makes
+	// Step 2 classify nearly every pixel as foreground and the whole screen
+	// degenerates into an 8-bit upscale while scrolling (part of Issue #20).
+	if (_hdScale > 1 && _hdCleanValid && _hdCleanBackground.getPixels()) {
+		int dx = screenLeft - vsOldXStart;
+		if (dx)
+			hdShiftCleanBackground(dx);
+	}
 }
 
 void ScummEngine::panCameraTo(int x, int y) {
