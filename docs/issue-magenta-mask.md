@@ -2,7 +2,7 @@
 
 ## Symptom
 
-391 of the 600 object textures and 30 of the 234 object layer textures in HD Assets v1.0.4 carry a visible magenta area. It shows up as a purple background on inventory icons, as a purple fringe around in-game objects (balcony door, rubber tree), and as a purple rim around the verb coin cursor.
+391 of the 600 object textures and 30 of the 234 object layer textures in HD Assets v1.0.4 carry a visible magenta area. It shows up as a purple background on inventory icons and as a purple fringe around in-game objects (balcony door, rubber tree). The cursor texture `0003_system-cursor-icon` also carries mask magenta, but the engine draws the pointer from the SD cursor image (`useIm01Cursor` in `cursor.cpp`), so that file only matters if the HD cursor path is used.
 
 ## Root cause
 
