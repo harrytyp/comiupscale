@@ -70,15 +70,16 @@ Copy these files into a `game/` folder:
 |---------|------|----------|:----:|
 | **Binary** | [Releases](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
 | **HD Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | Backgrounds, objects, costumes, fonts (4 ZIP parts) | ~4.8 GB |
-| **HD Assets fix (objects + layers)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | Corrected `hd/objects` (366 room 3 system and inventory textures, mask based, logo and room objects untouched), Issue #22 | ~123 MB |
+| **HD Assets part1 (corrected)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | `backgrounds`, `objects` (mask corrected, Issue #22), `objects_layers`, `fonts` | ~537 MB |
+| **HD Assets fix (objects + layers only)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | for installs that already have v1.0.4 loaded | ~123 MB |
 | **Original Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | `comi-original-assets.zip`, the original 1x extracted source textures (backgrounds, objects, costumes, fonts) | ~80 MB |
 | **SDL2.dll (Windows)** | [Releases](https://github.com/harrytyp/comiupscale/releases) | Included in `scummvm-win-bundle.zip`, built with audio support (see [Building SDL2](#building-sdl2-for-windows)) | - |
 
 **Installation:**
 1. Download the binary for your OS from the latest release
-2. Download all 4 parts from `hd_assets_v1.0.4`
-3. Extract each ZIP into the same folder; they merge into `hd/`
-4. Extract `hd_textures_v1.0.5_objects_layers.zip` from `hd_assets_v1.0.5` last. It replaces `hd/objects` and `hd/objects_layers` with the corrected textures (magenta mask fix, Issue #22)
+2. Download `hd_assets_part1.zip` from `hd_assets_v1.0.5` (contains the corrected object textures) and `hd_assets_part2.zip` to `hd_assets_part4.zip` from `hd_assets_v1.0.4`
+3. Extract the ZIPs into the same folder; they merge into `hd/`
+4. If you already extracted v1.0.4 before, you only need `hd_textures_v1.0.5_objects_layers.zip` from `hd_assets_v1.0.5`, it replaces `hd/objects` and `hd/objects_layers` (mask fix, Issue #22)
 5. Also grab config files from the repo ([`release/windows/`](release/windows/)): `scummvm.ini`, `start_comi_hd.bat`
 
 **Final folder structure:**
@@ -335,6 +336,7 @@ comiupscale/
 | [`scripts/full_pipeline.sh`](scripts/full_pipeline.sh) | End-to-end automation: extract → upscale → build → play |
 | [`docs/v8-rendering-pipeline.md`](docs/v8-rendering-pipeline.md) | COMI V8 Rendering Pipeline: FLOBJs, AKOS, Verb-System, HD-Compositing |
 | [`docs/HD_MANIFEST_SPEC.md`](docs/HD_MANIFEST_SPEC.md) | HD manifest format for custom asset mapping |
+| [`docs/TEXTURE_MASK_PIPELINE.md`](docs/TEXTURE_MASK_PIPELINE.md) | Texture pipeline and the object mask: where the mask lives, the rule that separates mask from artwork, the fix step and its verification |
 | [`setup.sh`](setup.sh) | Quick setup script (downloads binary + assets) |
 
 ---
