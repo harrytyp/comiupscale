@@ -70,7 +70,7 @@ Copy these files into a `game/` folder:
 |---------|------|----------|:----:|
 | **Binary** | [Releases](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
 | **HD Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | Backgrounds, objects, costumes, fonts (4 ZIP parts) | ~4.8 GB |
-| **HD Assets fix (objects + layers)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | Corrected `hd/objects` and `hd/objects_layers`, magenta mask removed (Issue #22) | ~123 MB |
+| **HD Assets fix (objects + layers)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | Corrected `hd/objects` (366 room 3 system and inventory textures, mask based, logo and room objects untouched), Issue #22 | ~123 MB |
 | **Original Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | `comi-original-assets.zip`, the original 1x extracted source textures (backgrounds, objects, costumes, fonts) | ~80 MB |
 | **SDL2.dll (Windows)** | [Releases](https://github.com/harrytyp/comiupscale/releases) | Included in `scummvm-win-bundle.zip`, built with audio support (see [Building SDL2](#building-sdl2-for-windows)) | - |
 

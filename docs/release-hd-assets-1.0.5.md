@@ -1,31 +1,30 @@
-Texture pack with the magenta mask removed from the object and object layer textures. This fixes the purple background on inventory icons, the purple fringe around in-game objects and the purple rim on the verb coin cursor. Root cause and full analysis: Issue #22.
+Texture pack with the magenta mask removed from the object textures. This release was replaced on 2026-09-24, the first upload had over-cleaned textures. Root cause and analysis: Issue #22.
 
 ## Contents
 
 | Folder | Files | State |
 |--------|-------|-------|
-| `hd/objects` | 600 textures | corrected |
-| `hd/objects_layers` | 234 textures | corrected |
+| `hd/objects` | 600 textures | 366 corrected (room 3 system, inventory and icon textures) |
+| `hd/objects_layers` | 234 textures | unchanged |
 
-122.5 MB in total. Everything else (backgrounds, fonts, costumes, videos) is unchanged, keep those from HD Assets v1.0.4.
+123.1 MB in total. Everything else (backgrounds, fonts, costumes, videos) is unchanged, keep those from HD Assets v1.0.4.
 
 ## How to apply
 
-Extract this archive into your game folder so that `hd/objects` and `hd/objects_layers` are replaced. It is a drop in replacement for those two folders inside `hd_assets_part1.zip`, so you do not need to download the 512 MB part again.
+Extract the archive into your game folder so that `hd/objects` and `hd/objects_layers` are replaced. It is a drop in replacement for those two folders inside `hd_assets_part1.zip`.
 
-## What was wrong
+## Scope, and why it is limited on purpose
 
-391 object textures and 30 layer textures carried a visible magenta background or fringe. The SCUMM mask (palette index 255, colour `(227,0,195)` in most room palettes) was upscaled as image content instead of being turned into alpha, because the extracted source PNGs declare no transparency at all.
+Only textures whose source palette proves the mask are touched. Rule in `scripts/mask_index.py`: the mask is the palette entry whose colour is in the magenta family AND whose area touches the image border.
 
-## Verification
+- processed: 366 textures, all in room 3 (system UI, inventory background, inventory icons). Opaque magenta went from 1811664 to 912 pixels.
+- skipped on purpose: the logo texture and all room object textures. Their purple is artwork, not mask. An earlier version of this pack removed those pixels and damaged the textures. That is corrected in this upload.
+- object layers are untouched, they are composites of room objects.
 
-Every corrected texture was checked twice, independently of the tool's own report:
+## Reproduce
 
-- changed pixels are a subset of the mask definition (hard magenta plus a fringe within 6 px of it)
-- all non mask pixels are byte identical to the previous file
-- black and white pixel counts unchanged, for example 1101 black and 941 white in the cursor texture before and after
-- after the pass: 0 files with saturated magenta in 4 texture folders x 600 objects and 4 x 234 layers
+```
+python3 scripts/fix_mask_alpha.py --hd <hd>/objects --src-zip comi-original-assets.zip --apply
+```
 
-## Files
-
-- `hd_textures_v1.0.5_objects_layers.zip` (122.5 MB)
+Per file the step verifies that changed pixels stay inside the 2 px dilated mask. If a pixel outside changes, the file is left alone and reported. Independent recount after the run: changed files grouped by room (must be the approved group), residual magenta measured.

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Alpha/Masken-Schritt v7 — repariert die Magenta-Maske der HD-Objekt-Assets.
 
+ACHTUNG, VERALTET UND UNSICHER: dieser Schritt arbeitet nur mit Farben und entfernt
+dadurch auch echtes Violett (Logo, Raumobjekte, 0028_pink-chest). Fuer den produktiven
+Einsatz scripts/fix_mask_alpha.py mit scripts/mask_index.py verwenden, das die Maske aus
+der Quellpalette plus Randpruefung ableitet. Hier nur als Nachweis der Historie.
+
 Was in v6 schiefging (Code-Beleg in add_object_alpha_v6.py, Zeilen 119-141):
 
     if os.path.exists(src_path):
