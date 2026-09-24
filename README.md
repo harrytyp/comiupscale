@@ -70,6 +70,7 @@ Copy these files into a `game/` folder:
 |---------|------|----------|:----:|
 | **Binary** | [Releases](https://github.com/harrytyp/comiupscale/releases) | `scummvm.exe` (Windows) + `scummvm` (Linux) + `scummvm-win-bundle.zip` (SDL2.dll, config) | ~170 MB |
 | **HD Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | Backgrounds, objects, costumes, fonts (4 ZIP parts) | ~4.8 GB |
+| **HD Assets fix (objects + layers)** | [hd_assets_v1.0.5](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.5) | Corrected `hd/objects` and `hd/objects_layers`, magenta mask removed (Issue #22) | ~123 MB |
 | **Original Assets** | [hd_assets_v1.0.4](https://github.com/harrytyp/comiupscale/releases/tag/hd_assets_v1.0.4) | `comi-original-assets.zip`, the original 1x extracted source textures (backgrounds, objects, costumes, fonts) | ~80 MB |
 | **SDL2.dll (Windows)** | [Releases](https://github.com/harrytyp/comiupscale/releases) | Included in `scummvm-win-bundle.zip`, built with audio support (see [Building SDL2](#building-sdl2-for-windows)) | - |
 
@@ -77,7 +78,8 @@ Copy these files into a `game/` folder:
 1. Download the binary for your OS from the latest release
 2. Download all 4 parts from `hd_assets_v1.0.4`
 3. Extract each ZIP into the same folder; they merge into `hd/`
-4. Also grab config files from the repo ([`release/windows/`](release/windows/)): `scummvm.ini`, `start_comi_hd.bat`
+4. Extract `hd_textures_v1.0.5_objects_layers.zip` from `hd_assets_v1.0.5` last. It replaces `hd/objects` and `hd/objects_layers` with the corrected textures (magenta mask fix, Issue #22)
+5. Also grab config files from the repo ([`release/windows/`](release/windows/)): `scummvm.ini`, `start_comi_hd.bat`
 
 **Final folder structure:**
 ```
