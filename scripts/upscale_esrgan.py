@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import numpy as np
 import cv2
 import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 class ResidualDenseBlock(nn.Module):
@@ -135,17 +136,97 @@ def read_with_mask(input_path):
             return img, alpha, True
     except Exception:
         pass
+    # Kein tRNS im Bild: Maske ueber dieselbe gemessene Regel bestimmen wie die Extraktion.
+    # Damit werden alte Rohbilder (Maske nur als Palettenindex) und neue (mit tRNS) gleich
+    # behandelt. Die Flaechenschwelle ist hier niedriger als bei der Raum-Mehrheit, weil einzelne
+    # Motive wie der Inventarhintergrund nur rund 14 Prozent Maskenflaeche haben.
+    try:
+        from PIL import Image as _PIL
+        from mask_detect import dominant_border_index, colour_is_mask_like
+        pil = _PIL.open(input_path)
+        if pil.mode == "P":
+            arr = np.array(pil)
+            found = dominant_border_index(arr, border_min=0.5, area_min=0.05)
+            if found:
+                idx = found[0]
+                palette = pil.getpalette() or []
+                colour = tuple(int(v) for v in palette[idx * 3:idx * 3 + 3]) if len(palette) >= idx * 3 + 3 else None
+                if colour_is_mask_like(colour):
+                    alpha = np.where(arr == idx, 0, 255).astype(np.uint8)
+                    return img, alpha, True
+    except Exception as exc:
+        print("Maskenerkennung uebersprungen:", exc)
     alpha = np.full((img.shape[0], img.shape[1]), 255, dtype=np.uint8)
     return img, alpha, False
 
 
 def inpaint_mask_colour(rgb, mask_binary):
     """Die Maskenfarbe vor dem Skalieren entfernen: sonst zieht der Upscaler sie als Saum ins
-    Motiv hinein, genau der Magenta- und Gruensaum, der bisher von Hand nachgefuellt wurde."""
-    holes = (mask_binary * 255).astype(np.uint8)
-    if holes.max() == 0:
+    Motiv hinein, genau der Magenta- und Gruensaum, der bisher von Hand nachgefuellt wurde.
+
+    Gefuellt wird mit dem *naechsten Randpixel* des Motivs, nicht mit einem Mittelwert:
+    cv2.inpaint mittelt die Nachbarschaft und erzeugt damit einen fremden hellen Saum, den der
+    Upscaler anschliessend als Heiligenschein ins Motiv zieht (im Vergleich sichtbar).
+    """
+    holes = (mask_binary > 0)
+    if not holes.any() or holes.all():
         return rgb
-    return cv2.inpaint(rgb, holes, 3, cv2.INPAINT_TELEA)
+    dist, labels = cv2.distanceTransformWithLabels(
+        (holes * 255).astype(np.uint8), cv2.DIST_L2, 3, labelType=cv2.DIST_LABEL_PIXEL)
+    ys, xs = np.nonzero(~holes)
+    if len(ys) == 0:
+        return rgb
+    lookup = np.zeros(int(labels.max()) + 1, dtype=np.int64)
+    lookup[labels[ys, xs]] = np.arange(len(ys))
+    out = rgb.copy()
+    my, mx = np.nonzero(holes)
+    src = lookup[labels[my, mx]]
+    out[my, mx] = rgb[ys[src], xs[src]]
+    return out
+
+
+def model_forward(bgr):
+    """RRDBNet auf einem BGR-Bild, Ergebnis als BGR float 0..255."""
+    rgb = bgr[:, :, ::-1].copy()
+    t = torch.from_numpy(rgb.astype(np.float32) / 255.0).permute(2, 0, 1).unsqueeze(0)
+    with torch.no_grad():
+        out = model(t).squeeze(0).clamp(0, 1)
+    return (out.numpy().transpose(1, 2, 0) * 255)
+
+
+def upscale_bgr(bgr, tile=256, overlap=32):
+    """4x Skalierung, bei grossen Bildern gekachelt.
+
+    Ein 640x472-Bild in einem Zug durch das Netz sprengt den Speicher (gemessen: der Lauf starb
+    genau dort bei 3 GB freiem RAM). Kacheln mit 32 px Ueberlappung und weicher Gewichtung an den
+    Raendern loesen das, ohne dass Kanten doppelt erscheinen.
+    """
+    h, w = bgr.shape[:2]
+    if max(h, w) <= tile:
+        return model_forward(bgr)
+    out = np.zeros((h * 4, w * 4, 3), dtype=np.float64)
+    weight = np.zeros((h * 4, w * 4, 1), dtype=np.float64)
+    step = max(1, tile - overlap)
+    for y0 in range(0, h, step):
+        for x0 in range(0, w, step):
+            y1, x1 = min(y0 + tile, h), min(x0 + tile, w)
+            up = model_forward(bgr[y0:y1, x0:x1])
+            ph, pw = up.shape[:2]
+            oy, ox = y0 * 4, x0 * 4
+            ov = overlap * 4
+            wy = np.ones(ph); wx = np.ones(pw)
+            if y0 > 0 and ov < ph:
+                wy[:ov] = np.linspace(0, 1, ov)
+            if y1 < h and ov < ph:
+                wy[-ov:] = np.linspace(1, 0, ov)
+            if x0 > 0 and ov < pw:
+                wx[:ov] = np.linspace(0, 1, ov)
+            if x1 < w and ov < pw:
+                wx[-ov:] = np.linspace(1, 0, ov)
+            wgt = (wy[:, None] * wx[None, :])[:, :, None]
+            out[oy:oy + ph, ox:ox + pw] += up * wgt
+            weight[oy:oy + ph, ox:ox + pw] += wgt
+    return np.clip(out / np.maximum(weight, 1e-6), 0, 255)
 
 
 def upscale_image(input_path, output_path):
@@ -158,17 +239,18 @@ def upscale_image(input_path, output_path):
 
     h, w = rgb.shape[:2]
 
-    # Step 1: Upscale RGB with RealESRGAN (no border fill — keeps textures sharp)
-    rgb_up = rgb[:, :, ::-1].copy()  # BGR → RGB
-    rgb_t = torch.from_numpy(rgb_up.astype(np.float32) / 255.0).permute(2, 0, 1).unsqueeze(0)
-    with torch.no_grad():
-        out = model(rgb_t).squeeze(0).clamp(0, 1)
-    out_np = (out.numpy().transpose(1, 2, 0) * 255).astype(np.uint8)
+    # Step 1: Upscale RGB with RealESRGAN, gekachelt bei grossen Bildern
+    out_np = upscale_bgr(rgb).astype(np.uint8)
 
     # Step 2: Alpha. Mit Maske binaer und kantentreu uebernommen (das Spiel kennt nur harte
     # Masken), ohne Maske weiterhin der weiche Vektorumriss fuer Kanten.
     if has_mask and mask_binary.max() > 0:
-        alpha_4x = cv2.resize(mask_binary * 255, (w * 4, h * 4), interpolation=cv2.INTER_NEAREST)
+        # mask_binary markiert die Maske, also die *unsichtbare* Flaeche. Im Ergebnis muss sie
+        # transparent sein, deshalb invertiert. Vorher stand hier mask_binary * 255, damit wurde
+        # die Maskenfarbe deckend und das Motiv unsichtbar.
+        alpha_4x = cv2.resize(np.where(mask_binary > 0, 0, 255).astype(np.uint8),
+                              (w * 4, h * 4), interpolation=cv2.INTER_NEAREST)
+        out_np[alpha_4x < 128] = 0
         result = np.dstack([out_np[:, :, ::-1], alpha_4x])
         cv2.imwrite(output_path, result)
         size_kb = os.path.getsize(output_path) // 1024
