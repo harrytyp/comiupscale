@@ -9,7 +9,7 @@ Usage:
   python extract_all_raw.py /path/to/COMI/ [--outdir ./raw_extracted]
 """
 
-import sys, os, glob, logging
+import sys, os, glob, json, logging
 from pathlib import Path
 
 # Suppress NUTcracker debug noise
@@ -32,6 +32,10 @@ from PIL import Image
 sputm = preset.sputm
 
 
+
+
+from mask_detect import room_mask_index, save_with_mask   # gemeinsame Regel, auch vom Test benutzt
+
 def extract_all(game_path, outdir):
     game_path = Path(game_path)
     outdir = Path(outdir)
@@ -53,6 +57,7 @@ def extract_all(game_path, outdir):
 
     # --- Step 1: Backgrounds, Objects, Layers ---
     print("=== Backgrounds, Objects, Object Layers ===")
+    mask_manifest = {}
     bg_dir = outdir / 'backgrounds'
     bg_dir.mkdir(parents=True, exist_ok=True)
     obj_dir = outdir / 'objects'
@@ -79,10 +84,15 @@ def extract_all(game_path, outdir):
                 room_bg_image = room_bg_img
 
             # Objects + Layers
-            for obj_path, name, im, obj_x, obj_y in read_objects(header, room, 8):
+            room_objects = list(read_objects(header, room, 8))
+            mask_idx, mask_votes, mask_total = room_mask_index([o[2] for o in room_objects])
+            mask_manifest[str(room_id)] = {"index": mask_idx, "votes": mask_votes, "objects": mask_total}
+            print(f"  Room {room_id}: mask index {mask_idx} ({mask_votes}/{mask_total} objects agree)")
+            for obj_path, name, im, obj_x, obj_y in room_objects:
                 fn = f'{room_id:04d}_{name}.png'
-                im.putpalette(palette)
-                im.save(str(obj_dir / fn))
+                # Die Maske als Transparenz ablegen: sonst liest die naechste Stufe das Bild als
+                # undurchsichtiges RGB und skaliert die Maskenfarbe als Bildinhalt mit.
+                save_with_mask(im, obj_dir / fn, mask_idx, palette)
 
                 if room_bg_image:
                     try:
@@ -90,12 +100,16 @@ def extract_all(game_path, outdir):
                             *room_bg_image.size, 39, im,
                             ImagePosition(x1=obj_x, y1=obj_y),
                         )
-                        layer.putpalette(palette)
-                        layer.save(str(lay_dir / fn))
+                        # Index 39 ist die Leinwandmaske der Ebene, siehe resize_pil_image oben.
+                        save_with_mask(layer, lay_dir / fn, 39, palette)
                     except:
                         pass
 
             print(f"  Room {room_id}: bg + objects saved")
+
+    with open(outdir / 'mask_indices.json', 'w') as fh:
+        json.dump(mask_manifest, fh, indent=2, sort_keys=True)
+    print(f"Maskenindizes je Raum: {outdir / 'mask_indices.json'}")
 
     bg_count = len(list(bg_dir.glob('*.png')))
     obj_count = len(list(obj_dir.glob('*.png')))

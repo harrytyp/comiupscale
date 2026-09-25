@@ -115,3 +115,47 @@ removed real violet from the logo and from room object textures.
 - Issue about the object layers: they carry their mask through NUTcracker index 39
   (border share 100%), which is not a magenta entry, so `mask_index.py` skips them
   on purpose.
+
+## Wurzelfix: die Maske entsteht bei der Extraktion (Issue #23)
+
+Der Reparaturschritt oben arbeitet auf fertigen Assets. Die Ursache lag davor: die Extraktion
+schrieb die Maske als Palettenindex ohne Transparenz, der Upscaler las das Bild als
+undurchsichtiges RGB und skalierte die Maskenfarbe als Bildinhalt mit. Das ist jetzt an beiden
+Stellen behoben.
+
+**Extraktion** (`scripts/extract_all_raw.py`, Regel in `scripts/mask_detect.py`): Die Maske wird
+als tRNS ins Paletten-PNG geschrieben, der Index aber nicht geraten, sondern je Raum gemessen:
+
+- Der Maskeneintrag ist der Paletteneintrag, der mindestens 60 % der Randpixel und 15 % der
+  Bildflaeche stellt.
+- Er muss von mindestens 80 % der Objektbilder des Raums gestellt werden.
+- Seine Farbe muss einer gemessenen Maskenfarbe entsprechen: (227,0,195) Magenta im Systemraum,
+  (107,199,27) Gruen im Schiff, (141,47,255) Violett, (0,255,0) Gruen.
+- Ohne diese Mehrheit passiert nichts. Eine falsch gesetzte Maske schneidet Grafik weg, das ist
+  der teurere Fehler. Grund fuer die Farbsicherung: eine reine Randregel traefe den Logoraum,
+  dessen blauer Rand Grafik ist.
+
+Die Entscheidung je Raum landet in `mask_indices.json` neben den Rohbildern, mit Stimmenzahl.
+
+**Upscaler** (`scripts/upscale_esrgan.py`): Maskierte Quellen bekommen die Maskenfarbe vor dem
+Skalieren aus der Nachbarschaft ergaenzt (`cv2.inpaint`, 3 px), damit kein Saum ins Motiv gezogen
+wird. Das Alpha wird danach binaer und kantentreu uebernommen (INTER_NEAREST), weil das Spiel nur
+harte Masken kennt. Beide Wege werden unterstuetzt: cv2 liefert die tRNS als vierten Kanal, PIL
+ueber den Palettenindex, damit die Stufe unabhaengig vom Leser funktioniert.
+
+**Test** (`scripts/test_root_fix.py`, laeuft ohne GPU):
+
+    python3 scripts/test_root_fix.py [--sheet /pfad/blatt.png]
+
+Gemessen an den Rohbildern und den freigegebenen HD-Texturen:
+
+- Maskenerkennung: Raum 3 Index 255 Magenta 60/60, Raum 39 Index 255 Violett 60/60,
+  Raum 55 Index 5 Gruen 3/3, Logoraum ohne Mehrheit -> keine Maske.
+- tRNS-Rundlauf: Transparenz gelesen, Maske korrekt.
+- Abgleich mit den freigegebenen HD-Texturen in Raum 3: 60 Dateien, groesste Abweichung 0,089 %,
+  also Reproduktion des freigegebenen Zustands.
+- Fuellroutine: Magenta 3755 -> 0 und 3307 -> 0 Pixel.
+
+Nicht in dieser Umgebung ausgefuehrt: `cv2.inpaint` und der ESRGAN-Schritt selbst, hier fehlen
+cv2 und torch. Geprueft wurde die Fuellogik ueber die Referenzimplementierung, der GPU-Lauf
+gehoert auf die Maschine mit dem Modell.

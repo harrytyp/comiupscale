@@ -100,16 +100,49 @@ def chaikin_smooth(pts, iterations=3):
     return pts
 
 
-def upscale_image(input_path, output_path):
-    """Upscale a PNG image 4x with vector-contour alpha smoothing."""
+def read_with_mask(input_path):
+    """Bild plus Alpha lesen. Die Maske steht als tRNS im Paletten-PNG; cv2 liefert sie als
+    vierten Kanal, PIL nur ueber den Palettenindex. Beide Wege werden unterstuetzt, damit die
+    Stufe unabhaengig davon funktioniert, welcher Leser die Transparenz durchreicht."""
     img = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
+    if img is None:
+        raise SystemExit("cannot read " + input_path)
+    if img.ndim == 3 and img.shape[2] == 4:
+        return img[:, :, :3], img[:, :, 3], True
+    if img.ndim == 2:
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    # Fallback: tRNS ueber PIL lesen und den Maskenindex als Alpha setzen
+    try:
+        from PIL import Image as _PILImage
+        pil = _PILImage.open(input_path)
+        trans = pil.info.get("transparency")
+        if pil.mode == "P" and trans is not None:
+            idx = trans[0] if isinstance(trans, (tuple, list)) else trans
+            arr = np.array(pil)
+            alpha = np.where(arr == int(idx), 0, 255).astype(np.uint8)
+            return img, alpha, True
+    except Exception:
+        pass
+    alpha = np.full((img.shape[0], img.shape[1]), 255, dtype=np.uint8)
+    return img, alpha, False
 
-    if img.shape[2] == 4:
-        rgb = img[:, :, :3]
-        alpha = img[:, :, 3]
-    else:
-        rgb = img
-        alpha = np.full((img.shape[0], img.shape[1]), 255, dtype=np.uint8)
+
+def inpaint_mask_colour(rgb, mask_binary):
+    """Die Maskenfarbe vor dem Skalieren entfernen: sonst zieht der Upscaler sie als Saum ins
+    Motiv hinein, genau der Magenta- und Gruensaum, der bisher von Hand nachgefuellt wurde."""
+    holes = (mask_binary * 255).astype(np.uint8)
+    if holes.max() == 0:
+        return rgb
+    return cv2.inpaint(rgb, holes, 3, cv2.INPAINT_TELEA)
+
+
+def upscale_image(input_path, output_path):
+    """Upscale a PNG image 4x. Maskierte Quellen bekommen eine binaere Maske, wie das Spiel sie
+    fuehrt; die Maskenfarbe wird vorher aus der Nachbarschaft ergaenzt."""
+    rgb, alpha, has_mask = read_with_mask(input_path)
+    mask_binary = (alpha < 128).astype(np.uint8) if has_mask else np.zeros(alpha.shape, dtype=np.uint8)
+    if has_mask and mask_binary.max() > 0:
+        rgb = inpaint_mask_colour(rgb, mask_binary)
 
     h, w = rgb.shape[:2]
 
@@ -120,7 +153,16 @@ def upscale_image(input_path, output_path):
         out = model(rgb_t).squeeze(0).clamp(0, 1)
     out_np = (out.numpy().transpose(1, 2, 0) * 255).astype(np.uint8)
 
-    # Step 2: Vector-contour alpha with Chaikin smoothing + inner holes
+    # Step 2: Alpha. Mit Maske binaer und kantentreu uebernommen (das Spiel kennt nur harte
+    # Masken), ohne Maske weiterhin der weiche Vektorumriss fuer Kanten.
+    if has_mask and mask_binary.max() > 0:
+        alpha_4x = cv2.resize(mask_binary * 255, (w * 4, h * 4), interpolation=cv2.INTER_NEAREST)
+        result = np.dstack([out_np[:, :, ::-1], alpha_4x])
+        cv2.imwrite(output_path, result)
+        size_kb = os.path.getsize(output_path) // 1024
+        print(f"  {os.path.basename(input_path)}: {w}x{h} -> {w*4}x{h*4} ({size_kb}KB, Maske binaer)")
+        return
+
     mask = (alpha > 127).astype(np.uint8) * 255
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
 
