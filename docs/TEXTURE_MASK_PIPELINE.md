@@ -78,6 +78,31 @@ inventory background, inventory icons). Opaque magenta in those files went from
 1,811,664 to 912 pixels. Logo and room objects untouched, object layers untouched,
 0 aborts.
 
+## Object layers (the second step)
+
+`hd/objects_layers` is a different case and gets its own mode (`--layer --object-hd <hd>/objects`).
+
+A layer is the object placed on a full screen canvas. It carries two masks:
+
+1. the canvas mask: NUTcracker index 39, set by `resize_pil_image(*room_bg_image.size, 39, im, ...)`
+   in the extraction. Its palette colour is an ordinary room colour (measured `(63,63,27)` for room 9,
+   `(107,79,19)` for room 22), so a colour test is useless here.
+2. the object's own mask inside that canvas.
+
+The object area inside the canvas is an exact rectangle (checked on 14 sources, fill grade 1.000, and
+its size matches the object source size, for example 176x152 for `0022_clring-a-balcony-door`), and
+the corresponding object texture is already reviewed and shipped. So the layer step does not guess:
+
+- find the object rectangle as the bounding box of the non index 39 area
+- take the alpha of the sibling object texture (`<hd>/objects/<name>`) and place it at that rectangle
+- everything outside stays transparent, alpha is only lowered
+
+Result: the layer shows exactly the pixels the object texture shows. Verified on 14 files across 7
+rooms: visible area of layer against object texture, deviation 0.000% in all 14 cases.
+
+Runtime note: fill the visible rim only. Filling every transparent pixel of a 2560x1920 image cost
+about 9 s per file, restricting the fill to the rim costs 0.9 s.
+
 ## Tools that must not be used
 
 `scripts/add_object_alpha_v7.py` is deprecated. It decided by colour alone and

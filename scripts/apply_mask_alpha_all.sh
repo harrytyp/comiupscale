@@ -44,7 +44,11 @@ for d in "${OBJ_DIRS[@]}"; do
 done
 for d in "${LAY_DIRS[@]}"; do
   echo "=== layers $d" >> "$LOG"
-  "$PY" "$S" --hd "$BASE/$d" --src-zip "$SRCZIP" --prefix objects_layers --apply \
+  # Objektebenen: Maske 39 aussen, Alpha innen exakt aus der zugehoerigen Objekttextur
+  od="${d/objects_layers/objects}"
+  "$PY" "$S" --hd "$BASE/$d" --src-zip "$SRCZIP" --prefix objects_layers --layer \
+        --object-hd "$BASE/$od" --apply \
         --backup "/opt/data/backups/comi-hd-mask-$TS/${d//\//_}" >> "$LOG" 2>&1
+  echo "rc=$?" >> "$LOG"
 done
 echo "DONE $TS" >> "$LOG"

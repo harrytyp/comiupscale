@@ -37,8 +37,14 @@ def border_pixels(arr):
     return np.concatenate([arr[0, :], arr[-1, :], arr[:, 0], arr[:, -1]])
 
 
-def mask_index(source_image, border_min_share=BORDER_MIN_SHARE):
-    """Maskenindex oder None. source_image ist ein PIL-Bild im Modus P."""
+def mask_index(source_image, border_min_share=BORDER_MIN_SHARE, extra_indices=()):
+    """Maskenindex oder None. source_image ist ein PIL-Bild im Modus P.
+
+    `extra_indices` erlaubt weitere Maskenindizes, die nicht magentafarben sind.
+    Fuer Objektebenen ist das Index 39: `extract_all_raw.py` setzt ihn beim
+    Zusammensetzen der Ebene als transparenten Index, seine Palettenfarbe ist
+    beliebig. Auch dort muss die Flaeche den Bildrand beruehren.
+    """
     if source_image.mode != "P":
         return None
     palette = source_image.getpalette()
@@ -46,8 +52,9 @@ def mask_index(source_image, border_min_share=BORDER_MIN_SHARE):
         return None
     arr = np.array(source_image)
     border = border_pixels(arr)
+    candidates = list(magenta_palette_entries(palette)) + [int(i) for i in extra_indices]
     best = None
-    for idx in magenta_palette_entries(palette):
+    for idx in candidates:
         region = (arr == idx)
         share = float(region.mean())
         if share == 0.0:
@@ -59,7 +66,7 @@ def mask_index(source_image, border_min_share=BORDER_MIN_SHARE):
                 best = (idx, border_share, share)
     if best is None:
         return None
-    return {"index": best[0], "border_share": best[1], "image_share": best[2]}
+    return {"index": best[0], "border_share": best[1], "image_share": best[2], "from_extra": best[0] in tuple(extra_indices)}
 
 
 if __name__ == "__main__":
