@@ -193,3 +193,31 @@ Neustart leer ist (aktuell existiert dort keine `.pth`). Damit war der Lauf nich
 Fuer die bereits ausgelieferten Pakete gibt es keine Herkunftsangabe, sie entstanden vor dieser
 Aenderung. Ein Neuaufbau mit dem dokumentierten Modell braucht die Gewichte und torch plus cv2,
 beides ist in dieser Umgebung nicht vorhanden.
+
+## Die Pipeline im Ueberblick (Stand 25.09.)
+
+Alles liegt im Repo, nichts muss aus dem Gedaechtnis rekonstruiert werden:
+
+| Stufe | Datei | Was sie tut |
+|-------|-------|-------------|
+| 1 Extraktion | `scripts/export_all.sh`, `scripts/extract_all_raw.py` | Rohbilder aus COMI.LA0/1/2, Maske als tRNS (siehe unten) |
+| 2 Upscale Hintergruende | `config/upscale/batch_upscale.sh` | RealESRGAN-NCNN-Vulkan, Modell `realesrgan-x4plus-anime` |
+| 3 Upscale Objekte und Ebenen | `config/upscale/upscale_objects.sh` | dieselbe Ablage und dasselbe Modell, 600 Objekte + 234 Ebenen |
+| 4 Alpha und Maske | `scripts/add_object_alpha_v7.py` (historisch), jetzt Extraktion plus `scripts/fix_mask_alpha.py` | Maske reproduzierbar aus der Quelle |
+| 5 Paket | `scripts/build_texture_pack.py` | ZIP fuer das Release, Tabelle in der Release-Notiz |
+| 6 Orchestrierung | `scripts/full_pipeline.sh`, `setup_wizard/pipeline.py` | Extract, Upscale, Build, Platzieren in einem Lauf |
+
+Das vorgeschriebene Modell ist `realesrgan-x4plus-anime` (so in `config/upscale/upscale_objects.sh`,
+`config/upscale/batch_upscale.sh`, `scripts/full_pipeline.sh` und im README). Das ist die NCNN-Route,
+nicht das PyTorch-Skript `scripts/upscale_esrgan.py`; das ist ein Ersatzweg und erwartet die Gewichte
+in `models/`.
+
+**Bekannte Luecke:** Die Tool-Binaries fehlen in einem frischen Klon, weil `.gitignore` sie
+ausnimmt (`tools/realesrgan-ncnn-vulkan/`, `tools/nutcracker-Windows_X64/`). Auf diesem System
+existiert kein NCNN-Binary und keine `.param`-Datei, die Stufe 2 und 3 sind hier also nicht
+ausfuehrbar. `scripts/fetch_upscaler.sh` schliesst das: es holt `realesrgan-ncnn-vulkan` v0.2.0
+fuer Windows oder Linux nach `tools/`, prueft die Pruefsumme gegen
+`scripts/upscaler_checksum.txt` und listet die Modelle auf.
+
+    bash scripts/fetch_upscaler.sh --windows
+    bash scripts/fetch_upscaler.sh --linux
