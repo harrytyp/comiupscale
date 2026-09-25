@@ -197,6 +197,10 @@ bash scripts/full_pipeline.sh --game /path/to/COMI --skip-build
 
 The build uses the `realesrgan-x4plus-anime` model (or `realesrgan-x4plus` for photorealism). Each asset is upscaled 4× independently.
 
+The PyTorch route (`scripts/upscale_esrgan.py`) expects the weights in `models/<model>.pth` and writes
+`upscale_manifest.json` next to its output, recording the model name, the SHA256 of the weights and the mask
+handling. Do not point it at `/tmp`: provenance must survive a reboot.
+
 ### B3. Build the ScummVM Fork
 
 See [`build/BUILD.md`](build/BUILD.md) for the complete build guide.

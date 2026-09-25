@@ -159,3 +159,37 @@ Gemessen an den Rohbildern und den freigegebenen HD-Texturen:
 Nicht in dieser Umgebung ausgefuehrt: `cv2.inpaint` und der ESRGAN-Schritt selbst, hier fehlen
 cv2 und torch. Geprueft wurde die Fuellogik ueber die Referenzimplementierung, der GPU-Lauf
 gehoert auf die Maschine mit dem Modell.
+
+## Upscaler: Modellpfad und Herkunft (Nachtrag 25.09.)
+
+Koljas Beobachtung, die Objekttexturen saehen nicht nach dem richtigen Upscaler aus, ist messbar.
+Vergleich der ausgelieferten Textur gegen eine billige Lanczos-Vergroesserung, Abweichung und
+Detailverhaeltnis (Laplace-Varianz, sichtbare Flaeche, Maskenrand 3 px ausgespart):
+
+    0003_anchor-icon_0000.png          Abweichung 31,5/255   Detailverhaeltnis 31,3
+    0003_system-cursor-icon_0000.png   Abweichung 38,9/255   Detailverhaeltnis 13,8
+    0009_ramrod-object_0000.png        Abweichung  9,0/255   Detailverhaeltnis 34,8
+
+Die Objekte sind also nicht einfach interpoliert, es lief ein Modell. Im direkten Bildvergleich
+wirkt die ausgelieferte Fassung aber *weicher* als Lanczos, mit geglaetteten, teils
+nachgezeichneten Strukturen. Das passt zu einem stark entrauschenden Modell, nicht zum
+dokumentierten `x4plus_anime_6B`.
+
+**Was gefehlt hat:** Aus einer PNG laesst sich nicht ablesen, womit sie erzeugt wurde. Der Pfad im
+Skript zeigte auf `/tmp/RealESRGAN_x4plus_anime_6B.pth`, also auf ein Verzeichnis, das nach einem
+Neustart leer ist (aktuell existiert dort keine `.pth`). Damit war der Lauf nicht reproduzierbar.
+
+**Behoben in `scripts/upscale_esrgan.py`:**
+
+- Der Modellpfad kommt aus dem Projekt: `models/<Modell>.pth`, uebersteuerbar mit
+  `COMI_MODELS_DIR`, `COMI_UPSCALE_MODEL`, `COMI_MODEL_PATH`. Fehlt die Datei, bricht das Skript
+  mit einer Anleitung ab statt mit einem torch-Fehler.
+- Das Skript hat eine Kommandozeile: `--input`, `--output`, `--limit`, `--pattern`.
+- Jeder Lauf schreibt `upscale_manifest.json` neben die Ergebnisse: Modellname, Pfad, SHA256 der
+  Gewichte, Architekturparameter, Maskenbehandlung, Start und Ende, Dateizahl.
+
+    python3 scripts/upscale_esrgan.py --input raw/objects --output hd/objects --limit 8
+
+Fuer die bereits ausgelieferten Pakete gibt es keine Herkunftsangabe, sie entstanden vor dieser
+Aenderung. Ein Neuaufbau mit dem dokumentierten Modell braucht die Gewichte und torch plus cv2,
+beides ist in dieser Umgebung nicht vorhanden.

@@ -68,9 +68,21 @@ class RRDBNet(nn.Module):
 
 
 # ── Load model ──
-print("Loading RealESRGAN x4plus_anime_6B...")
+# Der Modellpfad lag frueher in /tmp und war damit nicht reproduzierbar: nach einem Neustart war
+# er weg, und aus den fertigen PNGs laesst sich nicht ablesen, womit sie erzeugt wurden. Jetzt
+# kommt der Pfad aus dem Projekt, und jeder Lauf schreibt Herkunft und Hash in ein Manifest.
+MODELS_DIR = os.environ.get("COMI_MODELS_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models"))
+MODEL_NAME = os.environ.get("COMI_UPSCALE_MODEL", "RealESRGAN_x4plus_anime_6B")
+MODEL_PATH = os.environ.get("COMI_MODEL_PATH", os.path.join(MODELS_DIR, MODEL_NAME + ".pth"))
+if not os.path.isfile(MODEL_PATH):
+    raise SystemExit(
+        "Modell nicht gefunden: %s\n"
+        "Erwartet wird die Gewichtsdatei des dokumentierten Modells (%s).\n"
+        "Download: https://github.com/xinntao/Real-ESRGAN/releases  (Ordner models/ im Projekt)\n"
+        "Alternativ COMI_MODEL_PATH setzen." % (MODEL_PATH, MODEL_NAME))
+print("Loading RealESRGAN %s from %s" % (MODEL_NAME, MODEL_PATH))
 model = RRDBNet(num_in_ch=3, num_out_ch=3, scale=4, num_feat=64, num_block=6, num_grow_ch=32)
-state = torch.load('/tmp/RealESRGAN_x4plus_anime_6B.pth', map_location='cpu', weights_only=True)
+state = torch.load(MODEL_PATH, map_location='cpu', weights_only=True)
 if 'params_ema' in state:
     state = state['params_ema']
 elif 'params' in state:
@@ -195,3 +207,61 @@ def upscale_image(input_path, output_path):
 
     size_kb = os.path.getsize(output_path) // 1024
     print(f"  {os.path.basename(input_path)}: {w}x{h} → {w*4}x{h*4} ({size_kb}KB)")
+
+def model_digest(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def main():
+    import argparse, json, time, glob
+    ap = argparse.ArgumentParser(description="RealESRGAN 4x upscale fuer COMI HD-Texturen")
+    ap.add_argument("--input", required=True, help="Ordner oder einzelne PNG-Datei")
+    ap.add_argument("--output", required=True, help="Zielordner oder Zieldatei")
+    ap.add_argument("--pattern", default="*.png")
+    ap.add_argument("--limit", type=int, default=0, help="nur die ersten N Dateien (Testlauf)")
+    ap.add_argument("--manifest", default=None, help="Pfad des Herkunfts-Manifests")
+    args = ap.parse_args()
+
+    if os.path.isdir(args.input):
+        inputs = sorted(glob.glob(os.path.join(args.input, args.pattern)))
+    else:
+        inputs = [args.input]
+    if args.limit:
+        inputs = inputs[:args.limit]
+    if not inputs:
+        raise SystemExit("keine Eingabedateien in " + args.input)
+
+    os.makedirs(args.output if os.path.isdir(args.output) or not os.path.splitext(args.output)[1] else os.path.dirname(args.output), exist_ok=True)
+    started = time.strftime("%Y-%m-%dT%H:%M:%S")
+    done = []
+    for path in inputs:
+        target = os.path.join(args.output, os.path.basename(path)) if (os.path.isdir(args.output) or not os.path.splitext(args.output)[1]) else args.output
+        upscale_image(path, target)
+        done.append(os.path.basename(target))
+
+    manifest_path = args.manifest or os.path.join(args.output if os.path.isdir(args.output) else os.path.dirname(args.output), "upscale_manifest.json")
+    manifest = {
+        "model": MODEL_NAME,
+        "model_path": os.path.abspath(MODEL_PATH),
+        "model_sha256": model_digest(MODEL_PATH),
+        "model_params": {"num_feat": 64, "num_block": 6, "num_grow_ch": 32, "scale": 4},
+        "mask_handling": "Maskenfarbe vor dem Skalieren aus der Nachbarschaft ergaenzt (cv2.inpaint), "
+                         "Alpha binaer und kantentreu uebernommen; ohne Maske weicher Vektorumriss",
+        "started": started,
+        "finished": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "input": os.path.abspath(args.input),
+        "files": len(done),
+        "outputs": done if len(done) <= 200 else done[:200] + ["... %d weitere" % (len(done) - 200)],
+    }
+    with open(manifest_path, "w") as fh:
+        json.dump(manifest, fh, indent=2)
+    print("Herkunft geschrieben: %s (%d Dateien, Modell %s)" % (manifest_path, len(done), MODEL_NAME))
+
+
+if __name__ == "__main__":
+    main()
