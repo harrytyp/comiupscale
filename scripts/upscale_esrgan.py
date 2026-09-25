@@ -113,7 +113,7 @@ def chaikin_smooth(pts, iterations=3):
     return pts
 
 
-def read_with_mask(input_path):
+def read_with_mask(input_path, forced_mask_index=None):
     """Bild plus Alpha lesen. Die Maske steht als tRNS im Paletten-PNG; cv2 liefert sie als
     vierten Kanal, PIL nur ueber den Palettenindex. Beide Wege werden unterstuetzt, damit die
     Stufe unabhaengig davon funktioniert, welcher Leser die Transparenz durchreicht."""
@@ -136,6 +136,19 @@ def read_with_mask(input_path):
             return img, alpha, True
     except Exception:
         pass
+    # Erzwungener Index (Objektebenen: 39 ist die Leinwandmaske, ihre Palettenfarbe ist beliebig
+    # und wuerde die Farbpruefung der Regel nicht bestehen).
+    if forced_mask_index is not None:
+        try:
+            from PIL import Image as _PILf
+            pilf = _PILf.open(input_path)
+            if pilf.mode == "P":
+                arrf = np.array(pilf)
+                if (arrf == int(forced_mask_index)).any():
+                    return img, np.where(arrf == int(forced_mask_index), 0, 255).astype(np.uint8), True
+        except Exception as exc:
+            print("erzwungener Maskenindex fehlgeschlagen:", exc)
+
     # Kein tRNS im Bild: Maske ueber dieselbe gemessene Regel bestimmen wie die Extraktion.
     # Damit werden alte Rohbilder (Maske nur als Palettenindex) und neue (mit tRNS) gleich
     # behandelt. Die Flaechenschwelle ist hier niedriger als bei der Raum-Mehrheit, weil einzelne
@@ -229,10 +242,10 @@ def upscale_bgr(bgr, tile=256, overlap=32):
     return np.clip(out / np.maximum(weight, 1e-6), 0, 255)
 
 
-def upscale_image(input_path, output_path):
+def upscale_image(input_path, output_path, forced_mask_index=None):
     """Upscale a PNG image 4x. Maskierte Quellen bekommen eine binaere Maske, wie das Spiel sie
     fuehrt; die Maskenfarbe wird vorher aus der Nachbarschaft ergaenzt."""
-    rgb, alpha, has_mask = read_with_mask(input_path)
+    rgb, alpha, has_mask = read_with_mask(input_path, forced_mask_index)
     mask_binary = (alpha < 128).astype(np.uint8) if has_mask else np.zeros(alpha.shape, dtype=np.uint8)
     if has_mask and mask_binary.max() > 0:
         rgb = inpaint_mask_colour(rgb, mask_binary)
@@ -306,6 +319,8 @@ def main():
     ap.add_argument("--output", required=True, help="Zielordner oder Zieldatei")
     ap.add_argument("--pattern", default="*.png")
     ap.add_argument("--limit", type=int, default=0, help="nur die ersten N Dateien (Testlauf)")
+    ap.add_argument("--mask-index", type=int, default=None,
+                    help="Maskenindex erzwingen, z.B. 39 fuer Objektebenen")
     ap.add_argument("--manifest", default=None, help="Pfad des Herkunfts-Manifests")
     args = ap.parse_args()
 
@@ -323,7 +338,7 @@ def main():
     done = []
     for path in inputs:
         target = os.path.join(args.output, os.path.basename(path)) if (os.path.isdir(args.output) or not os.path.splitext(args.output)[1]) else args.output
-        upscale_image(path, target)
+        upscale_image(path, target, args.mask_index)
         done.append(os.path.basename(target))
 
     manifest_path = args.manifest or os.path.join(args.output if os.path.isdir(args.output) else os.path.dirname(args.output), "upscale_manifest.json")

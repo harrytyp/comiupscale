@@ -19,8 +19,18 @@ echo "Neu skalierte Objekttexturen: $COUNT"
 for dest in "$ROOT/release/linux/hd/objects" "$ROOT/release/linux/game/hd/objects" \
             "$ROOT/release/windows/hd/objects" "$ROOT/scummvm/fork/hd/objects"; do
   [ -d "$dest" ] || { echo "Zielordner fehlt: $dest"; exit 1; }
-  cp -f "$SRC"/*.png "$dest"/
-  echo "  uebernommen nach $dest"
+  # Nur Dateien ersetzen, die es in der Installation schon gibt. Das Roharchiv enthaelt mehr
+  # Objekte als das Spiel ausliefert (1365 gegen 600), und neue Dateien ungefragt dazuzulegen
+  # waere eine Aenderung ueber den Auftrag hinaus.
+  n=0
+  for f in "$SRC"/*.png; do
+    [ -e "$f" ] || continue
+    b=$(basename "$f")
+    [ -e "$dest/$b" ] || continue
+    cp -f "$f" "$dest/$b"
+    n=$((n + 1))
+  done
+  echo "  $n Dateien uebernommen nach $dest"
 done
 
 echo "=== Pakete bauen ==="
