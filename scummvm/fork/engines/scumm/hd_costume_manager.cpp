@@ -408,11 +408,21 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 
 		// If exact frame doesn't exist, wrap via modulo
 		if (!_availableCostumes.contains(CostumeKey{akosId, *si, frame})) {
+			// Hoechsten Rahmen einmal je (akosId, sub) ermitteln und merken. Ohne den
+			// Zwischenspeicher lief hier fuer jedes Koerperteil jedes Bildes eine Suche
+			// ueber die komplette Liste der vorhandenen Kostueme.
+			const uint64 maxKey = ((uint64)(uint32)akosId << 32) | (uint32)*si;
 			int maxFrame = -1;
-			for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
-			     it != _availableCostumes.end(); ++it) {
-				if (it->_key.akosId == akosId && it->_key.akosSub == *si)
-					maxFrame = MAX(maxFrame, it->_key.frame);
+			Common::HashMap<uint64, int>::const_iterator mfc = _maxFrameCache.find(maxKey);
+			if (mfc != _maxFrameCache.end()) {
+				maxFrame = mfc->_value;
+			} else {
+				for (Common::HashMap<CostumeKey, bool, CostumeKeyHash>::const_iterator it = _availableCostumes.begin();
+				     it != _availableCostumes.end(); ++it) {
+					if (it->_key.akosId == akosId && it->_key.akosSub == *si)
+						maxFrame = MAX(maxFrame, it->_key.frame);
+				}
+				_maxFrameCache[maxKey] = maxFrame;
 			}
 			if (maxFrame >= 0)
 				loadFrame = frame % (maxFrame + 1);

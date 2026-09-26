@@ -561,7 +561,17 @@ void ScummEngine::drawDirtyScreenParts() {
 
 	// HD composite: replace system buffer with native-resolution 32-bit composite
 	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
+		uint32 hdCompT0 = g_system->getMillis();
 		renderHDComposite();
+		// Anteil der HD-Komposition an der Bildzeit, damit klar ist, wo die Zeit bleibt.
+		static uint32 hdCompSum = 0, hdCompMax = 0, hdCompN = 0;
+		uint32 hdCompT = g_system->getMillis() - hdCompT0;
+		hdCompSum += hdCompT;
+		hdCompN++;
+		if (hdCompT > hdCompMax) hdCompMax = hdCompT;
+		if (hdCompN % 30 == 0)
+			hdPrintf("hdperf: komposition gesamt %u ms im Schnitt, max %u ms (%u Bilder)",
+			         hdCompSum / hdCompN, hdCompMax, hdCompN);
 	}
 }
 
@@ -1394,6 +1404,9 @@ void ScummEngine::renderHDComposite() {
 	// offset by the camera, destination is always x=0 of the HD viewport.
 	int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
 	int srcBgX = MIN(camX, MAX(0, _hdBackgroundSurface.w - hdW));
+	uint32 hdT0 = g_system->getMillis();
+	static uint32 hdT1Sum = 0, hdT2Sum = 0, hdFrameN = 0;
+	static uint32 hdT1Max = 0, hdT2Max = 0;
 	for (int y = 0; y < _hdBackgroundSurface.h && y < hdH; y++) {
 		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(srcBgX, y);
 		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
@@ -1410,6 +1423,13 @@ void ScummEngine::renderHDComposite() {
 			}
 		}
 	}
+	uint32 hdT1 = g_system->getMillis() - hdT0;
+	hdFrameN++;
+	hdT1Sum += hdT1;
+	if (hdT1 > hdT1Max) hdT1Max = hdT1;
+	if (hdFrameN % 30 == 0)
+		hdPrintf("hdperf: hintergrund %u ms im Schnitt, max %u ms (%u Bilder)",
+		         hdT1Sum / hdFrameN, hdT1Max, hdFrameN);
 
 	hdDumpStep(&_hdComposite, "1_hintergrund");
 
@@ -1426,6 +1446,8 @@ void ScummEngine::renderHDComposite() {
 
 	int step2_fgPixels = 0;
 	int step2_invFg = 0, step2_invTotal = 0;
+	uint32 hdStep2T0 = g_system->getMillis();
+	static uint32 hdStep2Sum = 0, hdStep2Max = 0, hdStep2N = 0;
 
 	// Step 2 (optimized): Composite 8-bit foreground over HD background
 	// Instead of iterating HD pixels (5M for 2560x1920), iterate 8-bit pixels (307K)
@@ -1440,6 +1462,15 @@ void ScummEngine::renderHDComposite() {
 		for (int sx = 0; sx <= visW; sx++)
 			hdXStart[sx] = sx * hdW / visW;	// viewport → HD (camera handled in Step 1)
 		int dirtyCount = 0;
+		// Pro Bild einmal statt pro Pixel: Palettentabelle und Composite-Zeiger.
+		// Vorher liefen je Vordergrundpixel drei Palettenzugriffe und je Zeile ein
+		// getBasePtr mit Multiplikation.
+		uint32 palFg[256];
+		for (int i = 0; i < 256; i++)
+			palFg[i] = (uint32)_currentPalette[i * 3] | ((uint32)_currentPalette[i * 3 + 1] << 8)
+			         | ((uint32)_currentPalette[i * 3 + 2] << 16) | 0xFF000000u;
+		const int compStride = _hdComposite.pitch / 4;
+		uint32 *compBase = (uint32 *)_hdComposite.getPixels();
 		// Flag array: mark which 8-bit rows have at least one foreground pixel
 		// so we can later skip fully-empty rows
 		bool *rowHasFg = new bool[visH]();
@@ -1484,15 +1515,22 @@ void ScummEngine::renderHDComposite() {
 				if (isForeground) {
 					rowHadFg = true;
 					step2_fgPixels++;
-					uint8 r = _currentPalette[curPix * 3 + 0];
-					uint8 g = _currentPalette[curPix * 3 + 1];
-					uint8 b = _currentPalette[curPix * 3 + 2];
-					uint32 color = r | (g << 8) | (b << 16) | (0xFF << 24);
+					uint32 color = palFg[curPix];
 					int hdX0 = hdXStart[sx], hdX1 = hdXStart[sx + 1];
-					for (int dy = hdY0; dy < hdY1; dy++) {
-						uint32 *dst = (uint32 *)_hdComposite.getBasePtr(hdX0, dy);
-						for (int dx = hdX0; dx < hdX1; dx++)
-							dst[dx - hdX0] = color;
+					const int rowLen = hdX1 - hdX0;
+					uint32 *colTop = compBase + hdX0 + hdY0 * compStride;
+					if (rowLen == 4) {
+						// Haeufigster Fall bei Stufe 4: entrollt schreiben
+						for (int dy = hdY0; dy < hdY1; dy++) {
+							uint32 *dst = colTop + (dy - hdY0) * compStride;
+							dst[0] = color; dst[1] = color; dst[2] = color; dst[3] = color;
+						}
+					} else {
+						for (int dy = hdY0; dy < hdY1; dy++) {
+							uint32 *dst = colTop + (dy - hdY0) * compStride;
+							for (int dx = 0; dx < rowLen; dx++)
+								dst[dx] = color;
+						}
 					}
 					dirtyCount++;
 				}
@@ -1502,7 +1540,16 @@ void ScummEngine::renderHDComposite() {
 		delete[] hdYStart;
 		delete[] hdXStart;
 		delete[] rowHasFg;
-		}
+	}
+	{
+		uint32 hdStep2T = g_system->getMillis() - hdStep2T0;
+		hdStep2Sum += hdStep2T;
+		hdStep2N++;
+		if (hdStep2T > hdStep2Max) hdStep2Max = hdStep2T;
+		if (hdStep2N % 30 == 0)
+			hdPrintf("hdperf: vordergrund %u ms im Schnitt, max %u ms, %d Vordergrundpixel (%u Bilder)",
+			         hdStep2Sum / hdStep2N, hdStep2Max, step2_fgPixels, hdStep2N);
+	}
 
 	if (_hdFrameCount % 30 == 0)
 		hdPrintf("step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
@@ -1557,6 +1604,11 @@ void ScummEngine::renderHDComposite() {
 
 	hdDumpStep(&_hdComposite, "2_vordergrund");
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
+	// Zeitmessung fuer alles ab hier bis vor Schritt 3: Objekte, Inventar, Kostueme,
+	// Schrift und Overlays. Die beiden Kopierschritte oben sind mit je 1-2 ms gemessen,
+	// die Gesamtzeit der Komposition liegt aber bei 36 bis 56 ms, also steckt sie hier.
+	uint32 hdObjT0 = g_system->getMillis();
+	static uint32 hdObjSum = 0, hdObjMax = 0, hdObjN = 0;
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
 		// Room-change debug: print all objects with their states
@@ -2606,8 +2658,20 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
+	{
+		uint32 hdObjT = g_system->getMillis() - hdObjT0;
+		hdObjSum += hdObjT;
+		hdObjN++;
+		if (hdObjT > hdObjMax) hdObjMax = hdObjT;
+		if (hdObjN % 30 == 0)
+			hdPrintf("hdperf: objekte+kostueme+schrift %u ms im Schnitt, max %u ms (%u Bilder)",
+			         hdObjSum / hdObjN, hdObjMax, hdObjN);
+	}
+
 	// Step 3: Copy the entire HD composite to the system buffer
 	// Clamp to screen dimensions to avoid assertion failure on small displays
+	uint32 hdUpT0 = g_system->getMillis();
+	static uint32 hdUpSum = 0, hdUpMax = 0, hdUpN = 0;
 	{
 		int copyW = MIN(hdW, (int)_system->getWidth());
 		int copyH = MIN(hdH, (int)_system->getHeight());
@@ -2621,22 +2685,40 @@ void ScummEngine::renderHDComposite() {
 		int cy = _mouse.y - _cursor.hotspotY;
 		int64 chdX = (int64)cx * hdW / MAX(1, visW);
 		int64 chdY = (int64)cy * hdH / MAX(1, visH);
-		// The cursor may sit partly or fully outside the screen, and in
-		// windowed mode the system screen can be smaller than the composite.
-		// The backend asserts on out of range destinations, so clip the rect
-		// to both the composite and the system screen.
+		// Der nachzuziehende Bereich ist der des Cursorobjekts, nicht der des ganzen Bildes.
+		// Hier standen vorher hdW und hdH, damit wurde pro Bild ein zweites Mal der komplette
+		// Schirm in die Grafikausgabe geladen, bei 2560x1920 rund 20 Millisekunden je Bild.
+		int curState = getState(_hdCursorObject);
+		if (curState < 0)
+			curState = 0;
+		int curRoom = _hdObjectManager ? _hdObjectManager->findObjectRoom(_hdCursorObject) : -1;
+		if (curRoom < 0)
+			curRoom = _currentRoom;
+		const Graphics::Surface *curSurf = _hdObjectManager
+			? _hdObjectManager->getObjectSurface(_hdCursorObject, curRoom, curState) : nullptr;
 		int64 srcX = MAX<int64>(0, chdX);
 		int64 srcY = MAX<int64>(0, chdY);
-		int64 right = MIN<int64>(MIN<int64>((int64)_hdComposite.w, chdX + (int64)hdW),
-		                          (int64)_system->getWidth());
-		int64 bottom = MIN<int64>(MIN<int64>((int64)_hdComposite.h, chdY + (int64)hdH),
-		                           (int64)_system->getHeight());
+		int64 right = curSurf
+			? MIN<int64>(MIN<int64>((int64)_hdComposite.w, chdX + curSurf->w), (int64)_system->getWidth())
+			: 0;
+		int64 bottom = curSurf
+			? MIN<int64>(MIN<int64>((int64)_hdComposite.h, chdY + curSurf->h), (int64)_system->getHeight())
+			: 0;
 		int chdW = (int)(right - srcX);
 		int chdH = (int)(bottom - srcY);
 		if (chdW > 0 && chdH > 0)
 			_system->copyRectToScreen(
 				_hdComposite.getBasePtr((int)srcX, (int)srcY),
 				_hdComposite.pitch, (int)srcX, (int)srcY, chdW, chdH);
+	}
+	{
+		uint32 hdUpT = g_system->getMillis() - hdUpT0;
+		hdUpSum += hdUpT;
+		hdUpN++;
+		if (hdUpT > hdUpMax) hdUpMax = hdUpT;
+		if (hdUpN % 30 == 0)
+			hdPrintf("hdperf: uebergabe an die grafik %u ms im Schnitt, max %u ms (%u Bilder)",
+			         hdUpSum / hdUpN, hdUpMax, hdUpN);
 	}
 
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3

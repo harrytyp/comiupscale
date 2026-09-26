@@ -109,6 +109,10 @@ private:
 	// Time-sliced prefetch state: per-costume frame list + cursor
 	Common::HashMap<int, Common::Array<int>> _framesByCostume;
 	Common::HashMap<int, int> _preloadCursor;
+	// Hoechster vorhandener Einzelbildrahmen je (akosId, sub). Wird einmal ermittelt und
+	// gemerkt: vorher lief fuer jeden angeforderten Rahmen eine Suche ueber die komplette
+	// Liste der vorhandenen Kostueme, pro Koerperteil und Bild.
+	Common::HashMap<uint64, int> _maxFrameCache;
 
 	// Cache eviction budget (bytes) — current + previous room's costumes
 	// stay cached; eviction only when the budget is exceeded.
