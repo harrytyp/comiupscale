@@ -36,6 +36,16 @@ def main():
                 total += 1
                 bytes_raw += os.path.getsize(p)
             print("%-16s %4d Dateien" % (folder, len(names)))
+        # Die Objektzuordnung gehoert mit ins Paket: die Engine sucht Objekttexturen ueber
+        # object_map.json (obj_nr -> Name/Raum/Zustaende). Ohne die Datei findet sie keine
+        # Objekte und zeichnet alles aus dem 8-Bit-Bild.
+        for extra in ("object_map.json",):
+            p = os.path.join(args.dir, extra)
+            if os.path.isfile(p):
+                z.write(p, "hd/%s" % extra)
+                total += 1
+                bytes_raw += os.path.getsize(p)
+                print("%-16s %4d Dateien" % (extra, 1))
     print("ZIP: %s | %.1f MB (roh %.1f MB) | %d Dateien | %.0f s" %
           (args.out, os.path.getsize(args.out) / 1e6, bytes_raw / 1e6, total, time.time() - t0))
 
