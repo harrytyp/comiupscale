@@ -19,6 +19,16 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#include <fcntl.h>
+#ifdef WIN32
+// Der JEV-Kanal ist ein Entwicklerwerkzeug des Linux-Harness. Windows kennt kein nicht
+// blockierendes Lesen auf diese Weise; der Kanal bleibt dort einfach geschlossen.
+#define O_NONBLOCK 0
+#endif
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "common/config-manager.h"
 #include "common/compression/clickteam.h"
 #include "common/debug-channels.h"
@@ -3093,6 +3103,106 @@ void ScummEngine_v0::scummLoop(int delta) {
 	ScummEngine::scummLoop(delta);
 }
 
+// --- JEV HARNESS state (projects/comi-hd/harness) ----------------------------
+// Off unless ConfigManager key "jev_cmd_fifo" names a FIFO.
+namespace {
+	int jevFifoFd = -2;
+	char jevFifoBuf[512];
+	size_t jevFifoLen = 0;
+	bool jevPendingDump = false;
+	// gotoact: walk to a point first, run the sentence once the ego is there (or after a
+	// timeout). A verb only does something when the actor stands close to the object.
+	int jevGotoX = 0, jevGotoY = 0, jevGotoVerb = 0, jevGotoObj = 0, jevGotoTicks = 0;
+
+	bool jevPrefix(const char *s, const char *prefix) {
+		while (*prefix)
+			if (*s++ != *prefix++)
+				return false;
+		return true;
+	}
+
+	int jevInt(const char *&p) {
+		while (*p == ' ')
+			++p;
+		bool neg = (*p == '-');
+		if (neg)
+			++p;
+		int v = 0;
+		while (*p >= '0' && *p <= '9')
+			v = v * 10 + (*p++ - '0');
+		return neg ? -v : v;
+	}
+}
+
+void ScummEngine::jevPollFifoVideo() {
+	// Called from processInput(), which also runs inside the SMUSH video loop while scummLoop
+	// does not. Only key lines are handled here (they are the only way to skip a video); every
+	// other command is put back into the buffer for the normal reader in scummLoop.
+	if (jevFifoFd == -1)
+		return;
+	if (jevFifoFd == -2) {
+		Common::String jpath;
+		if (ConfMan.hasKey("jev_cmd_fifo"))
+			jpath = ConfMan.get("jev_cmd_fifo");
+		else if (getenv("JEV_CMD_FIFO"))
+			jpath = getenv("JEV_CMD_FIFO");
+		if (jpath.empty())
+			return;
+		jevFifoFd = open(jpath.c_str(), O_RDONLY | O_NONBLOCK);
+		if (jevFifoFd < 0) {
+			jevFifoFd = -1;
+			return;
+		}
+		warning("JEV HARNESS: video-path FIFO open fd=%d path=%s", jevFifoFd, jpath.c_str());
+	}
+	ssize_t jn = read(jevFifoFd, jevFifoBuf + jevFifoLen, sizeof(jevFifoBuf) - jevFifoLen - 1);
+	if (jn <= 0)
+		return;
+	jevFifoLen += jn;
+	jevFifoBuf[jevFifoLen] = 0;
+	char jkeep[512];
+	size_t jkeepLen = 0;
+	jkeep[0] = 0;
+	char *jstart = jevFifoBuf;
+	char *jnl;
+	while ((jnl = strchr(jstart, '\n')) != nullptr) {
+		*jnl = 0;
+		const char *jp = jstart;
+		if (jevPrefix(jp, "key")) {
+			jp += 3;
+			while (*jp == ' ')
+				jp++;
+			if (jevPrefix(jp, "esc")) {
+				_keyPressed.keycode = Common::KEYCODE_ESCAPE;
+				_keyPressed.ascii = 27;
+				_keyDownMap[27] = true;
+				warning("JEV HARNESS: video-path ESC, asking the video to finish");
+			} else if (*jp >= 'a' && *jp <= 'z') {
+				_keyPressed.keycode = (Common::KeyCode)*jp;
+				_keyPressed.ascii = *jp;
+				_keyDownMap[*jp] = true;
+			}
+		} else {
+			size_t jl = strlen(jstart);
+			if (jkeepLen + jl + 2 < sizeof(jkeep)) {
+				memcpy(jkeep + jkeepLen, jstart, jl);
+				jkeepLen += jl;
+				jkeep[jkeepLen++] = '\n';
+				jkeep[jkeepLen] = 0;
+			}
+		}
+		jstart = jnl + 1;
+	}
+	size_t jtail = strlen(jstart);
+	if (jkeepLen + jtail + 1 < sizeof(jkeep)) {
+		memcpy(jkeep + jkeepLen, jstart, jtail);
+		jkeepLen += jtail;
+		jkeep[jkeepLen] = 0;
+	}
+	memcpy(jevFifoBuf, jkeep, jkeepLen + 1);
+	jevFifoLen = jkeepLen;
+}
+
 void ScummEngine::scummLoop(int delta) {
 	// Notify the script about how much time has passed, in jiffies
 	if (VAR_TIMER != 0xFF)
@@ -3178,7 +3288,354 @@ void ScummEngine::scummLoop(int delta) {
 	// to allow one frame time to pass between checkExecVerbs() and runAllScripts().
 	// Several time-based effects (e.g. shaking) depend on this...
 	if (_game.version != 7 || isFTDOSDemo) {
+		// JEV HARNESS (projects/comi-hd/harness): one command per frame from the FIFO named by
+		// the env var JEV_CMD_FIFO. Runs BEFORE processInput() because v8 (COMI) runs its click
+		// handling at the end of processInput(). Unset => feature off, unchanged behaviour.
+		if (jevFifoFd == -2) {
+			Common::String jevPath;
+			if (getenv("JEV_CMD_FIFO"))
+				jevPath = getenv("JEV_CMD_FIFO");
+			else if (ConfMan.hasKey("jev_cmd_fifo"))
+				jevPath = ConfMan.get("jev_cmd_fifo");
+			jevFifoFd = jevPath.empty() ? -1 : open(jevPath.c_str(), O_RDONLY | O_NONBLOCK);
+			warning("JEV HARNESS: init v=%d hasKey=%d fd=%d path=%s", _game.version,
+			        ConfMan.hasKey("jev_cmd_fifo") ? 1 : 0, jevFifoFd, jevPath.c_str());
+		}
+		if (jevFifoFd >= 0) {
+			ssize_t jn = read(jevFifoFd, jevFifoBuf + jevFifoLen, sizeof(jevFifoBuf) - jevFifoLen - 1);
+			if (jn > 0) {
+				char *jstart = jevFifoBuf;
+				char *jnl;
+				jevFifoLen += jn;
+				jevFifoBuf[jevFifoLen] = 0;
+				while ((jnl = strchr(jstart, '\n')) != nullptr) {
+					*jnl = 0;
+					const char *jp = jstart;
+					bool jClick = jevPrefix(jp, "gclick") || jevPrefix(jp, "click");
+					if (jClick) {
+						jp += jevPrefix(jp, "gclick") ? 6 : 5;
+						int jx = jevInt(jp), jy = jevInt(jp);
+						// Set the state here AND let the v8 block apply it again after
+						// processInput(): v8 consumes clicks inside processInput(), so a
+						// click that only lands afterwards is silently dropped.
+						_mouse.x = jx;
+						_mouse.y = jy;
+						_userPut = 120;
+						_leftBtnPressed = 3;
+						_mouseAndKeyboardStat = MBS_LEFT_CLICK;
+						_jevPendingClick = 1;
+						_jevClickX = jx;
+						_jevClickY = jy;
+						_jevMouseX = jx;
+						_jevMouseY = jy;
+						warning("JEV HARNESS: LEFT_CLICK %d %d", jx, jy);
+					} else if (jevPrefix(jp, "rclick")) {
+						jp += 6;
+						int jx = jevInt(jp), jy = jevInt(jp);
+						_mouse.x = jx;
+						_mouse.y = jy;
+						_userPut = 120;
+						_rightBtnPressed = 3;
+						_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
+						_jevPendingClick = 2;
+						_jevClickX = jx;
+						_jevClickY = jy;
+						_jevMouseX = jx;
+						_jevMouseY = jy;
+						warning("JEV HARNESS: RIGHT_CLICK %d %d", jx, jy);
+					} else if (jevPrefix(jp, "useobj")) {
+						// Run an object's verb script directly, bypassing the sentence script.
+						// COMI's interaction goes through VAR_SENTENCE_SCRIPT, which depends on
+						// the verb coin state; this lets the harness fire a single verb.
+						jp += 6;
+						int jobj = jevInt(jp), jverb = jevInt(jp);
+						int jentry = getVerbEntrypoint(jobj, jverb);
+						warning("JEV HARNESS: useobj obj=%d verb=%d entry=%d", jobj, jverb, jentry);
+						if (jentry) {
+							// The object script reads the sentence's verb/object from its local
+							// parameters, so they have to be passed along like the sentence path does.
+							int jvars[NUM_SCRIPT_LOCAL];
+							memset(jvars, 0, sizeof(jvars));
+							jvars[0] = jverb;
+							jvars[1] = jobj;
+							jvars[2] = 0;
+							runObjectScript(jobj, jentry, false, false, jvars);
+						}
+					} else if (jevPrefix(jp, "dump")) {
+						// On-demand state dump: the room-change dump is stale while a scene changes,
+						// so the harness needs a fresh look at named objects (hook, cannon, ...).
+						for (int jd = 1; jd < _numLocalObjects; jd++) {
+							ObjectData &jod = _objs[jd];
+							if (!jod.obj_nr)
+								continue;
+							Common::String jnm = _hdObjectManager ? _hdObjectManager->getObjectName(jod.obj_nr) : "";
+							if (jnm.empty() && whereIsObject(jod.obj_nr) != 1)
+								continue;   // unnamed: only objects that are actually in the room
+							hdPrintf("JEV OBJSTATE: obj=%d name=%s pos=(%d,%d) sz=(%dx%d) where=%d untouch=%d",
+								jod.obj_nr, jnm.c_str(), jod.x_pos, jod.y_pos, jod.width, jod.height,
+								whereIsObject(jod.obj_nr), getClass(jod.obj_nr, kObjectClassUntouchable) ? 1 : 0);
+						}
+						if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+							const Common::Point jp2 = _actors[VAR(VAR_EGO)]->getPos();
+							hdPrintf("JEV EGO: actor=%d x=%d y=%d room=%d", VAR(VAR_EGO), jp2.x, jp2.y, _currentRoom);
+						}
+					} else if (jevPrefix(jp, "entry")) {
+						jp += 5;
+						int jobj = jevInt(jp), jverb = jevInt(jp);
+						hdPrintf("JEV ENTRY: obj=%d verb=%d -> %d where=%d", jobj, jverb, getVerbEntrypoint(jobj, jverb), whereIsObject(jobj));
+					} else if (jevPrefix(jp, "traceops")) {
+						// traceops <count> [script]: bounded opcode trace for reading game logic
+						jp += 8;
+						_jevOpcodeTrace = jevInt(jp);
+						_jevTraceScript = jevInt(jp);
+						hdPrintf("JEV HARNESS: traceops count=%d script=%d", _jevOpcodeTrace, _jevTraceScript);
+					} else if (jevPrefix(jp, "scriptdump")) {
+						// Turn ScummVM's own opcode trace on/off: shows exactly what a script does.
+						jp += 10;
+						while (*jp == ' ')
+							jp++;
+						_dumpScripts = jevPrefix(jp, "off") ? false : true;
+						warning("JEV HARNESS: _dumpScripts = %d", _dumpScripts ? 1 : 0);
+					} else if (jevPrefix(jp, "findobj")) {
+						// Which object does the engine's own hit test return at this point?
+						jp += 7;
+						int fx = jevInt(jp), fy = jevInt(jp);
+						warning("JEV HARNESS: findObject(%d,%d) = %d", fx, fy, findObject(fx, fy));
+					} else if (jevPrefix(jp, "vars")) {
+						// Dump a range of game variables, so the harness can find the variable that
+						// holds the currently selected verb (COMI drives interactions through it).
+						jp += 4;
+						int ja = jevInt(jp), jb = jevInt(jp);
+						if (ja < 0)
+							ja = 0;
+						if (jb > 0x3FFF)
+							jb = 0x3FFF;
+						Common::String jdump;
+						for (int jv = ja; jv <= jb; jv += 16) {
+							Common::String jline;
+							for (int jk = jv; jk < jv + 16 && jk <= jb; jk++)
+								jline += Common::String::format("%d:%d ", jk, VAR(jk));
+							hdPrintf("JEV VARS: %s", jline.c_str());
+						}
+					} else if (jevPrefix(jp, "setvar")) {
+						jp += 6;
+						int jn = jevInt(jp), jval = jevInt(jp);
+						if (jn >= 0 && jn < 0x4000) {
+							VAR(jn) = jval;
+							warning("JEV HARNESS: setvar %d = %d", jn, jval);
+						}
+					} else if (jevPrefix(jp, "var")) {
+						jp += 3;
+						int jv = jevInt(jp);
+						hdPrintf("JEV VAR: %d = %d", jv, (jv >= 0 && jv < 0x4000) ? VAR(jv) : -1);
+					} else if (jevPrefix(jp, "run")) {
+						jp += 3;
+						int js = jevInt(jp);
+						warning("JEV HARNESS: run script %d", js);
+						runScript(js, 0, 0, nullptr);
+					} else if (jevPrefix(jp, "save")) {
+						// Checkpoint: der Playthrough wird sonst bei jedem Lauf neu aufgerollt, weil
+						// jedes Spiel frisch startet. Mit Spielstaenden kann der Loop dort weitermachen,
+						// wo er aufgehoert hat (Ladestock, Haken, Kanone).
+						jp += 4;
+						int jslot = jevInt(jp);
+						if (!canSaveGameStateCurrently()) {
+							warning("JEV HARNESS: SAVE slot=%d refused (not allowed right now)", jslot);
+						} else {
+							Common::Error je = saveGameState(jslot, "jev-checkpoint");
+							warning("JEV HARNESS: SAVE slot=%d -> %s", jslot, je.getDesc().c_str());
+						}
+					} else if (jevPrefix(jp, "load")) {
+						jp += 4;
+						int jslot = jevInt(jp);
+						if (!canLoadGameStateCurrently()) {
+							warning("JEV HARNESS: LOAD slot=%d refused (not allowed right now)", jslot);
+						} else {
+							Common::Error je = loadGameState(jslot);
+							warning("JEV HARNESS: LOAD slot=%d -> %s", jslot, je.getDesc().c_str());
+						}
+					} else if (jevPrefix(jp, "press")) {
+						jp += 5;
+						_jevHoldX = jevInt(jp);
+						_jevHoldY = jevInt(jp);
+						_jevMouseX = _jevHoldX;
+						_jevMouseY = _jevHoldY;
+						_jevHoldState = 1;
+						_jevRelease = 0;
+						warning("JEV HARNESS: PRESS queued %d %d", _jevHoldX, _jevHoldY);
+					} else if (jevPrefix(jp, "hold")) {
+						jp += 4;
+						_jevHoldX = jevInt(jp);
+						_jevHoldY = jevInt(jp);
+						_jevMouseX = _jevHoldX;
+						_jevMouseY = _jevHoldY;
+						if (_jevHoldState == 0)
+							_jevHoldState = 2;
+						warning("JEV HARNESS: HOLD move to %d %d", _jevHoldX, _jevHoldY);
+					} else if (jevPrefix(jp, "release")) {
+						jp += 7;
+						_jevRelease = 1;
+						warning("JEV HARNESS: RELEASE queued");
+					} else if (jevPrefix(jp, "gmove")) {
+						jp += 5;
+						_jevMouseX = jevInt(jp);
+						_jevMouseY = jevInt(jp);
+						_mouse.x = _jevMouseX;
+						_mouse.y = _jevMouseY;
+						_userPut = 120;
+					} else if (jevPrefix(jp, "walk")) {
+						jp += 4;
+						int jx = jevInt(jp), jy = jevInt(jp);
+						if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+							_actors[VAR(VAR_EGO)]->startWalkActor(jx, jy, -1);
+							warning("JEV HARNESS: WALK %d %d", jx, jy);
+						}
+					} else if (jevPrefix(jp, "rec")) {
+						jp += 3;
+						while (*jp == ' ')
+							jp++;
+						if (jevPrefix(jp, "on")) {
+#ifndef WIN32
+							// Verzeichnis fuer die Frameaufnahme des Linux-Harness; unter Windows gibt
+							// es diesen Pfad und die POSIX-Signatur von mkdir nicht.
+							mkdir("/tmp/jev_rec", 0777);
+#endif
+							_jevRecording = true;
+							_jevRecFrame = 0;
+							_jevRecCount = 0;
+							warning("JEV HARNESS: recording on");
+						} else {
+							_jevRecording = false;
+							warning("JEV HARNESS: recording off after %d frames", _jevRecCount);
+						}
+					} else if (jevPrefix(jp, "gotoact")) {
+						jp += 7;
+						int jx = jevInt(jp), jy = jevInt(jp);
+						int jverb = jevInt(jp), jobj = jevInt(jp);
+						jevGotoX = jx;
+						jevGotoY = jy;
+						jevGotoVerb = jverb;
+						jevGotoObj = jobj;
+						jevGotoTicks = 0;
+						if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+							_actors[VAR(VAR_EGO)]->startWalkActor(jx, jy, -1);
+							warning("JEV HARNESS: GOTOACT walk %d %d verb=%d obj=%d", jx, jy, jverb, jobj);
+						}
+					} else if (jevPrefix(jp, "act")) {
+						jp += 3;
+						int jverb = jevInt(jp);
+						int jobj = jevInt(jp);
+						doSentence(jverb, jobj, 0);
+						warning("JEV HARNESS: SENTENCE verb=%d obj=%d", jverb, jobj);
+					} else if (jevPrefix(jp, "keyh")) {
+						// Same as "key" but the key stays down for ~1 s: COMI wants the verb key
+						// held while the click that executes the verb arrives.
+						jp += 4;
+						while (*jp == ' ')
+							jp++;
+						if (*jp >= 'a' && *jp <= 'z') {
+							_jevPendingKey = *jp;
+							_jevPendingAscii = *jp;
+							if (_jevKeyN < 8) {
+								_jevKeyKc[_jevKeyN] = _jevPendingKey;
+								_jevKeyAscii[_jevKeyN] = _jevPendingAscii;
+								_jevKeyHoldFrames[_jevKeyN] = 30;
+								_jevKeyN++;
+							}
+							_jevPendingKey = 0;
+							_jevPendingAscii = 0;
+							warning("JEV HARNESS: KEYH queued %d", (int)*jp);
+						}
+					} else if (jevPrefix(jp, "key")) {
+						jp += 3;
+						while (*jp == ' ')
+							jp++;
+						if (jevPrefix(jp, "esc")) {
+							_jevPendingKey = Common::KEYCODE_ESCAPE;
+							_jevPendingAscii = 27;
+						} else if (jevPrefix(jp, "return")) {
+							_jevPendingKey = Common::KEYCODE_RETURN;
+							_jevPendingAscii = 13;
+						} else if (jevPrefix(jp, "space")) {
+							_jevPendingKey = Common::KEYCODE_SPACE;
+							_jevPendingAscii = 32;
+						} else if (jevPrefix(jp, "tab")) {
+							_jevPendingKey = Common::KEYCODE_TAB;
+							_jevPendingAscii = 9;
+						} else if (jevPrefix(jp, "f10")) {
+							_jevPendingKey = Common::KEYCODE_F10;
+							_jevPendingAscii = 0;
+						} else if (*jp >= 'a' && *jp <= 'z') {
+							// Single letters carry their ASCII value: v7+ hands key presses to the
+							// game scripts as _mouseAndKeyboardStat = ascii, which is how COMI's
+							// verb shortcuts (u = use, e = examine, t = talk, i = inventory) work.
+							_jevPendingKey = *jp;
+							_jevPendingAscii = *jp;
+						}
+						warning("JEV HARNESS: KEY queued %d ascii=%d", _jevPendingKey, _jevPendingAscii);
+						if (_jevKeyN < 8) {
+							_jevKeyKc[_jevKeyN] = _jevPendingKey;
+							_jevKeyAscii[_jevKeyN] = _jevPendingAscii;
+							_jevKeyN++;
+						}
+						_jevPendingKey = 0;
+						_jevPendingAscii = 0;
+					} else if (jevPrefix(jp, "f10")) {
+						// Applied after processInput(), which overwrites _keyPressed.
+						jevPendingDump = true;
+					}
+					jstart = jnl + 1;
+				}
+				jevFifoLen = strlen(jstart);
+				memmove(jevFifoBuf, jstart, jevFifoLen + 1);
+			}
+		}
+
 		processInput();
+
+		if (jevPendingDump) {
+			jevPendingDump = false;
+			_keyPressed.keycode = Common::KEYCODE_F10;
+			_keyPressed.ascii = 0;
+			warning("JEV HARNESS: F10 dump");
+		}
+
+		if (_jevKeyN > 0) {
+			_keyPressed.keycode = (Common::KeyCode)_jevKeyKc[0];
+			_keyPressed.ascii = _jevKeyAscii[0];
+			const int jasc = _jevKeyAscii[0];
+			if (jasc > 0 && jasc < 512 && _jevKeyDownN < 8) {
+				_keyDownMap[jasc] = true;
+				_jevKeyDownAsc[_jevKeyDownN] = jasc;
+				_jevKeyDownLeft[_jevKeyDownN] = _jevKeyHoldFrames[0] > 0 ? _jevKeyHoldFrames[0] : 3;
+				_jevKeyDownN++;
+			}
+			for (int jk = 1; jk < _jevKeyN; jk++) {
+				_jevKeyKc[jk - 1] = _jevKeyKc[jk];
+				_jevKeyAscii[jk - 1] = _jevKeyAscii[jk];
+				_jevKeyHoldFrames[jk - 1] = _jevKeyHoldFrames[jk];
+			}
+			_jevKeyHoldFrames[_jevKeyN - 1] = 0;
+			_jevKeyN--;
+		} else if (_jevPendingKey != 0 || _jevPendingAscii != 0) {
+			_keyPressed.keycode = (Common::KeyCode)_jevPendingKey;
+			_keyPressed.ascii = _jevPendingAscii;
+			_jevPendingKey = 0;
+			_jevPendingAscii = 0;
+		}
+
+		// Release injected keys again, so the scripts see a real press and not a stuck key.
+		for (int jk = 0; jk < _jevKeyDownN; jk++) {
+			if (--_jevKeyDownLeft[jk] <= 0) {
+				_keyDownMap[_jevKeyDownAsc[jk]] = false;
+				if (_jevKeyDownAsc[jk] >= 'a' && _jevKeyDownAsc[jk] <= 'z')
+					_keyDownMap[toupper(_jevKeyDownAsc[jk])] = false;
+				_jevKeyDownAsc[jk] = _jevKeyDownAsc[_jevKeyDownN - 1];
+				_jevKeyDownLeft[jk] = _jevKeyDownLeft[_jevKeyDownN - 1];
+				_jevKeyDownN--;
+				jk--;
+			}
+		}
 
 		// HD DEBUG: force left-click to start game, then right-click to close inventory
 		if (_game.version == 8 && _hdDebugDumpCount > 0) {
@@ -3215,7 +3672,44 @@ void ScummEngine::scummLoop(int delta) {
 
 		// Additionally, v8 runs checkExecVerbs() at the end of processInput()...
 		if (_game.version == 8) {
+			// JEV HARNESS: keep the cursor where the harness wants it (hover), then apply a
+			// pending click at that spot. checkExecVerbs() below turns it into an action.
+			if (_jevMouseX >= 0) {
+				_mouse.x = _jevMouseX;
+				_mouse.y = _jevMouseY;
+				_userPut = 120;
+			}
+			if (_jevPendingClick != 0) {
+				_mouse.x = _jevClickX;
+				_mouse.y = _jevClickY;
+				_userPut = 120;
+				if (_jevPendingClick == 1) {
+					_leftBtnPressed = 3;
+					_mouseAndKeyboardStat = MBS_LEFT_CLICK;
+				} else {
+					_rightBtnPressed = 3;
+					_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
+				}
+				_jevPendingClick = 0;
+			}
 			checkExecVerbs();
+
+			// JEV HARNESS: pending gotoact, fire once the ego arrived (or after ~6 s).
+			if (jevGotoObj > 0) {
+				jevGotoTicks++;
+				if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+					const Common::Point jgp = _actors[VAR(VAR_EGO)]->getPos();
+					const int jdx = jgp.x - jevGotoX, jdy = jgp.y - jevGotoY;
+					if (jdx * jdx + jdy * jdy < 900 || jevGotoTicks > 200) {
+						warning("JEV HARNESS: SENTENCE verb=%d obj=%d (after goto, dist2=%d)", jevGotoVerb, jevGotoObj, jdx * jdx + jdy * jdy);
+						doSentence(jevGotoVerb, jevGotoObj, 0);
+						jevGotoObj = 0;
+						jevGotoTicks = 0;
+					}
+				} else {
+					jevGotoObj = 0;
+				}
+			}
 
 			// Also, saving is performed here in v8; this is important when saving
 			// the thumbnail, which would otherwise miss blastObjects/Texts on the bitmap.

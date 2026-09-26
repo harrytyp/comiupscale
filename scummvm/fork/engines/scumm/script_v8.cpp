@@ -260,6 +260,10 @@ int ScummEngine_v8::fetchScriptWordSigned() {
 }
 
 int ScummEngine_v8::readVar(uint var) {
+	// JEV HARNESS: trace small-variable reads, so the play loop can find the variable the game
+	// itself uses (for example the one that carries the selected verb).
+	if (_jevOpcodeTrace > 0 && var < 200)
+		hdPrintf("JEV VARREAD: var=%u script=%d off=%ld", var, _currentScript, (long)(_scriptPointer - _scriptOrgPointer));
 	debugC(DEBUG_VARS, "readvar(%d)", var);
 
 	// The following action re-enables the song at the beginning of Part 3,

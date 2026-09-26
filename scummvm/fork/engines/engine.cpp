@@ -19,6 +19,9 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#include <stdlib.h>
+
 #include "engines/engine.h"
 #include "engines/dialogs.h"
 #include "engines/util.h"
@@ -81,8 +84,12 @@ static void defaultOutputFormatter(char *dst, const char *src, size_t dstSize) {
 static bool defaultErrorHandler(const char *msg) {
 	bool handled = false;
 
-	// Unless this error -originated- within the debugger itself, we
-	// now invoke the debugger, if available / supported.
+	// JEV HARNESS (projects/comi-hd/harness): with JEV_NO_DEBUGGER set, an engine error
+	// (e.g. COMI's known "Script stopped with active cutscene/override") must not drop the
+	// game into the interactive debugger, which freezes an unattended play loop.
+	if (getenv("JEV_NO_DEBUGGER"))
+		return false;
+
 	if (g_engine) {
 		GUI::Debugger *debugger = g_engine->getOrCreateDebugger();
 

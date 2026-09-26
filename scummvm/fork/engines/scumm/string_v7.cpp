@@ -437,6 +437,36 @@ void ScummEngine_v7::enqueueText(const byte *text, int x, int y, byte color, byt
 	}
 
 	_blastTextQueuePos++;
+
+	// JEV HARNESS (projects/comi-hd/harness): log what the game says, deduplicated.
+	// Gives the play loop the current subtitle/dialogue line as state.
+	{
+		char jevSay[512];
+		int ji = 0;
+		for (int j = 0; j < (int)sizeof(bt.text) && bt.text[j] && ji < 500; j++)
+			jevSay[ji++] = (bt.text[j] >= 32 && bt.text[j] < 127) ? (char)bt.text[j] : ' ';
+		jevSay[ji] = 0;
+		bool jevSame = _jevSayLastValid;
+		for (int j = 0; jevSame && j < 512; j++) {
+			if (jevSay[j] != _jevSayLast[j])
+				jevSame = false;
+			if (!jevSay[j])
+				break;
+		}
+		// Log every text, even a repeat: a repeated "that does not work" is information for
+		// the play loop, and the dedup hid whole rooms' reactions.
+		if (true) {
+			for (int j = 0; j < 512; j++) {
+				_jevSayLast[j] = jevSay[j];
+				if (!jevSay[j])
+					break;
+			}
+			_jevSayLastValid = true;
+			// colour and flags tell the dialog answer lines apart from spoken subtitles and from
+			// the conversation history, which uses the same x=5 layout.
+			hdPrintf("JEV SAY: x=%d y=%d color=%d flags=%d charset=%d %s", x, y, (int)color, (int)flags, (int)charset, jevSay);
+		}
+	}
 	bt.xpos = x;
 	bt.ypos = y;
 	bt.color = color;

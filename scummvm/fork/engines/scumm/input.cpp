@@ -424,6 +424,8 @@ void ScummEngine_v7::processInput() {
 #endif
 
 void ScummEngine::processInput() {
+	// JEV HARNESS: the SMUSH video loop calls processInput(), so poll the FIFO here too.
+	jevPollFifoVideo();
 	Common::KeyState lastKeyHit = _keyPressed;
 	_keyPressed.reset();
 
@@ -541,6 +543,44 @@ void ScummEngine::processInput() {
 				VAR(VAR_LEFTBTN_DOWN) = 0;
 				VAR(VAR_RIGHTBTN_DOWN) = 0;
 			}
+		}
+	}
+
+	// JEV HARNESS (projects/comi-hd/harness): emulated press / hold / drag / release. A
+	// headless SDL driver never produces a real button, and COMI's verb coin needs the button
+	// to stay down while the cursor moves (VAR_LEFTBTN_HOLD).
+	if (_jevHoldState != 0 || _jevRelease != 0) {
+		if (_jevHoldX >= 0) {
+			_mouse.x = _jevHoldX;
+			_mouse.y = _jevHoldY;
+			_userPut = 120;
+		}
+		if (_jevRelease) {
+			_jevRelease = 0;
+			_jevHoldState = 0;
+			_leftBtnPressed = 0;
+			_mouseAndKeyboardStat = 0;
+			if (VAR_LEFTBTN_HOLD != 0xFF)
+				VAR(VAR_LEFTBTN_HOLD) = 0;
+			if (VAR_LEFTBTN_DOWN != 0xFF)
+				VAR(VAR_LEFTBTN_DOWN) = 0;
+			warning("JEV HARNESS: RELEASE %d %d", _jevHoldX, _jevHoldY);
+		} else if (_jevHoldState == 1) {
+			_jevHoldState = 2;
+			_leftBtnPressed |= msDown | msClicked;
+			_mouseAndKeyboardStat = MBS_LEFT_CLICK;
+			if (VAR_LEFTBTN_HOLD != 0xFF)
+				VAR(VAR_LEFTBTN_HOLD) = 1;
+			if (VAR_LEFTBTN_DOWN != 0xFF)
+				VAR(VAR_LEFTBTN_DOWN) = 1;
+			warning("JEV HARNESS: PRESS %d %d", _jevHoldX, _jevHoldY);
+		} else {
+			_leftBtnPressed |= msDown;
+			_mouseAndKeyboardStat = 0;
+			if (VAR_LEFTBTN_HOLD != 0xFF)
+				VAR(VAR_LEFTBTN_HOLD) = 1;
+			if (VAR_LEFTBTN_DOWN != 0xFF)
+				VAR(VAR_LEFTBTN_DOWN) = 0;
 		}
 	}
 

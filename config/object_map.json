@@ -7809,6 +7809,2598 @@
       }
     }
   },
+  "831": {
+    "name": "windsock-e",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-e_0000.png"
+          ],
+          "1": [
+            "0039_windsock-e_0001.png"
+          ],
+          "2": [
+            "0039_windsock-e_0002.png"
+          ],
+          "3": [
+            "0039_windsock-e_0003.png"
+          ],
+          "4": [
+            "0039_windsock-e_0004.png"
+          ],
+          "5": [
+            "0039_windsock-e_0005.png"
+          ],
+          "6": [
+            "0039_windsock-e_0006.png"
+          ],
+          "7": [
+            "0039_windsock-e_0007.png"
+          ],
+          "8": [
+            "0039_windsock-e_0008.png"
+          ],
+          "9": [
+            "0039_windsock-e_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "828": {
+    "name": "windsock-n",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-n_0000.png"
+          ],
+          "1": [
+            "0039_windsock-n_0001.png"
+          ],
+          "2": [
+            "0039_windsock-n_0002.png"
+          ],
+          "3": [
+            "0039_windsock-n_0003.png"
+          ],
+          "4": [
+            "0039_windsock-n_0004.png"
+          ],
+          "5": [
+            "0039_windsock-n_0005.png"
+          ],
+          "6": [
+            "0039_windsock-n_0006.png"
+          ],
+          "7": [
+            "0039_windsock-n_0007.png"
+          ],
+          "8": [
+            "0039_windsock-n_0008.png"
+          ],
+          "9": [
+            "0039_windsock-n_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "830": {
+    "name": "windsock-ne",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-ne_0000.png"
+          ],
+          "1": [
+            "0039_windsock-ne_0001.png"
+          ],
+          "2": [
+            "0039_windsock-ne_0002.png"
+          ],
+          "3": [
+            "0039_windsock-ne_0003.png"
+          ],
+          "4": [
+            "0039_windsock-ne_0004.png"
+          ],
+          "5": [
+            "0039_windsock-ne_0005.png"
+          ],
+          "6": [
+            "0039_windsock-ne_0006.png"
+          ],
+          "7": [
+            "0039_windsock-ne_0007.png"
+          ],
+          "8": [
+            "0039_windsock-ne_0008.png"
+          ],
+          "9": [
+            "0039_windsock-ne_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "829": {
+    "name": "windsock-nne",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-nne_0000.png"
+          ],
+          "1": [
+            "0039_windsock-nne_0001.png"
+          ],
+          "2": [
+            "0039_windsock-nne_0002.png"
+          ],
+          "3": [
+            "0039_windsock-nne_0003.png"
+          ],
+          "4": [
+            "0039_windsock-nne_0004.png"
+          ],
+          "5": [
+            "0039_windsock-nne_0005.png"
+          ],
+          "6": [
+            "0039_windsock-nne_0006.png"
+          ],
+          "7": [
+            "0039_windsock-nne_0007.png"
+          ],
+          "8": [
+            "0039_windsock-nne_0008.png"
+          ],
+          "9": [
+            "0039_windsock-nne_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "842": {
+    "name": "windsock-nnw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-nnw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-nnw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-nnw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-nnw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-nnw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-nnw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-nnw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-nnw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-nnw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-nnw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "832": {
+    "name": "windsock-nse",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-nse_0000.png"
+          ],
+          "1": [
+            "0039_windsock-nse_0001.png"
+          ],
+          "2": [
+            "0039_windsock-nse_0002.png"
+          ],
+          "3": [
+            "0039_windsock-nse_0003.png"
+          ],
+          "4": [
+            "0039_windsock-nse_0004.png"
+          ],
+          "5": [
+            "0039_windsock-nse_0005.png"
+          ],
+          "6": [
+            "0039_windsock-nse_0006.png"
+          ],
+          "7": [
+            "0039_windsock-nse_0007.png"
+          ],
+          "8": [
+            "0039_windsock-nse_0008.png"
+          ],
+          "9": [
+            "0039_windsock-nse_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "840": {
+    "name": "windsock-nsw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-nsw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-nsw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-nsw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-nsw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-nsw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-nsw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-nsw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-nsw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-nsw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-nsw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "841": {
+    "name": "windsock-nw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-nw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-nw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-nw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-nw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-nw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-nw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-nw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-nw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-nw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-nw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "835": {
+    "name": "windsock-s",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-s_0000.png"
+          ],
+          "1": [
+            "0039_windsock-s_0001.png"
+          ],
+          "2": [
+            "0039_windsock-s_0002.png"
+          ],
+          "3": [
+            "0039_windsock-s_0003.png"
+          ],
+          "4": [
+            "0039_windsock-s_0004.png"
+          ],
+          "5": [
+            "0039_windsock-s_0005.png"
+          ],
+          "6": [
+            "0039_windsock-s_0006.png"
+          ],
+          "7": [
+            "0039_windsock-s_0007.png"
+          ],
+          "8": [
+            "0039_windsock-s_0008.png"
+          ],
+          "9": [
+            "0039_windsock-s_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "833": {
+    "name": "windsock-se",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-se_0000.png"
+          ],
+          "1": [
+            "0039_windsock-se_0001.png"
+          ],
+          "2": [
+            "0039_windsock-se_0002.png"
+          ],
+          "3": [
+            "0039_windsock-se_0003.png"
+          ],
+          "4": [
+            "0039_windsock-se_0004.png"
+          ],
+          "5": [
+            "0039_windsock-se_0005.png"
+          ],
+          "6": [
+            "0039_windsock-se_0006.png"
+          ],
+          "7": [
+            "0039_windsock-se_0007.png"
+          ],
+          "8": [
+            "0039_windsock-se_0008.png"
+          ],
+          "9": [
+            "0039_windsock-se_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "838": {
+    "name": "windsock-snw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-snw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-snw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-snw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-snw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-snw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-snw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-snw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-snw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-snw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-snw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "834": {
+    "name": "windsock-sse",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-sse_0000.png"
+          ],
+          "1": [
+            "0039_windsock-sse_0001.png"
+          ],
+          "2": [
+            "0039_windsock-sse_0002.png"
+          ],
+          "3": [
+            "0039_windsock-sse_0003.png"
+          ],
+          "4": [
+            "0039_windsock-sse_0004.png"
+          ],
+          "5": [
+            "0039_windsock-sse_0005.png"
+          ],
+          "6": [
+            "0039_windsock-sse_0006.png"
+          ],
+          "7": [
+            "0039_windsock-sse_0007.png"
+          ],
+          "8": [
+            "0039_windsock-sse_0008.png"
+          ],
+          "9": [
+            "0039_windsock-sse_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "836": {
+    "name": "windsock-ssw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-ssw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-ssw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-ssw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-ssw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-ssw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-ssw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-ssw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-ssw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-ssw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-ssw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "837": {
+    "name": "windsock-sw",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-sw_0000.png"
+          ],
+          "1": [
+            "0039_windsock-sw_0001.png"
+          ],
+          "2": [
+            "0039_windsock-sw_0002.png"
+          ],
+          "3": [
+            "0039_windsock-sw_0003.png"
+          ],
+          "4": [
+            "0039_windsock-sw_0004.png"
+          ],
+          "5": [
+            "0039_windsock-sw_0005.png"
+          ],
+          "6": [
+            "0039_windsock-sw_0006.png"
+          ],
+          "7": [
+            "0039_windsock-sw_0007.png"
+          ],
+          "8": [
+            "0039_windsock-sw_0008.png"
+          ],
+          "9": [
+            "0039_windsock-sw_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "839": {
+    "name": "windsock-w",
+    "rooms": {
+      "39": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "state_files": {
+          "0": [
+            "0039_windsock-w_0000.png"
+          ],
+          "1": [
+            "0039_windsock-w_0001.png"
+          ],
+          "2": [
+            "0039_windsock-w_0002.png"
+          ],
+          "3": [
+            "0039_windsock-w_0003.png"
+          ],
+          "4": [
+            "0039_windsock-w_0004.png"
+          ],
+          "5": [
+            "0039_windsock-w_0005.png"
+          ],
+          "6": [
+            "0039_windsock-w_0006.png"
+          ],
+          "7": [
+            "0039_windsock-w_0007.png"
+          ],
+          "8": [
+            "0039_windsock-w_0008.png"
+          ],
+          "9": [
+            "0039_windsock-w_0009.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "847": {
+    "name": "shipcom4-squid-object",
+    "rooms": {
+      "43": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0043_shipcom4-squid-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "851": {
+    "name": "destroy-him-sign",
+    "rooms": {
+      "51": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0051_destroy-him-sign_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "852": {
+    "name": "verbality-sign",
+    "rooms": {
+      "51": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0051_verbality-sign_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "860": {
+    "name": "cannon-1-animation-object-1",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-1_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "861": {
+    "name": "cannon-1-animation-object-2",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-2_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "862": {
+    "name": "cannon-1-animation-object-3",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-3_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "863": {
+    "name": "cannon-1-animation-object-4",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-4_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "864": {
+    "name": "cannon-1-animation-object-5",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-5_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "865": {
+    "name": "cannon-1-animation-object-6",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-6_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "866": {
+    "name": "cannon-1-animation-object-7",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-1-animation-object-7_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "867": {
+    "name": "cannon-2-animation-object-1",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-2-animation-object-1_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "868": {
+    "name": "cannon-2-animation-object-2",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-2-animation-object-2_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "869": {
+    "name": "cannon-2-animation-object-3",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-2-animation-object-3_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "870": {
+    "name": "cannon-2-animation-object-4",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_cannon-2-animation-object-4_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "871": {
+    "name": "guybrush-sword-anim-object",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_guybrush-sword-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "872": {
+    "name": "rott-sword-map",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0052_rott-sword-map_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "886": {
+    "name": "blood-map-stans-sign",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0053_blood-map-stans-sign_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "882": {
+    "name": "bloodmap-beam",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0053_bloodmap-beam_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "883": {
+    "name": "bloodmap-diffused-lighting",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0053_bloodmap-diffused-lighting_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "880": {
+    "name": "bloodmap-lava-object",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0053_bloodmap-lava-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "888": {
+    "name": "shipwreck-beach-bottle",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0054_shipwreck-beach-bottle_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "895": {
+    "name": "shipwreck-pot-anim-object",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0054_shipwreck-pot-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "891": {
+    "name": "shipwrek-lotion-object",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0054_shipwrek-lotion-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "901": {
+    "name": "mask-auger-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0055_mask-auger-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "898": {
+    "name": "village-measuring-cup",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0055_village-measuring-cup_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "900": {
+    "name": "village-tofu-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0055_village-tofu-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "917": {
+    "name": "volcano-fruit-men",
+    "rooms": {
+      "56": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0056_volcano-fruit-men_0000.png"
+          ],
+          "1": [
+            "0056_volcano-fruit-men_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "926": {
+    "name": "firefly-cursed-ring",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0058_firefly-cursed-ring_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "924": {
+    "name": "firefly-jar",
+    "rooms": {
+      "58": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0058_firefly-jar_0000.png"
+          ],
+          "1": [
+            "0058_firefly-jar_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "929": {
+    "name": "firefly-lighthouse-animation-obj",
+    "rooms": {
+      "58": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0058_firefly-lighthouse-animation-obj_0000.png"
+          ],
+          "1": [
+            "0058_firefly-lighthouse-animation-obj_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "931": {
+    "name": "ext-windmill-pepper",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0059_ext-windmill-pepper_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "934": {
+    "name": "ext-windmill-window",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0059_ext-windmill-window_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "933": {
+    "name": "windmill-door-object",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0059_windmill-door-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "967": {
+    "name": "hotel-ex-barbecue-anim-obj",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0060_hotel-ex-barbecue-anim-obj_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "966": {
+    "name": "hotel-ex-column-anim-obj",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0060_hotel-ex-column-anim-obj_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "940": {
+    "name": "hotel-ex-pot-object",
+    "rooms": {
+      "60": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "state_files": {
+          "0": [
+            "0060_hotel-ex-pot-object_0000.png"
+          ],
+          "1": [
+            "0060_hotel-ex-pot-object_0001.png"
+          ],
+          "2": [
+            "0060_hotel-ex-pot-object_0002.png"
+          ],
+          "3": [
+            "0060_hotel-ex-pot-object_0003.png"
+          ],
+          "4": [
+            "0060_hotel-ex-pot-object_0004.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "968": {
+    "name": "hotel-ex-stans-sign-1",
+    "rooms": {
+      "60": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0060_hotel-ex-stans-sign-1_0000.png"
+          ],
+          "1": [
+            "0060_hotel-ex-stans-sign-1_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "985": {
+    "name": "hotel-bar-cards-on-table",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-cards-on-table_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "974": {
+    "name": "hotel-bar-cushion",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-cushion_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "980": {
+    "name": "hotel-bar-death-cards",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-death-cards_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "983": {
+    "name": "hotel-bar-jar-lid",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-jar-lid_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "981": {
+    "name": "hotel-bar-mirror-frame",
+    "rooms": {
+      "61": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-mirror-frame_0000.png"
+          ],
+          "1": [
+            "0061_hotel-bar-mirror-frame_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "996": {
+    "name": "hotel-bar-portrait",
+    "rooms": {
+      "61": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-portrait_0000.png"
+          ],
+          "1": [
+            "0061_hotel-bar-portrait_0001.png"
+          ],
+          "2": [
+            "0061_hotel-bar-portrait_0002.png"
+          ],
+          "3": [
+            "0061_hotel-bar-portrait_0003.png"
+          ],
+          "4": [
+            "0061_hotel-bar-portrait_0004.png"
+          ],
+          "5": [
+            "0061_hotel-bar-portrait_0005.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "977": {
+    "name": "hotel-bar-recipe-book",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-recipe-book_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "978": {
+    "name": "hotel-bar-shot-o-rum",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-shot-o-rum_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "973": {
+    "name": "hotel-bar-storeroom-door",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotel-bar-storeroom-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1006": {
+    "name": "hotelbar-glass",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotelbar-glass_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1005": {
+    "name": "hotelbar-hand",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotelbar-hand_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1003": {
+    "name": "hotelbar-neon",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_hotelbar-neon_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "997": {
+    "name": "tip-jar-animation-object",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0061_tip-jar-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1011": {
+    "name": "recipe-book-alternate-anim-obj",
+    "rooms": {
+      "62": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0062_recipe-book-alternate-anim-obj_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1020": {
+    "name": "cheese-chunk-animation-object",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0063_cheese-chunk-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1016": {
+    "name": "storerm-cheese-object",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0063_storerm-cheese-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1015": {
+    "name": "storeroom-death-certificate",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0063_storeroom-death-certificate_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1013": {
+    "name": "storeroom-refrigerator-magnet",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0063_storeroom-refrigerator-magnet_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1032": {
+    "name": "porthole-portrait-anim-object",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0064_porthole-portrait-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1025": {
+    "name": "portrait-closet-door",
+    "rooms": {
+      "64": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-closet-door_0000.png"
+          ],
+          "1": [
+            "0064_portrait-closet-door_0001.png"
+          ],
+          "2": [
+            "0064_portrait-closet-door_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1035": {
+    "name": "portrait-fallen-face",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-fallen-face_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1024": {
+    "name": "portrait-fallen-portrait",
+    "rooms": {
+      "64": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-fallen-portrait_0000.png"
+          ],
+          "1": [
+            "0064_portrait-fallen-portrait_0001.png"
+          ],
+          "2": [
+            "0064_portrait-fallen-portrait_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1022": {
+    "name": "portrait-guest-room-door",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-guest-room-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1027": {
+    "name": "portrait-porthole-portrait",
+    "rooms": {
+      "64": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-porthole-portrait_0000.png"
+          ],
+          "1": [
+            "0064_portrait-porthole-portrait_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1023": {
+    "name": "portrait-portrait-nail",
+    "rooms": {
+      "64": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-portrait-nail_0000.png"
+          ],
+          "1": [
+            "0064_portrait-portrait-nail_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1026": {
+    "name": "portrait-portrait",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0064_portrait-portrait_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1051": {
+    "name": "bed-animation-object",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_bed-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1042": {
+    "name": "guest-room-boarded-hole",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_guest-room-boarded-hole_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1040": {
+    "name": "guest-room-goodsoup-book",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_guest-room-goodsoup-book_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1047": {
+    "name": "guest-room-mints",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_guest-room-mints_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1048": {
+    "name": "guest-room-nightstand",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_guest-room-nightstand_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1041": {
+    "name": "guest-room-skeleton-anim-object",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_guest-room-skeleton-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1053": {
+    "name": "no-book-anim-object",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0065_no-book-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1060": {
+    "name": "closet-porthole",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0066_closet-porthole_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1059": {
+    "name": "closet-portrait-nail",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0066_closet-portrait-nail_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1067": {
+    "name": "cemetery-family-crypt-door",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-family-crypt-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1078": {
+    "name": "cemetery-lava-object",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-lava-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1069": {
+    "name": "cemetery-open-sign",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-open-sign_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1075": {
+    "name": "cemetery-stan-arrow",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-stan-arrow_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1068": {
+    "name": "cemetery-stan-sign",
+    "rooms": {
+      "67": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-stan-sign_0000.png"
+          ],
+          "1": [
+            "0067_cemetery-stan-sign_0001.png"
+          ],
+          "2": [
+            "0067_cemetery-stan-sign_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1076": {
+    "name": "cemetery-stans-animation-crypt",
+    "rooms": {
+      "67": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-stans-animation-crypt_0000.png"
+          ],
+          "1": [
+            "0067_cemetery-stans-animation-crypt_0001.png"
+          ],
+          "2": [
+            "0067_cemetery-stans-animation-crypt_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1066": {
+    "name": "cemetery-stans-crypt-door",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0067_cemetery-stans-crypt-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1101": {
+    "name": "chisel-2",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_chisel-2_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1102": {
+    "name": "chisel-3",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_chisel-3_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1086": {
+    "name": "dog-house-chisel",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_dog-house-chisel_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1084": {
+    "name": "dog-house-doggy-treats",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_dog-house-doggy-treats_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1087": {
+    "name": "dog-house-door-crack",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_dog-house-door-crack_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1081": {
+    "name": "dog-house-mallet",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0068_dog-house-mallet_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1121": {
+    "name": "coffin-nail-4",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_coffin-nail-4_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1167": {
+    "name": "generic-paper-object",
+    "rooms": {
+      "69": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0069_generic-paper-object_0000.png"
+          ],
+          "1": [
+            "0069_generic-paper-object_0001.png"
+          ],
+          "2": [
+            "0069_generic-paper-object_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1117": {
+    "name": "guybrushs-animation-coffin",
+    "rooms": {
+      "69": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "state_files": {
+          "0": [
+            "0069_guybrushs-animation-coffin_0000.png"
+          ],
+          "1": [
+            "0069_guybrushs-animation-coffin_0001.png"
+          ],
+          "2": [
+            "0069_guybrushs-animation-coffin_0002.png"
+          ],
+          "3": [
+            "0069_guybrushs-animation-coffin_0003.png"
+          ],
+          "4": [
+            "0069_guybrushs-animation-coffin_0004.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1151": {
+    "name": "stancrypt-gate-shadow",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stancrypt-gate-shadow_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1150": {
+    "name": "stans-crypt-animation-coffin",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-animation-coffin_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1104": {
+    "name": "stans-crypt-cemetery-door",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-cemetery-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1118": {
+    "name": "stans-crypt-coffin-nails-1",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-coffin-nails-1_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1119": {
+    "name": "stans-crypt-coffin-nails-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-coffin-nails-2_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1120": {
+    "name": "stans-crypt-coffin-nails-3",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-coffin-nails-3_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1166": {
+    "name": "stans-crypt-desk-anim-object",
+    "rooms": {
+      "69": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-desk-anim-object_0000.png"
+          ],
+          "1": [
+            "0069_stans-crypt-desk-anim-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1109": {
+    "name": "stans-crypt-guybrushs-coffin",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-guybrushs-coffin_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1108": {
+    "name": "stans-crypt-stans-coffin",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-crypt-stans-coffin_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1152": {
+    "name": "stans-office",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0069_stans-office_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1168": {
+    "name": "family-crypt-cemetery-door",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0070_family-crypt-cemetery-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1170": {
+    "name": "family-crypt-engagement-band",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0070_family-crypt-engagement-band_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1177": {
+    "name": "family-crypt-skylight",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0070_family-crypt-skylight_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1171": {
+    "name": "family-crypt-stone-coffin",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0070_family-crypt-stone-coffin_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1179": {
+    "name": "crakwall-crowbar",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0071_crakwall-crowbar_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1182": {
+    "name": "crakwall-lantern-on-ledge",
+    "rooms": {
+      "71": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0071_crakwall-lantern-on-ledge_0000.png"
+          ],
+          "1": [
+            "0071_crakwall-lantern-on-ledge_0001.png"
+          ],
+          "2": [
+            "0071_crakwall-lantern-on-ledge_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1193": {
+    "name": "crakwall-light-animation-object",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0071_crakwall-light-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
   "1204": {
     "name": "morts-crack",
     "rooms": {
@@ -7869,6 +10461,862 @@
       }
     }
   },
+  "1213": {
+    "name": "stump-box",
+    "rooms": {
+      "73": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0073_stump-box_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1212": {
+    "name": "stump-inv-blanker",
+    "rooms": {
+      "73": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0073_stump-inv-blanker_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1219": {
+    "name": "lighthouse-cloud",
+    "rooms": {
+      "74": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0074_lighthouse-cloud_0000.png"
+          ],
+          "1": [
+            "0074_lighthouse-cloud_0001.png"
+          ],
+          "2": [
+            "0074_lighthouse-cloud_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1215": {
+    "name": "lighthouse-lantern-post",
+    "rooms": {
+      "74": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0074_lighthouse-lantern-post_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1216": {
+    "name": "lighthouse-lantern",
+    "rooms": {
+      "74": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0074_lighthouse-lantern_0000.png"
+          ],
+          "1": [
+            "0074_lighthouse-lantern_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1214": {
+    "name": "lighthouse-mirror",
+    "rooms": {
+      "74": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0074_lighthouse-mirror_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1237": {
+    "name": "eggbeach-cushion-anim-object",
+    "rooms": {
+      "75": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0075_eggbeach-cushion-anim-object_0000.png"
+          ],
+          "1": [
+            "0075_eggbeach-cushion-anim-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1224": {
+    "name": "eggbeach-egg",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0075_eggbeach-egg_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1235": {
+    "name": "eggbeach-lava",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0075_eggbeach-lava_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1234": {
+    "name": "eggbeach-lighthouse-beam",
+    "rooms": {
+      "75": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0075_eggbeach-lighthouse-beam_0000.png"
+          ],
+          "1": [
+            "0075_eggbeach-lighthouse-beam_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1236": {
+    "name": "eggbeach-rubber-tree-anim-object",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0075_eggbeach-rubber-tree-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1238": {
+    "name": "welshmans-boat",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0075_welshmans-boat_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1239": {
+    "name": "undrwatr-dead-guybrush",
+    "rooms": {
+      "76": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0076_undrwatr-dead-guybrush_0000.png"
+          ],
+          "1": [
+            "0076_undrwatr-dead-guybrush_0001.png"
+          ],
+          "2": [
+            "0076_undrwatr-dead-guybrush_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1240": {
+    "name": "undrwatr-seaweed",
+    "rooms": {
+      "76": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0076_undrwatr-seaweed_0000.png"
+          ],
+          "1": [
+            "0076_undrwatr-seaweed_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1255": {
+    "name": "skull-island-animation-door",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0077_skull-island-animation-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1254": {
+    "name": "skull-island-elevator",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0077_skull-island-elevator_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1253": {
+    "name": "skull-island-smglcave-door",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0077_skull-island-smglcave-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1261": {
+    "name": "elevator-object-1",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0078_elevator-object-1_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1288": {
+    "name": "cave-andres-cards-anim-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-andres-cards-anim-object_0000.png"
+          ],
+          "1": [
+            "0080_cave-andres-cards-anim-object_0001.png"
+          ],
+          "2": [
+            "0080_cave-andres-cards-anim-object_0002.png"
+          ],
+          "3": [
+            "0080_cave-andres-cards-anim-object_0003.png"
+          ],
+          "4": [
+            "0080_cave-andres-cards-anim-object_0004.png"
+          ],
+          "5": [
+            "0080_cave-andres-cards-anim-object_0005.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1290": {
+    "name": "cave-andres-deck",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-andres-deck_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1271": {
+    "name": "cave-blood-island-volcano",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-blood-island-volcano_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1287": {
+    "name": "cave-cards-animation-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-cards-animation-object_0000.png"
+          ],
+          "1": [
+            "0080_cave-cards-animation-object_0001.png"
+          ],
+          "2": [
+            "0080_cave-cards-animation-object_0002.png"
+          ],
+          "3": [
+            "0080_cave-cards-animation-object_0003.png"
+          ],
+          "4": [
+            "0080_cave-cards-animation-object_0004.png"
+          ],
+          "5": [
+            "0080_cave-cards-animation-object_0005.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1289": {
+    "name": "cave-cruffs-cards-anim-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-cruffs-cards-anim-object_0000.png"
+          ],
+          "1": [
+            "0080_cave-cruffs-cards-anim-object_0001.png"
+          ],
+          "2": [
+            "0080_cave-cruffs-cards-anim-object_0002.png"
+          ],
+          "3": [
+            "0080_cave-cruffs-cards-anim-object_0003.png"
+          ],
+          "4": [
+            "0080_cave-cruffs-cards-anim-object_0004.png"
+          ],
+          "5": [
+            "0080_cave-cruffs-cards-anim-object_0005.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1291": {
+    "name": "cave-dark-anim-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-dark-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1268": {
+    "name": "cave-goodsoup-diamond",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-goodsoup-diamond_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1286": {
+    "name": "cave-money-animation-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-money-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1292": {
+    "name": "cave-opening-anim-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0080_cave-opening-anim-object_0000.png"
+          ],
+          "1": [
+            "0080_cave-opening-anim-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1267": {
+    "name": "smugglers-cave-skull-island-door",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0080_smugglers-cave-skull-island-door_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1294": {
+    "name": "gondola-door-animation-object",
+    "rooms": {
+      "81": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0081_gondola-door-animation-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1304": {
+    "name": "bomb-animation-object",
+    "rooms": {
+      "82": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0082_bomb-animation-object_0000.png"
+          ],
+          "1": [
+            "0082_bomb-animation-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1303": {
+    "name": "snow-dia-fuse",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0082_snow-dia-fuse_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1299": {
+    "name": "snow-diorama-keg-of-rum",
+    "rooms": {
+      "82": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0082_snow-diorama-keg-of-rum_0000.png"
+          ],
+          "1": [
+            "0082_snow-diorama-keg-of-rum_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1297": {
+    "name": "snow-diorama-monkey-arm",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0082_snow-diorama-monkey-arm_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1306": {
+    "name": "rum-diorama-keg-of-rum",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0083_rum-diorama-keg-of-rum_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1316": {
+    "name": "hang-diorama-fallen-corpse",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0084_hang-diorama-fallen-corpse_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1324": {
+    "name": "hang-diorama-noose-anim-object",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0084_hang-diorama-noose-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1315": {
+    "name": "hang-diorama-rope",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0084_hang-diorama-rope_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1334": {
+    "name": "flickering-lamp-object",
+    "rooms": {
+      "85": {
+        "states": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "state_files": {
+          "0": [
+            "0085_flickering-lamp-object_0000.png"
+          ],
+          "1": [
+            "0085_flickering-lamp-object_0001.png"
+          ],
+          "2": [
+            "0085_flickering-lamp-object_0002.png"
+          ],
+          "3": [
+            "0085_flickering-lamp-object_0003.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1333": {
+    "name": "tort-dia-lantern-anim-object",
+    "rooms": {
+      "85": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0085_tort-dia-lantern-anim-object_0000.png"
+          ],
+          "1": [
+            "0085_tort-dia-lantern-anim-object_0001.png"
+          ],
+          "2": [
+            "0085_tort-dia-lantern-anim-object_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1329": {
+    "name": "tort-dia-wally",
+    "rooms": {
+      "85": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0085_tort-dia-wally_0000.png"
+          ],
+          "1": [
+            "0085_tort-dia-wally_0001.png"
+          ],
+          "2": [
+            "0085_tort-dia-wally_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1362": {
+    "name": "carnival-snowcone-object",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0086_carnival-snowcone-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1338": {
+    "name": "dinghy-anchor",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0086_dinghy-anchor_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1363": {
+    "name": "fake-pie-anim-object",
+    "rooms": {
+      "86": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0086_fake-pie-anim-object_0000.png"
+          ],
+          "1": [
+            "0086_fake-pie-anim-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1335": {
+    "name": "pepper-mill",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0086_pepper-mill_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1342": {
+    "name": "pie-booth-gate",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0086_pie-booth-gate_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
   "1366": {
     "name": "easyhard-choice-object",
     "rooms": {
@@ -7920,6 +11368,198 @@
             "0087_foreign-placard-object_0001.png"
           ]
         }
+      }
+    }
+  },
+  "1368": {
+    "name": "credit-page-2",
+    "rooms": {
+      "91": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0091_credit-page-2_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1369": {
+    "name": "credit-page-3",
+    "rooms": {
+      "91": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0091_credit-page-3_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1370": {
+    "name": "credit-page-4",
+    "rooms": {
+      "91": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0091_credit-page-4_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1371": {
+    "name": "credit-page-5",
+    "rooms": {
+      "91": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0091_credit-page-5_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1372": {
+    "name": "credit-page-6",
+    "rooms": {
+      "91": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0091_credit-page-6_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1400": {
+    "name": "saveload-alternate-anim-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-alternate-anim-object_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1388": {
+    "name": "saveload-bookmark-anim-obj",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-bookmark-anim-obj_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1391": {
+    "name": "saveload-checkbox",
+    "rooms": {
+      "92": {
+        "states": [
+          0,
+          1,
+          2
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-checkbox_0000.png"
+          ],
+          "1": [
+            "0092_saveload-checkbox_0001.png"
+          ],
+          "2": [
+            "0092_saveload-checkbox_0002.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1389": {
+    "name": "saveload-slider-bar",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-slider-bar_0000.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1390": {
+    "name": "saveload-slider-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-slider-object_0000.png"
+          ],
+          "1": [
+            "0092_saveload-slider-object_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "1385": {
+    "name": "saveload-slot-frame",
+    "rooms": {
+      "92": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0092_saveload-slot-frame_0000.png"
+          ],
+          "1": [
+            "0092_saveload-slot-frame_0001.png"
+          ]
+        },
+        "layer_files": {}
       }
     }
   }

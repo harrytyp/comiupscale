@@ -587,16 +587,54 @@ public:
 	int _hdVerbScreenTimestamp = 0; // frame number when verb screen was last updated
 	byte *_hdCleanValid = nullptr; // 640×480 byte array: 1 = pixel has clean data
 	int _hdCleanValidSize = 0;
+	// Kameraausschnitt, auf den die Referenzkopie bezogen ist. Passt er nicht mehr zur
+	// Kamera, wird sie vor dem Vergleich nachgezogen (siehe renderHDComposite).
+	int _hdCleanXStart = -1;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
 	int _hdObjectMaskSize = 0;
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
+	// JEV HARNESS (projects/comi-hd/harness): play-loop support
+	bool _jevRecording = false;
+	int _jevRecEvery = 3;
+	int _jevRecFrame = 0;
+	int _jevRecCount = 0;
+	bool _jevSayLastValid = false;
+	char _jevSayLast[512] = {0};
+	int _jevPendingKey = 0;
+	int _jevPendingAscii = 0;
+	// A verb shortcut needs to arrive one frame before the Enter that executes it, so keys are
+	// queued and drained one per frame instead of collapsing into a single _keyPressed write.
+	int _jevKeyKc[8] = {0};
+	int _jevKeyAscii[8] = {0};
+	int _jevKeyHoldFrames[8] = {0};
+	int _jevKeyN = 0;
+	// COMI's scripts poll the keyboard through getKeyState(), which reads _keyDownMap. A key has
+	// to be held down for a few frames, so each injected key gets a release countdown.
+	int _jevKeyDownAsc[8] = {0};
+	int _jevKeyDownLeft[8] = {0};
+	int _jevKeyDownN = 0;
+	int _jevPendingClick = 0;
+	int _jevClickX = 0;
+	int _jevClickY = 0;
+	// Last cursor position requested by the harness. COMI shows the object name and picks the
+	// default verb for whatever is under the cursor, so the pointer has to stay put between
+	// frames, not just for the click frame.
+	int _jevMouseX = -1;
+	int _jevMouseY = -1;
+	// Emulated mouse button for the FIFO harness: a headless SDL driver never produces a real
+	// button, but COMI's verb coin needs the button held while the cursor moves.
+	int _jevHoldState = 0; // 0 none, 1 press this frame, 2 held
+	int _jevHoldX = -1;
+	int _jevHoldY = -1;
+	int _jevRelease = 0; // 1 = release this frame
 	Common::String _hdDebugLog; // HD debug log buffer (flushed to hd_state.log each frame)
 	void *_hdLogFile = nullptr; // Persistent log file handle (avoids open/close per frame)
 	byte *_hdAlphaMask = nullptr; // Persistent HD alpha mask (avoids calloc/free per frame)
 	int _hdAlphaMaskSize = 0; // Allocated size of _hdAlphaMask
 	int _hdCursorObject = 0; // Inventory item obj_nr currently shown on cursor (set by setCursorFromImg)
 	int _hdCursorImage = 0; // Original image index for cursor
+	int _hdCursorRoom = 0;  // Room the cursor image belongs to (coin lives in room 3)
 
 	// Inventory HD position cache: populated by superBlastObject() for obj_nr 105-274
 	Common::HashMap<int, Common::Point> _inventoryHDPositions;
@@ -1490,6 +1528,13 @@ protected:
 	void hdDumpSDComposite();
 	void hdAppendDebugLog(const char *msg, int len);
 	void hdPrintf(const char* fmt, ...);
+	// JEV HARNESS: poll the command FIFO from processInput() as well, because that is what
+	// the SMUSH video loop calls; scummLoop does not run while a video plays.
+	// JEV HARNESS: bounded opcode trace, so a script's behaviour can be read from the log
+	// instead of guessed: getOpcodeDesc() gives the opcode name.
+	int _jevOpcodeTrace = 0;
+	int _jevTraceScript = 0;
+	void jevPollFifoVideo();
 	virtual void redrawBGAreas();
 
 	void cameraMoved();

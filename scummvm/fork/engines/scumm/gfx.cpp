@@ -1232,6 +1232,7 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 			}
 		}
 	}
+		_hdCleanXStart = _virtscr[kMainVirtScreen].xstart;
 }
 
 /**
@@ -1241,15 +1242,72 @@ void ScummEngine::redrawBGStrip(int start, int num) {
  * camera move of dx viewport pixels shifts the reference by -dx. Pixels shifted
  * in from outside the previous viewport are marked invalid.
  */
+// Debug-Helfer: verkleinerte Ausgabe (Box-Filter), damit eine Frameaufnahme nicht
+// gigabyteweise Daten schreibt.
+static void hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path, int step) {
+	FILE *f = fopen(path, "wb");
+	if (!f || step < 1)
+		return;
+	int w = surf->w / step, h = surf->h / step;
+	fprintf(f, "P6\n%d %d\n255\n", w, h);
+	int n = step * step;
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
+			int r = 0, g = 0, b = 0;
+			for (int dy = 0; dy < step; dy++) {
+				uint32 *row = (uint32 *)surf->getBasePtr(0, y * step + dy);
+				for (int dx = 0; dx < step; dx++) {
+					uint32 px = row[x * step + dx];
+					r += px & 0xFF;
+					g += (px >> 8) & 0xFF;
+					b += (px >> 16) & 0xFF;
+				}
+			}
+			fputc(r / n, f);
+			fputc(g / n, f);
+			fputc(b / n, f);
+		}
+	}
+	fclose(f);
+}
+
+static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
+	FILE *f = fopen(path, "wb");
+	if (!f)
+		return;
+	fprintf(f, "P6\n%d %d\n255\n", surf->w, surf->h);
+	for (int y = 0; y < surf->h; y++) {
+		uint32 *row = (uint32 *)surf->getBasePtr(0, y);
+		for (int x = 0; x < surf->w; x++) {
+			uint32 px = row[x];
+			fputc(px & 0xFF, f);
+			fputc((px >> 8) & 0xFF, f);
+			fputc((px >> 16) & 0xFF, f);
+		}
+	}
+	fclose(f);
+}
+
+// Debug: einen Zwischenstand des Composites ablegen, um zu sehen, welcher Zeichenschritt den
+// Hintergrund uebermalt. Nur mit HD_DUMP_STEPS=1 aktiv.
+static void hdDumpStep(Graphics::Surface *surf, const char *name) {
+	if (!getenv("HD_DUMP_STEPS"))
+		return;
+	char path[128];
+	snprintf(path, sizeof(path), "/tmp/hd_step_%s.ppm", name);
+	hdWriteCompositeShotScaled(surf, path, 2);
+}
+
 void ScummEngine::hdShiftCleanBackground(int dx) {
 	int w = MIN<int>(_screenWidth, _hdCleanBackground.w);
 	int h = MIN<int>(_screenHeight, _hdCleanBackground.h);
 	if (w <= 0 || h <= 0 || !_hdCleanValid)
 		return;
 	if (dx >= w || dx <= -w) {
-		// Camera jumped by a full screen — nothing can be reused.
+		// Camera jumped by a full screen: nothing can be reused.
 		memset(_hdCleanBackground.getPixels(), 0, w * h);
 		memset(_hdCleanValid, 0, _hdCleanValidSize > 0 ? _hdCleanValidSize : w * h);
+		_hdCleanXStart = -1;
 		return;
 	}
 	for (int y = 0; y < h; y++) {
@@ -1267,7 +1325,7 @@ void ScummEngine::hdShiftCleanBackground(int dx) {
 			memset(row, 0, adx);
 			memset(valid, 0, adx);
 		}
-	}
+	}	_hdCleanXStart += dx;
 }
 
 void ScummEngine::renderHDComposite() {
@@ -1353,6 +1411,16 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
+	hdDumpStep(&_hdComposite, "1_hintergrund");
+
+	// Die Referenzkopie des Hintergrunds ist auf den Ausschnitt bezogen, in dem sie geschrieben
+	// wurde. Passt der nicht mehr zur Kamera, gilt in der Vordergrundpruefung unten jedes Pixel
+	// als Vordergrund und die 8-Bit-Ebene malt den ganzen HD-Hintergrund zu (Raum 25 wird auf
+	// xstart 344 betreten, die Referenz entstand bei 0). Deshalb hier auf den aktuellen
+	// Ausschnitt nachziehen, bevor verglichen wird.
+	if (_hdCleanValid && _hdCleanXStart >= 0 && _hdCleanXStart != (int)vs->xstart)
+		hdShiftCleanBackground(vs->xstart - _hdCleanXStart);
+
 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
 	// Diff against clean background to only overlay foreground pixels.
 
@@ -1385,6 +1453,10 @@ void ScummEngine::renderHDComposite() {
 			const uint8 *cleanRow = (const uint8 *)_hdCleanBackground.getPixels()
 				? (const uint8 *)_hdCleanBackground.getBasePtr(0, sy) : nullptr;
 			bool useClean = (_hdCurrentRoom == _currentRoom && _hdCleanValid && cleanRow);
+			if (sy == 0)
+				hdPrintf("step2info: useClean=%d cleanValid=%d hdRoom=%d curRoom=%d xstart=%d vorlageAusschnitt=%d",
+				         useClean ? 1 : 0, _hdCleanValid ? 1 : 0, _hdCurrentRoom, _currentRoom,
+				         (int)vs->xstart, _hdCleanXStart);
 			bool rowHadFg = false;
 			for (int sx = 0; sx < visW; sx++) {
 				uint8 curPix = visRow[sx];
@@ -1483,6 +1555,7 @@ void ScummEngine::renderHDComposite() {
 	memset(_hdAlphaMask, 0, alphaMaskBytes);
 	byte *hdAlphaMask = _hdAlphaMask;
 
+	hdDumpStep(&_hdComposite, "2_vordergrund");
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
@@ -1498,6 +1571,57 @@ void ScummEngine::renderHDComposite() {
 					di, dod.obj_nr, dod.fl_object_index, dod.state & 0xF,
 					dod.x_pos, dod.y_pos, dod.width, dod.height,
 					_hdObjectManager ? _hdObjectManager->getObjectName(dod.obj_nr).c_str() : "");
+			}
+
+			// ── JEV HARNESS state dump (projects/comi-hd/harness) ──
+			// Interactable objects (those with verb entrypoints) + ego position + inventory,
+			// so the harness can offer real actions instead of background segments.
+			{
+				if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+					const Common::Point jevEgoPos = _actors[VAR(VAR_EGO)]->getPos();
+					hdPrintf("JEV EGO: actor=%d x=%d y=%d room=%d", VAR(VAR_EGO), jevEgoPos.x, jevEgoPos.y, _currentRoom);
+				}
+				Common::String jevInv;
+				for (int ji = 0; ji < _numInventory && ji < 64; ji++) {
+					if (!_inventory[ji])
+						continue;
+					if (!jevInv.empty())
+						jevInv += ",";
+					jevInv += Common::String::format("%d", _inventory[ji]);
+				}
+				hdPrintf("JEV INV: count=%d objs=%s", getInventoryCount(VAR(VAR_EGO)), jevInv.c_str());
+				// Inventory items with their screen positions, so the harness can click them in the bar
+				// and build two-object sentences ("use the ramrod with the cannon").
+				for (int ji = 0; ji < _numInventory && ji < 64; ji++) {
+					int jio = _inventory[ji];
+					if (!jio)
+						continue;
+					for (int jk = 1; jk < _numLocalObjects; jk++) {
+						if (_objs[jk].obj_nr != jio)
+							continue;
+						hdPrintf("JEV INVOBJ: obj=%d pos=(%d,%d) sz=(%dx%d) state=%d where=%d",
+							jio, _objs[jk].x_pos, _objs[jk].y_pos, _objs[jk].width, _objs[jk].height,
+							_objs[jk].state & 0xF, whereIsObject(jio));
+						break;
+					}
+				}
+				for (int ji = 1; ji < _numLocalObjects; ji++) {
+					ObjectData &jevObj = _objs[ji];
+					if (jevObj.obj_nr == 0)
+						continue;
+					Common::String jevVerbs;
+					for (int jv = 1; jv <= 20; jv++) {
+						if (getVerbEntrypoint(jevObj.obj_nr, jv)) {
+							if (!jevVerbs.empty())
+								jevVerbs += ",";
+							jevVerbs += Common::String::format("%d", jv);
+						}
+					}
+					if (!jevVerbs.empty())
+						hdPrintf("JEV ACT: obj=%d name=%s pos=(%d,%d) sz=(%dx%d) verbs=%s where=%d untouch=%d",
+							jevObj.obj_nr, _hdObjectManager ? _hdObjectManager->getObjectName(jevObj.obj_nr).c_str() : "",
+							jevObj.x_pos, jevObj.y_pos, jevObj.width, jevObj.height, jevVerbs.c_str(), whereIsObject(jevObj.obj_nr), getClass(jevObj.obj_nr, kObjectClassUntouchable) ? 1 : 0);
+				}
 			}
 
 			// ── HD wait cursor (hourglass) during room-enter loading ──
@@ -1931,6 +2055,7 @@ void ScummEngine::renderHDComposite() {
 			hdPrintf("step2.5b blast-inventory: loaded=%d skipped=%d", step25b_loaded, step25b_skipped);
 	}
 
+	hdDumpStep(&_hdComposite, "3_objekte");
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
@@ -2368,6 +2493,7 @@ void ScummEngine::renderHDComposite() {
 		_hdFontChars.clear();
 	}
 
+	hdDumpStep(&_hdComposite, "4_kostueme");
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
 	// Full-screen verb textures are stored in _hdVerbSurface by drawVerbBitmap
@@ -2453,6 +2579,7 @@ void ScummEngine::renderHDComposite() {
 		if (objState < 0) objState = 0;
 		int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
 		if (objRoom < 0) objRoom = _currentRoom;
+
 		const Graphics::Surface *hdObjSurfPtr = _hdObjectManager->getObjectSurface(cursorObj, objRoom, objState);
 		if (hdObjSurfPtr) {
 			int imageX = _mouse.x - _cursor.hotspotX;
@@ -2515,29 +2642,96 @@ void ScummEngine::renderHDComposite() {
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
 	_hdFrameCount++;
 
-	// HD screenshot on F10
+	// HD screenshot. F10 writes a numbered file; with HD_AUTO_SHOTS=1 a scrolling room
+	// (here 14 = fortbase) drops numbered frames while it pans, so the scroll behaviour can
+	// be measured frame by frame. Without the environment variable nothing happens.
 	if (_keyPressed.keycode == Common::KEYCODE_F10) {
-		FILE *f = fopen("/tmp/hd_screenshot.ppm", "wb");
-		if (f) {
-			int shotW = _hdComposite.w;
-			int shotH = _hdComposite.h;
-			fprintf(f, "P6\n%d %d\n255\n", shotW, shotH);
-			for (int y = 0; y < shotH; y++) {
-				uint32 *row = (uint32 *)_hdComposite.getBasePtr(0, y);
-				for (int x = 0; x < shotW; x++) {
-					uint32 px = row[x];
-					// _hdComposite is BGRA (rShift=0, bShift=16): R is the
-					// low byte, B is bits 16-23. PPM wants RGB order.
-					byte pr = px & 0xFF;
-					byte pg = (px >> 8) & 0xFF;
-					byte pb = (px >> 16) & 0xFF;
-					fputc(pr, f);
-					fputc(pg, f);
-					fputc(pb, f);
+		static int hdShotNo = 0;
+		char path[128];
+		snprintf(path, sizeof(path), "/tmp/hd_shot_%03d_cam%d.ppm", ++hdShotNo, (int)camera._cur.x);
+		hdWriteCompositeShot(&_hdComposite, path);
+		warning("HD SCREENSHOT: F10 saved %s (%dx%d) cam=%d", path,
+		        _hdComposite.w, _hdComposite.h, (int)camera._cur.x);
+	}
+	// Debug: einmalige Zustandsmeldung, damit die Werte im Log stehen (nur im Testlauf relevant).
+	if (_hdFrameCount == 30)
+		warning("HD DEBUG: frame=%d bg=%dx%d screen=%dx%d comp=%dx%d autoshots=%d",
+		        _hdFrameCount, _hdBackgroundSurface.w, _hdBackgroundSurface.h,
+		        _screenWidth, _screenHeight, _hdComposite.w,
+		        getenv("HD_AUTO_SHOTS") ? 1 : 0);
+	// Debug: fuer die Videoaufnahme einen gleichmaessigen Schwenk ueber den Kameraweg fahren.
+	// Ohne HD_SCROLL_TEST passiert nichts. Der Schwenk ist eine Testfahrt, kein Spielverhalten.
+	if (getenv("HD_SCROLL_TEST") && _hdBackgroundSurface.w > _screenWidth) {
+		static int panFrame = 0;
+		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
+		if (panFrame < 200) {
+			int target = MIN(maxCam, (panFrame * 4) + 100);
+			setCameraAt(target, _screenHeight / 2);
+			panFrame++;
+		}
+	}
+	// Debug: die geladene Hintergrundflaeche einmal ablegen, um zu sehen, welche Datei die
+	// Engine fuer den Raum wirklich haelt (nur mit HD_DUMP_BG=1).
+	if (getenv("HD_DUMP_BG")) {
+		static bool bgDumped = false;
+		if (!bgDumped && _hdBackgroundSurface.getPixels()) {
+			bgDumped = true;
+			hdWriteCompositeShotScaled(&_hdBackgroundSurface, "/tmp/hd_bg_loaded.ppm", 2);
+			warning("HD DUMP: geladener Hintergrund raum=%d groesse=%dx%d", _currentRoom,
+			        _hdBackgroundSurface.w, _hdBackgroundSurface.h);
+		}
+	}
+	// Debug: die Vergleichsvorlage einmal ablegen (HD_DUMP_CLEAN=1).
+	if (getenv("HD_DUMP_CLEAN")) {
+		static bool cleanDumped = false;
+		if (!cleanDumped && _hdCleanBackground.getPixels()) {
+			cleanDumped = true;
+			hdWriteCompositeShotScaled(&_hdCleanBackground, "/tmp/hd_clean.ppm", 2);
+			int validCount = 0;
+			for (int i = 0; i < _hdCleanValidSize; i++)
+				validCount += _hdCleanValid[i] ? 1 : 0;
+			warning("HD CLEAN: Vorlage raum=%d xstart=%d vorlageAusschnitt=%d gueltig=%d von %d",
+			        _currentRoom, (int)vs->xstart, _hdCleanXStart, validCount, _hdCleanValidSize);
+		}
+	}
+	// Debug: fuer die Pruefung scrollender Raeume jeden Frame mitschreiben (Echtzeit-Video).
+	if (getenv("HD_AUTO_SHOTS") && _hdBackgroundSurface.w > _screenWidth) {
+		static int hdAutoNo = 0;
+		if (hdAutoNo == 0)
+			warning("HD_AUTO_SHOTS: aktiv, bg=%dx%d screen=%dx%d raum=%d",
+			        _hdBackgroundSurface.w, _hdBackgroundSurface.h, _screenWidth, _screenHeight);
+		if (hdAutoNo < 150) {
+			char path[128];
+			// Raum mit in den Dateinamen: ein boot-param-Lauf spielt eine Sequenz ab (Intro,
+			// Raumwechsel), ohne den Raum im Namen lassen sich die Frames nicht zuordnen.
+			snprintf(path, sizeof(path), "/tmp/hd_scan/s%03d_raum%d_cam%d.ppm",
+			         hdAutoNo++, _currentRoom, (int)camera._cur.x);
+			hdWriteCompositeShotScaled(&_hdComposite, path, 2);
+		}
+	}
+
+	// JEV HARNESS: frame recording for the play video (downscaled 4x -> 640x480 PPM)
+	if (_jevRecording) {
+		_jevRecFrame++;
+		if (_jevRecEvery > 0 && (_jevRecFrame % _jevRecEvery) == 0 && _jevRecCount < 20000) {
+			char jpath[80];
+			snprintf(jpath, sizeof(jpath), "/tmp/jev_rec/f%06d.ppm", _jevRecCount);
+			FILE *jf = fopen(jpath, "wb");
+			if (jf) {
+				_jevRecCount++;
+				int jw = _hdComposite.w / 4, jh = _hdComposite.h / 4;
+				fprintf(jf, "P6\n%d %d\n255\n", jw, jh);
+				for (int y = 0; y < jh; y++) {
+					uint32 *row = (uint32 *)_hdComposite.getBasePtr(0, y * 4);
+					for (int x = 0; x < jw; x++) {
+						uint32 px = row[x * 4];
+						fputc(px & 0xFF, jf);
+						fputc((px >> 8) & 0xFF, jf);
+						fputc((px >> 16) & 0xFF, jf);
+					}
 				}
+				fclose(jf);
 			}
-			fclose(f);
-			warning("HD SCREENSHOT: F10 pressed, saved /tmp/hd_screenshot.ppm (%dx%d)", shotW, shotH);
 		}
 	}
 
@@ -2576,6 +2770,51 @@ void ScummEngine::renderHDComposite() {
 	if (hdAccumFrames >= 30) {
 		int avgMs = hdAccumMs / hdAccumFrames;
 		hdPrintf("FRAME-TIMING: avg=%dms max=%dms FPS=%.1f (%d frames)", avgMs, hdMaxMs, avgMs > 0 ? 1000.0/avgMs : 0.0, hdAccumFrames);
+		// JEV HARNESS: current ego position, state feedback for the play loop
+		if (VAR_EGO != 0xFF && _actors && VAR(VAR_EGO) > 0 && VAR(VAR_EGO) < _numActors) {
+			const Common::Point jevEgo = _actors[VAR(VAR_EGO)]->getPos();
+			hdPrintf("F=%d JEV EGO: actor=%d x=%d y=%d room=%d", _hdFrameCount, VAR(VAR_EGO), jevEgo.x, jevEgo.y, _currentRoom);
+		}
+		// Inventar im Takt mitschreiben: der Playthrough braucht einen Beleg, wann der Haken
+		// wirklich aufgenommen wurde, sonst ist "Fortschritt" nur eine Behauptung.
+		{
+			Common::String jevTick;
+			for (int jq = 0; jq < _numInventory && jq < 64; jq++) {
+				if (!_inventory[jq])
+					continue;
+				if (!jevTick.empty())
+					jevTick += ",";
+				jevTick += Common::String::format("%d", _inventory[jq]);
+			}
+			hdPrintf("F=%d JEV INVTICK: count=%d objs=%s", _hdFrameCount, getInventoryCount(VAR(VAR_EGO)), jevTick.c_str());
+			// Leistenpositionen aller Inventar-/Cursorobjekte: sie stehen nicht in den
+			// Objektdaten, sondern im HD-Cache aus dem superBlastObject-Opcode.
+			for (Common::HashMap<int, Common::Point>::iterator jit = _inventoryHDPositions.begin();
+			     jit != _inventoryHDPositions.end(); ++jit) {
+				hdPrintf("F=%d JEV INVPOS: obj=%d x=%d y=%d", _hdFrameCount, jit->_key, jit->_value.x, jit->_value.y);
+			}
+			// Nimmt das Spiel ueberhaupt Eingaben an? userPut==0 heisst: Skript/Cutscene blockiert
+			// den Spieler, dann verpufft jeder Klick und der Harness sieht aus wie ein schlechter Spieler.
+			hdPrintf("F=%d JEV INPUT: userPut=%d cutsceneDepth=%d leftBtn=%d",
+				_hdFrameCount, _userPut, vm.cutSceneStackPointer, _leftBtnPressed ? 1 : 0);
+			// Position jedes Inventargegenstands in der Leiste: nur damit kann der Harness
+			// einen Zwei-Objekt-Satz bilden ("Gegenstand anklicken, dann das Ziel").
+			for (int jr = 0; jr < _numInventory && jr < 64; jr++) {
+				int jro = _inventory[jr];
+				if (!jro)
+					continue;
+				for (int jk2 = 1; jk2 < _numLocalObjects; jk2++) {
+					if (_objs[jk2].obj_nr != jro)
+						continue;
+					hdPrintf("F=%d JEV INVOBJ: obj=%d name=%s pos=(%d,%d) sz=(%dx%d) state=%d where=%d",
+						_hdFrameCount, jro, (_hdObjectManager ? _hdObjectManager->getObjectName(jro).c_str() : ""),
+						_objs[jk2].x_pos, _objs[jk2].y_pos,
+						_objs[jk2].width, _objs[jk2].height, _objs[jk2].state & 0xF,
+						whereIsObject(jro));
+					break;
+				}
+			}
+		}
 		hdAccumMs = 0;
 		hdAccumFrames = 0;
 		hdMaxMs = 0;

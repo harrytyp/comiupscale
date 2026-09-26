@@ -789,6 +789,14 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 
 						// Track inventory items shown on cursor (obj_nr > 105 for COMI V8)
 						if (_game.version == 8) {
+							// JEV/DIAG: log every cursor image the game sets, so the verb coin (which is a
+							// cursor image too) can be identified and checked against the HD assets.
+							hdPrintf("CURSOR_SET img=%d room=%d idx=%d mouse=(%d,%d)", img, room, imgindex, _mouse.x, _mouse.y);
+							// NOTE: the verb coin is a cursor image too (obj 105, room 3), but its HD
+							// asset is broken: it holds the magenta mask instead of the coin art
+							// (mean RGB ~185,43,161; 3 gold pixels). Routing the coin through this
+							// path therefore painted a purple shape over the cursor. Once the asset is
+							// regenerated from the SD coin image, extend the range to img >= 105.
 							if (img > 105 && img <= 274) {
 								_hdCursorObject = img;
 								_hdCursorImage = imgindex;
@@ -796,6 +804,7 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 									img, room, imgindex, _mouse.x, _mouse.y);
 							} else {
 								_hdCursorObject = 0;
+								_hdCursorRoom = 0;
 							}
 						}
 

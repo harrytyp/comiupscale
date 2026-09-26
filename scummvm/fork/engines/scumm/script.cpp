@@ -19,6 +19,9 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#include <stdlib.h>
+
 #include "common/config-manager.h"
 #include "common/util.h"
 #include "common/system.h"
@@ -36,6 +39,9 @@ namespace Scumm {
 
 /* Start executing script 'script' with the given parameters */
 void ScummEngine::runScript(int script, bool freezeResistant, bool recursive, int *lvarptr, int cycle) {
+	// JEV HARNESS: script starts, for tracing what a click triggers.
+	if (getenv("JEV_NO_DEBUGGER") && _jevOpcodeTrace > 0)
+		hdPrintf("JEV RUNSCRIPT n=%d room=%d", script, _currentRoom);
 	ScriptSlot *s;
 
 	uint32 scriptOffs;
@@ -107,6 +113,10 @@ void ScummEngine::runScript(int script, bool freezeResistant, bool recursive, in
 }
 
 void ScummEngine::runObjectScript(int object, int entry, bool freezeResistant, bool recursive, int *vars, int slot, int cycle) {
+	// JEV HARNESS: trace verb execution so the harness can see whether a clicked or
+	// requested action actually reaches the game's per-object scripts.
+	if (getenv("JEV_NO_DEBUGGER") && _jevOpcodeTrace > 0)
+		hdPrintf("JEV RUNOBJSCRIPT obj=%d verb=%d room=%d", object, entry, _currentRoom);
 	ScriptSlot *s;
 	uint32 obcd;
 	int where, offs;
@@ -271,8 +281,26 @@ void ScummEngine::stopScript(int script) {
 		if (script == ss->number && ss->status != ssDead &&
 			(ss->where == WIO_GLOBAL || ss->where == WIO_LOCAL)) {
 			if (ss->cutsceneOverride)
-				if (_game.version >= 5)
-					error("Script %d stopped with active cutscene/override", script);
+				if (_game.version >= 5) {
+					// JEV HARNESS: COMI stops a script with an active cutscene override right
+					// after the difficulty menu, which upstream treats as fatal. With
+					// JEV_NO_DEBUGGER set, log it and keep playing instead of quitting.
+					if (getenv("JEV_NO_DEBUGGER")) {
+						warning("Script %d stopped with active cutscene/override (harness: clearing the flag)", script);
+						// Der sterbende Skript-Slot schuldet der Engine ein endCutscene(). Ohne
+						// dieses Pop bleibt cutSceneStackPointer fuer immer hoch und der naechste
+						// Dialog laeuft nach einigen Runden in "Cutscene stack overflow".
+						if (ss->cutsceneOverride > 0) {
+							ss->cutsceneOverride = 0;
+							if (vm.cutSceneStackPointer > 0) {
+								vm.cutSceneStackPointer--;
+								warning("JEV HARNESS: cutscene stack repaired, depth=%d", vm.cutSceneStackPointer);
+							}
+						}
+					} else {
+						error("Script %d stopped with active cutscene/override", script);
+					}
+				}
 			ss->number = 0;
 			ss->status = ssDead;
 			nukeArrays(i);
@@ -305,8 +333,20 @@ void ScummEngine::stopObjectScript(int script) {
 		if (script == ss->number && ss->status != ssDead &&
 		    (ss->where == WIO_ROOM || ss->where == WIO_INVENTORY || ss->where == WIO_FLOBJECT)) {
 			if (ss->cutsceneOverride)
-				if (_game.version >= 5)
-					error("Object %d stopped with active cutscene/override", script);
+				if (_game.version >= 5) {
+					if (getenv("JEV_NO_DEBUGGER")) {
+						warning("Object %d stopped with active cutscene/override (harness: clearing the flag)", script);
+						if (ss->cutsceneOverride > 0) {
+							ss->cutsceneOverride = 0;
+							if (vm.cutSceneStackPointer > 0) {
+								vm.cutSceneStackPointer--;
+								warning("JEV HARNESS: cutscene stack repaired, depth=%d", vm.cutSceneStackPointer);
+							}
+						}
+					} else {
+						error("Object %d stopped with active cutscene/override", script);
+					}
+				}
 			ss->number = 0;
 			ss->status = ssDead;
 			nukeArrays(i);
@@ -523,6 +563,12 @@ void ScummEngine::executeScript() {
 }
 
 void ScummEngine::executeOpcode(byte i) {
+	if (_jevOpcodeTrace > 0) {
+		if (_jevTraceScript == 0 || _jevTraceScript == _currentScript)
+			hdPrintf("JEV OP: script=%d off=%ld op=%02x %s", _currentScript,
+				(long)(_scriptPointer - _scriptOrgPointer - 1), i, getOpcodeDesc(i));
+		_jevOpcodeTrace--;
+	}
 	if (_opcodes[i].proc && _opcodes[i].proc->isValid())
 		(*_opcodes[i].proc)();
 	else {
@@ -1135,6 +1181,10 @@ void ScummEngine::killAllScriptsExceptCurrent() {
 }
 
 void ScummEngine::doSentence(int verb, int objectA, int objectB) {
+	// JEV HARNESS: log every sentence (verb, object A, object B). Without this the only way to
+	// know what a click or a verb-coin drag actually asked for was guessing.
+	if (getenv("JEV_NO_DEBUGGER"))
+		hdPrintf("JEV SENTENCE: verb=%d a=%d b=%d room=%d", verb, objectA, objectB, _currentRoom);
 	SentenceTab *st;
 
 	if (_game.version >= 7) {
