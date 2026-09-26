@@ -330,6 +330,39 @@ int HdCostumeManager::preloadCostumeRange(int akosId, int from, int to) {
 	return loaded;
 }
 
+bool HdCostumeManager::getRowSpans(int akosId, int frame, const uint16 **first,
+                                   const uint16 **last, int *rows) const {
+	*first = nullptr;
+	*last = nullptr;
+	*rows = 0;
+	if (!_enabled || !_akosSubs.contains(akosId))
+		return false;
+	for (Common::List<int>::const_iterator si = _akosSubs[akosId].begin(); si != _akosSubs[akosId].end(); ++si) {
+		int loadFrame = frame;
+		if (!_availableCostumes.contains(CostumeKey{akosId, *si, frame})) {
+			const uint64 maxKey = ((uint64)(uint32)akosId << 32) | (uint32)*si;
+			Common::HashMap<uint64, int>::const_iterator mfc = _maxFrameCache.find(maxKey);
+			int maxFrame = (mfc != _maxFrameCache.end()) ? mfc->_value : -1;
+			if (maxFrame >= 0)
+				loadFrame = frame % (maxFrame + 1);
+			else
+				continue;
+		}
+		CostumeKey key;
+		key.akosId = akosId;
+		key.akosSub = *si;
+		key.frame = loadFrame;
+		Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::const_iterator it = _textureCache.find(key);
+		if (it == _textureCache.end() || it->_value.rowFirst.empty())
+			continue;
+		*first = it->_value.rowFirst.begin();
+		*last = it->_value.rowLast.begin();
+		*rows = (int)it->_value.rowFirst.size();
+		return true;
+	}
+	return false;
+}
+
 bool HdCostumeManager::isFrameCached(int akosId, int frame) const {
 	for (Common::HashMap<int, Common::List<int>>::const_iterator it = _akosSubs.begin(); it != _akosSubs.end(); ++it) {
 		if (it->_key != akosId)
@@ -395,7 +428,35 @@ int HdCostumeManager::preloadNext(int akosId) {
 	return 0;
 }
 
-bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest) {
+// Erste und letzte Spalte mit Deckung je Zeile bestimmen. Reine Kosten beim Laden,
+// dafuer spart das Zeichnen danach die durchsichtigen Raender jeder Zeile.
+static void hdComputeRowSpans(const Graphics::Surface &surf, Common::Array<uint16> &first, Common::Array<uint16> &last) {
+	first.clear();
+	last.clear();
+	if (surf.w <= 0 || surf.h <= 0 || !surf.getPixels())
+		return;
+	first.resize(surf.h);
+	last.resize(surf.h);
+	const bool hasAlpha = surf.format.bytesPerPixel == 4;
+	for (int y = 0; y < surf.h; y++) {
+		const uint32 *row = (const uint32 *)surf.getBasePtr(0, y);
+		int f = -1, l = -2;
+		for (int x = 0; x < surf.w; x++) {
+			uint32 pix = row[x];
+			uint8 a = hasAlpha ? (uint8)((pix >> 24) & 0xFF) : 255;
+			if (a > 0) {
+				if (f < 0)
+					f = x;
+				l = x;
+			}
+		}
+		first[y] = (uint16)(f < 0 ? 1 : f);
+		last[y] = (uint16)(f < 0 ? 0 : l);
+	}
+}
+
+bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest,
+                                   const Graphics::Surface **cachedOut) {
 	if (!_enabled)
 		return false;
 
@@ -438,8 +499,14 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		// Check cache first
 		Common::HashMap<CostumeKey, TextureCacheEntry, CostumeKeyHash>::iterator cacheIt = _textureCache.find(key);
 		if (cacheIt != _textureCache.end()) {
-			dest.copyFrom(cacheIt->_value.surface);
 			cacheIt->_value.lastUsed = ++_lruCounter;
+			// Wer nur zeichnen will, bekommt den Zeiger auf die Flaeche im Cache und
+			// spart sich die Kopie. Vorher wurde hier bei jedem Treffer kopiert.
+			if (cachedOut) {
+				*cachedOut = &cacheIt->_value.surface;
+				return true;
+			}
+			dest.copyFrom(cacheIt->_value.surface);
 			return true;
 		}
 
@@ -451,6 +518,7 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		TextureCacheEntry entry;
 		entry.surface.copyFrom(surf);
 		entry.lastUsed = ++_lruCounter;
+		hdComputeRowSpans(entry.surface, entry.rowFirst, entry.rowLast);
 		_textureCache[key] = entry;
 		dest.copyFrom(surf);
 		surf.free();

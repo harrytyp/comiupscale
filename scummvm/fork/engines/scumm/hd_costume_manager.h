@@ -54,13 +54,25 @@ public:
 	bool hasCostume(int akosId, int frame) const;
 
 	/**
-	 * Load an HD costume frame for the given akosId and frame (searches all subs).
-	 * The surface will be in RGBA8888 format if alpha exists,
-	 * or RGB888 if no alpha channel.
-	 * Returns true on success.
+	 * Laedt ein Einzelbild einer Figur.
+	 * Die Flaeche ist RGBA8888 wenn Alpha vorhanden ist, sonst RGB888.
+	 *
+	 * Bei einem Treffer im Zwischenspeicher wird die zwischengespeicherte Flaeche
+	 * normalerweise nach dest kopiert. Wer nur zeichnen will, kann stattdessen
+	 * cachedOut uebergeben: dann zeigt der Zeiger auf die Flaeche im Cache und die
+	 * Kopie entfaellt. Der Zeiger gilt nur innerhalb des laufenden Bildes, solange
+	 * kein weiteres loadCostume dazwischenkommt. Der Cache hat ein Budget von 1,5 GB
+	 * und verdraengt in der Praxis nichts.
 	 */
-	bool loadCostume(int akosId, int frame, Graphics::Surface &dest);
+	bool loadCostume(int akosId, int frame, Graphics::Surface &dest,
+	                 const Graphics::Surface **cachedOut = nullptr);
 	bool isFrameCached(int akosId, int frame) const;
+	/**
+	 * Liefert je Quellzeile die erste und letzte Spalte mit Deckung.
+	 * Die Zeiger zeigen in den Cache und gelten nur, solange der Eintrag dort liegt.
+	 * Leere Zeilen haben first > last.
+	 */
+	bool getRowSpans(int akosId, int frame, const uint16 **first, const uint16 **last, int *rows) const;
 	int preloadNext(int akosId);
 
 	/** Load all uncached frames of a costume in [from..to] (wraps via
@@ -91,6 +103,14 @@ private:
 	struct TextureCacheEntry {
 		Graphics::Surface surface;
 		int lastUsed;
+		// Erste und letzte Spalte mit Deckung je Quellzeile, einmal beim Laden bestimmt.
+		// Eine leere Zeile wird als first=1, last=0 abgelegt, also first > last.
+		// ACHTUNG: zurzeit nur vorbereitet, der Zeichenweg nutzt sie noch nicht. Der
+		// Versuch, damit die durchsichtigen Raender zu ueberspringen, liess auch die
+		// Wiederherstellung des HD-Hintergrunds ausfallen, wodurch 8-Bit-Reste
+		// durchgeschienen waeren. Erst nutzen, wenn das mitgezogen ist.
+		Common::Array<uint16> rowFirst;
+		Common::Array<uint16> rowLast;
 	};
 
 	ScummEngine *_vm;

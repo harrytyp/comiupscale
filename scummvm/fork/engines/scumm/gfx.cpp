@@ -543,7 +543,13 @@ void ScummEngine::markRectAsDirty(VirtScreenNumber virt, int left, int right, in
  * graphics to the actual display, as needed. In addition, the 'shaking'
  * code in the backend is controlled from here.
  */
+// Zeitpunkt, an dem das aktuelle Bild begonnen hat. Wird von drawDirtyScreenParts()
+// gesetzt, damit die Texturvorladung nur die Restzeit des Bildes benutzen kann.
+static uint32 g_hdFrameStartMs = 0;
+static inline void hdNoteFrameStart() { g_hdFrameStartMs = g_system->getMillis(); }
+
 void ScummEngine::drawDirtyScreenParts() {
+	hdNoteFrameStart();
 	// Update verbs
 	updateDirtyScreen(kVerbVirtScreen);
 
@@ -1712,12 +1718,13 @@ void ScummEngine::renderHDComposite() {
 			if (_hdObjectManager && _hdObjectManager->isEnabled())
 				prewarmObjs = _hdObjectManager->preloadRoom(_currentRoom);
 
-			// Costumes: preload the CURRENT cels of visible actors plus
-			// the next ~30 frames of their playing animation — enough to
-			// cover the room's intro animation without decoding all 25k
-			// frames (v1 mistake). The per-frame prefetch fills in any
-			// gaps afterwards; the budget cache keeps it all resident,
-			// so switching back to this room costs nothing.
+			// Costumes: preload the CURRENT cels of visible actors plus a
+			// short head start on the playing animation. The per-frame
+			// prefetch fills the rest in; the budget cache keeps it all
+			// resident, so switching back to this room costs nothing.
+			// Der Vorlauf war 30 Bilder je Figur und damit der Grund fuer die
+			// gemessenen Ruckler von 300 bis 700 ms beim Raumwechsel: 142 Bilder
+			// wurden dort in einem einzigen Bild dekodiert. Jetzt sind es 8.
 			int prewarmCostumes = 0;
 			if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 				Graphics::Surface tmpSurf;
@@ -1737,7 +1744,7 @@ void ScummEngine::renderHDComposite() {
 							prewarmCostumes++;
 						}
 					}
-					prewarmCostumes += _hdCostumeManager->preloadCostumeRange(a->_costume, maxCel + 1, maxCel + 30);
+					prewarmCostumes += _hdCostumeManager->preloadCostumeRange(a->_costume, maxCel + 1, maxCel + 8);
 				}
 			}
 			if (prewarmObjs || prewarmCostumes)
@@ -2246,14 +2253,19 @@ void ScummEngine::renderHDComposite() {
 			int ai = entries[ei].ai;
 			int cel = entries[ei].cel;
 
-			Graphics::Surface hdCostumeSurf;
-			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeSurf))
+			Graphics::Surface hdCostumeScratch;
+			const Graphics::Surface *hdCostumeSurfPtr = nullptr;
+			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeScratch, &hdCostumeSurfPtr))
 				continue;
+			// Bei einem Treffer im Cache zeigt hdCostumeSurfPtr direkt auf die
+			// zwischengespeicherte Flaeche. Nur die eigene Kopie darf freigegeben werden.
+			const bool hdCostumeOwn = (hdCostumeSurfPtr == nullptr);
+			const Graphics::Surface &hdCostumeSurf = hdCostumeOwn ? hdCostumeScratch : *hdCostumeSurfPtr;
 
 			// Validate surface
 			if (hdCostumeSurf.w <= 0 || hdCostumeSurf.h <= 0 ||
 				hdCostumeSurf.format.bytesPerPixel != 4) {
-				hdCostumeSurf.free();
+				if (hdCostumeOwn) hdCostumeScratch.free();
 				continue;
 			}
 
@@ -2280,7 +2292,7 @@ void ScummEngine::renderHDComposite() {
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
 			if (hdCX <= 0 && hdCY <= 0) {
-				hdCostumeSurf.free();
+				if (hdCostumeOwn) hdCostumeScratch.free();
 				continue;
 			}
 
@@ -2302,7 +2314,7 @@ void ScummEngine::renderHDComposite() {
 				warning("hd_trace: costume %04d frame %d off-screen (pos=%d,%d surf=%dx%d blit=%dx%d)",
 					a->_costume, a->_frame, (int)hdCX, (int)hdCY,
 					hdCostumeSurf.w, hdCostumeSurf.h, blitW, blitH);
-				hdCostumeSurf.free();
+				if (hdCostumeOwn) hdCostumeScratch.free();
 				continue;
 			}
 
@@ -2383,7 +2395,7 @@ void ScummEngine::renderHDComposite() {
 				}
 			}
 
-			hdCostumeSurf.free();
+			if (hdCostumeOwn) hdCostumeScratch.free();
 		}
 		if (_hdFrameCount % 30 == 0)
 			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
@@ -2922,9 +2934,17 @@ void ScummEngine::renderHDComposite() {
 	// Priority 3 (leftover time): lazy object queue (other rooms).
 	// Hard time slice: at most ~12 ms per frame — when nothing needs
 	// loading the whole block costs only a few cache lookups.
+	uint32 hdPfT0 = g_system->getMillis();
 	{
 		uint32 pfStart = _system->getMillis();
-		const uint32 pfSliceMs = 12;
+		// Nur die Restzeit des Bildes benutzen. Ziel sind 33 ms je Bild, also 30 Bilder je
+		// Sekunde. Vorher stand hier ein festes Budget von 12 ms, gemessen waren es aber
+		// 21 bis 34 ms, weil ein begonnener Ladevorgang nicht mehr abbricht. Unter Last
+		// gibt die Vorladung damit nach, in ruhigen Bildern holt sie auf. Fehlende
+		// Texturen laedt der Zeichenweg weiterhin selbst nach, es geht also nichts verloren.
+		const uint32 hdFrameTargetMs = 33;
+		uint32 hdFrameUsed = _system->getMillis() - g_hdFrameStartMs;
+		const uint32 pfSliceMs = hdFrameUsed < hdFrameTargetMs ? (hdFrameTargetMs - hdFrameUsed) : 0;
 		bool pfBudget = true;
 		if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
 			for (int ai = 0; ai < _numActors && pfBudget; ai++) {
@@ -2962,6 +2982,17 @@ void ScummEngine::renderHDComposite() {
 				budget--;
 			}
 		}
+	}
+	// Eigenanteil der Vorladung an der Bildzeit, damit sie nicht im Composite verschwindet.
+	{
+		uint32 pfT = g_system->getMillis() - hdPfT0;
+		static uint32 hdPfSum = 0, hdPfMax = 0, hdPfN = 0;
+		hdPfSum += pfT;
+		hdPfN++;
+		if (pfT > hdPfMax) hdPfMax = pfT;
+		if (hdPfN % 30 == 0)
+			hdPrintf("hdperf: vorladung %u ms im Schnitt, max %u ms (%u Bilder)",
+			         hdPfSum / hdPfN, hdPfMax, hdPfN);
 	}
 }
 
