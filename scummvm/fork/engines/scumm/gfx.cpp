@@ -2310,14 +2310,26 @@ void ScummEngine::renderHDComposite() {
 			if (_hdFrameCount % 30 == 0)
 				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
 					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
+			// Quellspalten einmal je Bild berechnen statt je Bildpunkt. Vorher lief hier
+			// (srcOffX + ox) * 255 / sclX pro Pixel, bei einem 200x300-Bild also 60000
+			// Divisionen je Einzelbild und Figur. Der Zeiger auf die Zielzeile wird
+			// ebenfalls einmal geholt und dann über den Zeilenabstand weitergezählt.
+			Common::Array<int> srcCols;
+			srcCols.resize(blitW);
+			for (int ox = 0; ox < blitW; ox++) {
+				int sx = MIN(hdCostumeSurf.w - 1, (srcOffX + ox) * 255 / sclX);
+				if (mirror)
+					sx = hdCostumeSurf.w - 1 - sx;
+				srcCols[ox] = sx;
+			}
+			const int hdDstStride = _hdComposite.pitch / 4;
+			uint32 *hdDstBase = (uint32 *)_hdComposite.getBasePtr(blitX, blitY);
 			for (int oy = 0; oy < blitH; oy++) {
 				int srcY = MIN(hdCostumeSurf.h - 1, (srcOffY + oy) * 255 / sclY);
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(0, srcY);
-				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(blitX, blitY + oy);
+				uint32 *dstRow = hdDstBase + oy * hdDstStride;
 				for (int ox = 0; ox < blitW; ox++) {
-					int srcX = MIN(hdCostumeSurf.w - 1, (srcOffX + ox) * 255 / sclX);
-					if (mirror)
-						srcX = hdCostumeSurf.w - 1 - srcX;
+					int srcX = srcCols[ox];
 					uint32 pix = srcRow[srcX];
 					uint8 alpha = (pix >> 24) & 0xFF;
 					int maskX = blitX + ox;
