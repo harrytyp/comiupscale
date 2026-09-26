@@ -82,7 +82,14 @@ if not os.path.isfile(MODEL_PATH):
         "Download: https://github.com/xinntao/Real-ESRGAN/releases  (Ordner models/ im Projekt)\n"
         "Alternativ COMI_MODEL_PATH setzen." % (MODEL_PATH, MODEL_NAME))
 print("Loading RealESRGAN %s from %s" % (MODEL_NAME, MODEL_PATH))
-model = RRDBNet(num_in_ch=3, num_out_ch=3, scale=4, num_feat=64, num_block=6, num_grow_ch=32)
+# Die Blockzahl gehoert zur jeweiligen Gewichtung. Die NCNN-Auslieferung bringt beide Modelle mit:
+# realesrgan-x4plus (23 Bloecke, fuer Fotos und flaechige Grafik) und realesrgan-x4plus-anime
+# (6 Bloecke, fuer Zeichentrick). Falsche Blockzahl = Ladeabbruch, deshalb hier fest zugeordnet.
+MODEL_BLOCKS = {"RealESRGAN_x4plus_anime_6B": 6, "RealESRGAN_x4plus": 23}
+num_block = MODEL_BLOCKS.get(MODEL_NAME)
+if num_block is None:
+    raise SystemExit("Unbekanntes Modell %s. Bekannt: %s" % (MODEL_NAME, ", ".join(sorted(MODEL_BLOCKS))))
+model = RRDBNet(num_in_ch=3, num_out_ch=3, scale=4, num_feat=64, num_block=num_block, num_grow_ch=32)
 state = torch.load(MODEL_PATH, map_location='cpu', weights_only=True)
 if 'params_ema' in state:
     state = state['params_ema']
@@ -173,17 +180,26 @@ def read_with_mask(input_path, forced_mask_index=None):
     return img, alpha, False
 
 
-def inpaint_mask_colour(rgb, mask_binary):
+def inpaint_mask_colour(rgb, mask_binary, mode=None):
     """Die Maskenfarbe vor dem Skalieren entfernen: sonst zieht der Upscaler sie als Saum ins
     Motiv hinein, genau der Magenta- und Gruensaum, der bisher von Hand nachgefuellt wurde.
 
-    Gefuellt wird mit dem *naechsten Randpixel* des Motivs, nicht mit einem Mittelwert:
-    cv2.inpaint mittelt die Nachbarschaft und erzeugt damit einen fremden hellen Saum, den der
-    Upscaler anschliessend als Heiligenschein ins Motiv zieht (im Vergleich sichtbar).
+    Zwei Fuellungen, weil die Flaeche entscheidet (gemessen 2026-09-26):
+
+    - "nearest" (Vorgabe): jeder Maskenpixel bekommt die Farbe des *naechsten Randpixels*.
+      Richtig fuer duenne Maskenraender, wie sie die Objekttexturen haben. cv2.inpaint mittelt
+      dort die Nachbarschaft und erzeugt einen fremden hellen Saum, den der Upscaler
+      anschliessend als Heiligenschein ins Motiv zieht (im Vergleich sichtbar).
+    - "smooth": cv2.inpaint (TELEA). Richtig fuer grosse Maskenflaechen, wie die Leinwandmaske
+      der Objektebenen. Der Randpixel-Weg erzeugt dort harte Farbstufen, die das Netz in weisse
+      Stoerpixel verwandelt (im Vergleich sichtbar).
     """
+    mode = mode or os.environ.get("COMI_FILL_MODE", "nearest")
     holes = (mask_binary > 0)
     if not holes.any() or holes.all():
         return rgb
+    if mode == "smooth":
+        return cv2.inpaint(rgb, (holes * 255).astype(np.uint8), 3, cv2.INPAINT_TELEA)
     dist, labels = cv2.distanceTransformWithLabels(
         (holes * 255).astype(np.uint8), cv2.DIST_L2, 3, labelType=cv2.DIST_LABEL_PIXEL)
     ys, xs = np.nonzero(~holes)
