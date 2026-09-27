@@ -1388,7 +1388,12 @@ void ScummEngine::renderHDComposite() {
 	// hochkanten Raeume 77, 79, 82 sind hoeher als der Bildschirm, hier fehlte die
 	// Achse bisher ganz: der HD-Hintergrund stand still, waehrend die Figuren
 	// darueber hinwegscrollten.
-	const int camY = (int)camera._cur.y * scale;
+	// Wichtig: der Wert bleibt null, wenn der Raum nicht hoeher ist als der Bildschirm.
+	// Sonst wuerden alle Stellen, die ihn benutzen, in normalen Raeumen aus falschen
+	// Zeilen lesen. Genau das hat der Pixelvergleich zunaechst als Abweichung von 8,7
+	// aufgedeckt.
+	const int camY = ((int)_roomHeight > _screenHeight)
+	                 ? (int)camera._cur.y * scale : 0;
 
 	if (_hdFrameCount % 30 == 0)
 		hdPrintf("hdgeom: scale=%d camX=%d camY=%d bg=%dx%d room=%dx%d comp=%dx%d xstart=%d",
@@ -1453,6 +1458,9 @@ void ScummEngine::renderHDComposite() {
 	// als Vordergrund und die 8-Bit-Ebene malt den ganzen HD-Hintergrund zu (Raum 25 wird auf
 	// xstart 344 betreten, die Referenz entstand bei 0). Deshalb hier auf den aktuellen
 	// Ausschnitt nachziehen, bevor verglichen wird.
+	// Senkrecht gibt es hier bewusst nichts. Ein Verwerfen der Referenz bei jeder senkrechten
+	// Kamerabewegung hat den Heap beschaedigt und Raum 77 mit "munmap_chunk: invalid pointer"
+	// zum Absturz gebracht, ohne das eigentliche Problem zu loesen. Siehe Issue 26.
 	if (_hdCleanValid && _hdCleanXStart >= 0 && _hdCleanXStart != (int)vs->xstart)
 		hdShiftCleanBackground(vs->xstart - _hdCleanXStart);
 
@@ -1862,8 +1870,14 @@ void ScummEngine::renderHDComposite() {
 			// strips, i.e. relative to _screenStartStrip); the blast-cache
 			// override for inventory FLOBJs is already screen based. Convert
 			// both to HD viewport coordinates.
+			// Senkrecht muss die Kamera ebenso abgezogen werden. Vorher fehlte das,
+			// weshalb in senkrecht scrollenden Raeumen jedes Objekt auf seiner
+			// Raumzeile stand und mit der Kamera durchs Bild wanderte (die Fahne in
+			// den Schiffskampfkarten). Nur wenn der Raum hoeher ist als der
+			// Bildschirm, sonst bleibt es bei der alten Rechnung.
+			int camYSd = ((int)_roomHeight > _screenHeight) ? (int)camera._cur.y : 0;
 			int xPos = (blastX >= 0) ? blastX : od.x_pos - vs->xstart;
-			int yPos = (blastY >= 0) ? blastY : od.y_pos;
+			int yPos = (blastY >= 0) ? blastY : od.y_pos - camYSd;
 			int64 hdX = (int64)xPos * hdW / MAX(1, visW);
 			int64 hdY = (int64)yPos * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
@@ -2281,7 +2295,11 @@ void ScummEngine::renderHDComposite() {
 			// Use per-limb drawing position from the entry
 			Common::Point actorPos = a->getPos();
 			int drawX = actorPos.x - vs->xstart;
-			int drawY = actorPos.y - a->getElevation();
+			// Senkrecht gilt dasselbe wie fuer Objekte: in Raeumen, die hoeher sind als
+			// der Bildschirm, muss der Kameraversatz abgezogen werden, sonst bleibt die
+			// Figur stehen, waehrend der Hintergrund an ihr vorbeifaehrt.
+			int drawY = actorPos.y - a->getElevation()
+			          - (((int)_roomHeight > _screenHeight) ? (int)camera._cur.y : 0);
 			// Apply facing direction: in 8-bit, paintCelByleRLECommon negates
 			// xMoveCur when !_drawActorToRight, then compData.x += xMoveCur.
 			// This means: facing right → screenX = actorX + xMoveCur
@@ -2383,7 +2401,11 @@ void ScummEngine::renderHDComposite() {
 								// Nothing behind → restore HD background
 								int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
 								int bgRX = MIN(maskX + camX, _hdBackgroundSurface.w - 1);
-								const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(bgRX, maskY);
+								// Senkrecht gehoert der Kameraversatz ebenfalls dazu. Ohne ihn
+								// wird der Ozean aus einer ganz anderen Zeile zurueckgeholt und
+								// um das Boot herum erscheint ein Rechteck mit anderem Wasser.
+								int bgRY = MIN(MAX(0, maskY + camY), _hdBackgroundSurface.h - 1);
+								const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(bgRX, bgRY);
 								uint8 bgR = bgRowRaw[0], bgG = bgRowRaw[1], bgB = bgRowRaw[2];
 								dstRow[ox] = bgR | (bgG << 8) | (bgB << 16) | (0xFF << 24);
 								hdAlphaMask[maskY * hdW + maskX] = 1;
