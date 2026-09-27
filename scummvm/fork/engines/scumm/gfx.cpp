@@ -1971,7 +1971,14 @@ void ScummEngine::renderHDComposite() {
 				// visible pixels when the inventory overlay is open. When closed,
 				// the cursor is drawn by the hardware/software cursor, not in the
 				// 8-bit composite at (0,0). This is the most reliable binary signal.
-				if (od.obj_nr == 105 && od.fl_object_index != 0 && visiblePixels > 100) {
+				// Robustere Erkennung: die Sichtbarkeit des Inventarobjekts selbst statt
+				// die des Cursors. Das Cursorobjekt ist auch in Raumbildern sichtbar, in
+				// denen das Inventar geschlossen ist, und hat dort fast alle seine Pixel
+				// (gemessen 4448 von 4480 in den Schiffskampfkarten), womit die alte
+				// Schwelle von 100 sofort griff und das Inventar ungewollt gezeichnet wurde.
+				// Geschlossen hat das Inventarobjekt gemessen 640 sichtbare Pixel, offen
+				// mehrere Hunderttausend, deshalb ist ein Viertel seiner Flaeche eindeutig.
+				if (od.obj_nr == 114 && od.fl_object_index != 0 && visiblePixels > sw * sh / 4) {
 					inventoryActive = true;
 					// One-shot dump of ALL objects when inventory first opens
 					{
