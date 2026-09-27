@@ -20,7 +20,7 @@ cd "$REPO/release/linux" || exit 1
 for R in $ROOMS; do
   rm -f /tmp/hd_scan/*.ppm hd_state.log 2>/dev/null
   HD_SCROLL_TEST=1 HD_AUTO_SHOTS=1 timeout 18 "$BIN" \
-    --config=scummvm.ini --path=game --boot-param=$R comi > /dev/null 2>&1
+    --config=scummvm_video.ini --path=game --boot-param=$R comi > /dev/null 2>&1
   n=0
   for f in /tmp/hd_scan/*_raum${R}_*.ppm; do
     [ -f "$f" ] || continue
