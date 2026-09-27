@@ -1383,6 +1383,24 @@ void ScummEngine::renderHDComposite() {
 	int visH = _screenHeight;
 	hdW = visW * scale;
 	hdH = visH * scale;
+	// Kamerafahrt fuer die Videoaufnahme. Muss vor der Berechnung von camX/camY stehen,
+	// sonst arbeitet die Komposition dieses Bildes noch mit dem alten Wert.
+	// Ohne HD_SCROLL_TEST passiert nichts, der Schwenk ist eine Testfahrt, kein Spielverhalten.
+	if (getenv("HD_SCROLL_TEST")) {
+		static int panFrame = 0;
+		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
+		int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
+		if (panFrame < 200) {
+			// Waagerecht uebernimmt setCameraAt den Wert (camera.cpp:246). Senkrecht nicht:
+			// im Verfolgungsmodus setzt die Kamera sich auf die Position der Figur
+			// (camera.cpp:307) und ueberschreibt den Aufruf. Deshalb dort direkt setzen,
+			// begrenzt auf den Raum, sonst laeuft der Wert aus dem Hintergrund heraus.
+			setCameraAt(MIN(maxCam, (panFrame * 4) + 100), camera._cur.y);
+			if (maxCamY > 0)
+				camera._cur.y = camera._dest.y = MIN(maxCamY, (panFrame * 4) + 100);
+			panFrame++;
+		}
+	}
 	const int camX = vs->xstart * scale;	// camera offset in HD pixels
 	// Vertikaler Kameraversatz. Die Schiffskampfkarten (Raeume 40 bis 43) und die
 	// hochkanten Raeume 77, 79, 82 sind hoeher als der Bildschirm, hier fehlte die
@@ -2797,21 +2815,7 @@ void ScummEngine::renderHDComposite() {
 		        _screenWidth, _screenHeight, _hdComposite.w,
 		        getenv("HD_AUTO_SHOTS") ? 1 : 0);
 	// Debug: fuer die Videoaufnahme einen gleichmaessigen Schwenk ueber den Kameraweg fahren.
-	// Ohne HD_SCROLL_TEST passiert nichts. Der Schwenk ist eine Testfahrt, kein Spielverhalten.
-	if (getenv("HD_SCROLL_TEST") && _hdBackgroundSurface.w > _screenWidth) {
-		static int panFrame = 0;
-		// Waagerecht und, bei Raeumen die hoeher sind als der Bildschirm, gleichzeitig
-		// senkrecht fahren. Nacheinander geht nicht: ein Lauf dauert nur wenige Sekunden,
-		// die Aufnahme endet vor dem zweiten Durchgang.
-		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
-		int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
-		if (panFrame < 200) {
-			int target = MIN(maxCam, (panFrame * 4) + 100);
-			int targetY = maxCamY > 0 ? MIN(maxCamY, (panFrame * 4) + 100) : _screenHeight / 2;
-			setCameraAt(target, targetY);
-			panFrame++;
-		}
-	}
+	// Kamerafahrt fuer die Videoaufnahme liegt jetzt oben bei der Berechnung von camX/camY.
 	// Debug: die geladene Hintergrundflaeche einmal ablegen, um zu sehen, welche Datei die
 	// Engine fuer den Raum wirklich haelt (nur mit HD_DUMP_BG=1).
 	if (getenv("HD_DUMP_BG")) {
