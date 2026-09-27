@@ -320,20 +320,24 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
-				// The HD pack upscales the FULL room image by an integer factor,
-				// so the scale is bg/room, never bg/screen: for the scrolling
-				// room 14 the old formula gave 5984/640 = 9 instead of 4, which
-				// made every HD sprite ~2.35x too large (Issue #20).
-				// Using the minimum of both ratios also covers rooms taller than
-				// the screen (77, 79, 82): their background is 4x the room in both
-				// directions, but bgHeight/screenHeight alone gave 8 or 17.
-				// Both operands are available here, unlike _roomWidth, which is
-				// only known after setupRoomSubBlocks().
-				_hdScale = MAX(1, MIN(_hdBackgroundSurface.w / MAX(1, _screenWidth),
-				                      _hdBackgroundSurface.h / MAX(1, _screenHeight)));
+				// The HD pack upscales the FULL room image by an integer factor, so the
+				// scale is bg/room, never bg/screen. For the scrolling room 14 the old
+				// formula gave 5984/640 = 9 instead of 4 (Issue #20), and against the
+				// screen the ship combat maps (rooms 40-43) came out as 4800/640 = 7
+				// instead of 4, which blew the composite up to 4480x3360 and crashed
+				// room 40. Deriving it against the screen height alone gave 8 or 17 for
+				// the tall rooms 77, 79, 82.
+				// _roomWidth/_roomHeight are the right quantity and ARE available here:
+				// setupRoomSubBlocks() runs earlier in this function, the comment that
+				// claimed otherwise was wrong. The source art of the ship combat maps
+				// is 48 columns narrower than the room, so round rather than truncate:
+				// 4800/1248 then gives 4 instead of 3.
+				const int roomW = MAX(1, (int)_roomWidth);
+				_hdScale = MAX(1, (int)((_hdBackgroundSurface.w + roomW / 2) / roomW));
 				_hdAssetManager->setScale(_hdScale);
-				warning("HD: loaded bg for room %d (%dx%d) scale=%d", room,
-					_hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale);
+				warning("HD: loaded bg for room %d (%dx%d) scale=%d (room %dx%d)",
+					room, _hdBackgroundSurface.w, _hdBackgroundSurface.h, _hdScale,
+					(int)_roomWidth, (int)_roomHeight);
 			}
 		} else {
 			warning("HD: no bg for room %d", room);

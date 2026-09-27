@@ -1384,10 +1384,15 @@ void ScummEngine::renderHDComposite() {
 	hdW = visW * scale;
 	hdH = visH * scale;
 	const int camX = vs->xstart * scale;	// camera offset in HD pixels
+	// Vertikaler Kameraversatz. Die Schiffskampfkarten (Raeume 40 bis 43) und die
+	// hochkanten Raeume 77, 79, 82 sind hoeher als der Bildschirm, hier fehlte die
+	// Achse bisher ganz: der HD-Hintergrund stand still, waehrend die Figuren
+	// darueber hinwegscrollten.
+	const int camY = (int)camera._cur.y * scale;
 
 	if (_hdFrameCount % 30 == 0)
-		hdPrintf("hdgeom: scale=%d camX=%d bg=%dx%d room=%dx%d comp=%dx%d xstart=%d",
-			scale, camX, (int)_hdBackgroundSurface.w, (int)_hdBackgroundSurface.h,
+		hdPrintf("hdgeom: scale=%d camX=%d camY=%d bg=%dx%d room=%dx%d comp=%dx%d xstart=%d",
+			scale, camX, camY, (int)_hdBackgroundSurface.w, (int)_hdBackgroundSurface.h,
 			(int)_roomWidth, (int)_roomHeight, hdW, hdH, (int)vs->xstart);
 
 	if (visW <= 0 || visH <= 0)
@@ -1410,11 +1415,15 @@ void ScummEngine::renderHDComposite() {
 	// offset by the camera, destination is always x=0 of the HD viewport.
 	int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
 	int srcBgX = MIN(camX, MAX(0, _hdBackgroundSurface.w - hdW));
+	int srcBgY = MIN(camY, MAX(0, _hdBackgroundSurface.h - hdH));
 	uint32 hdT0 = g_system->getMillis();
 	static uint32 hdT1Sum = 0, hdT2Sum = 0, hdFrameN = 0;
 	static uint32 hdT1Max = 0, hdT2Max = 0;
-	for (int y = 0; y < _hdBackgroundSurface.h && y < hdH; y++) {
-		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(srcBgX, y);
+	for (int y = 0; y < hdH; y++) {
+		const int sy = srcBgY + y;
+		if (sy >= _hdBackgroundSurface.h)
+			break;
+		const byte *src = (const byte *)_hdBackgroundSurface.getBasePtr(srcBgX, sy);
 		uint32 *dst = (uint32 *)_hdComposite.getBasePtr(0, y);
 		if (bgBpp == 4) {
 			// Fast path: RGBA → RGBA (no conversion needed)
@@ -2769,10 +2778,15 @@ void ScummEngine::renderHDComposite() {
 	// Ohne HD_SCROLL_TEST passiert nichts. Der Schwenk ist eine Testfahrt, kein Spielverhalten.
 	if (getenv("HD_SCROLL_TEST") && _hdBackgroundSurface.w > _screenWidth) {
 		static int panFrame = 0;
+		// Waagerecht und, bei Raeumen die hoeher sind als der Bildschirm, gleichzeitig
+		// senkrecht fahren. Nacheinander geht nicht: ein Lauf dauert nur wenige Sekunden,
+		// die Aufnahme endet vor dem zweiten Durchgang.
 		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
+		int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
 		if (panFrame < 200) {
 			int target = MIN(maxCam, (panFrame * 4) + 100);
-			setCameraAt(target, _screenHeight / 2);
+			int targetY = maxCamY > 0 ? MIN(maxCamY, (panFrame * 4) + 100) : _screenHeight / 2;
+			setCameraAt(target, targetY);
 			panFrame++;
 		}
 	}
