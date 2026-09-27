@@ -42,13 +42,16 @@ for line in open(os.path.join(OUT, "sweep.csv"), errors="replace"):
         rows.append((room, "kein HD-Zwischenstand erzeugt", None, camX, bgw)); continue
     d = load_ppm(dump)
     a = np.array(Image.open(src[0]).convert("RGB")).astype(np.int16)
-    up = np.array(Image.fromarray(a.astype(np.uint8)).resize((a.shape[1] * 4, a.shape[0] * 4),
-                                                            Image.Resampling.NEAREST)).astype(np.int16)
-    h = min(d.shape[0], up.shape[0])
-    w = min(d.shape[1], up.shape[1])
-    x0 = 0 if camX is None else max(0, min(camX, up.shape[1] - w))
-    win = up[:h, x0:x0 + w]
-    dev = float(np.abs(d[:h, :w] - win).mean())
+    # Den HD-Stand auf Quellgroesse herunterrechnen. Ein Vergleich gegen das
+    # hochskalierte Quellbild wuerde nur den Upscaler messen, nicht fehlende Texturen.
+    dsd = np.array(Image.fromarray(d.astype(np.uint8)).resize(
+        (d.shape[1] // 4, d.shape[0] // 4),
+        Image.Resampling.BOX)).astype(np.int16)
+    h = min(dsd.shape[0], a.shape[0])
+    w = min(dsd.shape[1], a.shape[1])
+    x0 = 0 if camX is None else max(0, min(camX // 4, a.shape[1] - w))
+    win = a[:h, x0:x0 + w]
+    dev = float(np.abs(dsd[:h, :w] - win).mean())
     verdict = "ok" if dev < 25 else ("auffaellig" if dev < 60 else "FALSCH")
     rows.append((room, verdict, round(dev, 1), camX, bgw))
 
