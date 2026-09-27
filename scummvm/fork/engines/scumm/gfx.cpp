@@ -2019,23 +2019,22 @@ void ScummEngine::renderHDComposite() {
 				hdPrintf("LOAD obj=114(%s) pos=(%d,%d) hdPos=(%d,%d) sz=(%dx%d) surf=(%dx%d)",
 					name, od.x_pos, od.y_pos, (int)hdX, (int)hdY, od.width, od.height, (int)hdObjSurfPtr->w, (int)hdObjSurfPtr->h);
 			}
-			for (int oy = 0; oy < hdObjH; oy++) {
-				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, oy);
-				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
-				int maskY = (int)hdY + oy;
-				for (int ox = 0; ox < hdObjW; ox++) {
-					uint32 pix = srcRow[ox];
-					uint8 alpha = (pix >> 24) & 0xFF;
-					if (alpha >= 128) {
-						dstRow[ox] = pix;
-					}
+			// Auf den sichtbaren Teil begrenzen, wie beim Inventarpfad unten. Ohne das
+			// schreibt ein negativer Startpunkt ausserhalb der Komposition.
+			const int oy0 = MAX<int>(0, (int)hdY), oy1 = MIN<int>((int)hdH, (int)hdY + hdObjH);
+			const int ox0 = MAX<int>(0, (int)hdX), ox1 = MIN<int>((int)hdW, (int)hdX + hdObjW);
+			if (oy0 >= oy1 || ox0 >= ox1)
+				continue;
+			for (int my = oy0; my < oy1; my++) {
+				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, my - (int)hdY);
+				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
+				for (int mx = ox0; mx < ox1; mx++) {
+					uint32 pix = srcRow[mx - (int)hdX];
+					if (((pix >> 24) & 0xFF) >= 128)
+						dstRow[mx] = pix;
 					// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
 					// Cover ALL pixels within HD object bounding box, not just opaque.
-					// Transparent/empty areas of HD objects should still protect against
-					// 8-bit overlay artifacts and show what's behind them correctly.
-					int maskX = (int)hdX + ox;
-					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
-						hdAlphaMask[maskY * hdW + maskX] = 1;
+					hdAlphaMask[my * hdW + mx] = 1;
 				}
 			}
 
@@ -2123,17 +2122,22 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			}
 			step25b_loaded++;
-			for (int oy = 0; oy < hdObjH; oy++) {
-				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, oy);
-				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr((int)hdX, (int)hdY + oy);
-				int maskY = (int)hdY + oy;
-				for (int ox = 0; ox < hdObjW; ox++) {
-					uint32 pix = srcRow[ox];
+			// Auf den sichtbaren Teil begrenzen. Ein negativer Startpunkt schreibt sonst
+			// links beziehungsweise oberhalb der Komposition, und weder getBasePtr() noch
+			// dstRow[ox] pruefen die Grenzen: im Release-Build gibt es keinen Assert.
+			// Das war der Absturz in Raum 77 (Issue 26).
+			const int oy0 = MAX<int>(0, (int)hdY), oy1 = MIN<int>((int)hdH, (int)hdY + hdObjH);
+			const int ox0 = MAX<int>(0, (int)hdX), ox1 = MIN<int>((int)hdW, (int)hdX + hdObjW);
+			if (oy0 >= oy1 || ox0 >= ox1)
+				continue;
+			for (int my = oy0; my < oy1; my++) {
+				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(ox0 - (int)hdX, my - (int)hdY);
+				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
+				for (int mx = ox0; mx < ox1; mx++) {
+					uint32 pix = srcRow[mx - ox0];
 					if (((pix >> 24) & 0xFF) >= 128)
-						dstRow[ox] = pix;
-					int maskX = (int)hdX + ox;
-					if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH)
-						hdAlphaMask[maskY * hdW + maskX] = 1;
+						dstRow[mx] = pix;
+					hdAlphaMask[my * hdW + mx] = 1;
 				}
 			}
 			
