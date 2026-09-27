@@ -2329,6 +2329,15 @@ void ScummEngine::renderHDComposite() {
 			Actor *a = entries[ei].actor;
 			int ai = entries[ei].ai;
 			int cel = entries[ei].cel;
+			// Ein Schatten ist ein eigener Akteur mit gesetztem Schattenmodus (_shadowMode,
+			// per Skript gesetzt). Der 8-Bit-Zeichner wendet dafuer die Schattentabelle an
+			// und remappt die Farben des Untergrunds, deshalb ist seine Darstellung die
+			// richtige. Die HD-Textur enthaelt dagegen einen festen Braunwert aus dem Bild,
+			// aus dem sie extrahiert wurde, und wirkt auf jedem anderen Hintergrund falsch.
+			// Deshalb hier auslassen und die 8-Bit-Ebene darunter durchscheinen lassen.
+			// Siehe Issue 29.
+			if (a->_shadowMode != 0)
+				continue;
 
 			Graphics::Surface hdCostumeScratch;
 			const Graphics::Surface *hdCostumeSurfPtr = nullptr;
