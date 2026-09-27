@@ -640,6 +640,7 @@ public:
 	Common::HashMap<int, Common::Point> _inventoryHDPositions;
 	int _hdTestRoom = 0; // auto-warp to room on first load (set via hd_test_room config)
 	int _hdDebugDumpCount = 0; // set >0 to auto-dump at that frame
+	bool _hdInventoryOpen = false; // in der letzten Vollbildkomposition war das Inventar sichtbar
 	bool _hdScreenshotDone = false;
 
 	/** Central resource data. */

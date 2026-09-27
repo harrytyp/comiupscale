@@ -17,6 +17,14 @@ mkdir -p "$WORK"
 rm -f "$WORK"/*.ppm 2>/dev/null
 cd "$REPO/release/linux" || exit 1
 
+# Aufnahmekonfiguration ohne Harness-FIFO erzeugen.
+# scummvm.ini enthaelt jev_cmd_fifo=/tmp/jev_cmd, dadurch liest der Motor bei jedem Start
+# die Harness-Pipe. Fuer Aufnahmen ist das nicht gewollt, die Steuerung uebernimmt HD_SCROLL_TEST.
+CFG=scummvm_video.ini
+if [ ! -f "$CFG" ] || ! cmp -s <(grep -v '^jev_cmd_fifo=' scummvm.ini) "$CFG"; then
+  grep -v '^jev_cmd_fifo=' scummvm.ini > "$CFG"
+fi
+
 for R in $ROOMS; do
   rm -f /tmp/hd_scan/*.ppm hd_state.log 2>/dev/null
   HD_SCROLL_TEST=1 HD_AUTO_SHOTS=1 timeout 18 "$BIN" \

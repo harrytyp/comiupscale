@@ -1420,6 +1420,23 @@ void ScummEngine::renderHDComposite() {
 	// Ohne HD_SCROLL_TEST passiert nichts, der Schwenk ist eine Testfahrt, kein Spielverhalten.
 	if (getenv("HD_SCROLL_TEST")) {
 		static int panFrame = 0;
+		// In manchen Raeumen ist nach dem Raumsprung per boot-param die Oberflaeche
+		// offen, das Inventar wird dann mitgezeichnet. Ein Rechtsklick schaltet es in
+		// COMI um, deshalb wird es hier geschlossen, sobald es sichtbar wird. Der
+		// Motor selbst nutzt denselben Weg in seinem Debug-Pfad.
+		static int invClicks = 0;
+		static int invCooldown = 0;
+		if (invCooldown > 0) {
+			invCooldown--;
+		} else if (_hdInventoryOpen && invClicks < 20) {
+			invClicks++;
+			invCooldown = 12;
+			_userPut = 120;
+			_rightBtnPressed = 3;
+			_leftBtnPressed = 0;
+			_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
+		}
+		_hdInventoryOpen = false;
 		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
 		int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
 		if (panFrame < 200) {
@@ -2043,6 +2060,11 @@ void ScummEngine::renderHDComposite() {
 					int fli = od.fl_object_index;
 					if (fli >= 0 && fli < 8 && flCullState[fli] != 1) {
 						flCullState[fli] = 1;
+						// Das Inventarobjekt 114 ist geschlossen 640 Pixel gross und offen
+						// mehrere hunderttausend. Wird es gross gezeichnet, ist die
+						// Oberflaeche offen, das wird fuer den Aufnahmelauf gemerkt.
+						if (od.obj_nr == 114 && visiblePixels > 5000)
+							_hdInventoryOpen = true;
 						hdPrintf("RENDER obj=%d fl=%d visible=%d invActive=%d", od.obj_nr, fli, visiblePixels, inventoryActive ? 1 : 0);
 					}
 				}
