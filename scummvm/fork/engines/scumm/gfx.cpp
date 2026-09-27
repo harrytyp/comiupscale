@@ -2410,8 +2410,9 @@ void ScummEngine::renderHDComposite() {
 
 			step26_loaded++;
 			if (_hdFrameCount % 30 == 0)
-				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d",
-					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey);
+				hdPrintf("costume HIT: actor=%d costume=%04d cel=%d pos=(%d,%d) surf=%dx%d sort=%d scl=%d,%d blit=%dx%d",
+					ai, a->_costume, cel, (int)hdCX, (int)hdCY, hdCostumeSurf.w, hdCostumeSurf.h, entries[ei].sortKey,
+					sclX, sclY, blitW, blitH);
 			// Quellspalten einmal je Bild berechnen statt je Bildpunkt. Vorher lief hier
 			// (srcOffX + ox) * 255 / sclX pro Pixel, bei einem 200x300-Bild also 60000
 			// Divisionen je Einzelbild und Figur. Der Zeiger auf die Zielzeile wird
