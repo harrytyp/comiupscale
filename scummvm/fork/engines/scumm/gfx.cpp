@@ -1179,6 +1179,14 @@ void ScummEngine::redrawBGAreas() {
 
 	drawRoomObjects(val);
 	_bgNeedsRedraw = false;
+	// Die Referenz fuer die Vordergrundpruefung muss den Hintergrund samt den
+	// Raumobjekten enthalten. Sie entsteht sonst beim Neuzeichnen der Hintergrund-
+	// streifen, also vor diesem Aufruf. Die animierten Hintergrundteile, die das Spiel
+	// als Raumobjekte zeichnet, gelten dann in jedem Bild als Vordergrund und werden in
+	// 8-Bit ueber das HD-Bild gemalt: flackerndes Wasser, das Rechteck um das Boot in
+	// den Schiffskampfkarten und die zweite kleine Kopie in der Banjo-Szene.
+	// Figuren sind hier noch nicht gezeichnet, die bleiben also Vordergrund.
+	hdRefreshCleanBackground();
 }
 
 #ifdef ENABLE_HE
@@ -1312,6 +1320,30 @@ static void hdDumpStep(Graphics::Surface *surf, const char *name) {
 	char path[128];
 	snprintf(path, sizeof(path), "/tmp/hd_step_%s.ppm", name);
 	hdWriteCompositeShotScaled(surf, path, 2);
+}
+
+/**
+ * Refresh the clean 8-bit background reference from the current virt screen.
+ *
+ * Called after the room objects are drawn and before the actors, so the reference holds
+ * everything that belongs to the background, including the animation parts the game draws
+ * as room objects. What is drawn after this call, actors and blast effects, stays
+ * foreground and gets composited from the 8-bit layer on top of the HD background.
+ */
+void ScummEngine::hdRefreshCleanBackground() {
+	VirtScreen *vs = &_virtscr[kMainVirtScreen];
+	int visW = MIN<int>(_screenWidth, vs->w);
+	int visH = MIN<int>(_screenHeight, vs->h);
+	if (!_hdBackgroundSurface.getPixels() || !_hdCleanBackground.getPixels() || !_hdCleanValid ||
+	    _hdCleanBackground.w != visW || _hdCleanBackground.h != visH || visW <= 0 || visH <= 0)
+		return;
+	visW = MIN(visW, vs->w - vs->xstart);
+	if (visW <= 0)
+		return;
+	for (int y = 0; y < visH; y++)
+		memcpy(_hdCleanBackground.getBasePtr(0, y), vs->getBasePtr(vs->xstart, y), visW);
+	memset(_hdCleanValid, 1, (size_t)visW * visH);
+	_hdCleanXStart = vs->xstart;
 }
 
 void ScummEngine::hdShiftCleanBackground(int dx) {
