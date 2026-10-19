@@ -3204,6 +3204,43 @@ void ScummEngine::jevPollFifoVideo() {
 }
 
 void ScummEngine::scummLoop(int delta) {
+	// Raumwechsel auf dem Weg des Spiels (HD_JUMP_ROOM=<raum>). startScene fuehrt das
+	// Raumskript aus, deshalb stimmen Oberflaechensperre (SO_USERPUT_OFF) und die
+	// Sichtbarkeit der Akteure. Der Startparameter --boot-param springt dagegen mitten in
+	// den Raum, ohne dass das Skript je laeuft; dann wird Guybrush ueberall mitgeladen und
+	// die Oberflaeche bleibt sichtbar.
+	// Aufnahmelauf mit Spielstand: erst laden (oder einen anlegen), dann in den Raum
+	// wechseln. Damit laedt der Raum wie im Spiel, mit Raumskript, Oberflaechensperre und
+	// der Sichtbarkeit, die das Spiel dort setzt. Der Startparameter --boot-param springt
+	// dagegen mitten hinein, ohne dass das Skript laeuft.
+	{
+		static int frames = 0;
+		static int phase = 0;
+		++frames;
+		const char *loadSlot = getenv("HD_LOAD_SLOT");
+		const char *saveSlot = getenv("HD_SAVE_SLOT");
+		const char *jumpRoom = getenv("HD_JUMP_ROOM");
+		if (phase == 0 && frames >= 15) {
+			phase = 1;
+			if (loadSlot) {
+				const Common::Error res = loadGameState(atoi(loadSlot));
+				warning("hd_trace: HD_LOAD_SLOT=%s -> %d (room %d)", loadSlot, (int)res.getCode(), _currentRoom);
+			} else if (saveSlot) {
+				const Common::Error res = saveGameState(atoi(saveSlot), "hd-harness");
+				warning("hd_trace: HD_SAVE_SLOT=%s -> %d (room %d)", saveSlot, (int)res.getCode(), _currentRoom);
+			}
+		} else if (phase == 1 && frames >= 45 && jumpRoom) {
+			phase = 2;
+			const int room = atoi(jumpRoom);
+			if (room > 0 && VAR(VAR_EGO) < _numActors) {
+				_actors[VAR(VAR_EGO)]->_room = room;
+				_sound->stopAllSounds();
+				startScene(room, nullptr, 0);
+				warning("hd_trace: HD_JUMP_ROOM -> startScene(%d)", room);
+			}
+		}
+	}
+
 	// Notify the script about how much time has passed, in jiffies
 	if (VAR_TIMER != 0xFF)
 		VAR(VAR_TIMER) = delta;
