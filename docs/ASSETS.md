@@ -32,6 +32,21 @@ entsteht ein anderer Stand, ohne dass es auffaellt.
    - `scripts/add_object_alpha_v7.py`, `scripts/fix_mask_alpha.py`, `scripts/fix_magenta_mask.py`
      — Alphakanaele der Objekte und Kostueme
 
+## Packs
+
+Die drei Texture-Packs `release/hd_assets_part1..3.zip` werden aus `release/linux/hd/`
+gebaut, deterministisch nach Dateiname:
+
+    python3 scripts/rebuild_texture_packs.py
+
+Zuordnung: `backgrounds/` und `audio/` nach part1, `objects/`, `objects_layers/`, `fonts/`
+und `object_map.json` nach part3, Kostueme reihum nach SHA-1 des Dateinamens modulo 3 auf
+alle drei Packs. Am Ende prueft das Skript, dass jede Datei genau einmal enthalten ist.
+
+Stand 19.10.2026: die Packs vom 18.07.2026 enthielten 436 Dateien nicht, die im HD-Ordner
+lagen (Hintergruende 0039 bis 0094, Audio). Sie werden deshalb neu gebaut; der vorherige Stand
+wandert beim Neubau nach `.prev`.
+
 ## Pruefen
 
 `scripts/asset_manifest.py` schreibt Pfad, Groesse und SHA-256 jeder Datei unter
