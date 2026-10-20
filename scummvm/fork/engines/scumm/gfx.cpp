@@ -1511,10 +1511,29 @@ void ScummEngine::renderHDComposite() {
 	// Originalbild ablegen (nur mit HD_DUMP_REF=1), damit es sich Bild fuer Bild neben die
 	// HD-Komposition legen laesst. Breite auf den Virt-Screen begrenzt, sonst liest die
 	// Zeile ueber den Puffer hinaus.
+	// Aufnahmen nur zu einem festen Bild (HD_DUMP_AT=<bild>). Ohne die Beschraenkung
+	// schreibt jeder Frame, und bei scrollenden Szenen haengt das Ergebnis am Moment der
+	// Aufnahme: Raum 40 schwankte dadurch zwischen 3,8 und 8,8 Prozent Abweichung.
+	auto hdDumpNow = [this]() -> bool {
+		static int schwelle = -2;
+		if (schwelle == -2) {
+			const char *v = getenv("HD_DUMP_AT");
+			schwelle = v ? atoi(v) : -1;
+		}
+		if (schwelle < 0)
+			return true;
+		// Spielzeit statt Bildzahl: Bilder brauchen je nach Szene unterschiedlich lange,
+		// Bild 60 ist deshalb in zwei Laeufen ein anderer Moment (8,8 gegen 0,3 Prozent).
+		if (VAR_TIMER_TOTAL != 0xFF)
+			return (int)VAR(VAR_TIMER_TOTAL) >= schwelle;
+		return (int)_hdFrameCount == schwelle;
+	};
+
 	if (getenv("HD_DUMP_REF") && (int)vs->w > (int)vs->xstart && (int)vs->h > 0) {
 		int dumpW = MIN(visW, (int)vs->w);
 		int dumpH = MIN(visH, (int)vs->h);
 		if (dumpW > 0 && dumpH > 0)
+		if (hdDumpNow())
 			hdDumpReference("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", (const byte *)vs->getBasePtr(0, sdTop),
 			                vs->pitch, dumpW, dumpH, _currentPalette);
 	}
@@ -1567,7 +1586,8 @@ void ScummEngine::renderHDComposite() {
 		hdPrintf("hdperf: hintergrund %u ms im Schnitt, max %u ms (%u Bilder)",
 		         hdT1Sum / hdFrameN, hdT1Max, hdFrameN);
 
-	hdDumpStep(&_hdComposite, "1_hintergrund");
+	if (hdDumpNow())
+		hdDumpStep(&_hdComposite, "1_hintergrund");
 
 	// Die Referenzkopie des Hintergrunds ist auf den Ausschnitt bezogen, in dem sie geschrieben
 	// wurde. Passt der nicht mehr zur Kamera, gilt in der Vordergrundpruefung unten jedes Pixel
@@ -1774,7 +1794,8 @@ int step2_fgPixels = 0;
 	memset(_hdAlphaMask, 0, alphaMaskBytes);
 	byte *hdAlphaMask = _hdAlphaMask;
 
-	hdDumpStep(&_hdComposite, "2_vordergrund");
+	if (hdDumpNow())
+		hdDumpStep(&_hdComposite, "2_vordergrund");
 	// Step 2.5: Overlay HD object textures on top of composite (after 8-bit compositing)
 	// Zeitmessung fuer alles ab hier bis vor Schritt 3: Objekte, Inventar, Kostueme,
 	// Schrift und Overlays. Die beiden Kopierschritte oben sind mit je 1-2 ms gemessen,
@@ -2426,7 +2447,8 @@ int step2_fgPixels = 0;
 			hdPrintf("step2.5b blast-inventory: loaded=%d skipped=%d", step25b_loaded, step25b_skipped);
 	}
 
-	hdDumpStep(&_hdComposite, "3_objekte");
+	if (hdDumpNow())
+		hdDumpStep(&_hdComposite, "3_objekte");
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
@@ -2932,7 +2954,8 @@ int step2_fgPixels = 0;
 		_hdFontChars.clear();
 	}
 
-	hdDumpStep(&_hdComposite, "4_kostueme");
+	if (hdDumpNow())
+		hdDumpStep(&_hdComposite, "4_kostueme");
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
 	// Step 2.8: Composite HD verb overlay (e.g. inventory background panel).
 	// Full-screen verb textures are stored in _hdVerbSurface by drawVerbBitmap

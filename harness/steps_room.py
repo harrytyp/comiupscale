@@ -23,7 +23,8 @@ DUMPS = os.environ.get("HD_DUMP_DIR", "/opt/data/projects/comi-hd/work/dumps")
 def run(room, sekunden):
     env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1",
                HD_LOAD_SLOT="1", HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS,
-               HD_EXIT_AFTER=str(os.environ.get("HD_EXIT_AFTER", "90")))
+               HD_EXIT_AFTER=str(os.environ.get("HD_EXIT_AFTER", "90")),
+               HD_DUMP_AT=os.environ.get("HD_DUMP_AT", "60"))
     try:
         subprocess.run([os.path.join(REPO, "scummvm/fork/scummvm"),
                         "--config=scummvm_video.ini", "--path=game", "comi"],

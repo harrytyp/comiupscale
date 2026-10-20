@@ -23,16 +23,27 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME = os.path.join(REPO, "release/linux")
 DUMPS = os.environ.get("HD_DUMP_DIR", "/opt/data/projects/comi-hd/work/dumps")
 OUT = os.environ.get("HD_SWEEP_OUT", "/opt/data/projects/comi-hd/reports/final")
-FRAMES = os.environ.get("HD_SWEEP_FRAMES", "90")
+FRAMES = os.environ.get("HD_SWEEP_FRAMES", "400")
+DUMP_AT = os.environ.get("HD_SWEEP_AT", "450")
 
 
 def dump(room, versuch=0):
+    # Fester Aufnahmezeitpunkt, damit die Messung reproduzierbar ist: bei scrollenden
+    # Szenen haengt das Ergebnis sonst am Moment der Aufnahme.
     env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1", HD_LOAD_SLOT="1",
-               HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS, HD_EXIT_AFTER=FRAMES)
+               HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS,
+               HD_EXIT_AFTER=str(FRAMES * (1 + versuch)),
+               HD_DUMP_AT=DUMP_AT)
+    # Alte Aufnahmen wegraeumen, damit eine fehlende Aufnahme nicht als Ergebnis
+    # durchgeht: bleiben die Dateien vom Vorraum liegen, sehen alle Raeume gleich aus.
+    for name in ("hd_ref.ppm", "hd_step_4_kostueme.ppm"):
+        pfad = os.path.join(DUMPS, name)
+        if os.path.exists(pfad):
+            os.replace(pfad, pfad + ".alt")
     try:
         subprocess.run([os.path.join(REPO, "scummvm/fork/scummvm"),
                         "--config=scummvm_video.ini", "--path=game", "comi"],
-                       cwd=GAME, env=env, timeout=120 + versuch * 30,
+                       cwd=GAME, env=env, timeout=180 + versuch * 60,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.TimeoutExpired:
         pass
@@ -47,7 +58,7 @@ def main():
     rows = []
     for room in rooms:
         ergebnis = None
-        for versuch in (0, 1):
+        for versuch in (0, 1, 2):
             ok_ref, ok_hd = dump(room, versuch)
             if not (ok_ref and ok_hd):
                 continue
