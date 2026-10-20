@@ -28,6 +28,13 @@ tausch "$ROOT/build/out/scummvm.exe" "$ROOT/release/windows/scummvm.exe" || FEHL
 
 "$ROOT/release/linux/scummvm" --version | head -1
 if [ -f "$ROOT/release/windows/scummvm.exe" ]; then
-    file -b "$ROOT/release/windows/scummvm.exe" | cut -c1-70
+    # PE-Kopf pruefen, ohne das file-Kommando (hier nicht installiert).
+    kopf="$(head -c 2 "$ROOT/release/windows/scummvm.exe")"
+    if [ "$kopf" = "MZ" ]; then
+        echo "Windows-Binary: PE-Kopf ok"
+    else
+        echo "Windows-Binary: kein PE-Kopf!"
+        FEHLER=1
+    fi
 fi
 exit "$FEHLER"
