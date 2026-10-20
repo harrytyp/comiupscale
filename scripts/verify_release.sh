@@ -31,6 +31,20 @@ else
     bad "release/linux/scummvm fehlt"
 fi
 
+echo "== 1b. Windows-Binary"
+WIN="$ROOT/release/windows/scummvm.exe"
+if [ -f "$WIN" ]; then
+    QUELLE="$(git -C "$ROOT" log -1 --format=%ct -- scummvm/fork/engines/scumm 2>/dev/null || echo 0)"
+    BIN_ZEIT="$(stat -c %Y "$WIN" 2>/dev/null || echo 0)"
+    if [ "$BIN_ZEIT" -ge "$QUELLE" ]; then
+        ok "release/windows/scummvm.exe juenger als die Quellen"
+    else
+        bad "release/windows/scummvm.exe aelter als die Quellen (siehe docs/BUILD_WINDOWS.md)"
+    fi
+else
+    bad "release/windows/scummvm.exe fehlt (siehe docs/BUILD_WINDOWS.md)"
+fi
+
 echo "== 2. HD-Assets"
 if "$PY" scripts/asset_manifest.py --check > /tmp/hd_manifest_check.log 2>&1; then
     ok "Pruefsummen ($(grep -c . docs/asset-manifest.txt) Zeilen)"
