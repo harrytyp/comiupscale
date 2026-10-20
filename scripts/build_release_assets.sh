@@ -32,6 +32,12 @@ bash  scripts/fix_scroll_backgrounds.sh
 "$PY" scripts/fix_mask_alpha.py
 "$PY" scripts/fix_magenta_mask.py
 
-echo "== Pruefsummen =="
+echo "== 3/4 Texture-Packs =="
+# Die Packs werden aus dem fertigen HD-Ordner gebaut, also nach allen Nacharbeiten.
+"$PY" scripts/rebuild_texture_packs.py
+"$PY" scripts/check_texture_packs.py
+
+echo "== 4/4 Pruefsummen =="
 "$PY" scripts/asset_manifest.py
-echo "Fertig. Vergleich mit dem ausgelieferten Stand: bash scripts/build_release_assets.sh --check"
+echo "Fertig. Danach: bash scripts/verify_release.sh"
+echo "Vergleich mit dem ausgelieferten Stand: bash scripts/build_release_assets.sh --check"
