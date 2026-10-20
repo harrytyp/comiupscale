@@ -1269,7 +1269,8 @@ void ScummEngine::redrawBGStrip(int start, int num) {
 // Debug-Helfer: verkleinerte Ausgabe (Box-Filter), damit eine Frameaufnahme nicht
 // gigabyteweise Daten schreibt.
 static void hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path, int step) {
-	FILE *f = fopen(path, "wb");
+	Common::String tmpPath = Common::String(path) + ".part";
+	FILE *f = fopen(tmpPath.c_str(), "wb");
 	if (!f || step < 1)
 		return;
 	int w = surf->w / step, h = surf->h / step;
@@ -1293,10 +1294,15 @@ static void hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path
 		}
 	}
 	fclose(f);
+	// Erst nach dem vollstaendigen Schreiben umbenennen, damit nie eine halbe
+	// Aufnahme liegen bleibt (der Lauf wird am Ende beendet).
+	remove(path);
+	rename(tmpPath.c_str(), path);
 }
 
 static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
-	FILE *f = fopen(path, "wb");
+	Common::String tmpPath = Common::String(path) + ".part";
+	FILE *f = fopen(tmpPath.c_str(), "wb");
 	if (!f)
 		return;
 	fprintf(f, "P6\n%d %d\n255\n", surf->w, surf->h);
@@ -1310,6 +1316,10 @@ static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
 		}
 	}
 	fclose(f);
+	// Erst nach dem vollstaendigen Schreiben umbenennen, damit nie eine halbe
+	// Aufnahme liegen bleibt (der Lauf wird am Ende beendet).
+	remove(path);
+	rename(tmpPath.c_str(), path);
 }
 
 // Debug: einen Zwischenstand des Composites ablegen, um zu sehen, welcher Zeichenschritt den
@@ -1327,7 +1337,8 @@ static void hdDumpStep(Graphics::Surface *surf, const char *name) {
 // Bild fuer Bild nebeneinander legen lassen. Der Ausschnitt ist der sichtbare Bereich,
 // also dieselbe Geometrie, die die Komposition als Vordergrund liest.
 static void hdDumpReference(const char *path, const byte *pixels, int pitch, int w, int h, const byte *palette) {
-	FILE *f = fopen(path, "wb");
+	Common::String tmpPath = Common::String(path) + ".part";
+	FILE *f = fopen(tmpPath.c_str(), "wb");
 	if (!f)
 		return;
 	fprintf(f, "P6\n%d %d\n255\n", w, h);
@@ -1341,6 +1352,10 @@ static void hdDumpReference(const char *path, const byte *pixels, int pitch, int
 		}
 	}
 	fclose(f);
+	// Erst nach dem vollstaendigen Schreiben umbenennen, damit nie eine halbe
+	// Aufnahme liegen bleibt (der Lauf wird am Ende beendet).
+	remove(path);
+	rename(tmpPath.c_str(), path);
 }
 
 /**
