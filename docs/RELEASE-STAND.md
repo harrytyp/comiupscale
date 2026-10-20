@@ -84,3 +84,11 @@ Texturabgleich, Raumwechsel ueber Spielstand, HD-Schrift aus veralteten Puffern.
 Offen: Raum 40 (gescriptete Schiffsschlacht, Spielzustand bei der Aufnahme variiert
 zwischen 1,3 und 8,8 Prozent), Raum 81 (nicht anspringbar), Kostuem-Unterauswahl,
 HD-Schriften als Ganzes, Flimmern, HD-Videos ohne Ausgangsmaterial.
+
+## Raum 40: kein Zeichenfehler, bewegte Szene
+
+Der rohe Vergleich schwankt zwischen 1,3 und 8,8 Prozent. Ursache ist die gescriptete
+Schiffsschlacht: die Schiffe stehen im Aufnahmebild jedes Mal anders. Der Versatzsucher
+(harness/shift_probe.py) findet in beiden geprueften Laeufen den besten Versatz bei
+dx=0 dy=0 mit 0,8 und 2,7 Helligkeitsstufen (0,3 und 1,1 Prozent). Es fehlt also kein
+Inhalt; die Kennzahl des rohen Vergleichs misst den Moment, nicht die Darstellung.
