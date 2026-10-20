@@ -3220,6 +3220,16 @@ void ScummEngine::scummLoop(int delta) {
 		// Aufnahmelauf selbst beenden statt per timeout abschiessen: ein abgebrochener Lauf
 		// schreibt Bilddateien mitten im Schreiben ab, und halbe Aufnahmen haben die Messung
 		// verfaelscht (Raum 25: 38,6 statt 1,4 Prozent Abweichung).
+		// Auch nach Spielzeit beenden: schnelle Raeume laufen ihre Bildzahl in weniger als
+		// einer Sekunde ab und erreichen den Aufnahmezeitpunkt nie (fehlende Aufnahmen in
+		// 14 Raeumen). Mit der Zeitgrenze endet der Lauf erst, wenn die Aufnahme vorliegt.
+		if (const char *aufnahme = getenv("HD_DUMP_AT")) {
+			const int bis = atoi(aufnahme);
+			if (bis > 0 && VAR_TIMER_TOTAL != 0xFF && (int)VAR(VAR_TIMER_TOTAL) >= bis + 70) {
+				warning("hd_trace: Aufnahmezeit erreicht, Spiel wird beendet");
+				g_system->quit();
+			}
+		}
 		if (const char *ende = getenv("HD_EXIT_AFTER")) {
 			const int grenze = atoi(ende);
 			if (grenze > 0 && frames > grenze) {

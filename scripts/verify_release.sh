@@ -66,6 +66,15 @@ echo "== 4. Raumvergleich"
 ERWARTET="/opt/data/projects/comi-hd/work/rooms_expected.txt"
 mkdir -p "$(dirname "$ERWARTET")"
 find /opt/data/projects/comi-hd/reports/sd -maxdepth 1 -type d -name "[0-9]*" -printf "%f\n" | sort -n > "$ERWARTET"
+# Ausnahmen abziehen: Raeume, die der Pruefstand nicht anspringen kann (docs/rooms-excluded.txt).
+AUSNAHMEN="$ROOT/docs/rooms-excluded.txt"
+if [ -f "$AUSNAHMEN" ]; then
+    AUSGENOMMEN="$(grep -E '^[0-9]+' "$AUSNAHMEN" | cut -d' ' -f1 | sort -n)"
+    for r in $AUSGENOMMEN; do
+        grep -vx "$r" "$ERWARTET" > "$ERWARTET.tmp" && mv "$ERWARTET.tmp" "$ERWARTET"
+    done
+    echo "   ausgenommen: $(echo $AUSGENOMMEN | tr '\n' ' ')"
+fi
 CSV="$(ls -t /opt/data/projects/comi-hd/reports/final_save*/gleicher_frame.csv 2>/dev/null | head -1)"
 if [ -s "$CSV" ]; then
     # Ein Messergebnis, das aelter ist als die Engine, sagt nichts ueber diesen Stand.

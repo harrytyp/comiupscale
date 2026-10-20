@@ -1,0 +1,9 @@
+# Raeume, die der Pruefstand nicht anspringen kann
+
+Diese Liste fuehrt Raeume, die im Spiel existieren, aber vom Aufnahmelauf nicht erreicht
+werden. Sie werden im Tor von der erwarteten Menge abgezogen, mit Begruendung.
+
+81   Weder startScene aus dem Spielstand noch --boot-param erreichen den Raum; beide Laeufe
+     zeigen Raum 87 (gleiche Geometrie, gleiche Werte). Der Raum ist damit über den
+     Sprungweg nicht messbar. Zu klaeren bleibt, ob Raum 81 im Spiel ueberhaupt begehbar ist
+     oder nur als Datensatz existiert.
