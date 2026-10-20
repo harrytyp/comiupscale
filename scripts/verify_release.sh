@@ -64,6 +64,13 @@ fi
 echo "== 4. Raumvergleich"
 CSV="$(ls -t /opt/data/projects/comi-hd/reports/final_save*/gleicher_frame.csv 2>/dev/null | head -1)"
 if [ -s "$CSV" ]; then
+    # Ein Messergebnis, das aelter ist als die Engine, sagt nichts ueber diesen Stand.
+    if [ "$BIN" -nt "$CSV" ]; then
+        bad "Messergebnis aelter als die Engine ($(basename "$(dirname "$CSV")")); neu messen mit harness/final_sweep.py"
+        CSV=""
+    fi
+fi
+if [ -s "$CSV" ]; then
     "$PY" - "$CSV" <<'PY'
 import csv, sys
 rows = list(csv.DictReader(open(sys.argv[1]), delimiter=";"))
