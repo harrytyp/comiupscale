@@ -25,7 +25,7 @@ DUMPS = os.environ.get("HD_DUMP_DIR", "/opt/data/projects/comi-hd/work/dumps")
 OUT = os.environ.get("HD_SWEEP_OUT", "/opt/data/projects/comi-hd/reports/final")
 # 60 Bilder genuegen: Sprung bei 60 und Aufnahme bei 450 Jiffies Spielzeit liegen
 # davor. 400 Bilder kosteten drei Minuten je Raum, ohne mehr zu messen.
-FRAMES = os.environ.get("HD_SWEEP_FRAMES", "60")
+FRAMES = os.environ.get("HD_SWEEP_FRAMES", "25")
 DUMP_AT = os.environ.get("HD_SWEEP_AT", "450")
 
 
@@ -35,11 +35,10 @@ def dump(room, versuch=0):
     env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1", HD_LOAD_SLOT="1",
                HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS,
                HD_EXIT_AFTER=str(FRAMES * (1 + versuch)),
-               HD_DUMP_AT=DUMP_AT,
-               # HD erst kurz vor der Aufnahme einschalten: die Komposition kostet je Bild
-               # das Vielfache der 8-Bit-Ausgabe, gebraucht wird sie fuer ein einziges Bild.
-               # Ein Raum dauert damit 10 statt 250 Sekunden.
-               HD_OFF_UNTIL=str(max(0, int(DUMP_AT) - 50)))
+               HD_DUMP_AT=DUMP_AT)
+    # Kein HD_OFF_UNTIL: in Zwischensequenzen laeuft eine eigene Schleife, dort wird die
+    # Abbruchbedingung nie erreicht und der Lauf haengt bis zum Zeitlimit. Mit eingeschalteter
+    # HD-Schicht und 25 Bildern dauert ein Raum 5 bis 7 Sekunden und die Aufnahme liegt vor.
     # Alte Aufnahmen wegraeumen, damit eine fehlende Aufnahme nicht als Ergebnis
     # durchgeht: bleiben die Dateien vom Vorraum liegen, sehen alle Raeume gleich aus.
     for name in ("hd_ref.ppm", "hd_step_4_kostueme.ppm"):
@@ -49,7 +48,7 @@ def dump(room, versuch=0):
     try:
         subprocess.run([os.path.join(REPO, "scummvm/fork/scummvm"),
                         "--config=scummvm_video.ini", "--path=game", "comi"],
-                       cwd=GAME, env=env, timeout=180 + versuch * 60,
+                       cwd=GAME, env=env, timeout=int(os.environ.get("HD_SWEEP_TIMEOUT", "30")) + versuch * 20,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.TimeoutExpired:
         pass
@@ -64,7 +63,7 @@ def main():
     rows = []
     for room in rooms:
         ergebnis = None
-        for versuch in (0, 1, 2):
+        for versuch in (0, 1):
             ok_ref, ok_hd = dump(room, versuch)
             if not (ok_ref and ok_hd):
                 continue

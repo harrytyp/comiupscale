@@ -62,6 +62,10 @@ else
 fi
 
 echo "== 4. Raumvergleich"
+# Erwartete Raeume aus den Soll-Aufnahmen; ein Messergebnis muss sie alle abdecken.
+ERWARTET="/opt/data/projects/comi-hd/work/rooms_expected.txt"
+mkdir -p "$(dirname "$ERWARTET")"
+find /opt/data/projects/comi-hd/reports/sd -maxdepth 1 -type d -name "[0-9]*" -printf "%f\n" | sort -n > "$ERWARTET"
 CSV="$(ls -t /opt/data/projects/comi-hd/reports/final_save*/gleicher_frame.csv 2>/dev/null | head -1)"
 if [ -s "$CSV" ]; then
     # Ein Messergebnis, das aelter ist als die Engine, sagt nichts ueber diesen Stand.
@@ -71,16 +75,29 @@ if [ -s "$CSV" ]; then
     fi
 fi
 if [ -s "$CSV" ]; then
-    "$PY" - "$CSV" <<'PY'
+    "$PY" - "$CSV" "$ERWARTET" <<'PY'
 import csv, sys
-rows = list(csv.DictReader(open(sys.argv[1]), delimiter=";"))
+
+csv_pfad, erwartet_pfad = sys.argv[1], sys.argv[2]
+rows = list(csv.DictReader(open(csv_pfad), delimiter=";"))
+gemessen = {r["raum"] for r in rows}
 werte = [float(r["ueber40_prozent"]) for r in rows if r.get("ueber40_prozent")]
+
+# Vollstaendigkeit: ein Teil der Raeume als "innerhalb der Schwellen" durchzuwinken ist
+# kein Nachweis. Fehlende Raeume zaehlen als offener Punkt.
+erwartet = {z.strip() for z in open(erwartet_pfad) if z.strip()}
+fehlt = sorted(erwartet - gemessen)
+
 if not werte:
-    print("keine Werte"); sys.exit(2)
-schlecht = [r["raum"] for r in rows if float(r["ueber40_prozent"]) > 10]
+    print("keine Werte")
+    sys.exit(2)
+schlecht = sorted(r["raum"] for r in rows if float(r["ueber40_prozent"]) > 10)
 mittel = sum(werte) / len(werte)
-print("Raeume %d, Mittel %.2f%%, ueber 10%%: %d %s" % (len(werte), mittel, len(schlecht), schlecht[:8]))
-sys.exit(0 if (not schlecht and mittel < 1.0) else 1)
+print("Raeume %d von %d, Mittel %.2f%%, ueber 10%%: %d %s" %
+      (len(gemessen), len(erwartet), mittel, len(schlecht), schlecht[:8]))
+if fehlt:
+    print("fehlende Raeume: %d %s" % (len(fehlt), fehlt[:12]))
+sys.exit(0 if (not schlecht and not fehlt and mittel < 1.0) else 1)
 PY
     if [ $? -eq 0 ]; then ok "Raumvergleich innerhalb der Schwellen"; else bad "Raumvergleich ueber Schwelle"; fi
 else
