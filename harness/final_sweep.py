@@ -23,7 +23,9 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME = os.path.join(REPO, "release/linux")
 DUMPS = os.environ.get("HD_DUMP_DIR", "/opt/data/projects/comi-hd/work/dumps")
 OUT = os.environ.get("HD_SWEEP_OUT", "/opt/data/projects/comi-hd/reports/final")
-FRAMES = os.environ.get("HD_SWEEP_FRAMES", "400")
+# 60 Bilder genuegen: Sprung bei 60 und Aufnahme bei 450 Jiffies Spielzeit liegen
+# davor. 400 Bilder kosteten drei Minuten je Raum, ohne mehr zu messen.
+FRAMES = os.environ.get("HD_SWEEP_FRAMES", "60")
 DUMP_AT = os.environ.get("HD_SWEEP_AT", "450")
 
 

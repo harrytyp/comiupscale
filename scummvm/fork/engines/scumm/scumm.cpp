@@ -3230,7 +3230,10 @@ void ScummEngine::scummLoop(int delta) {
 		const char *loadSlot = getenv("HD_LOAD_SLOT");
 		const char *saveSlot = getenv("HD_SAVE_SLOT");
 		const char *jumpRoom = getenv("HD_JUMP_ROOM");
-		if (phase == 0 && frames >= 15) {
+		// Spielzeit statt Bildzahl: die Bilder sind je nach Szene langsam, die Spielzeit
+		// laeuft unabhaengig davon weiter.
+		const int spielzeit = (VAR_TIMER_TOTAL != 0xFF) ? (int)VAR(VAR_TIMER_TOTAL) : frames * 10;
+		if (phase == 0 && spielzeit >= 30) {
 			phase = 1;
 			if (loadSlot) {
 				const Common::Error res = loadGameState(atoi(loadSlot));
@@ -3239,7 +3242,7 @@ void ScummEngine::scummLoop(int delta) {
 				const Common::Error res = saveGameState(atoi(saveSlot), "hd-harness");
 				warning("hd_trace: HD_SAVE_SLOT=%s -> %d (room %d)", saveSlot, (int)res.getCode(), _currentRoom);
 			}
-		} else if (phase == 1 && frames >= 45 && jumpRoom) {
+		} else if (phase == 1 && spielzeit >= 60 && jumpRoom) {
 			phase = 2;
 			const int room = atoi(jumpRoom);
 			if (room > 0 && VAR(VAR_EGO) < _numActors) {
