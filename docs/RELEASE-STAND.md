@@ -49,6 +49,20 @@ abdeckt, weil er nur Inhalt gegen Inhalt stellt:
 Diese fuenf sind die naechste Arbeitsliste. Der Objekt-Culling-Punkt aus dieser Liste ist mit
 dem Sichtbarkeitsabgleich erledigt.
 
+### Raum 87: Titel wird gezeichnet, obwohl das Original keinen zeigt
+
+Der Ausschnitt (`harness/crop_pair.py 87 4_kostueme 200 110 340 200 2`) zeigt in der
+HD-Fassung den Spieltitel ueber der Holzvertaefelung, im 8-Bit-Bild steht dort nur Holz.
+
+Quelle laut Protokoll: `costume HIT: actor=32 costume=0016 cel=5` und `actor=31 costume=0016
+cel=79`. Die Ueberlagerung kommt also nicht aus der UI-Schicht (`step2.6b ui-overlay:
+pixels=0`), sondern aus der Kostümebene mit Kostüm 0016. Entweder ist der Cel-Index dort
+veraltet (`_hdCurrentCel` gegen `a->_frame`), oder der Akteur ist im Original unsichtbar und
+wird trotzdem gezeichnet.
+
+Naechster Schritt: `_hdCurrentCel` und `a->_frame` je Bild vergleichen und die Abweichung
+protokollieren; danach die Cel-Auswahl korrigieren.
+
 Ausserdem: kein Neuaufbau von null in dieser Sitzung (Kette vollstaendig, aber nicht
 durchgefahren), Windows-Binary nicht gestartet, Raeume 87 und 81 mit 4,6 Prozent nicht am Bild
 angesehen.
