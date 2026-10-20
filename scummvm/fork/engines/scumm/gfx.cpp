@@ -1318,7 +1318,7 @@ static void hdDumpStep(Graphics::Surface *surf, const char *name) {
 	if (!getenv("HD_DUMP_STEPS"))
 		return;
 	char path[128];
-	snprintf(path, sizeof(path), "/tmp/hd_step_%s.ppm", name);
+	snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_step_%s.ppm", name);
 	hdWriteCompositeShotScaled(surf, path, 2);
 }
 
@@ -1500,7 +1500,7 @@ void ScummEngine::renderHDComposite() {
 		int dumpW = MIN(visW, (int)vs->w);
 		int dumpH = MIN(visH, (int)vs->h);
 		if (dumpW > 0 && dumpH > 0)
-			hdDumpReference("/tmp/hd_ref.ppm", (const byte *)vs->getBasePtr(0, sdTop),
+			hdDumpReference("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", (const byte *)vs->getBasePtr(0, sdTop),
 			                vs->pitch, dumpW, dumpH, _currentPalette);
 	}
 
@@ -1640,9 +1640,9 @@ int step2_fgPixels = 0;
 				? (const uint8 *)_hdCleanBackground.getBasePtr(0, sy) : nullptr;
 			bool useClean = (_hdCurrentRoom == _currentRoom && _hdCleanValid && cleanRow);
 			if (sy == 0)
-				hdPrintf("step2info: useClean=%d cleanValid=%d hdRoom=%d curRoom=%d xstart=%d vorlageAusschnitt=%d",
+				hdPrintf("step2info: useClean=%d cleanValid=%d hdRoom=%d curRoom=%d xstart=%d vorlageAusschnitt=%d userPut=%d",
 				         useClean ? 1 : 0, _hdCleanValid ? 1 : 0, _hdCurrentRoom, _currentRoom,
-				         (int)vs->xstart, _hdCleanXStart);
+				         (int)vs->xstart, _hdCleanXStart, (int)_userPut);
 			bool rowHadFg = false;
 			for (int sx = 0; sx < visW; sx++) {
 				uint8 curPix = visRow[sx];
@@ -2069,8 +2069,13 @@ int step2_fgPixels = 0;
 				// ueberschreibt die Grossaufnahme (Raum 25: Abweichung 9,6 nach Schritt 2,
 				// 64,0 nach dem Objektschritt). Deshalb gilt das Inventar beim Sprung als
 				// geschlossen.
+				// Die Oberflaeche entscheidet mit: ohne Bedienleiste (_userPut == 0) kann das
+				// Inventar nicht offen sein. Die Pixelzaehlung allein reicht nicht, weil in
+				// Raum 25 die Grossaufnahme darueber liegt und das Objekt dadurch sichtbar
+				// erscheint (gemessen 171536 von 302080 Pixeln).
 				const bool bootJumpNoUi = (_bootParam != 0);
-				if (!bootJumpNoUi && od.obj_nr == 114 && od.fl_object_index != 0 && visiblePixels > sw * sh / 4) {
+				if (!bootJumpNoUi && _userPut != 0 && od.obj_nr == 114 && od.fl_object_index != 0 &&
+				    visiblePixels > sw * sh / 4) {
 					inventoryActive = true;
 					// One-shot dump of ALL objects when inventory first opens
 					{
@@ -2207,6 +2212,35 @@ int step2_fgPixels = 0;
 					// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
 					// Cover ALL pixels within HD object bounding box, not just opaque.
 					hdAlphaMask[my * hdW + mx] = 1;
+				}
+			}
+
+			// Was im Original VOR dem Objekt liegt (Figuren, Grossaufnahmen), wieder darueber
+			// legen: das 8-Bit-Bild hat die richtige Reihenfolge, das HD-Objekt wird aber nach
+			// dem Vordergrund gezeichnet. Raum 25: das Inventarobjekt 114 deckte die
+			// Grossaufnahme zu (Abweichung nach dem Vordergrund 1,4, nach den Objekten 57,8).
+			if (_hdCleanValid && _hdCurrentRoom == _currentRoom) {
+				for (int my = oy0; my < oy1; my++) {
+					const int sy8 = my / scale;
+					if (sy8 < 0 || sy8 >= visH)
+						continue;
+					const uint8 *vrow = (const uint8 *)vs->getBasePtr(0, sy8 + sdTop);
+					const uint8 *crow = (const uint8 *)_hdCleanBackground.getBasePtr(0, sy8);
+					uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
+					for (int mx = ox0; mx < ox1; mx++) {
+						const int sx8 = mx / scale;
+						if (sx8 < 0 || sx8 >= visW)
+							continue;
+						if (!_hdCleanValid[sy8 * visW + sx8])
+							continue;
+						const uint8 idx = vrow[sx8];
+						if (idx == crow[sx8])
+							continue;   // Hintergrund, kein Vordergrund
+						dstRow[mx] = (uint32)_currentPalette[idx * 3]
+						           | ((uint32)_currentPalette[idx * 3 + 1] << 8)
+						           | ((uint32)_currentPalette[idx * 3 + 2] << 16)
+						           | (0xFFu << 24);
+					}
 				}
 			}
 
@@ -3025,7 +3059,7 @@ int step2_fgPixels = 0;
 	if (_keyPressed.keycode == Common::KEYCODE_F10) {
 		static int hdShotNo = 0;
 		char path[128];
-		snprintf(path, sizeof(path), "/tmp/hd_shot_%03d_cam%d.ppm", ++hdShotNo, (int)camera._cur.x);
+		snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_shot_%03d_cam%d.ppm", ++hdShotNo, (int)camera._cur.x);
 		hdWriteCompositeShot(&_hdComposite, path);
 		warning("HD SCREENSHOT: F10 saved %s (%dx%d) cam=%d", path,
 		        _hdComposite.w, _hdComposite.h, (int)camera._cur.x);
@@ -3044,7 +3078,7 @@ int step2_fgPixels = 0;
 		static bool bgDumped = false;
 		if (!bgDumped && _hdBackgroundSurface.getPixels()) {
 			bgDumped = true;
-			hdWriteCompositeShotScaled(&_hdBackgroundSurface, "/tmp/hd_bg_loaded.ppm", 2);
+			hdWriteCompositeShotScaled(&_hdBackgroundSurface, "/opt/data/projects/comi-hd/work/dumps/hd_bg_loaded.ppm", 2);
 			warning("HD DUMP: geladener Hintergrund raum=%d groesse=%dx%d", _currentRoom,
 			        _hdBackgroundSurface.w, _hdBackgroundSurface.h);
 		}
@@ -3054,13 +3088,13 @@ int step2_fgPixels = 0;
 		static bool cleanDumped = false;
 		if (!cleanDumped && _hdCleanBackground.getPixels()) {
 			cleanDumped = true;
-			hdWriteCompositeShotScaled(&_hdCleanBackground, "/tmp/hd_clean.ppm", 2);
+			hdWriteCompositeShotScaled(&_hdCleanBackground, "/opt/data/projects/comi-hd/work/dumps/hd_clean.ppm", 2);
 			// Zusaetzlich in voller Groesse und mit Palette: die Vorlage ist CLUT8, ein
 			// Abdumpen als 32-Bit-Bild ergibt nur Rauschen. Diese Fassung ist der Rauminhalt
 			// ohne Figuren und damit die richtige Quelle fuer ein fehlendes Hintergrund-Asset
 			// (Raum 89).
 			if (_hdCleanBackground.format.bytesPerPixel == 1)
-				hdDumpReference("/tmp/hd_clean_full.ppm",
+				hdDumpReference("/opt/data/projects/comi-hd/work/dumps/hd_clean_full.ppm",
 				                (const byte *)_hdCleanBackground.getPixels(),
 				                _hdCleanBackground.pitch, _hdCleanBackground.w, _hdCleanBackground.h,
 				                _currentPalette);
@@ -3087,7 +3121,7 @@ int step2_fgPixels = 0;
 				char path[128];
 				// Raum mit in den Dateinamen: ein boot-param-Lauf spielt eine Sequenz ab (Intro,
 				// Raumwechsel), ohne den Raum im Namen lassen sich die Frames nicht zuordnen.
-				snprintf(path, sizeof(path), "/tmp/hd_scan/s%03d_raum%d_cam%d.ppm",
+				snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_scan/s%03d_raum%d_cam%d.ppm",
 				         shotNo, _currentRoom, (int)camera._cur.x);
 				hdWriteCompositeShotScaled(&_hdComposite, path, 2);
 				// Dieselbe Stelle im Original ablegen. Eigenes Verzeichnis, sonst zieht die
@@ -3096,7 +3130,7 @@ int step2_fgPixels = 0;
 				int refH = MIN(_screenHeight, (int)vs->h);
 				if (refW > 0 && refH > 0) {
 					char rpath[128];
-					snprintf(rpath, sizeof(rpath), "/tmp/hd_refscan/r%03d_raum%d_cam%d.ppm",
+					snprintf(rpath, sizeof(rpath), "/opt/data/projects/comi-hd/work/dumps/hd_refscan/r%03d_raum%d_cam%d.ppm",
 					         shotNo, _currentRoom, (int)camera._cur.x);
 					hdDumpReference(rpath, (const byte *)vs->getBasePtr(0, 0),
 					                vs->pitch, refW, refH, _currentPalette);
@@ -3114,8 +3148,8 @@ int step2_fgPixels = 0;
 		// kurzen Laeufen nur ein oder zwei Bilder, weil die HD-Schicht langsam rechnet.
 		if (hdSeqTick++ % 3 == 0 && hdSeqNo < 200) {
 			char spath[128], rpath[128];
-			snprintf(spath, sizeof(spath), "/tmp/hd_seq/h%05d.ppm", hdSeqNo);
-			snprintf(rpath, sizeof(rpath), "/tmp/hd_seq/r%05d.ppm", hdSeqNo);
+			snprintf(spath, sizeof(spath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/h%05d.ppm", hdSeqNo);
+			snprintf(rpath, sizeof(rpath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/r%05d.ppm", hdSeqNo);
 			hdWriteCompositeShotScaled(&_hdComposite, spath, 2);
 			int seqW = MIN(_screenWidth, (int)vs->w - (int)vs->xstart);
 			int seqH = MIN(_screenHeight, (int)vs->h);

@@ -23,7 +23,7 @@ SECONDS = int(os.environ.get("HD_SWEEP_SECONDS", "30"))
 
 
 def dump(room, laufzeit=SECONDS):
-    for f in ("/tmp/hd_ref.ppm", "/tmp/hd_step_4_kostueme.ppm"):
+    for f in ("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", "/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm"):
         try:
             os.unlink(f)
         except OSError:
@@ -35,7 +35,7 @@ def dump(room, laufzeit=SECONDS):
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.TimeoutExpired:
         pass
-    return os.path.exists("/tmp/hd_ref.ppm"), os.path.exists("/tmp/hd_step_4_kostueme.ppm")
+    return os.path.exists("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm"), os.path.exists("/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm")
 
 
 def compare(ref_path, hd_path):
@@ -63,7 +63,7 @@ def main():
             if not (ok_ref and ok_hd):
                 continue
             try:
-                mittel, ueber = compare("/tmp/hd_ref.ppm", "/tmp/hd_step_4_kostueme.ppm")
+                mittel, ueber = compare("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", "/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm")
                 break
             except OSError:
                 mittel = ueber = None

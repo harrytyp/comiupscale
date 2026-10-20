@@ -3217,6 +3217,16 @@ void ScummEngine::scummLoop(int delta) {
 		static int frames = 0;
 		static int phase = 0;
 		++frames;
+		// Aufnahmelauf selbst beenden statt per timeout abschiessen: ein abgebrochener Lauf
+		// schreibt Bilddateien mitten im Schreiben ab, und halbe Aufnahmen haben die Messung
+		// verfaelscht (Raum 25: 38,6 statt 1,4 Prozent Abweichung).
+		if (const char *ende = getenv("HD_EXIT_AFTER")) {
+			const int grenze = atoi(ende);
+			if (grenze > 0 && frames > grenze) {
+				warning("hd_trace: HD_EXIT_AFTER=%d erreicht, Spiel wird beendet", grenze);
+				g_system->quit();
+			}
+		}
 		const char *loadSlot = getenv("HD_LOAD_SLOT");
 		const char *saveSlot = getenv("HD_SAVE_SLOT");
 		const char *jumpRoom = getenv("HD_JUMP_ROOM");
