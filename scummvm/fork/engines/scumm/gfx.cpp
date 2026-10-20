@@ -2955,6 +2955,33 @@ int step2_fgPixels = 0;
 				tG = _currentPalette[fi->col * 3 + 1];
 				tB = _currentPalette[fi->col * 3 + 2];
 			}
+			// Nur zeichnen, wenn an der Stelle im 8-Bit-Bild noch Text steht. Die Liste wird
+			// beim 8-Bit-Zeichnen gefuellt; bleiben Eintraege stehen (Raum 87: der Titeltext
+			// aus dem Titelbild), erscheint HD-Text, den das Original nicht zeigt.
+			if (_hdCleanValid && _hdCurrentRoom == _currentRoom) {
+				bool hatText = false;
+				for (int dy = 0; dy < 8 && !hatText; dy++) {
+					const int yy = fi->y + dy;
+					if (yy < 0 || yy >= visH)
+						continue;
+					const uint8 *vrow = (const uint8 *)vs->getBasePtr(0, yy + sdTop);
+					const uint8 *crow = (const uint8 *)_hdCleanBackground.getBasePtr(0, yy);
+					for (int dx = 0; dx < 8; dx++) {
+						const int xx = fi->x + dx;
+						if (xx < 0 || xx >= visW)
+							continue;
+						if (!_hdCleanValid[yy * visW + xx])
+							continue;
+						if (vrow[xx] != crow[xx]) {
+							hatText = true;
+							break;
+						}
+					}
+				}
+				if (!hatText)
+					continue;
+			}
+
 			if (_hdFontManager->drawChar(fi->fontSlot, fi->chr, _hdComposite, hdX, hdY, tR, tG, tB))
 				step27_drawn++;
 		}

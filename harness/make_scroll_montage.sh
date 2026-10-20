@@ -38,7 +38,10 @@ for R in $ROOMS; do
     cp -f "$f" "$WORK/$(printf 'raum%03d_%s' "$R" "$(basename "$f" | sed 's/^s//')")"
   done
   GEO=$(grep -o 'hdgeom: scale=[0-9]* camX=[0-9-]* camY=[0-9-]*' hd_state.log 2>/dev/null | tail -1)
-  echo "Raum $R: $(ls -1 "$WORK"/raum0${R}_* 2>/dev/null | wc -l) Frames | $GEO"
+  # Bilder mit offenem Inventar werden vom Motor selbst nicht geschrieben (gfx.cpp, HD_AUTO_SHOTS).
+  # Ein Farblfilter hier hat nicht funktioniert, braune Bruecken und Nachtszenen erreichen
+  # denselben Braunanteil wie das Inventarbrett.
+  echo "Raum $R: $(ls -1 "$WORK"/raum0*_* 2>/dev/null | wc -l) Frames | $GEO"
 done
 echo MONTAGE_LAEUFE_DURCH
 echo "Frames gesamt: $(ls -1 "$WORK"/*.ppm 2>/dev/null | wc -l)"

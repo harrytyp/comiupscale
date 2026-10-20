@@ -3204,6 +3204,29 @@ void ScummEngine::jevPollFifoVideo() {
 }
 
 void ScummEngine::scummLoop(int delta) {
+	// Fester Zeitschritt fuer den Aufnahmelauf (HD_FIXED_DELTA=<ms>). Animationen laufen
+	// sonst mit der echten Zeit, und der Moment der Aufnahme haengt an der Rechenlast:
+	// Raum 40 lieferte in vier Laeufen 3,8, 8,8, 0,0 und 7,6 Prozent. Mit festem Schritt
+	// ist derselbe Frame auch derselbe Spielinhalt.
+	if (const char *fest = getenv("HD_FIXED_DELTA")) {
+		const int schritt = atoi(fest);
+		if (schritt > 0)
+			delta = schritt;
+	}
+
+	// Kamera festsetzen (HD_FIX_CAMERA="x,y"), bevor gezeichnet wird. Im Renderer gesetzt
+	// wirkt sie nur auf die HD-Ebene, waehrend das 8-Bit-Bild laengst mit der echten Kamera
+	// gezeichnet ist — dann vergleicht die Messung zwei Ausschnitte. Raum 40 (gescriptete
+	// Schiffsfahrt) schwankte dadurch zwischen 1,6 und 7,1 Prozent.
+	if (const char *fixCam = getenv("HD_FIX_CAMERA")) {
+		int fx = 0, fy = 0;
+		const int n = sscanf(fixCam, "%d,%d", &fx, &fy);
+		if (n >= 2) {
+			setCameraAt(fx, fy);
+			camera._cur.y = camera._dest.y = fy;
+		}
+	}
+
 	// Raumwechsel auf dem Weg des Spiels (HD_JUMP_ROOM=<raum>). startScene fuehrt das
 	// Raumskript aus, deshalb stimmen Oberflaechensperre (SO_USERPUT_OFF) und die
 	// Sichtbarkeit der Akteure. Der Startparameter --boot-param springt dagegen mitten in
@@ -3243,7 +3266,9 @@ void ScummEngine::scummLoop(int delta) {
 		// Spielzeit statt Bildzahl: die Bilder sind je nach Szene langsam, die Spielzeit
 		// laeuft unabhaengig davon weiter.
 		const int spielzeit = (VAR_TIMER_TOTAL != 0xFF) ? (int)VAR(VAR_TIMER_TOTAL) : frames * 10;
-		if (phase == 0 && spielzeit >= 30) {
+		// Sprung und Laden wieder nach Bildzahl: die Spielzeit steht waehrend der
+		// Zwischensequenzen still, dadurch wurde nie in den Raum gesprungen.
+		if (phase == 0 && frames >= 15) {
 			phase = 1;
 			if (loadSlot) {
 				const Common::Error res = loadGameState(atoi(loadSlot));
@@ -3252,7 +3277,7 @@ void ScummEngine::scummLoop(int delta) {
 				const Common::Error res = saveGameState(atoi(saveSlot), "hd-harness");
 				warning("hd_trace: HD_SAVE_SLOT=%s -> %d (room %d)", saveSlot, (int)res.getCode(), _currentRoom);
 			}
-		} else if (phase == 1 && spielzeit >= 60 && jumpRoom) {
+		} else if (phase == 1 && frames >= 45 && jumpRoom) {
 			phase = 2;
 			const int room = atoi(jumpRoom);
 			if (room > 0 && VAR(VAR_EGO) < _numActors) {
