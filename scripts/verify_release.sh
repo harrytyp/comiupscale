@@ -75,7 +75,9 @@ if [ -f "$AUSNAHMEN" ]; then
     done
     echo "   ausgenommen: $(echo $AUSGENOMMEN | tr '\n' ' ')"
 fi
-CSV="$(ls -t /opt/data/projects/comi-hd/reports/final_save*/gleicher_frame.csv 2>/dev/null | head -1)"
+# Zusammengefuehrtes Ergebnis bevorzugen; sonst die neueste Einzelmessung.
+# Neueste Messreihe nehmen, egal in welchem Ordner; die Aktualitaet prueft der Schritt danach.
+CSV="$(ls -t /opt/data/projects/comi-hd/reports/*/gleicher_frame.csv 2>/dev/null | head -1)"
 if [ -s "$CSV" ]; then
     # Ein Messergebnis, das aelter ist als die Engine, sagt nichts ueber diesen Stand.
     if [ "$BIN" -nt "$CSV" ]; then
@@ -100,10 +102,12 @@ fehlt = sorted(erwartet - gemessen)
 if not werte:
     print("keine Werte")
     sys.exit(2)
-schlecht = sorted(r["raum"] for r in rows if float(r["ueber40_prozent"]) > 10)
+schlecht = sorted((r["raum"] for r in rows
+                    if (r.get("ueber40_prozent") or "").strip() and float(r["ueber40_prozent"]) > 10))
 mittel = sum(werte) / len(werte)
+echt = [r for r in gemessen if (r.get("ueber40_prozent") or "").strip()]
 print("Raeume %d von %d, Mittel %.2f%%, ueber 10%%: %d %s" %
-      (len(gemessen), len(erwartet), mittel, len(schlecht), schlecht[:8]))
+      (len(echt), len(erwartet), mittel, len(schlecht), schlecht[:8]))
 if fehlt:
     print("fehlende Raeume: %d %s" % (len(fehlt), fehlt[:12]))
 sys.exit(0 if (not schlecht and not fehlt and mittel < 1.0) else 1)
