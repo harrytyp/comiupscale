@@ -48,7 +48,7 @@ else
 fi
 
 echo "== 4. Raumvergleich"
-CSV="/opt/data/projects/comi-hd/reports/final_save/gleicher_frame.csv"
+CSV="$(ls -t /opt/data/projects/comi-hd/reports/final_save*/gleicher_frame.csv 2>/dev/null | head -1)"
 if [ -s "$CSV" ]; then
     "$PY" - "$CSV" <<'PY'
 import csv, sys
@@ -63,7 +63,7 @@ sys.exit(0 if (not schlecht and mittel < 1.0) else 1)
 PY
     if [ $? -eq 0 ]; then ok "Raumvergleich innerhalb der Schwellen"; else bad "Raumvergleich ueber Schwelle"; fi
 else
-    bad "kein Messergebnis ($CSV fehlt)"
+    bad "kein Messergebnis (keine gleicher_frame.csv gefunden)"
 fi
 
 echo

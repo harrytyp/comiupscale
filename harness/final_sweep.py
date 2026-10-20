@@ -1,75 +1,68 @@
+#!/usr/bin/env python3
 """Aufnahmelauf mit Spielstand: je Raum gleicher Frame, 8-Bit gegen HD-Komposition.
 
 Der Raum wird ueber einen geladenen Spielstand und startScene angesprungen, also auf dem Weg
 des Spiels. Damit laufen Raumskript, Oberflaechensperre (SO_USERPUT_OFF) und die
-Akteurssichtbarkeit so, wie das Spiel sie setzt. Der Startparameter --boot-param springt
-dagegen mitten in den Raum, ohne dass das Raumskript je laeuft.
+Akteurssichtbarkeit so, wie das Spiel sie setzt.
 
-Voraussetzung: ein Spielstand in `saves/comi.s01` (anlegen mit harness/make_save.sh).
+Der Lauf beendet sich selbst (HD_EXIT_AFTER), damit keine halb geschriebenen Aufnahmen
+entstehen. Jede Aufnahme wird vor dem Vergleich gegen ihre Kopfzeile geprueft.
+
+Aufruf: python3 harness/final_sweep.py <raum> [<raum> ...]
+Umgebung: HD_SWEEP_OUT (Ergebnisordner), HD_SWEEP_FRAMES (Bilder je Raum, Vorgabe 90)
 """
 import csv
 import os
 import subprocess
 import sys
 
-import numpy as np
-from PIL import Image
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from dumps import DumpError, compare, load_ppm, scale_to  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME = os.path.join(REPO, "release/linux")
+DUMPS = os.environ.get("HD_DUMP_DIR", "/opt/data/projects/comi-hd/work/dumps")
 OUT = os.environ.get("HD_SWEEP_OUT", "/opt/data/projects/comi-hd/reports/final")
-os.makedirs(OUT, exist_ok=True)
-SECONDS = int(os.environ.get("HD_SWEEP_SECONDS", "30"))
+FRAMES = os.environ.get("HD_SWEEP_FRAMES", "90")
 
 
-def dump(room, laufzeit=SECONDS):
-    for f in ("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", "/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm"):
-        try:
-            os.unlink(f)
-        except OSError:
-            pass
-    env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1", HD_LOAD_SLOT="1", HD_JUMP_ROOM=room)
+def dump(room, versuch=0):
+    env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1", HD_LOAD_SLOT="1",
+               HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS, HD_EXIT_AFTER=FRAMES)
     try:
-        subprocess.run([os.path.join(REPO, "scummvm/fork/scummvm"), "--config=scummvm_video.ini",
-                        "--path=game", "comi"], cwd=GAME, env=env, timeout=laufzeit,
+        subprocess.run([os.path.join(REPO, "scummvm/fork/scummvm"),
+                        "--config=scummvm_video.ini", "--path=game", "comi"],
+                       cwd=GAME, env=env, timeout=120 + versuch * 30,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.TimeoutExpired:
         pass
-    return os.path.exists("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm"), os.path.exists("/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm")
-
-
-def compare(ref_path, hd_path):
-    ref = Image.open(ref_path).convert("RGB")
-    hd = Image.open(hd_path).convert("RGB")
-    w, h = ref.size
-    scale = hd.width // w if w and hd.width % w == 0 else 2
-    crop = hd.crop((0, 0, min(hd.width, w * scale), min(hd.height, h * scale)))
-    crop = crop.resize((w, h), Image.LANCZOS)
-    a = np.asarray(ref, dtype=np.int16)
-    b = np.asarray(crop, dtype=np.int16)
-    d = np.abs(a - b).max(axis=2)
-    return float(d.mean()), float((d > 40).mean() * 100)
+    return (os.path.exists(os.path.join(DUMPS, "hd_ref.ppm")),
+            os.path.exists(os.path.join(DUMPS, "hd_step_4_kostueme.ppm")))
 
 
 def main():
     rooms = sys.argv[1:]
+    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(DUMPS, exist_ok=True)
     rows = []
     for room in rooms:
-        mittel = ueber = None
-        for versuch in (0, 1, 2):
-            # Der Aufnahmelauf wird per timeout beendet und kann die Bilddatei mitten im
-            # Schreiben abschneiden. Dann mit laengerer Laufzeit noch einmal.
-            ok_ref, ok_hd = dump(room, SECONDS + versuch * 5)
+        ergebnis = None
+        for versuch in (0, 1):
+            ok_ref, ok_hd = dump(room, versuch)
             if not (ok_ref and ok_hd):
                 continue
             try:
-                mittel, ueber = compare("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", "/opt/data/projects/comi-hd/work/dumps/hd_step_4_kostueme.ppm")
+                ref = load_ppm(os.path.join(DUMPS, "hd_ref.ppm"))
+                hd = scale_to(load_ppm(os.path.join(DUMPS, "hd_step_4_kostueme.ppm")),
+                              ref.shape[1], ref.shape[0])
+                ergebnis = compare(ref, hd)
                 break
-            except OSError:
-                mittel = ueber = None
-        if mittel is None:
+            except DumpError as exc:
+                print("Raum %s: Aufnahme unbrauchbar (%s), neuer Versuch" % (room, exc), flush=True)
+        if ergebnis is None:
             print("Raum %s: keine verwertbaren Bilder" % room, flush=True)
             continue
+        mittel, ueber = ergebnis
         rows.append((room, round(mittel, 1), round(ueber, 1)))
         print("Raum %-4s Abweichung %5.1f  ueber 40: %4.1f%%" % (room, mittel, ueber), flush=True)
 
@@ -81,7 +74,7 @@ def main():
 
     if rows:
         stark = [r[2] for r in rows]
-        print("\nRaeume: %d, ueber 40 im Mittel %.1f%%, schlechtester %.1f%%, ueber 10: %d" %
+        print("\nRaeume: %d, ueber 40 im Mittel %.2f%%, schlechtester %.1f%%, ueber 10: %d" %
               (len(rows), sum(stark) / len(stark), max(stark), sum(1 for v in stark if v > 10)))
 
 

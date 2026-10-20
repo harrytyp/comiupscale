@@ -2189,6 +2189,49 @@ int step2_fgPixels = 0;
 				if (total > 0 && diffN * 100 / total < 2)
 					continue;
 			}
+
+			// Sichtbarkeitsabgleich: das HD-Objekt gegen das 8-Bit-Bild stellen. Ist das
+			// Objekt im Original verdeckt (Grossaufnahme, Figur davor), passen die Farben
+			// nicht zusammen und es wird nicht gezeichnet. Die Pixelzaehlung allein reicht
+			// nicht: in Raum 25 liegt die Grossaufnahme ueber dem Inventarobjekt 114, das
+			// dadurch mit 56 Prozent sichtbar erscheint und dann das Bild ueberschreibt
+			// (Abweichung nach dem Vordergrund 1,4, nach den Objekten 54,4).
+			if (_hdCleanValid && _hdCurrentRoom == _currentRoom && od.width > 0 && od.height > 0 &&
+			    hdObjSurfPtr) {
+				int treffer = 0, proben = 0;
+				const int stufe = 1; (void)stufe;
+				for (int yy = 0; yy < od.height; yy += 4) {
+					const int sy8 = od.y_pos - sdTop + yy;
+					if (sy8 < 0 || sy8 >= visH)
+						continue;
+					for (int xx = 0; xx < od.width; xx += 4) {
+						const int sx8 = od.x_pos + xx;
+						if (sx8 < 0 || sx8 >= visW)
+							continue;
+						const int hxs = xx * (int)hdObjSurfPtr->w / MAX(1, (int)od.width);
+						const int hys = yy * (int)hdObjSurfPtr->h / MAX(1, (int)od.height);
+						if (hxs < 0 || hxs >= (int)hdObjSurfPtr->w || hys < 0 ||
+						    hys >= (int)hdObjSurfPtr->h)
+							continue;
+						const uint32 hdp = *(const uint32 *)hdObjSurfPtr->getBasePtr(hxs, hys);
+						if (((hdp >> 24) & 0xFF) < 128)
+							continue;   // durchsichtig, sagt nichts aus
+						const uint8 *vrow8 = (const uint8 *)vs->getBasePtr(0, sy8 + sdTop);
+						const uint8 idx8 = vrow8[sx8];
+						proben++;
+						const int dr = ABS((int)(hdp & 0xFF) - (int)_currentPalette[idx8 * 3]);
+						const int dg = ABS((int)((hdp >> 8) & 0xFF) - (int)_currentPalette[idx8 * 3 + 1]);
+						const int db = ABS((int)((hdp >> 16) & 0xFF) - (int)_currentPalette[idx8 * 3 + 2]);
+						if (MAX(dr, MAX(dg, db)) <= 64)
+							treffer++;
+					}
+				}
+				if (proben >= 8 && treffer * 100 / proben < 35) {
+					if (getenv("HD_TRACE_DRAW"))
+						hdPrintf("SKIP obj=%d verdeckt (Treffer %d von %d)", od.obj_nr, treffer, proben);
+					continue;
+				}
+			}
 			// Blit HD object with alpha transparency
 			step25_loaded++;
 			if (od.obj_nr == 114 && _hdFrameCount % 60 == 0) {
