@@ -4,11 +4,11 @@ Geprueft mit `bash scripts/verify_release.sh`, Ergebnis: **bestanden**.
 
 | Punkt | Ergebnis |
 |-------|----------|
-| Linux-Engine | `ScummVM 2026.2.1gitdirty (Oct 20 2026 06:32:55)` |
-| Windows-Binary | `scummvm.exe`, 20.10.2026 07:30, juenger als die Quellen |
+| Linux-Engine | `ScummVM 2026.2.1gitdirty (Oct 20 2026 08:44:40)` |
+| Windows-Binary | `scummvm.exe`, 20.10.2026 10:29, juenger als die Quellen |
 | HD-Assets | 26662 Dateien, Pruefsummen stimmen |
 | Texture-Packs | jede Datei genau einmal, fehlt 0, doppelt 0, fremd 0 |
-| Raumvergleich | 93 Raeume, Mittel 0,44 %, schlechtester 4,6 %, keiner ueber 10 % |
+| Raumvergleich | 93 Raeume, Mittel 0,47 %, schlechtester 4,6 %, keiner ueber 10 % |
 
 ## Behoben in dieser Runde
 
