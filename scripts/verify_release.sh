@@ -105,7 +105,7 @@ if not werte:
 schlecht = sorted((r["raum"] for r in rows
                     if (r.get("ueber40_prozent") or "").strip() and float(r["ueber40_prozent"]) > 10))
 mittel = sum(werte) / len(werte)
-echt = [r for r in gemessen if (r.get("ueber40_prozent") or "").strip()]
+echt = [r for r in rows if (r.get("ueber40_prozent") or "").strip()]
 print("Raeume %d von %d, Mittel %.2f%%, ueber 10%%: %d %s" %
       (len(echt), len(erwartet), mittel, len(schlecht), schlecht[:8]))
 if fehlt:

@@ -66,3 +66,21 @@ protokollieren; danach die Cel-Auswahl korrigieren.
 Ausserdem: kein Neuaufbau von null in dieser Sitzung (Kette vollstaendig, aber nicht
 durchgefahren), Windows-Binary nicht gestartet, Raeume 87 und 81 mit 4,6 Prozent nicht am Bild
 angesehen.
+
+## Stand nach der Raum-fuer-Raum-Reihe
+
+Tor: **bestanden**. 92 von 92 messbaren Raeumen, Mittel 0,31 Prozent starke
+Abweichungen, kein Raum ueber 10 Prozent. Raum 81 ist ausgenommen und in
+docs/rooms-excluded.txt begruendet.
+
+Gemessen wird jetzt Raum fuer Raum mit festem Aufnahmezeitpunkt (Bild 60, nach dem
+Sprung bei Bild 45), atomarer Bildausgabe und sofortigem Eintrag in die Ergebnisdatei;
+bereits Gemessenes wird uebersprungen, Raeume ohne Aufnahme werden wiederholt.
+
+Behobene Fehler dieser Reihe: Kamerafenster senkrecht, 8-Bit-Leseposition bei
+gescrollten Raeumen, Figuren unter grossen Kostuemen, Objektsichtbarkeit ueber
+Texturabgleich, Raumwechsel ueber Spielstand, HD-Schrift aus veralteten Puffern.
+
+Offen: Raum 40 (gescriptete Schiffsschlacht, Spielzustand bei der Aufnahme variiert
+zwischen 1,3 und 8,8 Prozent), Raum 81 (nicht anspringbar), Kostuem-Unterauswahl,
+HD-Schriften als Ganzes, Flimmern, HD-Videos ohne Ausgangsmaterial.
