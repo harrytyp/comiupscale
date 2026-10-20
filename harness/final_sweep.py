@@ -35,7 +35,11 @@ def dump(room, versuch=0):
     env = dict(os.environ, HD_DUMP_STEPS="1", HD_DUMP_REF="1", HD_LOAD_SLOT="1",
                HD_JUMP_ROOM=room, HD_DUMP_DIR=DUMPS,
                HD_EXIT_AFTER=str(FRAMES * (1 + versuch)),
-               HD_DUMP_AT=DUMP_AT)
+               HD_DUMP_AT=DUMP_AT,
+               # HD erst kurz vor der Aufnahme einschalten: die Komposition kostet je Bild
+               # das Vielfache der 8-Bit-Ausgabe, gebraucht wird sie fuer ein einziges Bild.
+               # Ein Raum dauert damit 10 statt 250 Sekunden.
+               HD_OFF_UNTIL=str(max(0, int(DUMP_AT) - 50)))
     # Alte Aufnahmen wegraeumen, damit eine fehlende Aufnahme nicht als Ergebnis
     # durchgeht: bleiben die Dateien vom Vorraum liegen, sehen alle Raeume gleich aus.
     for name in ("hd_ref.ppm", "hd_step_4_kostueme.ppm"):

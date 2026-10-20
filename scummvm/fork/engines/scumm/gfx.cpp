@@ -1415,6 +1415,16 @@ void ScummEngine::hdShiftCleanBackground(int dx) {
 }
 
 void ScummEngine::renderHDComposite() {
+	// Bis zum Aufnahmezeitpunkt nur 8-Bit zeichnen (HD_OFF_UNTIL=<jiffies>). Die
+	// HD-Komposition kostet je Bild das Vielfache der 8-Bit-Ausgabe; ohne sie laeuft die
+	// Spielzeit im selben Wall-Clock-Takt viel weiter. Der Spielzustand aendert sich nicht,
+	// nur die Darstellung, ab der Aufnahme ist HD wieder an.
+	if (const char *aus = getenv("HD_OFF_UNTIL")) {
+		const int bis = atoi(aus);
+		if (bis > 0 && VAR_TIMER_TOTAL != 0xFF && (int)VAR(VAR_TIMER_TOTAL) < bis)
+			return;
+	}
+
 	uint32 _hdFrameStartTime = _system->getMillis();
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 
