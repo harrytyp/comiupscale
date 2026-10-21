@@ -92,3 +92,20 @@ Schiffsschlacht: die Schiffe stehen im Aufnahmebild jedes Mal anders. Der Versat
 (harness/shift_probe.py) findet in beiden geprueften Laeufen den besten Versatz bei
 dx=0 dy=0 mit 0,8 und 2,7 Helligkeitsstufen (0,3 und 1,1 Prozent). Es fehlt also kein
 Inhalt; die Kennzahl des rohen Vergleichs misst den Moment, nicht die Darstellung.
+
+## Aufnahme-Pruefstand, Stand nach der Sichtpruefung
+
+Verlaesslich:
+- fester Zeitschritt (HD_FIXED_DELTA=20): zwei verschiedene Builds liefern dasselbe Bild
+- Raumspur: room.cpp schreibt den geladenen Raum nach work/dumps/hd_room.txt (41 und 82 geprueft)
+- Bildfolge: HD_DUMP_SEQ legt Paare ab, daraus laesst sich ein MP4 montieren
+- Das Kennzeichen _hdInventoryOpen wird jetzt je Bild zurueckgesetzt; vorher blieb es nach
+  dem ersten Oeffnen gesetzt und schaltete die Bildfolge dauerhaft ab
+
+Geprueft: Raum 41 = Schiff auf offener See, Segel intakt. Raum 82 = Eis-/Schneeszene
+(Seilbahnrad, Schienen), keine Segel.
+
+Offen: die loechrigen Segel aus der Sichtpruefung sind in keiner der geprueften Szenen.
+Es fehlt die Angabe, in welcher Szene sie auftreten. Alpha-Loecher sind gemessen
+(160/500 Kostueme, 64/500 Objekte) und werden geschlossen, aendern aber das Bild von
+Raum 41 nicht.
