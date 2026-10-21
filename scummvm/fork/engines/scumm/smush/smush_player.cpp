@@ -1210,7 +1210,20 @@ void SmushPlayer::unpause() {
 	}
 }
 
+// getenv ist in ScummVM gesperrt (common/forbidden.h); fuer die Aufnahmeschalter wird es
+// hier bewusst benutzt, wie in gfx.cpp und scumm.cpp auch.
+#undef getenv
+#define getenv(a) ::getenv(a)
+
 void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 startFrame) {
+	// Aufnahmen brauchen Spielverlauf, keine Zwischensequenz (HD_SKIP_SMUSH=1).
+	// COMI beginnt mit einer Nahaufnahme des Schilds am Scumm Bar; ohne diesen Schalter
+	// steht jeder Aufnahmelauf dort und sieht nie einen Raum.
+	if (getenv("HD_SKIP_SMUSH")) {
+		warning("HD: Zwischensequenz %s uebersprungen (HD_SKIP_SMUSH)", filename);
+		return;
+	}
+
 	// Verify the specified file exists
 	ScummFile *file = _vm->instantiateScummFile();
 

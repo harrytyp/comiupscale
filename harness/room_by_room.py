@@ -43,6 +43,17 @@ def messe(raum):
     if not (os.path.exists(ref_p) and os.path.exists(hd_p)):
         return None
     ref = load_ppm(ref_p)
+    # Pflichtpruefung: das Intro zeigt eine Nahaufnahme des Schilds am Scumm Bar. Ist das
+    # Bild damit identisch, wurde kein Raum aufgenommen, sondern der Intro-Ausschnitt.
+    # Ohne diese Pruefung besteht jede Schwelle, weil zwei gleiche Bilder verglichen werden.
+    intro_p = os.path.join(DUMPS, "intro_ref.ppm")
+    if os.path.exists(intro_p):
+        intro = load_ppm(intro_p)
+        if intro.shape == ref.shape and float(abs(int(ref.astype("int16").mean()) - int(intro.astype("int16").mean()))) < 1:
+            d = (ref.astype("int16") - intro.astype("int16"))
+            if float((d * d).mean()) ** 0.5 < 4.0:
+                print("Raum %s: Intro statt Raum (Bild identisch mit dem Anfang) — ungueltig" % raum, flush=True)
+                return None
     hd = scale_to(load_ppm(hd_p), ref.shape[1], ref.shape[0])
     return compare(ref, hd)
 

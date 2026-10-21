@@ -1415,6 +1415,13 @@ void ScummEngine::hdShiftCleanBackground(int dx) {
 }
 
 void ScummEngine::renderHDComposite() {
+	// Waehrend einer Zwischensequenz zeigt das Spiel ein Video. Dann darf keine HD-Ebene
+	// darueber: der HD-Hintergrund des Raums und die HD-Figuren kaemen ueber das Videobild,
+	// und es entstuende eine Mischung aus zwei Szenen (Banjo-Sequenz: Banjo in HD, dahinter
+	// der Himmel des Raums, davor die Szene am Hotel).
+	if (isSmushActive())
+		return;
+
 	// Bis zum Aufnahmezeitpunkt nur 8-Bit zeichnen (HD_OFF_UNTIL=<jiffies>). Die
 	// HD-Komposition kostet je Bild das Vielfache der 8-Bit-Ausgabe; ohne sie laeuft die
 	// Spielzeit im selben Wall-Clock-Takt viel weiter. Der Spielzustand aendert sich nicht,
@@ -2584,6 +2591,12 @@ int step2_fgPixels = 0;
 			}
 			if (!foundAnyLimb) {
 				step26_skipped++;
+				// Die Figur hat HD-Bilder, nur dieses Cel fehlt. Dann bleibt die Stelle
+				// leer: der 8-Bit-Rueckfall wuerde sie zwischen zwei Bildern abwechselnd
+				// zeigen und ausblenden. Das war das Flimmern von Guybrush unter der
+				// Sequenz, in der er gar nicht zu sehen sein soll.
+				if (_hdCostumeManager->hasCostumeId(a->_costume))
+					hdActorDrawn[ai & 0xFF] = 2;
 			}
 		}
 

@@ -24,6 +24,7 @@
 #include "scumm/hd_batch_decode.h"
 #include "scumm/hd_object_manager.h"
 #include "scumm/hd_fringe.h"
+#include "scumm/hd_costume_manager.h"
 #include "scumm/scumm.h"
 #include "common/config-manager.h"
 #include "common/debug.h"
@@ -116,6 +117,9 @@ bool HdObjectManager::loadPNG(const Common::String &path, Graphics::Surface &sur
 
 	// Remove white fringe halos from AI upscaling (alpha-edge artifacts).
 	removeWhiteFringe(surf);
+	// Loecher in der Deckkraft schliessen. Segel und andere grosse Flaechen sind
+	// Raumobjekte, nicht Kostueme: dort sassen die Loecher, die im Spiel auffielen.
+	hdFillAlphaHoles(surf, 3);
 
 	png.destroy();
 	return true;

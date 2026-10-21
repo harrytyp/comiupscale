@@ -20,6 +20,9 @@
  */
 
 
+// Roh-fopen fuer die Raumspur der Aufnahmelaeufe (wie in gfx.cpp).
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "common/system.h"
 #include "scumm/actor.h"
 #include "scumm/boxes.h"
@@ -320,6 +323,16 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
+				// Tatsaechlich geladenen Raum festhalten. Zweimal habe ich Reihen ueber
+				// Raeume gerechnet, in denen der Sprung woanders landete — das Protokoll
+				// ging beim Abschneiden verloren, eine Datei nicht.
+				{
+					FILE *raumSpur = fopen("/opt/data/projects/comi-hd/work/dumps/hd_room.txt", "w");
+					if (raumSpur) {
+						fprintf(raumSpur, "%d\n", room);
+						fclose(raumSpur);
+					}
+				}
 				// The HD pack upscales the FULL room image by an integer factor, so the
 				// scale is bg/room, never bg/screen. For the scrolling room 14 the old
 				// formula gave 5984/640 = 9 instead of 4 (Issue #20), and against the

@@ -3214,6 +3214,58 @@ void ScummEngine::scummLoop(int delta) {
 			delta = schritt;
 	}
 
+	// Tastendruecke fuer Aufnahmen (HD_AUTOKEYS="ms:code,ms:code"). ACHTUNG: dieser Weg
+	// ist wieder ausgebaut, weil er die Engine beim Start zum Absturz bringt (leerer
+	// Ausgabe, kein Log). Fuer echten Spielverlauf wird ein Spielstand gebraucht, der
+	// mitten im Spiel liegt.
+#if 0
+	if (const char *keys = getenv("HD_AUTOKEYS")) {
+		static const char *gemerkt = nullptr;
+		static char puffer[512];
+		static int anzahl = 0;
+		static int ms[32];
+		static int code[32];
+		static int naechster = 0;
+		static uint32 beginn = 0;
+		if (gemerkt != keys) {
+			gemerkt = keys;
+			Common::strlcpy(puffer, keys, sizeof(puffer));
+			anzahl = 0;
+			naechster = 0;
+			beginn = 0;
+			char *p = puffer;
+			while (p && *p && anzahl < 32) {
+				int t = atoi(p);
+				char *dp = strchr(p, ':');
+				if (!dp)
+					break;
+				int c = atoi(dp + 1);
+				ms[anzahl] = t;
+				code[anzahl] = c;
+				anzahl++;
+				p = strchr(dp + 1, ',');
+				if (p)
+					p++;
+			}
+		}
+		if (anzahl > 0) {
+			const uint32 jetzt = g_system->getMillis();
+			if (!beginn)
+				beginn = jetzt ? jetzt : 1;
+			while (naechster < anzahl && (int)(jetzt - beginn) >= ms[naechster]) {
+				Common::Event ev;
+				ev.type = Common::EVENT_KEYDOWN;
+				ev.kbd.keycode = (Common::KeyCode)code[naechster];
+				ev.kbd.ascii = (code[naechster] < 128) ? code[naechster] : 0;
+				g_system->getEventManager()->pushEvent(ev);
+				ev.type = Common::EVENT_KEYUP;
+				g_system->getEventManager()->pushEvent(ev);
+				naechster++;
+			}
+		}
+	}
+#endif
+
 	// Kamera festsetzen (HD_FIX_CAMERA="x,y"), bevor gezeichnet wird. Im Renderer gesetzt
 	// wirkt sie nur auf die HD-Ebene, waehrend das 8-Bit-Bild laengst mit der echten Kamera
 	// gezeichnet ist — dann vergleicht die Messung zwei Ausschnitte. Raum 40 (gescriptete
@@ -3285,6 +3337,7 @@ void ScummEngine::scummLoop(int delta) {
 				_sound->stopAllSounds();
 				startScene(room, nullptr, 0);
 				warning("hd_trace: HD_JUMP_ROOM -> startScene(%d)", room);
+
 			}
 		}
 	}

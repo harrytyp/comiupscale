@@ -42,6 +42,14 @@ class ScummEngine;
  * Costumes are drawn with z-ordering by the SCUMM engine; this manager
  * only handles texture replacement — the existing z-order pipeline is preserved.
  */
+/**
+ * Schliesst kleine Loecher in der Deckkraft einer Textur (durchsichtige Pixel INNEN in
+ * einer deckenden Flaeche). Betroffen sind 160 von 500 Kostuemen und 64 Objektbilder,
+ * bis zu 41.727 Pixel je Bild; im Spiel erscheinen sie als loechrige Flaechen.
+ * Wird auch fuer Raumobjekte benutzt (hd_object_manager.cpp).
+ */
+void hdFillAlphaHoles(Graphics::Surface &s, int passes = 3);
+
 class HdCostumeManager {
 public:
 	HdCostumeManager(ScummEngine *vm);
@@ -52,6 +60,14 @@ public:
 
 	/** Check if an HD costume frame exists for the given akosId and frame (searches all subs). */
 	bool hasCostume(int akosId, int frame) const;
+
+	/**
+	 * Gibt es fuer dieses Kostuem ueberhaupt HD-Bilder (irgendein Cel)?
+	 * Wird fuer den Rueckfall gebraucht: hat eine Figur HD-Bilder, darf fuer ein
+	 * fehlendes Cel nicht die 8-Bit-Fassung gezeichnet werden. In einer Sequenz wechselt
+	 * das Cel jedes Bild, dadurch flackerte Guybrush zwischen HD und 8 Bit.
+	 */
+	bool hasCostumeId(int akosId) const;
 
 	/**
 	 * Laedt ein Einzelbild einer Figur.

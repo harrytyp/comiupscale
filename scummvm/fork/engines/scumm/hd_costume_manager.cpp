@@ -247,6 +247,12 @@ bool HdCostumeManager::init(const Common::String &hdPath) {
 	return _enabled;
 }
 
+bool HdCostumeManager::hasCostumeId(int akosId) const {
+	if (!_enabled)
+		return false;
+	return _akosSubs.find(akosId) != _akosSubs.end();
+}
+
 bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 	if (!_enabled)
 		return false;
@@ -455,6 +461,65 @@ static void hdComputeRowSpans(const Graphics::Surface &surf, Common::Array<uint1
 	}
 }
 
+// Fuellt kleine Loecher in der Deckkraft. Die Kostuem-PNGs haben im Inneren
+// zusammenhaengender Flaechen durchsichtige Pixel (Artefakt der Extraktion); im Spiel
+// erscheinen sie als loechrige Segel. Gefuellt wird nur, was von mindestens zwei Seiten
+// deckend umgeben ist — der aeussere Rand bleibt damit erhalten, und die Rueckholung des
+// Hintergrunds an durchsichtigen Stellen greift weiterhin nur aussen.
+void hdFillAlphaHoles(Graphics::Surface &s, int passes) {
+	if (s.format.bytesPerPixel != 4)
+		return;
+	const int w = s.w, h = s.h;
+	if (w < 3 || h < 3)
+		return;
+	byte *mark = (byte *)calloc((size_t)w * h, 1);
+	uint32 *farbe = (uint32 *)calloc((size_t)w * h, sizeof(uint32));
+	if (!mark || !farbe) {
+		free(mark);
+		free(farbe);
+		return;
+	}
+	for (int pass = 0; pass < passes; pass++) {
+		memset(mark, 0, (size_t)w * h);
+		int gefuellt = 0;
+		for (int y = 1; y + 1 < h; y++) {
+			const uint32 *row = (const uint32 *)s.getBasePtr(0, y);
+			const uint32 *up = (const uint32 *)s.getBasePtr(0, y - 1);
+			const uint32 *dn = (const uint32 *)s.getBasePtr(0, y + 1);
+			for (int x = 1; x + 1 < w; x++) {
+				if ((row[x] >> 24) >= 128)
+					continue;
+				const uint32 nb[4] = { row[x - 1], row[x + 1], up[x], dn[x] };
+				int n = 0;
+				uint32 summe = 0;
+				for (int k = 0; k < 4; k++)
+					if ((nb[k] >> 24) >= 128) {
+						summe = nb[k];
+						n++;
+					}
+				if (n >= 2) {
+					const size_t p = (size_t)y * w + x;
+					mark[p] = 1;
+					farbe[p] = summe;
+					gefuellt++;
+				}
+			}
+		}
+		if (!gefuellt)
+			break;
+		for (int y = 1; y + 1 < h; y++) {
+			uint32 *row = (uint32 *)s.getBasePtr(0, y);
+			for (int x = 1; x + 1 < w; x++) {
+				const size_t p = (size_t)y * w + x;
+				if (mark[p])
+					row[x] = farbe[p];
+			}
+		}
+	}
+	free(mark);
+	free(farbe);
+}
+
 bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &dest,
                                    const Graphics::Surface **cachedOut) {
 	if (!_enabled)
@@ -514,6 +579,8 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		Graphics::Surface surf;
 		if (!loadPNG(path, surf))
 			continue;
+		// Loecher in der Deckkraft schliessen, bevor das Bild in den Zwischenspeicher geht.
+		hdFillAlphaHoles(surf, 3);
 
 		TextureCacheEntry entry;
 		entry.surface.copyFrom(surf);
