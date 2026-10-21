@@ -35,11 +35,19 @@ Bild, also hat ein Bild ein HD-Cel und das naechste nicht.
 
 Regel: hat eine Figur ueberhaupt ein HD-Kostuem, darf kein 8-Bit-Rueckfall greifen.
 
-## 4. Abgeschnittene Segel
+## 4. Loecher innerhalb der Segel
 
-Symptom: Segel sind an der Verbundgrenze beschnitten.
+Symptom (Sichtpruefung): die Segel sind innen loechrig, nicht am Rand beschnitten.
 
-Ursache: die Kostuemzeichnung wird am Verbundrand beschnitten statt darueber hinaus.
+Ursache: die Rueckholung des Hintergrunds an durchsichtigen Kostuem-Pixeln (eingebaut fuer
+Raum 89, Figur unter dem grossen Hand-Kostuem) greift auch INNEN in einer zusammenhaengenden
+HD-Flaeche. Ueberall dort, wo das 8-Bit-Bild an dieser Stelle keinen Vordergrund erkennt,
+wird ein Loch in die HD-Flaeche gestanzt.
+
+Richtig: die Rueckholung darf nur am AEUSSEREN Rand einer HD-Flaeche greifen. Vor dem
+Stanzen pruefen, ob das Pixel von geschlossener HD-Flaeche umgeben ist ("ist es ein
+Randpixel?"), und nur dann durchlassen. Das trennt "Figur unter dem Kostuem retten" von
+"Loecher ins Segel stanzen".
 
 ## Was am Pruefstand fehlt
 
