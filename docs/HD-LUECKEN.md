@@ -106,3 +106,26 @@ den Raumbild-Pfad (`redrawBGStrip`/Raumzeichnung).
 Nächster Schritt: dieselbe Regel im Raumbild-Pfad anwenden oder den 8-Bit-Bildschirm nach
 dem Laden des HD-Hintergrunds neu aufbauen. `_bgNeedsRedraw` beim Laden zu setzen hat
 nicht gereicht.
+
+## Drei Versuche, alle ohne Wirkung auf Raum 47
+
+| Versuch | Ergebnis |
+|---|---|
+| Vollbild-Objekt in `drawObject` überspringen | greift in Raum 87, nicht in 47 (keine SKIP-Zeile) |
+| `_bgNeedsRedraw` nach dem Laden des HD-Hintergrunds | keine Änderung |
+| Vollbild-Objekt aus `hdMissingMask` ausschließen | keine Änderung (98,3 % / 97,37 % unverändert) |
+
+**Der offene Widerspruch**, der als Nächstes geklärt werden muss:
+
+```
+Stichprobe der Vorlage gegen den Bildschirm:  0,8 % abweichend  (4800 Pixel, Raster 8)
+Schleife im Zeichenlauf:                     98,3 % Vordergrund (302080 von 307200)
+```
+
+Beide Zahlen stammen aus demselben Build, demselben Frame, denselben Puffern — und sie
+widersprechen sich. Also unterscheiden sie sich in etwas, das ich noch nicht sehe: anderer
+Puffer, anderer Zeitpunkt im Frame oder eine andere Zeilenbasis.
+
+Nächster Schritt: in der Schleife die ersten 20 abweichenden Pixel mit Koordinaten und
+beiden Farbindizes protokollieren. Damit ist in einem Lauf belegt, was dort wirklich
+verglichen wird, statt der dritten Hypothese zu folgen.
