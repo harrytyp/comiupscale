@@ -535,6 +535,7 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 	if (!_enabled)
 		return false;
 
+
 	// Search all available subs for this AKOS ID
 	if (!_akosSubs.contains(akosId))
 		return false;
@@ -590,6 +591,10 @@ bool HdCostumeManager::loadCostume(int akosId, int frame, Graphics::Surface &des
 		if (!loadPNG(path, surf))
 			continue;
 		// Loecher in der Deckkraft schliessen, bevor das Bild in den Zwischenspeicher geht.
+		// 3 Durchgaenge reichen fuer kleine Loecher. Ein Test mit 200 Durchgaengen (grosse
+		// Loecher, z. B. LFLF_0086_AKOS_0438 mit 30,3 Prozent innen) hat die Messung NICHT
+		// verbessert (Raum 86: 8,72 Prozent unveraendert) und den Lauf verlangsamt
+		// (80 -> 44 Bilder). Deshalb zurueck auf 3; die Loecher sind nicht die Ursache.
 		hdFillAlphaHoles(surf, 3);
 
 		TextureCacheEntry entry;

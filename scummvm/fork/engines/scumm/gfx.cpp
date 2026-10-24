@@ -2832,6 +2832,17 @@ int step2_fgPixels = 0;
 			const Graphics::Surface &hdCostumeSurf = hdCostumeOwn ? hdCostumeScratch : *hdCostumeSurfPtr;
 
 			// Validate surface
+			if (getenv("HD_SPY")) {
+				// Deckungsmessung: HD-Flaeche gegen die Flaeche, die die Engine als Figur fuehrt.
+				FILE *bf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_cost_bounds.log", "a");
+				if (bf) {
+					fprintf(bf, "ENTRY ai=%d akos=%d cel=%d hd=%dx%d engine=%dx%d top=%d bottom=%d pos=%d,%d\n",
+					        ai, (int)a->_costume, cel, (int)hdCostumeSurf.w, (int)hdCostumeSurf.h,
+					        (int)a->_width, (int)(a->_bottom - a->_top), (int)a->_top, (int)a->_bottom,
+					        a->getPos().x, a->getPos().y);
+					fclose(bf);
+				}
+			}
 			if (hdCostumeSurf.w <= 0 || hdCostumeSurf.h <= 0 ||
 				hdCostumeSurf.format.bytesPerPixel != 4) {
 				if (hdCostumeOwn) hdCostumeScratch.free();

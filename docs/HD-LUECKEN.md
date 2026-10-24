@@ -541,3 +541,28 @@ lädt es. Trotzdem bleibt die Figur in 8 Bit sichtbar (Abschalttest: ohne Figure
 Damit ist die Ursache auf die **Deckung** eingegrenzt: die 8-Bit-Silhouette der Figur ist
 größer als die Fläche, die die HD-Textur überdeckt — oder die Reihenfolge im Komposit lässt
 magenta stehen, wo die HD-Figur nicht hinreicht. Das ist die letzte Stelle vor dem Ziel.
+
+## Alpha-Löcher im Kostüm: gemessen, aber nicht die Ursache
+
+Die sichtbare Figur in Raum 86 ist `akos=438` (Datei `LFLF_0086_AKOS_0438_aframe_0.png`,
+672x544). Sie hat sehr viele durchsichtige Stellen **innerhalb** der Silhouette:
+
+```
+transparent gesamt   65,0 %
+Loecher innen        110.759 Pixel = 30,3 % der Bildflaeche
+```
+
+Das schien die Erklärung: die Engine zeichnet die HD-Figur, an den Löchern bleibt die
+8-Bit-Figur stehen. `hdFillAlphaHoles` lief mit 3 Durchgängen und füllt einen Ring pro
+Durchgang — also auf 200 erhöht und gemessen:
+
+```
+Raum 86: 8,72 % magenta — unveraendert (vorher 8,65-8,74)
+Nebenwirkung: Lauf deutlich langsamer (80 -> 44 Bilder je Messung)
+```
+
+Damit ist auch das widerlegt, und die Änderung wurde zurückgenommen. Die Löcher sind
+vorhanden, aber nicht die Ursache des 8-Bit-Rests.
+
+Offen bleibt damit allein die Deckungsfrage im Komposit: das Rechteck, in das die HD-Figur
+geschrieben wird, gegen die Fläche der 8-Bit-Figur im selben Bild.
