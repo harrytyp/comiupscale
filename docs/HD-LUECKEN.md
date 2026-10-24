@@ -38,6 +38,32 @@ der Raumhintergrund selbst ein solches Objekt: das HD-Bild ist geladen, wird abe
 Nachweis der Sichtbarkeit: mit `HD_TINT_8BIT=1` sind 97,4 Prozent des Bildes magenta, und
 der Vordergrundzähler meldet 302080 von 307200 Pixeln (98,3 Prozent).
 
+## Die Quelle der Pipeline ist selbst unvollständig
+
+Alle Objekt-Texturen entstehen aus `/opt/data/dist/comi-original-assets.zip`
+(`reupscale_objects.sh` liest ausschließlich daraus). In diesem ZIP liegen:
+
+```
+objects/  ->  1365 Bilder
+Raum 0003 ->   366 Bilder
+Raum 0047 ->     0 Bilder
+Raum 0041 ->     0 Bilder
+Raum 0089 ->     0 Bilder
+```
+
+Die 29 Räume fehlen also nicht erst beim Hochskalieren, sondern schon in der Rohsammlung.
+Der Fehler sitzt im Schritt, der dieses ZIP erzeugt, nicht im Upscaler und nicht in der
+Engine. Solange das ZIP unvollständig ist, kann kein noch so guter Fix am Renderer die
+Räume reparieren.
+
+Reihenfolge zum Beheben:
+
+1. ZIP für die 29 Räume ergänzen (Objekte aus den Spieldaten extrahieren)
+2. `bash scripts/reupscale_objects.sh --objects`
+3. `python scripts/build_object_map.py`
+4. `python scripts/check_texture_packs.py` und `python scripts/rebuild_texture_packs.py`
+5. Messung wiederholen (`HD_TINT_8BIT=1`), Magenta-Anteil vergleichen
+
 ## Nächste Schritte
 
 1. **Objekte für die 29 Räume extrahieren** und in die Textur-Packs aufnehmen
