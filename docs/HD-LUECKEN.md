@@ -391,3 +391,23 @@ Bei Kamera 592 fällt das genau auf:
 
 Das ist der sichtbare Rest. Das Objekt hat kein Bild in der Sammlung. Bei den anderen
 Räumen liegt derselbe Fall vor (`1350 soda-jerk-object`, Raum 86, ebenfalls 0 Assets).
+
+## Wie ScummVM das Objektbild holt (Code-Beleg)
+
+`getObjectImage` in `engines/scumm/object.cpp` (v8): `IMAG` → `WRAP` → `OFFS` + `BOMP/SMAP`.
+Fehlt der `IMAG`-Block, gibt die Funktion `nullptr` zurück und es wird **nichts** gezeichnet.
+
+Daraus folgen zwei Aussagen:
+
+1. Objekte, deren OBIM nur `IMHD` enthält, sind für das Bild unsichtbar — sie können keinen
+   8-Bit-Rest erzeugen. Die Magenta-Flächen stammen also von Objekten **mit** `IMAG`.
+2. Solche Objekte wiederum sind extrahierbar, und für Raum 86 wurden sechs erzeugt.
+
+Damit bleibt ein Widerspruch offen: die Fehlt-Maske nennt 21 Objekte für Raum 86, die
+Extraktion erzeugt sechs — und mindestens eines der genannten (1360
+`carnival-snowcone-sign`) hat weder in der Sammlung noch unter seinem Namen ein Bild.
+
+Nächster Schritt: die sechs extrahierten Namen den 21 Masken-Objekten gegenüberstellen.
+Damit steht fest, ob die Maske Objekte nennt, die gar nicht gezeichnet werden (dann ist die
+Maske zu weit), oder ob Bilder unter einem anderen Namen entstehen (dann ist die
+Namensbildung das Problem).
