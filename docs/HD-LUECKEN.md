@@ -586,3 +586,31 @@ entweder schon vorher abgedeckt oder er zeichnet nicht über sie.
 Zusammen mit dem Abschalttest (ohne Figuren: 0,00 Prozent) heißt das: die HD-Kostüme decken die
 8-Bit-Silhouette der Figur nur teilweise. Die verbleibenden 8,72 Prozent sind die Differenz
 zwischen 8-Bit-Figur und HD-Figur — Ausrichtung, Skalierung oder Form.
+
+## Die Kostümbilder sind da — sie werden nur nicht verwendet
+
+Raum 86 hat HD-Kostüme für **AKOS 0423 bis 0438** (16 Kostüme, 823 Dateien). Trotzdem bekommen
+nur **zwei** Akteure einen HD-Eintrag (`ai=18` → akos 432, `ai=20` → akos 438). Die übrigen
+werden 8 Bit gezeichnet, obwohl ihr Bild vorliegt.
+
+Die Restflächen sind kompakt und hoch, nicht flach — also Figuren/Requisiten, keine Schatten:
+
+```
+Flaeche 55808   58x100 Bildschirmpixel   Fuellung 0,60
+Flaeche 26276   42x84                    Fuellung 0,47
+Flaeche 10964   31x47                    Fuellung 0,47
+Flaeche  6640   22x24                    Fuellung 0,79
+```
+
+Der Ausfall ist damit im Sammelschritt der Einträge zu suchen (`gfx.cpp`, Schleife über
+`_actors` ab ~2700). Dort gibt es genau zwei stille Ausgänge, die keinen Eintrag erzeugen und
+nichts protokollieren:
+
+- `sameCel && firstCel > 0` ist falsch **und** die Limb-Schleife findet nichts, weil
+  `_hdNumLimbs == 0` ist oder alle `_hdLimbCel[li] <= 0` sind.
+- `!a->_visible` bzw. `_costume == 0` (zählt `step26_noCostume`, ohne Nummer).
+
+Der erste Fall ist der wahrscheinliche: ein Akteur ohne Limb-Daten erzeugt weder Eintrag noch
+Protokollzeile und bleibt damit vollständig in 8 Bit. Genau dort ist als Nächstes eine
+Protokollzeile mit `ai`, `_costume`, `_hdNumLimbs` und den Limb-Cels nötig — und für den Fall
+ohne Limb-Daten ein Rückfall auf das vollständige Kostümbild.
