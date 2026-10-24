@@ -91,3 +91,18 @@ Reihenfolge zum Beheben:
 Verglichen wurden Hintergründe, nie die einzelnen Texturen. Ein Vollbild-Objekt, das den
 HD-Hintergrund überdeckt, sieht in jeder Kennzahl „unauffällig" aus, weil das Bild ja zum
 Original passt — nur eben in der falschen Auflösung.
+
+## Versuch: Vollbild-Objekt nicht über HD zeichnen
+
+Regel eingebaut (`object.cpp`): deckt ein Objekt mindestens den Bildschirm ab und ist ein
+HD-Hintergrund für den Raum geladen, wird es nicht gezeichnet; jeder Fall landet in
+`work/dumps/hd_fullcover.log`.
+
+Ergebnis: die Regel greift in Raum 87 (`SKIP room=87 obj=1367`), **nicht in Raum 47**.
+Dort bleibt der Vordergrund bei 98,3 Prozent, und es erscheint keine SKIP-Zeile — das
+Vollbild wird also nach dem Raumsprung nicht über `drawObject` gezeichnet, sondern über
+den Raumbild-Pfad (`redrawBGStrip`/Raumzeichnung).
+
+Nächster Schritt: dieselbe Regel im Raumbild-Pfad anwenden oder den 8-Bit-Bildschirm nach
+dem Laden des HD-Hintergrunds neu aufbauen. `_bgNeedsRedraw` beim Laden zu setzen hat
+nicht gereicht.

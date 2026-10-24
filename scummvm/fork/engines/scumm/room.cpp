@@ -323,6 +323,12 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
+				// Nach dem Laden neu zeichnen lassen: das Spiel zeichnet ein Vollbild-Objekt
+				// (den Raumhintergrund) unter Umstaenden, bevor der HD-Hintergrund bereit
+				// ist. Dann greift die Regel "Vollbild-Objekt nicht ueber HD zeichnen"
+				// nicht, und die 8-Bit-Fassung bleibt liegen. Ein Neuzeichnen nach dem
+				// Laden raeumt das auf.
+				_bgNeedsRedraw = true;
 				// Tatsaechlich geladenen Raum festhalten. Zweimal habe ich Reihen ueber
 				// Raeume gerechnet, in denen der Sprung woanders landete — das Protokoll
 				// ging beim Abschneiden verloren, eine Datei nicht.

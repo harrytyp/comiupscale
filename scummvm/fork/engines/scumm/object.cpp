@@ -23,6 +23,7 @@
 #define FORBIDDEN_SYMBOL_ALLOW_ALL
 
 #include "scumm/actor.h"
+#include "scumm/hd_asset_manager.h"
 #include "scumm/bomp.h"
 #include "scumm/he/intern_he.h"
 #include "scumm/object.h"
@@ -652,6 +653,25 @@ void ScummEngine::drawObject(int obj, int scrollType) {
 		return;
 
 	ObjectData &od = _objs[obj];
+
+	// Ein Objekt, das den ganzen Bildschirm deckt, ist der Raumhintergrund selbst: das
+	// Spiel zeichnet ihn in COMI als Objekt. In 8 Bit ueber die HD-Ebene gelegt verdeckt es
+	// sie vollstaendig — in Raum 47 (Objekt 1367, 640x480) waren 97,4 Prozent des Bildes
+	// magenta, gemessen mit HD_TINT_8BIT. Fuer solche Objekte gibt es kein HD-Asset, weil
+	// sie mit dem Hintergrund identisch sind; deshalb wird hier nicht gezeichnet, wenn ein
+	// HD-Hintergrund fuer den Raum vorliegt.
+	if (_hdAssetManager && _hdAssetManager->isEnabled() && _hdCurrentRoom == _currentRoom &&
+	    _hdBackgroundSurface.getPixels() && od.width >= _screenWidth && od.height >= _screenHeight) {
+		if (getenv("HD_SPY")) {
+			FILE *vf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_fullcover.log", "a");
+			if (vf) {
+				fprintf(vf, "SKIP room=%d obj=%d w=%d h=%d\n", _currentRoom, od.obj_nr, od.width, od.height);
+				fclose(vf);
+			}
+		}
+		return;
+	}
+
 	// HD_SPY=1 schreibt mit, WELCHE 8-Bit-Textur gezeichnet wird: Objektnummer, Zustand,
 	// Lage und Groesse. Damit laesst sich eine fehlende HD-Textur im Code benennen, statt
 	// sie im Bild zu suchen.
