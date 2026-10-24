@@ -227,3 +227,28 @@ Räume 33, 44 und 41 gilt dasselbe Muster in kleinerem Umfang (4,5 / 3,4 / 1,2 P
 (25, 42, 43, 86), lieferten deshalb **null** Bilder, obwohl der Lauf sauber durchlief
 (`rc=0`, 240 Bilder). Jetzt schaltet auch das erfolgreiche Laden eines HD-Hintergrunds die
 Aufzeichnung scharf, sofern `HD_JUMP_ROOM` gesetzt ist. Raum 86 liefert damit 80 Bilder.
+
+## Klasse 2 gefunden: Assets vorhanden, Objekttabelle unvollständig
+
+Arbeitsliste erzeugt (`docs/fehlende-objekte.txt`, je Raum die Objekte, die ohne HD-Bild
+gezeichnet werden). Erstes Ergebnis:
+
+```
+Raum 15: 25 Objekte in der Fehlt-Maske, aber 21 HD-Assets vorhanden
+config/object_map.json: 560 Einträge, obj 398/399/403 fehlen
+hd/objects/0015_bottomless-mug-object_0000.png  u. a. existieren
+```
+
+Das ist **Klasse 2**: die Datei ist da, die Engine findet sie nicht, weil die Zuordnung
+Objektnummer → Name fehlt. Kein fehlendes Asset, kein Zeichenfehler — eine Lücke in der
+Tabelle.
+
+`scripts/build_object_map.py` läuft derzeit nicht durch:
+
+```
+ImportError: cannot import name 'load_resource' from 'nutcracker.sputm.resource'
+```
+
+Die Import-Pfade im Skript passen nicht zur installierten nutcracker-Version (die
+Extraktion selbst, `extract_all_raw.py`, benutzt andere Pfade und läuft). Das ist zu
+reparieren, bevor die Tabelle neu gebaut werden kann.
