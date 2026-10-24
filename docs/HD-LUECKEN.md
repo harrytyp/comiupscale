@@ -189,3 +189,21 @@ nachher: Vordergrund  1,0 %   Magenta  0,00 %
 Das Bild ist durchgehend HD, kein Magenta mehr. Im letzten Bild einer Folge steigt der
 Magenta-Anteil wieder auf 97 Prozent — dort wechselt die Szene (Inventar/Übergang), das ist
 der nächste eigene Fall.
+
+## Messung nach dem Fix (alle scrollenden Räume, HD_TINT_8BIT)
+
+Anteil der Bildfläche, der noch aus der 8-Bit-Ebene kommt:
+
+```
+0,00 %  22, 40, 45, 46, 47, 48, 49, 50, 51, 53, 55, 60, 75, 79
+0,01 %  14        0,02 %  61, 70
+0,86 %  15        1,17 %  41
+3,37 %  44        4,46 %  33
+8,02 %  86
+keine Aufnahme: 25, 42, 43
+```
+
+Vor dem Fix: Raum 47 bei 97,37 Prozent. Die Oberdecks 44 bis 51 lagen zwischen 0 und
+3,4 Prozent statt bei 97.
+
+Rohdaten: `docs/magenta-anteil-scrollende-raeume.csv`.
