@@ -2813,8 +2813,19 @@ int step2_fgPixels = 0;
 
 			Graphics::Surface hdCostumeScratch;
 			const Graphics::Surface *hdCostumeSurfPtr = nullptr;
-			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeScratch, &hdCostumeSurfPtr))
+			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeScratch, &hdCostumeSurfPtr)) {
+				// Diagnose: hasCostume() sagt "vorhanden", das Laden scheitert trotzdem — dann
+				// bleibt die Figur in 8 Bit, ohne dass irgendwo etwas auffaellt.
+				if (getenv("HD_SPY")) {
+					FILE *lf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_costume_loadfail.log", "a");
+					if (lf) {
+						fprintf(lf, "LOADFAIL akos=%d cel=%d actor=%d room=%d shadow=%d\n",
+						        (int)a->_costume, cel, ai, _currentRoom, (int)a->_shadowMode);
+						fclose(lf);
+					}
+				}
 				continue;
+			}
 			// Bei einem Treffer im Cache zeigt hdCostumeSurfPtr direkt auf die
 			// zwischengespeicherte Flaeche. Nur die eigene Kopie darf freigegeben werden.
 			const bool hdCostumeOwn = (hdCostumeSurfPtr == nullptr);

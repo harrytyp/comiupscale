@@ -527,3 +527,17 @@ Eintrags (Laden der Fläche oder Deckungsprüfung), nicht bei der Suche.
 
 Schalter: `HD_NO_OBJECTS` (object.cpp, `drawObject`), `HD_NO_ACTORS` (actor.cpp,
 `drawActorCostume`, nicht im Trefferpfad).
+
+## Figur gefunden, Laden in Ordnung — der Fehler liegt in der Deckung
+
+Zwei Wege, auf denen eine Figur stillschweigend in 8 Bit bleibt, sind jetzt protokolliert:
+
+- `hasCostume()` ohne Treffer → `hd_costume_miss.log` — **bleibt leer**
+- `loadCostume()` schlägt fehl → `hd_costume_loadfail.log` — **bleibt leer**
+
+Beide Dateien entstehen bei einem Raum-86-Lauf nicht. Die Engine findet das HD-Bild also und
+lädt es. Trotzdem bleibt die Figur in 8 Bit sichtbar (Abschalttest: ohne Figuren 0,00 Prozent).
+
+Damit ist die Ursache auf die **Deckung** eingegrenzt: die 8-Bit-Silhouette der Figur ist
+größer als die Fläche, die die HD-Textur überdeckt — oder die Reihenfolge im Komposit lässt
+magenta stehen, wo die HD-Figur nicht hinreicht. Das ist die letzte Stelle vor dem Ziel.
