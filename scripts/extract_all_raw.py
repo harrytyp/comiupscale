@@ -105,7 +105,7 @@ def extract_all(game_path, outdir):
                     except:
                         pass
 
-            print(f"  Room {room_id}: bg + objects saved")
+            print(f"  Room {room_id}: bg + {len(room_objects)} objects saved", flush=True)
 
     with open(outdir / 'mask_indices.json', 'w') as fh:
         json.dump(mask_manifest, fh, indent=2, sort_keys=True)
