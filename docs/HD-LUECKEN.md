@@ -434,3 +434,30 @@ Zustands-Spiegelung bleiben trotzdem richtige Korrekturen, sie beheben nur etwas
 Nächster Schritt: im Komposit je Bild die verwendeten Versätze mitschreiben (SD links, HD
 links, Skalierung) und mit der Lage des Streifens vergleichen. Damit ist die Stelle im Code
 benannt statt im Bild gesucht.
+
+## Der Rest ist die Vordergrund-Ebene des Raums
+
+Die Signalfarbe sitzt auf `palFg` — den Vordergrund-Pixeln des Raumbilds. Und genau diese
+Ebene fehlt in der gesamten Kette:
+
+```
+hd/              backgrounds, costumes, fonts, objects, objects_layers
+Roh-Extraktion   backgrounds, costumes, fonts, objects, objects_layers
+```
+
+Kein `foreground`, kein `SMAP`, kein `PF`. Die HD-Hintergründe wurden aus dem *Hintergrund*
+hochskaliert; die Vordergrund-Ebene zeichnet ScummVM zur Laufzeit darüber, und im HD-Satz gibt
+es dafür nichts. Wo der Vordergrund leer ist, fällt es nicht auf — deshalb sehen die meisten
+Räume sauber aus. In Raum 86 ist er ein senkrechter Streifen, und der wandert mit der Kamera,
+weil er Teil des Raumbilds ist.
+
+Das erklärt alle Beobachtungen auf einmal:
+
+- `hd_missing.log` bleibt leer — es ist kein Objekt.
+- Die OBIM ohne Bildblock sind irrelevant — sie werden nicht gezeichnet.
+- Der HD-Hintergrund ist deckend — der Vordergrund liegt darüber, nicht darin.
+- Der Streifen wandert mit der Kamera — er gehört zum Raum, nicht zu einem Objekt.
+
+Nächster Schritt: die Vordergrund-Ebene (PF/SMAP) extrahieren, hochskalieren und im Komposit
+über den HD-Hintergrund legen. Damit verschwindet der Rest — und zwar für alle Räume, nicht
+nur für Raum 86.
