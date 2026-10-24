@@ -1,0 +1,541 @@
+F=0 CURSOR_SET img=257 room=3 idx=1 mouse=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_SET img=257 room=3 idx=1 mouse=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_SET img=257 room=3 idx=1 mouse=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_SET img=105 room=3 idx=1 mouse=(104,56)
+F=0 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=0 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=0 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 9, 200 objects:
+F=0 ROOM OBJ: oi=21 obj=289 fl=0 state=0 pos=(40,232) sz=(224x72) name=
+F=0 ROOM OBJ: oi=20 obj=288 fl=0 state=0 pos=(288,336) sz=(64x72) name=
+F=0 ROOM OBJ: oi=19 obj=279 fl=0 state=1 pos=(216,184) sz=(184x32) name=ramrod-object
+F=0 ROOM OBJ: oi=18 obj=286 fl=0 state=0 pos=(240,48) sz=(224x80) name=
+F=0 ROOM OBJ: oi=17 obj=280 fl=0 state=0 pos=(384,352) sz=(24x24) name=hook-object
+F=0 ROOM OBJ: oi=16 obj=281 fl=0 state=0 pos=(0,0) sz=(8x8) name=
+F=0 ROOM OBJ: oi=15 obj=283 fl=0 state=0 pos=(0,0) sz=(8x8) name=
+F=0 ROOM OBJ: oi=14 obj=275 fl=0 state=1 pos=(432,112) sz=(136x232) name=cannon-treasure-door
+F=0 ROOM OBJ: oi=13 obj=284 fl=0 state=0 pos=(464,200) sz=(24x88) name=cannon-door-keyhole
+F=0 ROOM OBJ: oi=12 obj=285 fl=0 state=0 pos=(320,224) sz=(112x104) name=
+F=0 ROOM OBJ: oi=11 obj=287 fl=0 state=0 pos=(496,288) sz=(80x144) name=
+F=0 ROOM OBJ: oi=10 obj=276 fl=0 state=0 pos=(40,232) sz=(224x72) name=
+F=0 ROOM OBJ: oi=9 obj=282 fl=0 state=0 pos=(0,272) sz=(152x96) name=
+F=0 ROOM OBJ: oi=8 obj=278 fl=0 state=0 pos=(40,184) sz=(88x120) name=
+F=0 ROOM OBJ: oi=7 obj=277 fl=0 state=0 pos=(248,248) sz=(64x136) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 JEV EGO: actor=1 x=173 y=318 room=9
+F=0 JEV INV: count=0 objs=
+F=0 JEV ACT: obj=277 name= pos=(248,248) sz=(64x136) verbs=6,7,8,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=278 name= pos=(40,184) sz=(88x120) verbs=9 where=1 untouch=0
+F=0 JEV ACT: obj=282 name= pos=(0,272) sz=(152x96) verbs=6,7,8,15,18 where=1 untouch=0
+F=0 JEV ACT: obj=276 name= pos=(40,232) sz=(224x72) verbs=6,7,16 where=1 untouch=0
+F=0 JEV ACT: obj=287 name= pos=(496,288) sz=(80x144) verbs=6,7,8,15,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=285 name= pos=(320,224) sz=(112x104) verbs=6,7,16 where=1 untouch=0
+F=0 JEV ACT: obj=284 name=cannon-door-keyhole pos=(464,200) sz=(24x88) verbs=6,7,8,11,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=275 name=cannon-treasure-door pos=(432,112) sz=(136x232) verbs=6,7,8,18 where=1 untouch=0
+F=0 JEV ACT: obj=283 name= pos=(0,0) sz=(8x8) verbs=5,6 where=1 untouch=1
+F=0 JEV ACT: obj=281 name= pos=(0,0) sz=(8x8) verbs=5,6,7,8 where=1 untouch=1
+F=0 JEV ACT: obj=280 name=hook-object pos=(384,352) sz=(24x24) verbs=5,6,7,8,16 where=1 untouch=1
+F=0 JEV ACT: obj=286 name= pos=(240,48) sz=(224x80) verbs=6,7,8,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=279 name=ramrod-object pos=(216,184) sz=(184x32) verbs=5,6,7,8,15 where=1 untouch=0
+F=0 JEV ACT: obj=288 name= pos=(288,336) sz=(64x72) verbs=6,7,8,15,16,18 where=1 untouch=1
+F=0 JEV ACT: obj=289 name= pos=(40,232) sz=(224x72) verbs=6,7,16 where=1 untouch=1
+F=0 PREWARM: room 9 — 4 objects, 74 costume frames cached
+F=0 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=0 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=0 CULL obj=114 fl=3 visible=53200 invActive=0
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=2 skipped=0 culled=6
+F=0 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=0 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=0 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=0 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=0 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=0 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=1 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=1 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=1 ACTOR: id=1 costume=0002 cel=34 pos=(173,318) elev=0 xstart=0 scale=(195,195) w=24 top=123 bot=330 room=9 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=1 ACTOR: id=2 costume=0025 cel=192 pos=(0,381) elev=381 xstart=0 scale=(255,255) w=24 top=212 bot=387 room=9 hd=1 rel=(231,226) limb0=(231,226) nLimb=2 face=1
+F=1 ACTOR: id=12 costume=0026 cel=0 pos=(0,380) elev=380 xstart=0 scale=(255,255) w=24 top=219 bot=380 room=9 hd=1 rel=(4,219) limb0=(4,219) nLimb=1 face=1
+F=2 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=2 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=3 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=3 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=4 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=4 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=5 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=5 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=6 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=6 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=7 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=7 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=8 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=8 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=9 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=9 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=10 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=10 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=11 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=11 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=12 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=12 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=13 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=13 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=14 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=14 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=15 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=15 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=16 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=16 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=17 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=17 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=18 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=18 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=19 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=19 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=20 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=20 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=21 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=21 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=22 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=22 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=23 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=23 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=24 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=24 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=25 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=25 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=26 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=26 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=27 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=27 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=28 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=28 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=29 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=29 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=30 FRAME-TIMING: avg=58ms max=665ms FPS=17.2 (30 frames)
+F=30 F=30 JEV EGO: actor=1 x=173 y=318 room=9
+F=30 F=30 JEV INVTICK: count=0 objs=
+F=30 F=30 JEV INPUT: userPut=1 cutsceneDepth=0 leftBtn=0
+F=30 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=30 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=30 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=30 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=30 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=30 step2.5 objects: loaded=2 skipped=0 culled=6
+F=30 ACTOR: id=1 costume=0002 cel=34 pos=(173,318) elev=0 xstart=0 scale=(195,195) w=24 top=123 bot=330 room=9 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=30 ACTOR: id=2 costume=0025 cel=3 pos=(0,381) elev=381 xstart=0 scale=(255,255) w=24 top=212 bot=387 room=9 hd=1 rel=(231,226) limb0=(231,226) nLimb=2 face=1
+F=30 ACTOR: id=12 costume=0026 cel=0 pos=(0,380) elev=380 xstart=0 scale=(255,255) w=24 top=219 bot=380 room=9 hd=1 rel=(4,219) limb0=(4,219) nLimb=1 face=1
+F=30 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=30 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=30 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=30 costume HIT: actor=2 costume=0025 cel=3 pos=(996,848) surf=232x376 sort=381
+F=30 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=30 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=31 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=31 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=32 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=32 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=33 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=33 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=34 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=34 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=35 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=35 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=36 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=36 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=37 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=37 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=38 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=38 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=39 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=39 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=40 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=40 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=41 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=41 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=42 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=42 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=43 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=43 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=44 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=44 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=45 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=45 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=46 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=46 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=47 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=47 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=48 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=48 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=49 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=49 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=50 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=50 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=51 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=51 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=52 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=52 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=53 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=53 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=54 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=54 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=55 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=55 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=56 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=56 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=57 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=57 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=58 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=58 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=59 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=59 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=60 FRAME-TIMING: avg=44ms max=80ms FPS=22.7 (30 frames)
+F=60 F=60 JEV EGO: actor=1 x=173 y=318 room=9
+F=60 F=60 JEV INVTICK: count=0 objs=
+F=60 F=60 JEV INPUT: userPut=1 cutsceneDepth=0 leftBtn=0
+F=60 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=60 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=60 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=60 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=60 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=60 step2.5 objects: loaded=2 skipped=0 culled=6
+F=60 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=60 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=60 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=60 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=60 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=60 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=61 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=61 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=62 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=62 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=63 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=63 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=64 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=64 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=65 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=65 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=66 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=66 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=67 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=67 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=68 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=68 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=69 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=69 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=70 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=70 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=71 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=71 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=72 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=72 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=73 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=73 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=74 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=74 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=75 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=75 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=76 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=76 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=77 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=77 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=78 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=78 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=79 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=79 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=80 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=80 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=81 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=81 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=82 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=82 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=83 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=83 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=84 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=84 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=85 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=85 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=86 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=86 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=87 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=87 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=88 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=88 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=89 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=89 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=90 FRAME-TIMING: avg=35ms max=81ms FPS=28.6 (30 frames)
+F=90 F=90 JEV EGO: actor=1 x=173 y=318 room=9
+F=90 F=90 JEV INVTICK: count=0 objs=
+F=90 F=90 JEV INPUT: userPut=1 cutsceneDepth=0 leftBtn=0
+F=90 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=90 step2: fgPixels=53126/4915200 (1.1%) cleanValid=1
+F=90 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=90 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=90 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=90 step2.5 objects: loaded=2 skipped=0 culled=6
+F=90 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=90 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=90 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=90 costume HIT: actor=2 costume=0025 cel=32 pos=(996,848) surf=232x376 sort=381
+F=90 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=90 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=91 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=91 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=92 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=92 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=93 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=93 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=94 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=94 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=95 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=95 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=96 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=96 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=97 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=97 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=98 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=98 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=99 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=99 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=100 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=100 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=101 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=101 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=102 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=102 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=103 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=103 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=104 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=104 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=105 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=105 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=106 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=106 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=107 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=107 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=108 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=108 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=109 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=109 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=110 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=110 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=111 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=111 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=112 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=112 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=113 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=113 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=114 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=114 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=115 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=115 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=116 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=116 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=117 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=117 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=118 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=118 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=119 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=119 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=120 FRAME-TIMING: avg=35ms max=80ms FPS=28.6 (30 frames)
+F=120 F=120 JEV EGO: actor=1 x=173 y=318 room=9
+F=120 F=120 JEV INVTICK: count=0 objs=
+F=120 F=120 JEV INPUT: userPut=1 cutsceneDepth=0 leftBtn=0
+F=120 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=120 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=120 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=120 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=120 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=120 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=120 step2.5 objects: loaded=2 skipped=0 culled=6
+F=120 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=120 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=120 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=120 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=120 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=120 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=120 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=121 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=121 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=122 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=122 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=123 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=123 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=124 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=124 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=125 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=125 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=126 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=126 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=127 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=127 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=128 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=128 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=129 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=129 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=130 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=130 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=131 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=131 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=132 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=132 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=133 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=133 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=134 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=134 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=135 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=135 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=136 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=136 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=137 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=137 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=138 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=138 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=139 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=139 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=140 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=140 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=141 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=141 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=142 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=142 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=143 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=143 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=144 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=144 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=145 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=145 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=146 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=146 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=147 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=147 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=148 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=148 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=149 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=149 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=150 FRAME-TIMING: avg=34ms max=80ms FPS=29.4 (30 frames)
+F=150 F=150 JEV EGO: actor=1 x=173 y=318 room=9
+F=150 F=150 JEV INVTICK: count=0 objs=
+F=150 F=150 JEV INPUT: userPut=1 cutsceneDepth=0 leftBtn=0
+F=150 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=150 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=150 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=150 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=150 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=150 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=150 step2.5 objects: loaded=2 skipped=0 culled=6
+F=150 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=150 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=150 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=150 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=150 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=150 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=150 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=151 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=151 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=152 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=152 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=153 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=153 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=154 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=154 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=155 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=155 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=156 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=156 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=157 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=157 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=158 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=158 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=159 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=159 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=160 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=160 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=161 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=161 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20

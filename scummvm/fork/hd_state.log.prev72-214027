@@ -1,0 +1,2712 @@
+F=0 JEV RUNSCRIPT n=1 room=0
+F=0 JEV RUNSCRIPT n=4 room=0
+F=0 JEV RUNSCRIPT n=9 room=0
+F=0 JEV RUNSCRIPT n=86 room=0
+F=0 JEV RUNSCRIPT n=41 room=0
+F=0 JEV RUNSCRIPT n=39 room=0
+F=0 JEV RUNSCRIPT n=12 room=0
+F=0 JEV RUNSCRIPT n=24 room=0
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 JEV RUNSCRIPT n=45 room=0
+F=0 JEV RUNSCRIPT n=28 room=0
+F=0 JEV RUNSCRIPT n=111 room=0
+F=0 JEV RUNSCRIPT n=20 room=0
+F=0 JEV RUNSCRIPT n=24 room=0
+F=0 JEV RUNSCRIPT n=22 room=0
+F=0 JEV RUNSCRIPT n=21 room=0
+F=0 JEV RUNSCRIPT n=25 room=0
+F=0 JEV RUNSCRIPT n=71 room=0
+F=0 JEV RUNSCRIPT n=12 room=0
+F=0 JEV RUNSCRIPT n=24 room=0
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 JEV RUNSCRIPT n=45 room=0
+F=0 JEV RUNSCRIPT n=10 room=9
+F=0 JEV RUNSCRIPT n=18 room=9
+F=0 JEV RUNSCRIPT n=4 room=9
+F=0 JEV RUNSCRIPT n=2000 room=9
+F=0 JEV RUNSCRIPT n=2001 room=9
+F=0 JEV RUNSCRIPT n=2021 room=9
+F=0 JEV RUNSCRIPT n=2020 room=9
+F=0 JEV RUNSCRIPT n=20 room=9
+F=0 JEV RUNSCRIPT n=24 room=9
+F=0 JEV RUNSCRIPT n=22 room=9
+F=0 JEV RUNSCRIPT n=21 room=9
+F=0 JEV RUNSCRIPT n=25 room=9
+F=0 JEV RUNSCRIPT n=2014 room=9
+F=0 JEV RUNSCRIPT n=27 room=9
+F=0 JEV RUNSCRIPT n=27 room=9
+F=0 JEV RUNSCRIPT n=2018 room=9
+F=0 JEV RUNSCRIPT n=2002 room=9
+F=0 JEV RUNSCRIPT n=2017 room=9
+F=0 JEV RUNSCRIPT n=2017 room=9
+F=0 JEV RUNSCRIPT n=2019 room=9
+F=0 JEV RUNSCRIPT n=2019 room=9
+F=0 JEV RUNSCRIPT n=2019 room=9
+F=0 JEV RUNSCRIPT n=2006 room=9
+F=0 JEV RUNSCRIPT n=2003 room=9
+F=0 JEV RUNSCRIPT n=11 room=9
+F=0 JEV RUNSCRIPT n=19 room=9
+F=0 JEV RUNSCRIPT n=65 room=9
+F=0 JEV RUNSCRIPT n=29 room=9
+F=0 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=0 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=0 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 9, 200 objects:
+F=0 ROOM OBJ: oi=21 obj=289 fl=0 state=0 pos=(40,232) sz=(224x72) name=
+F=0 ROOM OBJ: oi=20 obj=288 fl=0 state=0 pos=(288,336) sz=(64x72) name=
+F=0 ROOM OBJ: oi=19 obj=279 fl=0 state=1 pos=(216,184) sz=(184x32) name=ramrod-object
+F=0 ROOM OBJ: oi=18 obj=286 fl=0 state=0 pos=(240,48) sz=(224x80) name=
+F=0 ROOM OBJ: oi=17 obj=280 fl=0 state=0 pos=(384,352) sz=(24x24) name=hook-object
+F=0 ROOM OBJ: oi=16 obj=281 fl=0 state=0 pos=(0,0) sz=(8x8) name=
+F=0 ROOM OBJ: oi=15 obj=283 fl=0 state=0 pos=(0,0) sz=(8x8) name=
+F=0 ROOM OBJ: oi=14 obj=275 fl=0 state=1 pos=(432,112) sz=(136x232) name=cannon-treasure-door
+F=0 ROOM OBJ: oi=13 obj=284 fl=0 state=0 pos=(464,200) sz=(24x88) name=cannon-door-keyhole
+F=0 ROOM OBJ: oi=12 obj=285 fl=0 state=0 pos=(320,224) sz=(112x104) name=
+F=0 ROOM OBJ: oi=11 obj=287 fl=0 state=0 pos=(496,288) sz=(80x144) name=
+F=0 ROOM OBJ: oi=10 obj=276 fl=0 state=0 pos=(40,232) sz=(224x72) name=
+F=0 ROOM OBJ: oi=9 obj=282 fl=0 state=0 pos=(0,272) sz=(152x96) name=
+F=0 ROOM OBJ: oi=8 obj=278 fl=0 state=0 pos=(40,184) sz=(88x120) name=
+F=0 ROOM OBJ: oi=7 obj=277 fl=0 state=0 pos=(248,248) sz=(64x136) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 JEV EGO: actor=1 x=173 y=318 room=9
+F=0 JEV INV: count=0 objs=
+F=0 JEV ACT: obj=277 name= pos=(248,248) sz=(64x136) verbs=6,7,8,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=278 name= pos=(40,184) sz=(88x120) verbs=9 where=1 untouch=0
+F=0 JEV ACT: obj=282 name= pos=(0,272) sz=(152x96) verbs=6,7,8,15,18 where=1 untouch=0
+F=0 JEV ACT: obj=276 name= pos=(40,232) sz=(224x72) verbs=6,7,16 where=1 untouch=0
+F=0 JEV ACT: obj=287 name= pos=(496,288) sz=(80x144) verbs=6,7,8,15,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=285 name= pos=(320,224) sz=(112x104) verbs=6,7,16 where=1 untouch=0
+F=0 JEV ACT: obj=284 name=cannon-door-keyhole pos=(464,200) sz=(24x88) verbs=6,7,8,11,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=275 name=cannon-treasure-door pos=(432,112) sz=(136x232) verbs=6,7,8,18 where=1 untouch=0
+F=0 JEV ACT: obj=283 name= pos=(0,0) sz=(8x8) verbs=5,6 where=1 untouch=1
+F=0 JEV ACT: obj=281 name= pos=(0,0) sz=(8x8) verbs=5,6,7,8 where=1 untouch=1
+F=0 JEV ACT: obj=280 name=hook-object pos=(384,352) sz=(24x24) verbs=5,6,7,8,16 where=1 untouch=1
+F=0 JEV ACT: obj=286 name= pos=(240,48) sz=(224x80) verbs=6,7,8,15,16,17,18 where=1 untouch=0
+F=0 JEV ACT: obj=279 name=ramrod-object pos=(216,184) sz=(184x32) verbs=5,6,7,8,15 where=1 untouch=0
+F=0 JEV ACT: obj=288 name= pos=(288,336) sz=(64x72) verbs=6,7,8,15,16,18 where=1 untouch=1
+F=0 JEV ACT: obj=289 name= pos=(40,232) sz=(224x72) verbs=6,7,16 where=1 untouch=1
+F=0 PREWARM: room 9 — 4 objects, 74 costume frames cached
+F=0 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=0 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=0 CULL obj=114 fl=3 visible=53200 invActive=0
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=2 skipped=0 culled=6
+F=0 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=0 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=0 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=0 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=0 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=0 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=1 JEV RUNSCRIPT n=27 room=9
+F=1 JEV RUNSCRIPT n=27 room=9
+F=1 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=1 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=1 ACTOR: id=1 costume=0002 cel=34 pos=(173,318) elev=0 xstart=0 scale=(195,195) w=24 top=123 bot=330 room=9 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=1 ACTOR: id=2 costume=0025 cel=192 pos=(0,381) elev=381 xstart=0 scale=(255,255) w=24 top=212 bot=387 room=9 hd=1 rel=(231,226) limb0=(231,226) nLimb=2 face=1
+F=1 ACTOR: id=12 costume=0026 cel=0 pos=(0,380) elev=380 xstart=0 scale=(255,255) w=24 top=219 bot=380 room=9 hd=1 rel=(4,219) limb0=(4,219) nLimb=1 face=1
+F=2 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=2 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=3 JEV RUNSCRIPT n=27 room=9
+F=3 JEV RUNSCRIPT n=27 room=9
+F=3 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=3 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=4 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=4 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=5 JEV RUNSCRIPT n=27 room=9
+F=5 JEV RUNSCRIPT n=27 room=9
+F=5 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=5 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=6 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=6 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=7 JEV RUNSCRIPT n=27 room=9
+F=7 JEV RUNSCRIPT n=27 room=9
+F=7 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=7 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=8 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=8 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=9 JEV RUNSCRIPT n=27 room=9
+F=9 JEV RUNSCRIPT n=27 room=9
+F=9 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=9 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=10 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=10 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=9
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=9
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=9
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=9
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=9
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=9
+F=11 JEV RUNSCRIPT n=27 room=9
+F=11 JEV RUNSCRIPT n=27 room=9
+F=11 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=11 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=12 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=12 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=13 JEV RUNSCRIPT n=27 room=9
+F=13 JEV RUNSCRIPT n=27 room=9
+F=13 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=13 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=14 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=14 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=15 JEV RUNSCRIPT n=27 room=9
+F=15 JEV RUNSCRIPT n=27 room=9
+F=15 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=15 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=16 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=16 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=17 JEV RUNSCRIPT n=27 room=9
+F=17 JEV RUNSCRIPT n=27 room=9
+F=17 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=17 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=18 JEV RUNSCRIPT n=2005 room=9
+F=18 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=18 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=19 JEV RUNSCRIPT n=27 room=9
+F=19 JEV RUNSCRIPT n=27 room=9
+F=19 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=19 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=20 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=20 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=21 JEV RUNSCRIPT n=27 room=9
+F=21 JEV RUNSCRIPT n=27 room=9
+F=21 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=21 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=22 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=22 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=23 JEV RUNSCRIPT n=27 room=9
+F=23 JEV RUNSCRIPT n=27 room=9
+F=23 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=23 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=24 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=24 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=25 JEV RUNSCRIPT n=27 room=9
+F=25 JEV RUNSCRIPT n=27 room=9
+F=25 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=25 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=26 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=26 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=27 JEV RUNSCRIPT n=27 room=9
+F=27 JEV RUNSCRIPT n=27 room=9
+F=27 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=27 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=28 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=28 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=29 JEV RUNSCRIPT n=27 room=9
+F=29 JEV RUNSCRIPT n=27 room=9
+F=29 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=29 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=30 FRAME-TIMING: avg=63ms max=682ms FPS=15.9 (30 frames)
+F=30 F=30 JEV EGO: actor=1 x=173 y=318 room=9
+F=30 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=30 step2: fgPixels=53125/4915200 (1.1%) cleanValid=1
+F=30 step2 invArea: fg=459872/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=30 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=30 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=30 step2.5 objects: loaded=2 skipped=0 culled=6
+F=30 ACTOR: id=1 costume=0002 cel=34 pos=(173,318) elev=0 xstart=0 scale=(195,195) w=24 top=123 bot=330 room=9 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=30 ACTOR: id=2 costume=0025 cel=148 pos=(0,381) elev=381 xstart=0 scale=(255,255) w=24 top=212 bot=386 room=9 hd=1 rel=(232,212) limb0=(232,212) nLimb=1 face=1
+F=30 ACTOR: id=12 costume=0026 cel=12 pos=(0,380) elev=380 xstart=0 scale=(255,255) w=24 top=200 bot=378 room=9 hd=1 rel=(112,200) limb0=(112,200) nLimb=1 face=1
+F=30 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=30 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=30 costume HIT: actor=12 costume=0026 cel=12 pos=(448,800) surf=24x20 sort=380
+F=30 costume HIT: actor=2 costume=0025 cel=148 pos=(928,848) surf=344x696 sort=381
+F=30 step2.6 costumes: loaded=4 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=8453 (optimized: 8-bit scan)
+F=31 JEV RUNSCRIPT n=27 room=9
+F=31 JEV RUNSCRIPT n=27 room=9
+F=31 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=31 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=32 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=32 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=33 JEV RUNSCRIPT n=27 room=9
+F=33 JEV RUNSCRIPT n=27 room=9
+F=33 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=33 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=34 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=34 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=35 JEV RUNSCRIPT n=27 room=9
+F=35 JEV RUNSCRIPT n=27 room=9
+F=35 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=35 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=36 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=36 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=37 JEV RUNSCRIPT n=27 room=9
+F=37 JEV RUNSCRIPT n=27 room=9
+F=37 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=37 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=38 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=38 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=39 JEV RUNSCRIPT n=27 room=9
+F=39 JEV RUNSCRIPT n=27 room=9
+F=39 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=39 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=40 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=40 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=41 JEV RUNSCRIPT n=27 room=9
+F=41 JEV RUNSCRIPT n=27 room=9
+F=41 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=41 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=42 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=42 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=43 JEV RUNSCRIPT n=27 room=9
+F=43 JEV RUNSCRIPT n=27 room=9
+F=43 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=43 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=44 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=44 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=45 JEV RUNSCRIPT n=27 room=9
+F=45 JEV RUNSCRIPT n=27 room=9
+F=45 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=45 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=46 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=46 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=47 JEV RUNSCRIPT n=27 room=9
+F=47 JEV RUNSCRIPT n=27 room=9
+F=47 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=47 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=48 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=19/19
+F=48 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=49 JEV RUNSCRIPT n=27 room=9
+F=49 JEV RUNSCRIPT n=27 room=9
+F=49 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=49 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=50 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=50 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=51 JEV RUNSCRIPT n=27 room=9
+F=51 JEV RUNSCRIPT n=27 room=9
+F=51 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=51 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=52 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=52 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=53 JEV RUNSCRIPT n=27 room=9
+F=53 JEV RUNSCRIPT n=27 room=9
+F=53 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=53 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=54 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=54 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=55 JEV RUNSCRIPT n=27 room=9
+F=55 JEV RUNSCRIPT n=27 room=9
+F=55 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=55 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=56 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=56 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=57 JEV RUNSCRIPT n=27 room=9
+F=57 JEV RUNSCRIPT n=27 room=9
+F=57 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=57 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=58 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=58 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=59 JEV RUNSCRIPT n=27 room=9
+F=59 JEV RUNSCRIPT n=27 room=9
+F=59 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=59 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=60 FRAME-TIMING: avg=41ms max=139ms FPS=24.4 (30 frames)
+F=60 F=60 JEV EGO: actor=1 x=173 y=318 room=9
+F=60 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=60 step2: fgPixels=53138/4915200 (1.1%) cleanValid=1
+F=60 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=60 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=60 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=60 step2.5 objects: loaded=2 skipped=0 culled=6
+F=60 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=60 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=60 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=60 costume HIT: actor=2 costume=0025 cel=33 pos=(996,848) surf=232x380 sort=381
+F=60 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=60 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=61 JEV RUNSCRIPT n=27 room=9
+F=61 JEV RUNSCRIPT n=27 room=9
+F=61 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=61 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=62 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=62 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=63 JEV RUNSCRIPT n=27 room=9
+F=63 JEV RUNSCRIPT n=27 room=9
+F=63 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=63 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=64 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=64 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=65 JEV RUNSCRIPT n=27 room=9
+F=65 JEV RUNSCRIPT n=27 room=9
+F=65 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=65 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=66 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=66 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=67 JEV RUNSCRIPT n=27 room=9
+F=67 JEV RUNSCRIPT n=27 room=9
+F=67 JEV RUNSCRIPT n=2005 room=9
+F=67 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=67 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=68 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=68 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=69 JEV RUNSCRIPT n=27 room=9
+F=69 JEV RUNSCRIPT n=27 room=9
+F=69 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=69 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=70 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=70 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=71 JEV RUNSCRIPT n=27 room=9
+F=71 JEV RUNSCRIPT n=27 room=9
+F=71 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=71 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=72 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=72 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=73 JEV RUNSCRIPT n=27 room=9
+F=73 JEV RUNSCRIPT n=27 room=9
+F=73 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=73 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=74 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=74 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=75 JEV RUNSCRIPT n=27 room=9
+F=75 JEV RUNSCRIPT n=27 room=9
+F=75 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=75 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=76 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=76 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=77 JEV RUNSCRIPT n=27 room=9
+F=77 JEV RUNSCRIPT n=27 room=9
+F=77 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=77 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=78 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=78 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=79 JEV RUNSCRIPT n=27 room=9
+F=79 JEV RUNSCRIPT n=27 room=9
+F=79 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=79 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=80 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=80 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=81 JEV RUNSCRIPT n=27 room=9
+F=81 JEV RUNSCRIPT n=27 room=9
+F=81 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=81 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=82 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=82 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=83 JEV RUNSCRIPT n=27 room=9
+F=83 JEV RUNSCRIPT n=27 room=9
+F=83 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=83 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=84 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=84 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=85 JEV RUNSCRIPT n=27 room=9
+F=85 JEV RUNSCRIPT n=27 room=9
+F=85 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=85 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=86 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=86 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=87 JEV RUNSCRIPT n=27 room=9
+F=87 JEV RUNSCRIPT n=27 room=9
+F=87 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=87 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=88 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=88 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=89 JEV RUNSCRIPT n=27 room=9
+F=89 JEV RUNSCRIPT n=27 room=9
+F=89 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=89 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=90 FRAME-TIMING: avg=34ms max=80ms FPS=29.4 (30 frames)
+F=90 F=90 JEV EGO: actor=1 x=173 y=318 room=9
+F=90 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=90 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=90 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=90 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=90 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=90 step2.5 objects: loaded=2 skipped=0 culled=6
+F=90 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=90 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=90 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=90 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=90 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=90 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=91 JEV RUNSCRIPT n=27 room=9
+F=91 JEV RUNSCRIPT n=27 room=9
+F=91 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=91 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=92 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=92 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=93 JEV RUNSCRIPT n=27 room=9
+F=93 JEV RUNSCRIPT n=27 room=9
+F=93 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=93 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=94 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=94 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=95 JEV RUNSCRIPT n=27 room=9
+F=95 JEV RUNSCRIPT n=27 room=9
+F=95 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=95 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=96 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=96 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=97 JEV RUNSCRIPT n=27 room=9
+F=97 JEV RUNSCRIPT n=27 room=9
+F=97 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=97 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=98 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=98 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=99 JEV RUNSCRIPT n=27 room=9
+F=99 JEV RUNSCRIPT n=27 room=9
+F=99 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=99 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=100 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=100 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=101 JEV RUNSCRIPT n=27 room=9
+F=101 JEV RUNSCRIPT n=27 room=9
+F=101 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=101 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=102 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=102 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=103 JEV RUNSCRIPT n=27 room=9
+F=103 JEV RUNSCRIPT n=27 room=9
+F=103 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=103 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=104 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=104 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=105 JEV RUNSCRIPT n=27 room=9
+F=105 JEV RUNSCRIPT n=27 room=9
+F=105 JEV RUNSCRIPT n=2005 room=9
+F=105 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=105 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=106 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=106 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=107 JEV RUNSCRIPT n=27 room=9
+F=107 JEV RUNSCRIPT n=27 room=9
+F=107 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=107 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=108 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=108 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=109 JEV RUNSCRIPT n=27 room=9
+F=109 JEV RUNSCRIPT n=27 room=9
+F=109 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=109 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=110 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=110 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=111 JEV RUNSCRIPT n=27 room=9
+F=111 JEV RUNSCRIPT n=27 room=9
+F=111 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=111 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=112 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=112 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=113 JEV RUNSCRIPT n=27 room=9
+F=113 JEV RUNSCRIPT n=27 room=9
+F=113 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=113 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=114 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=114 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=115 JEV RUNSCRIPT n=27 room=9
+F=115 JEV RUNSCRIPT n=27 room=9
+F=115 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=115 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=116 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=116 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=117 JEV RUNSCRIPT n=27 room=9
+F=117 JEV RUNSCRIPT n=27 room=9
+F=117 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=117 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=118 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=118 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=119 JEV RUNSCRIPT n=27 room=9
+F=119 JEV RUNSCRIPT n=27 room=9
+F=119 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=119 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=120 FRAME-TIMING: avg=35ms max=80ms FPS=28.6 (30 frames)
+F=120 F=120 JEV EGO: actor=1 x=173 y=318 room=9
+F=120 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=120 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=120 step2: fgPixels=53119/4915200 (1.1%) cleanValid=1
+F=120 step2 invArea: fg=458368/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=120 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=120 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=120 step2.5 objects: loaded=2 skipped=0 culled=6
+F=120 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=120 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=120 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=120 costume HIT: actor=2 costume=0025 cel=192 pos=(996,848) surf=232x376 sort=381
+F=120 costume HIT: actor=2 costume=0025 cel=5 pos=(924,904) surf=352x644 sort=381
+F=120 step2.6 costumes: loaded=5 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=120 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=121 JEV RUNSCRIPT n=27 room=9
+F=121 JEV RUNSCRIPT n=27 room=9
+F=121 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=121 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=122 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=122 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=123 JEV RUNSCRIPT n=27 room=9
+F=123 JEV RUNSCRIPT n=27 room=9
+F=123 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=123 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=124 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=124 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=125 JEV RUNSCRIPT n=27 room=9
+F=125 JEV RUNSCRIPT n=27 room=9
+F=125 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=125 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=126 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=126 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=127 JEV RUNSCRIPT n=27 room=9
+F=127 JEV RUNSCRIPT n=27 room=9
+F=127 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=127 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=128 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=128 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=129 JEV RUNSCRIPT n=27 room=9
+F=129 JEV RUNSCRIPT n=27 room=9
+F=129 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=129 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=130 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=130 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=131 JEV RUNSCRIPT n=27 room=9
+F=131 JEV RUNSCRIPT n=27 room=9
+F=131 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=131 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=132 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=132 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=133 JEV RUNSCRIPT n=27 room=9
+F=133 JEV RUNSCRIPT n=27 room=9
+F=133 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=133 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=134 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=134 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=135 JEV RUNSCRIPT n=27 room=9
+F=135 JEV RUNSCRIPT n=27 room=9
+F=135 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=135 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=136 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=136 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=137 JEV RUNSCRIPT n=27 room=9
+F=137 JEV RUNSCRIPT n=27 room=9
+F=137 JEV RUNSCRIPT n=2005 room=9
+F=137 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=137 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=138 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=138 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=139 JEV RUNSCRIPT n=27 room=9
+F=139 JEV RUNSCRIPT n=27 room=9
+F=139 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=139 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=140 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=140 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=141 JEV RUNSCRIPT n=27 room=9
+F=141 JEV RUNSCRIPT n=27 room=9
+F=141 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=141 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=142 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=142 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=143 JEV RUNSCRIPT n=27 room=9
+F=143 JEV RUNSCRIPT n=27 room=9
+F=143 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=143 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=144 JEV SAY: Ladestock
+F=144 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=144 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=145 JEV SAY: Ladestock
+F=145 JEV RUNSCRIPT n=27 room=9
+F=145 JEV RUNSCRIPT n=27 room=9
+F=145 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=145 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=146 JEV SAY: Ladestock
+F=146 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=146 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=147 JEV SAY: Ladestock
+F=147 JEV RUNSCRIPT n=27 room=9
+F=147 JEV RUNSCRIPT n=27 room=9
+F=147 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=147 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=148 JEV SAY: Ladestock
+F=148 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=148 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=149 JEV SAY: Ladestock
+F=149 JEV RUNSCRIPT n=27 room=9
+F=149 JEV RUNSCRIPT n=27 room=9
+F=149 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=149 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=150 FRAME-TIMING: avg=35ms max=81ms FPS=28.6 (30 frames)
+F=150 F=150 JEV EGO: actor=1 x=173 y=318 room=9
+F=150 JEV SAY: Ladestock
+F=150 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=150 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=150 step2: fgPixels=53078/4915200 (1.1%) cleanValid=1
+F=150 step2 invArea: fg=458432/2867200 (16.0%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=150 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=150 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=150 step2.5 objects: loaded=2 skipped=0 culled=6
+F=150 costume HIT: actor=1 costume=0002 cel=34 pos=(640,488) surf=152x260 sort=318
+F=150 costume HIT: actor=1 costume=0002 cel=22 pos=(572,664) surf=332x856 sort=318
+F=150 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=150 costume HIT: actor=2 costume=0025 cel=148 pos=(928,848) surf=344x696 sort=381
+F=150 step2.6 costumes: loaded=4 skipped=77 (noCostume=77 noCel=0 noHdCostume=0 loadFail=0)
+F=150 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=150 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=151 JEV RUNSCRIPT n=32 room=9
+F=151 JEV RUNSCRIPT n=38 room=9
+F=151 JEV RUNSCRIPT n=45 room=9
+F=151 JEV SAY: Ladestock
+F=151 JEV RUNSCRIPT n=27 room=9
+F=151 JEV RUNSCRIPT n=27 room=9
+F=151 JEV RUNSCRIPT n=40 room=9
+F=151 JEV RUNSCRIPT n=45 room=9
+F=151 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=151 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=152 JEV SAY: Ladestock
+F=152 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=152 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=153 JEV SAY: Ladestock
+F=153 JEV RUNSCRIPT n=27 room=9
+F=153 JEV RUNSCRIPT n=27 room=9
+F=153 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=153 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=154 JEV RUNSCRIPT n=32 room=9
+F=154 JEV RUNSCRIPT n=38 room=9
+F=154 JEV RUNSCRIPT n=37 room=9
+F=154 JEV RUNSCRIPT n=34 room=9
+F=154 JEV SAY: Ladestock
+F=154 JEV RUNSCRIPT n=23 room=9
+F=154 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=154 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=155 JEV SAY: Ladestock
+F=155 JEV RUNSCRIPT n=27 room=9
+F=155 JEV RUNSCRIPT n=27 room=9
+F=155 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=155 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=156 JEV SAY: Ladestock
+F=156 JEV RUNSCRIPT n=42 room=9
+F=156 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=156 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=157 JEV RUNSCRIPT n=63 room=9
+F=157 JEV RUNSCRIPT n=64 room=9
+F=157 JEV RUNSCRIPT n=62 room=9
+F=157 JEV SAY: Ladestock
+F=157 JEV RUNSCRIPT n=27 room=9
+F=157 JEV RUNSCRIPT n=27 room=9
+F=157 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=157 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=158 JEV RUNSCRIPT n=63 room=9
+F=158 JEV RUNSCRIPT n=64 room=9
+F=158 JEV RUNSCRIPT n=62 room=9
+F=158 JEV SAY: Ladestock
+F=158 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=158 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=159 JEV RUNSCRIPT n=63 room=9
+F=159 JEV RUNSCRIPT n=64 room=9
+F=159 JEV RUNSCRIPT n=62 room=9
+F=159 JEV SAY: Ladestock
+F=159 JEV RUNSCRIPT n=27 room=9
+F=159 JEV RUNSCRIPT n=27 room=9
+F=159 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=159 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=160 JEV RUNSCRIPT n=63 room=9
+F=160 JEV RUNSCRIPT n=64 room=9
+F=160 JEV RUNSCRIPT n=62 room=9
+F=160 JEV SAY: Ladestock
+F=160 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=160 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=161 JEV RUNSCRIPT n=63 room=9
+F=161 JEV RUNSCRIPT n=64 room=9
+F=161 JEV RUNSCRIPT n=62 room=9
+F=161 JEV SAY: Ladestock
+F=161 JEV RUNSCRIPT n=27 room=9
+F=161 JEV RUNSCRIPT n=27 room=9
+F=161 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=161 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=162 JEV RUNSCRIPT n=63 room=9
+F=162 JEV RUNSCRIPT n=64 room=9
+F=162 JEV RUNSCRIPT n=62 room=9
+F=162 JEV SAY: Ladestock
+F=162 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=162 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=163 JEV RUNSCRIPT n=63 room=9
+F=163 JEV RUNSCRIPT n=64 room=9
+F=163 JEV RUNSCRIPT n=62 room=9
+F=163 JEV SAY: Ladestock
+F=163 JEV RUNSCRIPT n=27 room=9
+F=163 JEV RUNSCRIPT n=27 room=9
+F=163 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=163 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=164 JEV RUNSCRIPT n=63 room=9
+F=164 JEV RUNSCRIPT n=64 room=9
+F=164 JEV RUNSCRIPT n=62 room=9
+F=164 JEV SAY: Ladestock
+F=164 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=164 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=165 JEV RUNSCRIPT n=63 room=9
+F=165 JEV RUNSCRIPT n=64 room=9
+F=165 JEV RUNSCRIPT n=62 room=9
+F=165 JEV SAY: Ladestock
+F=165 JEV RUNSCRIPT n=27 room=9
+F=165 JEV RUNSCRIPT n=27 room=9
+F=165 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=165 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=166 JEV RUNSCRIPT n=63 room=9
+F=166 JEV RUNSCRIPT n=64 room=9
+F=166 JEV RUNSCRIPT n=62 room=9
+F=166 JEV SAY: Ladestock
+F=166 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=166 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=167 JEV RUNSCRIPT n=63 room=9
+F=167 JEV RUNSCRIPT n=64 room=9
+F=167 JEV RUNSCRIPT n=62 room=9
+F=167 JEV SAY: Ladestock
+F=167 JEV RUNSCRIPT n=27 room=9
+F=167 JEV RUNSCRIPT n=27 room=9
+F=167 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=167 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=168 JEV RUNSCRIPT n=63 room=9
+F=168 JEV RUNSCRIPT n=64 room=9
+F=168 JEV RUNSCRIPT n=62 room=9
+F=168 JEV SAY: Ladestock
+F=168 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=168 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=169 JEV RUNSCRIPT n=63 room=9
+F=169 JEV RUNSCRIPT n=64 room=9
+F=169 JEV RUNSCRIPT n=62 room=9
+F=169 JEV SAY: Ladestock
+F=169 JEV RUNSCRIPT n=27 room=9
+F=169 JEV RUNSCRIPT n=27 room=9
+F=169 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=169 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=170 JEV RUNSCRIPT n=63 room=9
+F=170 JEV RUNSCRIPT n=64 room=9
+F=170 JEV RUNSCRIPT n=62 room=9
+F=170 JEV SAY: Ladestock
+F=170 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=170 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=171 JEV RUNSCRIPT n=63 room=9
+F=171 JEV RUNSCRIPT n=64 room=9
+F=171 JEV RUNSCRIPT n=62 room=9
+F=171 JEV SAY: Ladestock
+F=171 JEV RUNSCRIPT n=27 room=9
+F=171 JEV RUNSCRIPT n=27 room=9
+F=171 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=171 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=172 JEV RUNSCRIPT n=63 room=9
+F=172 JEV RUNSCRIPT n=64 room=9
+F=172 JEV RUNSCRIPT n=62 room=9
+F=172 JEV SAY: Ladestock
+F=172 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=172 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=173 JEV RUNSCRIPT n=63 room=9
+F=173 JEV RUNSCRIPT n=64 room=9
+F=173 JEV RUNSCRIPT n=62 room=9
+F=173 JEV SAY: Ladestock
+F=173 JEV RUNSCRIPT n=27 room=9
+F=173 JEV RUNSCRIPT n=27 room=9
+F=173 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=173 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=174 JEV RUNSCRIPT n=63 room=9
+F=174 JEV RUNSCRIPT n=64 room=9
+F=174 JEV RUNSCRIPT n=62 room=9
+F=174 JEV SAY: Ladestock
+F=174 JEV RUNSCRIPT n=2005 room=9
+F=174 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=174 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=175 JEV RUNSCRIPT n=63 room=9
+F=175 JEV RUNSCRIPT n=64 room=9
+F=175 JEV RUNSCRIPT n=62 room=9
+F=175 JEV SAY: Ladestock
+F=175 JEV RUNSCRIPT n=27 room=9
+F=175 JEV RUNSCRIPT n=27 room=9
+F=175 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=175 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=176 JEV RUNSCRIPT n=63 room=9
+F=176 JEV RUNSCRIPT n=64 room=9
+F=176 JEV RUNSCRIPT n=62 room=9
+F=176 JEV SAY: Ladestock
+F=176 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=176 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=177 JEV RUNSCRIPT n=63 room=9
+F=177 JEV RUNSCRIPT n=64 room=9
+F=177 JEV RUNSCRIPT n=62 room=9
+F=177 JEV SAY: Ladestock
+F=177 JEV RUNSCRIPT n=27 room=9
+F=177 JEV RUNSCRIPT n=27 room=9
+F=177 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=177 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=178 JEV RUNSCRIPT n=63 room=9
+F=178 JEV RUNSCRIPT n=64 room=9
+F=178 JEV RUNSCRIPT n=62 room=9
+F=178 JEV SAY: Ladestock
+F=178 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=178 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=179 JEV RUNSCRIPT n=63 room=9
+F=179 JEV RUNSCRIPT n=64 room=9
+F=179 JEV RUNSCRIPT n=62 room=9
+F=179 JEV SAY: Ladestock
+F=179 JEV RUNSCRIPT n=27 room=9
+F=179 JEV RUNSCRIPT n=27 room=9
+F=179 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=179 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=180 FRAME-TIMING: avg=48ms max=83ms FPS=20.8 (30 frames)
+F=180 F=180 JEV EGO: actor=1 x=223 y=323 room=9
+F=180 JEV RUNSCRIPT n=63 room=9
+F=180 JEV RUNSCRIPT n=64 room=9
+F=180 JEV RUNSCRIPT n=62 room=9
+F=180 JEV SAY: Ladestock
+F=180 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=180 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=180 step2: fgPixels=63331/4915200 (1.3%) cleanValid=1
+F=180 step2 invArea: fg=617632/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=180 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=180 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=180 step2.5 objects: loaded=2 skipped=0 culled=6
+F=180 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=180 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=180 costume HIT: actor=12 costume=0026 cel=3 pos=(16,836) surf=1168x684 sort=380
+F=180 costume HIT: actor=2 costume=0025 cel=156 pos=(896,848) surf=376x696 sort=381
+F=180 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=180 costume HIT: actor=50 costume=0001 cel=15 pos=(1060,456) surf=84x360 sort=2200
+F=180 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=180 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=180 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=181 JEV RUNSCRIPT n=63 room=9
+F=181 JEV RUNSCRIPT n=64 room=9
+F=181 JEV RUNSCRIPT n=62 room=9
+F=181 JEV SAY: Ladestock
+F=181 JEV RUNSCRIPT n=27 room=9
+F=181 JEV RUNSCRIPT n=27 room=9
+F=181 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=181 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=182 JEV RUNSCRIPT n=63 room=9
+F=182 JEV RUNSCRIPT n=64 room=9
+F=182 JEV RUNSCRIPT n=62 room=9
+F=182 JEV SAY: Ladestock
+F=182 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=182 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=183 JEV RUNSCRIPT n=63 room=9
+F=183 JEV RUNSCRIPT n=64 room=9
+F=183 JEV RUNSCRIPT n=62 room=9
+F=183 JEV SAY: Ladestock
+F=183 JEV RUNSCRIPT n=27 room=9
+F=183 JEV RUNSCRIPT n=27 room=9
+F=183 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=183 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=184 JEV VARS: 0:0 1:640 2:480 3:308 4:200 5:308 6:200 7:1 8:120 9:320 10:240 11:320 12:240 13:1 14:0 15:0 
+F=184 JEV VARS: 16:0 17:0 18:0 19:0 20:0 21:0 22:0 23:0 24:0 25:0 26:0 27:0 28:0 29:0 30:0 31:9 
+F=184 JEV VARS: 32:9 33:0 34:5 35:0 36:0 37:0 38:0 39:0 40:0 41:1 42:1 43:0 44:0 45:1 46:1 47:0 
+F=184 JEV VARS: 48:0 49:0 50:0 51:10 52:11 53:12 54:0 55:32 56:40 57:0 58:6 59:7 60:0 61:0 62:27 63:0 
+F=184 JEV VARS: 64:32 65:0 66:22 67:46 68:27 69:0 70:0 71:0 72:0 73:0 74:0 75:0 76:0 77:0 78:0 79:0 
+F=184 JEV VARS: 80:0 81:0 82:0 83:0 84:0 85:0 86:0 87:0 88:0 89:145 90:0 91:0 92:0 93:0 94:0 95:0 
+F=184 JEV VARS: 96:0 97:0 98:0 99:0 100:0 101:0 102:0 103:0 104:0 105:0 106:0 107:0 108:0 109:146 110:0 111:0 
+F=184 JEV VARS: 112:5 113:925 114:925 115:925 116:320 117:320 118:240 119:240 120:0 121:0 122:100 123:100 124:100 125:70 126:1 127:0 
+F=184 JEV RUNSCRIPT n=63 room=9
+F=184 JEV RUNSCRIPT n=64 room=9
+F=184 JEV RUNSCRIPT n=62 room=9
+F=184 JEV SAY: Ladestock
+F=184 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=184 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=185 JEV RUNSCRIPT n=63 room=9
+F=185 JEV RUNSCRIPT n=64 room=9
+F=185 JEV RUNSCRIPT n=62 room=9
+F=185 JEV SAY: Ladestock
+F=185 JEV RUNSCRIPT n=27 room=9
+F=185 JEV RUNSCRIPT n=27 room=9
+F=185 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=185 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=186 JEV RUNSCRIPT n=63 room=9
+F=186 JEV RUNSCRIPT n=64 room=9
+F=186 JEV RUNSCRIPT n=62 room=9
+F=186 JEV SAY: Ladestock
+F=186 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=186 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=187 JEV RUNSCRIPT n=63 room=9
+F=187 JEV RUNSCRIPT n=64 room=9
+F=187 JEV RUNSCRIPT n=62 room=9
+F=187 JEV SAY: Ladestock
+F=187 JEV RUNSCRIPT n=27 room=9
+F=187 JEV RUNSCRIPT n=27 room=9
+F=187 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=187 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=188 JEV RUNSCRIPT n=63 room=9
+F=188 JEV RUNSCRIPT n=64 room=9
+F=188 JEV RUNSCRIPT n=62 room=9
+F=188 JEV SAY: Ladestock
+F=188 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=188 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=189 JEV RUNSCRIPT n=63 room=9
+F=189 JEV RUNSCRIPT n=64 room=9
+F=189 JEV RUNSCRIPT n=62 room=9
+F=189 JEV SAY: Ladestock
+F=189 JEV RUNSCRIPT n=27 room=9
+F=189 JEV RUNSCRIPT n=27 room=9
+F=189 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=189 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=190 JEV RUNSCRIPT n=63 room=9
+F=190 JEV RUNSCRIPT n=64 room=9
+F=190 JEV RUNSCRIPT n=62 room=9
+F=190 JEV SAY: Ladestock
+F=190 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=190 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=191 JEV RUNSCRIPT n=63 room=9
+F=191 JEV RUNSCRIPT n=64 room=9
+F=191 JEV RUNSCRIPT n=62 room=9
+F=191 JEV SAY: Ladestock
+F=191 JEV RUNSCRIPT n=27 room=9
+F=191 JEV RUNSCRIPT n=27 room=9
+F=191 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=191 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=192 JEV RUNSCRIPT n=63 room=9
+F=192 JEV RUNSCRIPT n=64 room=9
+F=192 JEV RUNSCRIPT n=62 room=9
+F=192 JEV SAY: Ladestock
+F=192 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=192 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=193 JEV RUNSCRIPT n=63 room=9
+F=193 JEV RUNSCRIPT n=64 room=9
+F=193 JEV RUNSCRIPT n=62 room=9
+F=193 JEV SAY: Ladestock
+F=193 JEV RUNSCRIPT n=27 room=9
+F=193 JEV RUNSCRIPT n=27 room=9
+F=193 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=193 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=194 JEV RUNSCRIPT n=63 room=9
+F=194 JEV RUNSCRIPT n=64 room=9
+F=194 JEV RUNSCRIPT n=62 room=9
+F=194 JEV SAY: Ladestock
+F=194 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=194 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=195 JEV RUNSCRIPT n=63 room=9
+F=195 JEV RUNSCRIPT n=64 room=9
+F=195 JEV RUNSCRIPT n=62 room=9
+F=195 JEV SAY: Ladestock
+F=195 JEV RUNSCRIPT n=27 room=9
+F=195 JEV RUNSCRIPT n=27 room=9
+F=195 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=195 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=196 JEV RUNSCRIPT n=63 room=9
+F=196 JEV RUNSCRIPT n=64 room=9
+F=196 JEV RUNSCRIPT n=62 room=9
+F=196 JEV SAY: Ladestock
+F=196 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=196 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=197 JEV RUNSCRIPT n=63 room=9
+F=197 JEV RUNSCRIPT n=64 room=9
+F=197 JEV RUNSCRIPT n=62 room=9
+F=197 JEV SAY: Ladestock
+F=197 JEV RUNSCRIPT n=27 room=9
+F=197 JEV RUNSCRIPT n=27 room=9
+F=197 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=197 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=198 JEV RUNSCRIPT n=63 room=9
+F=198 JEV RUNSCRIPT n=64 room=9
+F=198 JEV RUNSCRIPT n=62 room=9
+F=198 JEV SAY: Ladestock
+F=198 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=198 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=199 JEV RUNSCRIPT n=63 room=9
+F=199 JEV RUNSCRIPT n=64 room=9
+F=199 JEV RUNSCRIPT n=62 room=9
+F=199 JEV SAY: Ladestock
+F=199 JEV RUNSCRIPT n=27 room=9
+F=199 JEV RUNSCRIPT n=27 room=9
+F=199 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=199 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=200 JEV RUNSCRIPT n=63 room=9
+F=200 JEV RUNSCRIPT n=64 room=9
+F=200 JEV RUNSCRIPT n=62 room=9
+F=200 JEV SAY: Ladestock
+F=200 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=200 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=201 JEV RUNSCRIPT n=63 room=9
+F=201 JEV RUNSCRIPT n=64 room=9
+F=201 JEV RUNSCRIPT n=62 room=9
+F=201 JEV SAY: Ladestock
+F=201 JEV RUNSCRIPT n=27 room=9
+F=201 JEV RUNSCRIPT n=27 room=9
+F=201 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=201 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=202 JEV RUNSCRIPT n=63 room=9
+F=202 JEV RUNSCRIPT n=64 room=9
+F=202 JEV RUNSCRIPT n=62 room=9
+F=202 JEV SAY: Ladestock
+F=202 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=202 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=203 JEV RUNSCRIPT n=63 room=9
+F=203 JEV RUNSCRIPT n=64 room=9
+F=203 JEV RUNSCRIPT n=62 room=9
+F=203 JEV SAY: Ladestock
+F=203 JEV RUNSCRIPT n=27 room=9
+F=203 JEV RUNSCRIPT n=27 room=9
+F=203 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=203 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=204 JEV RUNSCRIPT n=63 room=9
+F=204 JEV RUNSCRIPT n=64 room=9
+F=204 JEV RUNSCRIPT n=62 room=9
+F=204 JEV SAY: Ladestock
+F=204 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=204 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=205 JEV RUNSCRIPT n=63 room=9
+F=205 JEV RUNSCRIPT n=64 room=9
+F=205 JEV RUNSCRIPT n=62 room=9
+F=205 JEV SAY: Ladestock
+F=205 JEV RUNSCRIPT n=27 room=9
+F=205 JEV RUNSCRIPT n=27 room=9
+F=205 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=205 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=206 JEV RUNSCRIPT n=63 room=9
+F=206 JEV RUNSCRIPT n=64 room=9
+F=206 JEV RUNSCRIPT n=62 room=9
+F=206 JEV SAY: Ladestock
+F=206 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=206 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=207 JEV RUNSCRIPT n=63 room=9
+F=207 JEV RUNSCRIPT n=64 room=9
+F=207 JEV RUNSCRIPT n=62 room=9
+F=207 JEV SAY: Ladestock
+F=207 JEV RUNSCRIPT n=27 room=9
+F=207 JEV RUNSCRIPT n=27 room=9
+F=207 JEV RUNSCRIPT n=2005 room=9
+F=207 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=207 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=208 JEV RUNSCRIPT n=63 room=9
+F=208 JEV RUNSCRIPT n=64 room=9
+F=208 JEV RUNSCRIPT n=62 room=9
+F=208 JEV SAY: Ladestock
+F=208 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=208 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=209 JEV RUNSCRIPT n=63 room=9
+F=209 JEV RUNSCRIPT n=64 room=9
+F=209 JEV RUNSCRIPT n=62 room=9
+F=209 JEV SAY: Ladestock
+F=209 JEV RUNSCRIPT n=27 room=9
+F=209 JEV RUNSCRIPT n=27 room=9
+F=209 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=209 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=210 FRAME-TIMING: avg=42ms max=92ms FPS=23.8 (30 frames)
+F=210 F=210 JEV EGO: actor=1 x=223 y=323 room=9
+F=210 JEV RUNSCRIPT n=63 room=9
+F=210 JEV RUNSCRIPT n=64 room=9
+F=210 JEV RUNSCRIPT n=62 room=9
+F=210 JEV SAY: Ladestock
+F=210 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=210 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=210 step2: fgPixels=62157/4915200 (1.3%) cleanValid=1
+F=210 step2 invArea: fg=599984/2867200 (20.9%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=210 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=210 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=210 step2.5 objects: loaded=2 skipped=0 culled=6
+F=210 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=210 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=210 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=210 costume HIT: actor=2 costume=0025 cel=177 pos=(884,904) surf=380x640 sort=381
+F=210 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=210 costume HIT: actor=50 costume=0001 cel=4 pos=(1424,552) surf=4x4 sort=2200
+F=210 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=210 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=210 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=211 JEV RUNSCRIPT n=63 room=9
+F=211 JEV RUNSCRIPT n=64 room=9
+F=211 JEV RUNSCRIPT n=62 room=9
+F=211 JEV SAY: Ladestock
+F=211 JEV RUNSCRIPT n=27 room=9
+F=211 JEV RUNSCRIPT n=27 room=9
+F=211 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=211 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=212 JEV RUNSCRIPT n=63 room=9
+F=212 JEV RUNSCRIPT n=64 room=9
+F=212 JEV RUNSCRIPT n=62 room=9
+F=212 JEV SAY: Ladestock
+F=212 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=212 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=213 JEV RUNSCRIPT n=63 room=9
+F=213 JEV RUNSCRIPT n=64 room=9
+F=213 JEV RUNSCRIPT n=62 room=9
+F=213 JEV SAY: Ladestock
+F=213 JEV RUNSCRIPT n=27 room=9
+F=213 JEV RUNSCRIPT n=27 room=9
+F=213 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=213 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=214 JEV RUNSCRIPT n=63 room=9
+F=214 JEV RUNSCRIPT n=64 room=9
+F=214 JEV RUNSCRIPT n=62 room=9
+F=214 JEV SAY: Ladestock
+F=214 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=214 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=215 JEV RUNSCRIPT n=63 room=9
+F=215 JEV RUNSCRIPT n=64 room=9
+F=215 JEV RUNSCRIPT n=62 room=9
+F=215 JEV SAY: Ladestock
+F=215 JEV RUNSCRIPT n=27 room=9
+F=215 JEV RUNSCRIPT n=27 room=9
+F=215 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=215 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=216 JEV RUNSCRIPT n=63 room=9
+F=216 JEV RUNSCRIPT n=64 room=9
+F=216 JEV RUNSCRIPT n=62 room=9
+F=216 JEV SAY: Ladestock
+F=216 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=216 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=217 JEV RUNSCRIPT n=63 room=9
+F=217 JEV RUNSCRIPT n=64 room=9
+F=217 JEV RUNSCRIPT n=62 room=9
+F=217 JEV SAY: Ladestock
+F=217 JEV RUNSCRIPT n=27 room=9
+F=217 JEV RUNSCRIPT n=27 room=9
+F=217 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=217 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=218 JEV RUNSCRIPT n=63 room=9
+F=218 JEV RUNSCRIPT n=64 room=9
+F=218 JEV RUNSCRIPT n=62 room=9
+F=218 JEV SAY: Ladestock
+F=218 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=218 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=219 JEV RUNSCRIPT n=63 room=9
+F=219 JEV RUNSCRIPT n=64 room=9
+F=219 JEV RUNSCRIPT n=62 room=9
+F=219 JEV SAY: Ladestock
+F=219 JEV RUNSCRIPT n=27 room=9
+F=219 JEV RUNSCRIPT n=27 room=9
+F=219 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=219 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=220 JEV RUNSCRIPT n=63 room=9
+F=220 JEV RUNSCRIPT n=64 room=9
+F=220 JEV RUNSCRIPT n=62 room=9
+F=220 JEV SAY: Ladestock
+F=220 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=220 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=221 JEV RUNSCRIPT n=63 room=9
+F=221 JEV RUNSCRIPT n=64 room=9
+F=221 JEV RUNSCRIPT n=62 room=9
+F=221 JEV SAY: Ladestock
+F=221 JEV RUNSCRIPT n=27 room=9
+F=221 JEV RUNSCRIPT n=27 room=9
+F=221 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=221 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=222 JEV RUNSCRIPT n=63 room=9
+F=222 JEV RUNSCRIPT n=64 room=9
+F=222 JEV RUNSCRIPT n=62 room=9
+F=222 JEV SAY: Ladestock
+F=222 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=222 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=223 JEV RUNSCRIPT n=63 room=9
+F=223 JEV RUNSCRIPT n=64 room=9
+F=223 JEV RUNSCRIPT n=62 room=9
+F=223 JEV SAY: Ladestock
+F=223 JEV RUNSCRIPT n=27 room=9
+F=223 JEV RUNSCRIPT n=27 room=9
+F=223 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=223 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=224 JEV RUNSCRIPT n=63 room=9
+F=224 JEV RUNSCRIPT n=64 room=9
+F=224 JEV RUNSCRIPT n=62 room=9
+F=224 JEV SAY: Ladestock
+F=224 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=224 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=225 JEV RUNSCRIPT n=63 room=9
+F=225 JEV RUNSCRIPT n=64 room=9
+F=225 JEV RUNSCRIPT n=62 room=9
+F=225 JEV SAY: Ladestock
+F=225 JEV RUNSCRIPT n=27 room=9
+F=225 JEV RUNSCRIPT n=27 room=9
+F=225 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=225 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=226 JEV RUNSCRIPT n=63 room=9
+F=226 JEV RUNSCRIPT n=64 room=9
+F=226 JEV RUNSCRIPT n=62 room=9
+F=226 JEV SAY: Ladestock
+F=226 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=226 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=227 JEV RUNSCRIPT n=63 room=9
+F=227 JEV RUNSCRIPT n=64 room=9
+F=227 JEV RUNSCRIPT n=62 room=9
+F=227 JEV SAY: Ladestock
+F=227 JEV RUNSCRIPT n=27 room=9
+F=227 JEV RUNSCRIPT n=27 room=9
+F=227 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=227 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=228 JEV RUNSCRIPT n=63 room=9
+F=228 JEV RUNSCRIPT n=64 room=9
+F=228 JEV RUNSCRIPT n=62 room=9
+F=228 JEV SAY: Ladestock
+F=228 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=228 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=229 JEV RUNSCRIPT n=63 room=9
+F=229 JEV RUNSCRIPT n=64 room=9
+F=229 JEV RUNSCRIPT n=62 room=9
+F=229 JEV SAY: Ladestock
+F=229 JEV RUNSCRIPT n=27 room=9
+F=229 JEV RUNSCRIPT n=27 room=9
+F=229 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=229 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=230 JEV RUNSCRIPT n=63 room=9
+F=230 JEV RUNSCRIPT n=64 room=9
+F=230 JEV RUNSCRIPT n=62 room=9
+F=230 JEV SAY: Ladestock
+F=230 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=230 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=231 JEV RUNSCRIPT n=63 room=9
+F=231 JEV RUNSCRIPT n=64 room=9
+F=231 JEV RUNSCRIPT n=62 room=9
+F=231 JEV SAY: Ladestock
+F=231 JEV RUNSCRIPT n=27 room=9
+F=231 JEV RUNSCRIPT n=27 room=9
+F=231 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=231 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=232 JEV RUNSCRIPT n=63 room=9
+F=232 JEV RUNSCRIPT n=64 room=9
+F=232 JEV RUNSCRIPT n=62 room=9
+F=232 JEV SAY: Ladestock
+F=232 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=232 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=233 JEV RUNSCRIPT n=63 room=9
+F=233 JEV RUNSCRIPT n=64 room=9
+F=233 JEV RUNSCRIPT n=62 room=9
+F=233 JEV SAY: Ladestock
+F=233 JEV RUNSCRIPT n=27 room=9
+F=233 JEV RUNSCRIPT n=27 room=9
+F=233 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=233 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=234 JEV RUNSCRIPT n=63 room=9
+F=234 JEV RUNSCRIPT n=64 room=9
+F=234 JEV RUNSCRIPT n=62 room=9
+F=234 JEV SAY: Ladestock
+F=234 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=234 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=235 JEV RUNSCRIPT n=63 room=9
+F=235 JEV RUNSCRIPT n=64 room=9
+F=235 JEV RUNSCRIPT n=62 room=9
+F=235 JEV SAY: Ladestock
+F=235 JEV RUNSCRIPT n=27 room=9
+F=235 JEV RUNSCRIPT n=27 room=9
+F=235 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=235 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=236 JEV RUNSCRIPT n=63 room=9
+F=236 JEV RUNSCRIPT n=64 room=9
+F=236 JEV RUNSCRIPT n=62 room=9
+F=236 JEV SAY: Ladestock
+F=236 JEV RUNSCRIPT n=2005 room=9
+F=236 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=236 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=237 JEV RUNSCRIPT n=63 room=9
+F=237 JEV RUNSCRIPT n=64 room=9
+F=237 JEV RUNSCRIPT n=62 room=9
+F=237 JEV SAY: Ladestock
+F=237 JEV RUNSCRIPT n=27 room=9
+F=237 JEV RUNSCRIPT n=27 room=9
+F=237 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=237 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=238 JEV RUNSCRIPT n=63 room=9
+F=238 JEV RUNSCRIPT n=64 room=9
+F=238 JEV RUNSCRIPT n=62 room=9
+F=238 JEV SAY: Ladestock
+F=238 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=238 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=239 JEV RUNSCRIPT n=63 room=9
+F=239 JEV RUNSCRIPT n=64 room=9
+F=239 JEV RUNSCRIPT n=62 room=9
+F=239 JEV SAY: Ladestock
+F=239 JEV RUNSCRIPT n=27 room=9
+F=239 JEV RUNSCRIPT n=27 room=9
+F=239 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=239 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=240 FRAME-TIMING: avg=41ms max=86ms FPS=24.4 (30 frames)
+F=240 F=240 JEV EGO: actor=1 x=223 y=323 room=9
+F=240 JEV RUNSCRIPT n=63 room=9
+F=240 JEV RUNSCRIPT n=64 room=9
+F=240 JEV RUNSCRIPT n=62 room=9
+F=240 JEV SAY: Ladestock
+F=240 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=240 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=240 step2: fgPixels=63158/4915200 (1.3%) cleanValid=1
+F=240 step2 invArea: fg=616448/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=240 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=240 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=240 step2.5 objects: loaded=2 skipped=0 culled=6
+F=240 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=240 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=240 costume HIT: actor=12 costume=0026 cel=1 pos=(16,844) surf=1168x676 sort=380
+F=240 costume HIT: actor=2 costume=0025 cel=176 pos=(880,888) surf=384x660 sort=381
+F=240 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=240 costume HIT: actor=50 costume=0001 cel=4 pos=(1424,552) surf=4x4 sort=2200
+F=240 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=240 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=240 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=241 JEV RUNSCRIPT n=63 room=9
+F=241 JEV RUNSCRIPT n=64 room=9
+F=241 JEV RUNSCRIPT n=62 room=9
+F=241 JEV SAY: Ladestock
+F=241 JEV RUNSCRIPT n=27 room=9
+F=241 JEV RUNSCRIPT n=27 room=9
+F=241 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=241 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=242 JEV RUNSCRIPT n=63 room=9
+F=242 JEV RUNSCRIPT n=64 room=9
+F=242 JEV RUNSCRIPT n=62 room=9
+F=242 JEV SAY: Ladestock
+F=242 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=242 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=243 JEV RUNSCRIPT n=63 room=9
+F=243 JEV RUNSCRIPT n=64 room=9
+F=243 JEV RUNSCRIPT n=62 room=9
+F=243 JEV SAY: Ladestock
+F=243 JEV RUNSCRIPT n=27 room=9
+F=243 JEV RUNSCRIPT n=27 room=9
+F=243 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=243 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=244 JEV RUNSCRIPT n=63 room=9
+F=244 JEV RUNSCRIPT n=64 room=9
+F=244 JEV RUNSCRIPT n=62 room=9
+F=244 JEV SAY: Ladestock
+F=244 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=244 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=245 JEV RUNSCRIPT n=63 room=9
+F=245 JEV RUNSCRIPT n=64 room=9
+F=245 JEV RUNSCRIPT n=62 room=9
+F=245 JEV SAY: Ladestock
+F=245 JEV RUNSCRIPT n=27 room=9
+F=245 JEV RUNSCRIPT n=27 room=9
+F=245 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=245 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=246 JEV RUNSCRIPT n=63 room=9
+F=246 JEV RUNSCRIPT n=64 room=9
+F=246 JEV RUNSCRIPT n=62 room=9
+F=246 JEV SAY: Ladestock
+F=246 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=246 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=247 JEV RUNSCRIPT n=63 room=9
+F=247 JEV RUNSCRIPT n=64 room=9
+F=247 JEV RUNSCRIPT n=62 room=9
+F=247 JEV SAY: Ladestock
+F=247 JEV RUNSCRIPT n=27 room=9
+F=247 JEV RUNSCRIPT n=27 room=9
+F=247 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=247 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=248 JEV RUNSCRIPT n=63 room=9
+F=248 JEV RUNSCRIPT n=64 room=9
+F=248 JEV RUNSCRIPT n=62 room=9
+F=248 JEV SAY: Ladestock
+F=248 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=248 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=249 JEV RUNSCRIPT n=63 room=9
+F=249 JEV RUNSCRIPT n=64 room=9
+F=249 JEV RUNSCRIPT n=62 room=9
+F=249 JEV SAY: Ladestock
+F=249 JEV RUNSCRIPT n=27 room=9
+F=249 JEV RUNSCRIPT n=27 room=9
+F=249 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=249 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=250 JEV RUNSCRIPT n=63 room=9
+F=250 JEV RUNSCRIPT n=64 room=9
+F=250 JEV RUNSCRIPT n=62 room=9
+F=250 JEV SAY: Ladestock
+F=250 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=250 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=251 JEV RUNSCRIPT n=63 room=9
+F=251 JEV RUNSCRIPT n=64 room=9
+F=251 JEV RUNSCRIPT n=62 room=9
+F=251 JEV SAY: Ladestock
+F=251 JEV RUNSCRIPT n=27 room=9
+F=251 JEV RUNSCRIPT n=27 room=9
+F=251 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=251 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=252 JEV RUNSCRIPT n=63 room=9
+F=252 JEV RUNSCRIPT n=64 room=9
+F=252 JEV RUNSCRIPT n=62 room=9
+F=252 JEV SAY: Ladestock
+F=252 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=252 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=253 JEV RUNSCRIPT n=63 room=9
+F=253 JEV RUNSCRIPT n=64 room=9
+F=253 JEV RUNSCRIPT n=62 room=9
+F=253 JEV SAY: Ladestock
+F=253 JEV RUNSCRIPT n=27 room=9
+F=253 JEV RUNSCRIPT n=27 room=9
+F=253 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=253 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=254 JEV RUNSCRIPT n=63 room=9
+F=254 JEV RUNSCRIPT n=64 room=9
+F=254 JEV RUNSCRIPT n=62 room=9
+F=254 JEV SAY: Ladestock
+F=254 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=254 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=255 JEV RUNSCRIPT n=63 room=9
+F=255 JEV RUNSCRIPT n=64 room=9
+F=255 JEV RUNSCRIPT n=62 room=9
+F=255 JEV SAY: Ladestock
+F=255 JEV RUNSCRIPT n=27 room=9
+F=255 JEV RUNSCRIPT n=27 room=9
+F=255 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=255 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=256 JEV RUNSCRIPT n=63 room=9
+F=256 JEV RUNSCRIPT n=64 room=9
+F=256 JEV RUNSCRIPT n=62 room=9
+F=256 JEV SAY: Ladestock
+F=256 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=256 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=257 JEV RUNSCRIPT n=63 room=9
+F=257 JEV RUNSCRIPT n=64 room=9
+F=257 JEV RUNSCRIPT n=62 room=9
+F=257 JEV SAY: Ladestock
+F=257 JEV RUNSCRIPT n=27 room=9
+F=257 JEV RUNSCRIPT n=27 room=9
+F=257 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=257 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=258 JEV RUNSCRIPT n=63 room=9
+F=258 JEV RUNSCRIPT n=64 room=9
+F=258 JEV RUNSCRIPT n=62 room=9
+F=258 JEV SAY: Ladestock
+F=258 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=258 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=259 JEV RUNSCRIPT n=63 room=9
+F=259 JEV RUNSCRIPT n=64 room=9
+F=259 JEV RUNSCRIPT n=62 room=9
+F=259 JEV SAY: Ladestock
+F=259 JEV RUNSCRIPT n=27 room=9
+F=259 JEV RUNSCRIPT n=27 room=9
+F=259 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=259 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=260 JEV RUNSCRIPT n=63 room=9
+F=260 JEV RUNSCRIPT n=64 room=9
+F=260 JEV RUNSCRIPT n=62 room=9
+F=260 JEV SAY: Ladestock
+F=260 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=260 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=261 JEV RUNSCRIPT n=63 room=9
+F=261 JEV RUNSCRIPT n=64 room=9
+F=261 JEV RUNSCRIPT n=62 room=9
+F=261 JEV SAY: Ladestock
+F=261 JEV RUNSCRIPT n=27 room=9
+F=261 JEV RUNSCRIPT n=27 room=9
+F=261 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=261 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=262 JEV RUNSCRIPT n=63 room=9
+F=262 JEV RUNSCRIPT n=64 room=9
+F=262 JEV RUNSCRIPT n=62 room=9
+F=262 JEV SAY: Ladestock
+F=262 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=262 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=263 JEV RUNSCRIPT n=63 room=9
+F=263 JEV RUNSCRIPT n=64 room=9
+F=263 JEV RUNSCRIPT n=62 room=9
+F=263 JEV SAY: Ladestock
+F=263 JEV RUNSCRIPT n=27 room=9
+F=263 JEV RUNSCRIPT n=27 room=9
+F=263 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=263 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=264 JEV RUNSCRIPT n=63 room=9
+F=264 JEV RUNSCRIPT n=64 room=9
+F=264 JEV RUNSCRIPT n=62 room=9
+F=264 JEV SAY: Ladestock
+F=264 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=264 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=265 JEV RUNSCRIPT n=63 room=9
+F=265 JEV RUNSCRIPT n=64 room=9
+F=265 JEV RUNSCRIPT n=62 room=9
+F=265 JEV SAY: Ladestock
+F=265 JEV RUNSCRIPT n=27 room=9
+F=265 JEV RUNSCRIPT n=27 room=9
+F=265 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=265 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=266 JEV RUNSCRIPT n=63 room=9
+F=266 JEV RUNSCRIPT n=64 room=9
+F=266 JEV RUNSCRIPT n=62 room=9
+F=266 JEV SAY: Ladestock
+F=266 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=266 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=267 JEV RUNSCRIPT n=63 room=9
+F=267 JEV RUNSCRIPT n=64 room=9
+F=267 JEV RUNSCRIPT n=62 room=9
+F=267 JEV SAY: Ladestock
+F=267 JEV RUNSCRIPT n=27 room=9
+F=267 JEV RUNSCRIPT n=27 room=9
+F=267 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=267 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=268 JEV RUNSCRIPT n=63 room=9
+F=268 JEV RUNSCRIPT n=64 room=9
+F=268 JEV RUNSCRIPT n=62 room=9
+F=268 JEV SAY: Ladestock
+F=268 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=268 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=269 JEV RUNSCRIPT n=63 room=9
+F=269 JEV RUNSCRIPT n=64 room=9
+F=269 JEV RUNSCRIPT n=62 room=9
+F=269 JEV SAY: Ladestock
+F=269 JEV RUNSCRIPT n=27 room=9
+F=269 JEV RUNSCRIPT n=27 room=9
+F=269 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=269 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=270 FRAME-TIMING: avg=41ms max=89ms FPS=24.4 (30 frames)
+F=270 F=270 JEV EGO: actor=1 x=223 y=323 room=9
+F=270 JEV RUNSCRIPT n=63 room=9
+F=270 JEV RUNSCRIPT n=64 room=9
+F=270 JEV RUNSCRIPT n=62 room=9
+F=270 JEV SAY: Ladestock
+F=270 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=270 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=270 step2: fgPixels=63284/4915200 (1.3%) cleanValid=1
+F=270 step2 invArea: fg=617584/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=270 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=270 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=270 step2.5 objects: loaded=2 skipped=0 culled=6
+F=270 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=270 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=270 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=270 costume HIT: actor=2 costume=0025 cel=14 pos=(996,848) surf=232x376 sort=381
+F=270 costume HIT: actor=2 costume=0025 cel=197 pos=(924,904) surf=352x644 sort=381
+F=270 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=270 costume HIT: actor=50 costume=0001 cel=12 pos=(1028,440) surf=124x348 sort=2200
+F=270 step2.6 costumes: loaded=7 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=270 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=270 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=271 JEV RUNSCRIPT n=63 room=9
+F=271 JEV RUNSCRIPT n=64 room=9
+F=271 JEV RUNSCRIPT n=62 room=9
+F=271 JEV SAY: Ladestock
+F=271 JEV RUNSCRIPT n=27 room=9
+F=271 JEV RUNSCRIPT n=27 room=9
+F=271 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=271 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=272 JEV RUNSCRIPT n=63 room=9
+F=272 JEV RUNSCRIPT n=64 room=9
+F=272 JEV RUNSCRIPT n=62 room=9
+F=272 JEV SAY: Ladestock
+F=272 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=272 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=273 JEV RUNSCRIPT n=63 room=9
+F=273 JEV RUNSCRIPT n=64 room=9
+F=273 JEV RUNSCRIPT n=62 room=9
+F=273 JEV SAY: Ladestock
+F=273 JEV RUNSCRIPT n=27 room=9
+F=273 JEV RUNSCRIPT n=27 room=9
+F=273 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=273 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=274 JEV RUNSCRIPT n=63 room=9
+F=274 JEV RUNSCRIPT n=64 room=9
+F=274 JEV RUNSCRIPT n=62 room=9
+F=274 JEV SAY: Ladestock
+F=274 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=274 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=275 JEV RUNSCRIPT n=63 room=9
+F=275 JEV RUNSCRIPT n=64 room=9
+F=275 JEV RUNSCRIPT n=62 room=9
+F=275 JEV SAY: Ladestock
+F=275 JEV RUNSCRIPT n=27 room=9
+F=275 JEV RUNSCRIPT n=27 room=9
+F=275 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=275 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=276 JEV RUNSCRIPT n=63 room=9
+F=276 JEV RUNSCRIPT n=64 room=9
+F=276 JEV RUNSCRIPT n=62 room=9
+F=276 JEV SAY: Ladestock
+F=276 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=276 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=277 JEV RUNSCRIPT n=63 room=9
+F=277 JEV RUNSCRIPT n=64 room=9
+F=277 JEV RUNSCRIPT n=62 room=9
+F=277 JEV SAY: Ladestock
+F=277 JEV RUNSCRIPT n=27 room=9
+F=277 JEV RUNSCRIPT n=27 room=9
+F=277 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=277 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=278 JEV RUNSCRIPT n=63 room=9
+F=278 JEV RUNSCRIPT n=64 room=9
+F=278 JEV RUNSCRIPT n=62 room=9
+F=278 JEV SAY: Ladestock
+F=278 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=278 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=279 JEV RUNSCRIPT n=63 room=9
+F=279 JEV RUNSCRIPT n=64 room=9
+F=279 JEV RUNSCRIPT n=62 room=9
+F=279 JEV SAY: Ladestock
+F=279 JEV RUNSCRIPT n=27 room=9
+F=279 JEV RUNSCRIPT n=27 room=9
+F=279 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=279 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=280 JEV RUNSCRIPT n=63 room=9
+F=280 JEV RUNSCRIPT n=64 room=9
+F=280 JEV RUNSCRIPT n=62 room=9
+F=280 JEV SAY: Ladestock
+F=280 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=280 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=281 JEV RUNSCRIPT n=63 room=9
+F=281 JEV RUNSCRIPT n=64 room=9
+F=281 JEV RUNSCRIPT n=62 room=9
+F=281 JEV SAY: Ladestock
+F=281 JEV RUNSCRIPT n=27 room=9
+F=281 JEV RUNSCRIPT n=27 room=9
+F=281 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=281 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=282 JEV RUNSCRIPT n=63 room=9
+F=282 JEV RUNSCRIPT n=64 room=9
+F=282 JEV RUNSCRIPT n=62 room=9
+F=282 JEV SAY: Ladestock
+F=282 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=282 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=283 JEV RUNSCRIPT n=63 room=9
+F=283 JEV RUNSCRIPT n=64 room=9
+F=283 JEV RUNSCRIPT n=62 room=9
+F=283 JEV SAY: Ladestock
+F=283 JEV RUNSCRIPT n=27 room=9
+F=283 JEV RUNSCRIPT n=27 room=9
+F=283 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=283 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=284 JEV RUNSCRIPT n=63 room=9
+F=284 JEV RUNSCRIPT n=64 room=9
+F=284 JEV RUNSCRIPT n=62 room=9
+F=284 JEV SAY: Ladestock
+F=284 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=284 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=285 JEV RUNSCRIPT n=63 room=9
+F=285 JEV RUNSCRIPT n=64 room=9
+F=285 JEV RUNSCRIPT n=62 room=9
+F=285 JEV SAY: Ladestock
+F=285 JEV RUNSCRIPT n=27 room=9
+F=285 JEV RUNSCRIPT n=27 room=9
+F=285 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=285 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=286 JEV RUNSCRIPT n=63 room=9
+F=286 JEV RUNSCRIPT n=64 room=9
+F=286 JEV RUNSCRIPT n=62 room=9
+F=286 JEV SAY: Ladestock
+F=286 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=286 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=287 JEV RUNSCRIPT n=63 room=9
+F=287 JEV RUNSCRIPT n=64 room=9
+F=287 JEV RUNSCRIPT n=62 room=9
+F=287 JEV SAY: Ladestock
+F=287 JEV RUNSCRIPT n=27 room=9
+F=287 JEV RUNSCRIPT n=27 room=9
+F=287 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=287 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=288 JEV RUNSCRIPT n=63 room=9
+F=288 JEV RUNSCRIPT n=64 room=9
+F=288 JEV RUNSCRIPT n=62 room=9
+F=288 JEV SAY: Ladestock
+F=288 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=288 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=289 JEV RUNSCRIPT n=63 room=9
+F=289 JEV RUNSCRIPT n=64 room=9
+F=289 JEV RUNSCRIPT n=62 room=9
+F=289 JEV SAY: Ladestock
+F=289 JEV RUNSCRIPT n=27 room=9
+F=289 JEV RUNSCRIPT n=27 room=9
+F=289 JEV RUNSCRIPT n=2005 room=9
+F=289 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=289 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=290 JEV RUNSCRIPT n=63 room=9
+F=290 JEV RUNSCRIPT n=64 room=9
+F=290 JEV RUNSCRIPT n=62 room=9
+F=290 JEV SAY: Ladestock
+F=290 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=290 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=291 JEV RUNSCRIPT n=63 room=9
+F=291 JEV RUNSCRIPT n=64 room=9
+F=291 JEV RUNSCRIPT n=62 room=9
+F=291 JEV SAY: Ladestock
+F=291 JEV RUNSCRIPT n=27 room=9
+F=291 JEV RUNSCRIPT n=27 room=9
+F=291 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=291 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=292 JEV RUNSCRIPT n=63 room=9
+F=292 JEV RUNSCRIPT n=64 room=9
+F=292 JEV RUNSCRIPT n=62 room=9
+F=292 JEV SAY: Ladestock
+F=292 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=292 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=293 JEV RUNSCRIPT n=63 room=9
+F=293 JEV RUNSCRIPT n=64 room=9
+F=293 JEV RUNSCRIPT n=62 room=9
+F=293 JEV SAY: Ladestock
+F=293 JEV RUNSCRIPT n=27 room=9
+F=293 JEV RUNSCRIPT n=27 room=9
+F=293 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=293 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=294 JEV RUNSCRIPT n=63 room=9
+F=294 JEV RUNSCRIPT n=64 room=9
+F=294 JEV RUNSCRIPT n=62 room=9
+F=294 JEV SAY: Ladestock
+F=294 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=294 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=295 JEV RUNSCRIPT n=63 room=9
+F=295 JEV RUNSCRIPT n=64 room=9
+F=295 JEV RUNSCRIPT n=62 room=9
+F=295 JEV SAY: Ladestock
+F=295 JEV RUNSCRIPT n=27 room=9
+F=295 JEV RUNSCRIPT n=27 room=9
+F=295 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=295 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=296 JEV RUNSCRIPT n=63 room=9
+F=296 JEV RUNSCRIPT n=64 room=9
+F=296 JEV RUNSCRIPT n=62 room=9
+F=296 JEV SAY: Ladestock
+F=296 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=296 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=297 JEV RUNSCRIPT n=63 room=9
+F=297 JEV RUNSCRIPT n=64 room=9
+F=297 JEV RUNSCRIPT n=62 room=9
+F=297 JEV SAY: Ladestock
+F=297 JEV RUNSCRIPT n=27 room=9
+F=297 JEV RUNSCRIPT n=27 room=9
+F=297 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=297 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=298 JEV RUNSCRIPT n=63 room=9
+F=298 JEV RUNSCRIPT n=64 room=9
+F=298 JEV RUNSCRIPT n=62 room=9
+F=298 JEV SAY: Ladestock
+F=298 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=298 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=299 JEV RUNSCRIPT n=63 room=9
+F=299 JEV RUNSCRIPT n=64 room=9
+F=299 JEV RUNSCRIPT n=62 room=9
+F=299 JEV SAY: Ladestock
+F=299 JEV RUNSCRIPT n=27 room=9
+F=299 JEV RUNSCRIPT n=27 room=9
+F=299 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=299 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=300 FRAME-TIMING: avg=42ms max=88ms FPS=23.8 (30 frames)
+F=300 F=300 JEV EGO: actor=1 x=223 y=323 room=9
+F=300 JEV RUNSCRIPT n=63 room=9
+F=300 JEV RUNSCRIPT n=64 room=9
+F=300 JEV RUNSCRIPT n=62 room=9
+F=300 JEV SAY: Ladestock
+F=300 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=300 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=300 step2: fgPixels=62919/4915200 (1.3%) cleanValid=1
+F=300 step2 invArea: fg=616400/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=300 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=300 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=300 step2.5 objects: loaded=2 skipped=0 culled=6
+F=300 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=300 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=300 costume HIT: actor=12 costume=0026 cel=9 pos=(440,796) surf=20x20 sort=380
+F=300 costume HIT: actor=2 costume=0025 cel=149 pos=(968,848) surf=304x696 sort=381
+F=300 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=300 costume HIT: actor=50 costume=0001 cel=39 pos=(1132,440) surf=296x468 sort=2200
+F=300 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=300 step2.6b ui-overlay: pixels=13706 (optimized: 8-bit scan)
+F=300 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=301 JEV RUNSCRIPT n=63 room=9
+F=301 JEV RUNSCRIPT n=64 room=9
+F=301 JEV RUNSCRIPT n=62 room=9
+F=301 JEV SAY: Ladestock
+F=301 JEV RUNSCRIPT n=27 room=9
+F=301 JEV RUNSCRIPT n=27 room=9
+F=301 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=301 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=302 JEV RUNSCRIPT n=63 room=9
+F=302 JEV RUNSCRIPT n=64 room=9
+F=302 JEV RUNSCRIPT n=62 room=9
+F=302 JEV SAY: Ladestock
+F=302 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=302 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=303 JEV RUNSCRIPT n=63 room=9
+F=303 JEV RUNSCRIPT n=64 room=9
+F=303 JEV RUNSCRIPT n=62 room=9
+F=303 JEV SAY: Ladestock
+F=303 JEV RUNSCRIPT n=27 room=9
+F=303 JEV RUNSCRIPT n=27 room=9
+F=303 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=303 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=304 JEV RUNSCRIPT n=63 room=9
+F=304 JEV RUNSCRIPT n=64 room=9
+F=304 JEV RUNSCRIPT n=62 room=9
+F=304 JEV SAY: Ladestock
+F=304 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=304 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=305 JEV RUNSCRIPT n=63 room=9
+F=305 JEV RUNSCRIPT n=64 room=9
+F=305 JEV RUNSCRIPT n=62 room=9
+F=305 JEV SAY: Ladestock
+F=305 JEV RUNSCRIPT n=27 room=9
+F=305 JEV RUNSCRIPT n=27 room=9
+F=305 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=305 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=306 JEV RUNSCRIPT n=63 room=9
+F=306 JEV RUNSCRIPT n=64 room=9
+F=306 JEV RUNSCRIPT n=62 room=9
+F=306 JEV SAY: Ladestock
+F=306 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=306 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=307 JEV RUNSCRIPT n=63 room=9
+F=307 JEV RUNSCRIPT n=64 room=9
+F=307 JEV RUNSCRIPT n=62 room=9
+F=307 JEV SAY: Ladestock
+F=307 JEV RUNSCRIPT n=27 room=9
+F=307 JEV RUNSCRIPT n=27 room=9
+F=307 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=307 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=308 JEV RUNSCRIPT n=63 room=9
+F=308 JEV RUNSCRIPT n=64 room=9
+F=308 JEV RUNSCRIPT n=62 room=9
+F=308 JEV SAY: Ladestock
+F=308 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=308 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=309 JEV RUNSCRIPT n=63 room=9
+F=309 JEV RUNSCRIPT n=64 room=9
+F=309 JEV RUNSCRIPT n=62 room=9
+F=309 JEV SAY: Ladestock
+F=309 JEV RUNSCRIPT n=27 room=9
+F=309 JEV RUNSCRIPT n=27 room=9
+F=309 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=309 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=310 JEV RUNSCRIPT n=63 room=9
+F=310 JEV RUNSCRIPT n=64 room=9
+F=310 JEV RUNSCRIPT n=62 room=9
+F=310 JEV SAY: Ladestock
+F=310 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=310 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=311 JEV RUNSCRIPT n=63 room=9
+F=311 JEV RUNSCRIPT n=64 room=9
+F=311 JEV RUNSCRIPT n=62 room=9
+F=311 JEV SAY: Ladestock
+F=311 JEV RUNSCRIPT n=27 room=9
+F=311 JEV RUNSCRIPT n=27 room=9
+F=311 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=311 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=312 JEV RUNSCRIPT n=63 room=9
+F=312 JEV RUNSCRIPT n=64 room=9
+F=312 JEV RUNSCRIPT n=62 room=9
+F=312 JEV SAY: Ladestock
+F=312 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=312 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=313 JEV RUNSCRIPT n=63 room=9
+F=313 JEV RUNSCRIPT n=64 room=9
+F=313 JEV RUNSCRIPT n=62 room=9
+F=313 JEV SAY: Ladestock
+F=313 JEV RUNSCRIPT n=27 room=9
+F=313 JEV RUNSCRIPT n=27 room=9
+F=313 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=313 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=314 JEV RUNSCRIPT n=63 room=9
+F=314 JEV RUNSCRIPT n=64 room=9
+F=314 JEV RUNSCRIPT n=62 room=9
+F=314 JEV SAY: Ladestock
+F=314 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=314 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=315 JEV RUNSCRIPT n=63 room=9
+F=315 JEV RUNSCRIPT n=64 room=9
+F=315 JEV RUNSCRIPT n=62 room=9
+F=315 JEV SAY: Ladestock
+F=315 JEV RUNSCRIPT n=27 room=9
+F=315 JEV RUNSCRIPT n=27 room=9
+F=315 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=315 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=316 JEV RUNSCRIPT n=63 room=9
+F=316 JEV RUNSCRIPT n=64 room=9
+F=316 JEV RUNSCRIPT n=62 room=9
+F=316 JEV SAY: Ladestock
+F=316 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=316 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=317 JEV RUNSCRIPT n=63 room=9
+F=317 JEV RUNSCRIPT n=64 room=9
+F=317 JEV RUNSCRIPT n=62 room=9
+F=317 JEV SAY: Ladestock
+F=317 JEV RUNSCRIPT n=27 room=9
+F=317 JEV RUNSCRIPT n=27 room=9
+F=317 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=317 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=318 JEV RUNSCRIPT n=63 room=9
+F=318 JEV RUNSCRIPT n=64 room=9
+F=318 JEV RUNSCRIPT n=62 room=9
+F=318 JEV SAY: Ladestock
+F=318 JEV RUNSCRIPT n=2005 room=9
+F=318 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=318 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=319 JEV RUNSCRIPT n=63 room=9
+F=319 JEV RUNSCRIPT n=64 room=9
+F=319 JEV RUNSCRIPT n=62 room=9
+F=319 JEV SAY: Ladestock
+F=319 JEV RUNSCRIPT n=27 room=9
+F=319 JEV RUNSCRIPT n=27 room=9
+F=319 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=319 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=320 JEV RUNSCRIPT n=63 room=9
+F=320 JEV RUNSCRIPT n=64 room=9
+F=320 JEV RUNSCRIPT n=62 room=9
+F=320 JEV SAY: Ladestock
+F=320 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=320 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=321 JEV RUNSCRIPT n=63 room=9
+F=321 JEV RUNSCRIPT n=64 room=9
+F=321 JEV RUNSCRIPT n=62 room=9
+F=321 JEV SAY: Ladestock
+F=321 JEV RUNSCRIPT n=27 room=9
+F=321 JEV RUNSCRIPT n=27 room=9
+F=321 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=321 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=322 JEV RUNSCRIPT n=63 room=9
+F=322 JEV RUNSCRIPT n=64 room=9
+F=322 JEV RUNSCRIPT n=62 room=9
+F=322 JEV SAY: Ladestock
+F=322 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=322 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=323 JEV RUNSCRIPT n=63 room=9
+F=323 JEV RUNSCRIPT n=64 room=9
+F=323 JEV RUNSCRIPT n=62 room=9
+F=323 JEV SAY: Ladestock
+F=323 JEV RUNSCRIPT n=27 room=9
+F=323 JEV RUNSCRIPT n=27 room=9
+F=323 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=323 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=324 JEV RUNSCRIPT n=63 room=9
+F=324 JEV RUNSCRIPT n=64 room=9
+F=324 JEV RUNSCRIPT n=62 room=9
+F=324 JEV SAY: Ladestock
+F=324 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=324 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=325 JEV RUNSCRIPT n=63 room=9
+F=325 JEV RUNSCRIPT n=64 room=9
+F=325 JEV RUNSCRIPT n=62 room=9
+F=325 JEV SAY: Ladestock
+F=325 JEV RUNSCRIPT n=27 room=9
+F=325 JEV RUNSCRIPT n=27 room=9
+F=325 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=325 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=326 JEV RUNSCRIPT n=63 room=9
+F=326 JEV RUNSCRIPT n=64 room=9
+F=326 JEV RUNSCRIPT n=62 room=9
+F=326 JEV SAY: Ladestock
+F=326 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=326 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=327 JEV RUNSCRIPT n=63 room=9
+F=327 JEV RUNSCRIPT n=64 room=9
+F=327 JEV RUNSCRIPT n=62 room=9
+F=327 JEV SAY: Ladestock
+F=327 JEV RUNSCRIPT n=27 room=9
+F=327 JEV RUNSCRIPT n=27 room=9
+F=327 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=327 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=328 JEV RUNSCRIPT n=63 room=9
+F=328 JEV RUNSCRIPT n=64 room=9
+F=328 JEV RUNSCRIPT n=62 room=9
+F=328 JEV SAY: Ladestock
+F=328 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=328 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=329 JEV RUNSCRIPT n=63 room=9
+F=329 JEV RUNSCRIPT n=64 room=9
+F=329 JEV RUNSCRIPT n=62 room=9
+F=329 JEV SAY: Ladestock
+F=329 JEV RUNSCRIPT n=27 room=9
+F=329 JEV RUNSCRIPT n=27 room=9
+F=329 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=329 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=330 FRAME-TIMING: avg=42ms max=82ms FPS=23.8 (30 frames)
+F=330 F=330 JEV EGO: actor=1 x=223 y=323 room=9
+F=330 JEV RUNSCRIPT n=63 room=9
+F=330 JEV RUNSCRIPT n=64 room=9
+F=330 JEV RUNSCRIPT n=62 room=9
+F=330 JEV SAY: Ladestock
+F=330 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=330 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=330 step2: fgPixels=63229/4915200 (1.3%) cleanValid=1
+F=330 step2 invArea: fg=618672/2867200 (21.6%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=330 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=330 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=330 step2.5 objects: loaded=2 skipped=0 culled=6
+F=330 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=330 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=330 costume HIT: actor=12 costume=0026 cel=12 pos=(448,800) surf=24x20 sort=380
+F=330 costume HIT: actor=2 costume=0025 cel=148 pos=(928,848) surf=344x696 sort=381
+F=330 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=330 costume HIT: actor=50 costume=0001 cel=58 pos=(1368,480) surf=60x76 sort=2200
+F=330 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=330 step2.6b ui-overlay: pixels=13813 (optimized: 8-bit scan)
+F=330 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=331 JEV RUNSCRIPT n=63 room=9
+F=331 JEV RUNSCRIPT n=64 room=9
+F=331 JEV RUNSCRIPT n=62 room=9
+F=331 JEV SAY: Ladestock
+F=331 JEV RUNSCRIPT n=27 room=9
+F=331 JEV RUNSCRIPT n=27 room=9
+F=331 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=331 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=332 JEV RUNSCRIPT n=63 room=9
+F=332 JEV RUNSCRIPT n=64 room=9
+F=332 JEV RUNSCRIPT n=62 room=9
+F=332 JEV SAY: Ladestock
+F=332 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=332 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=333 JEV RUNSCRIPT n=63 room=9
+F=333 JEV RUNSCRIPT n=64 room=9
+F=333 JEV RUNSCRIPT n=62 room=9
+F=333 JEV SAY: Ladestock
+F=333 JEV RUNSCRIPT n=27 room=9
+F=333 JEV RUNSCRIPT n=27 room=9
+F=333 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=333 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=334 JEV RUNSCRIPT n=63 room=9
+F=334 JEV RUNSCRIPT n=64 room=9
+F=334 JEV RUNSCRIPT n=62 room=9
+F=334 JEV SAY: Ladestock
+F=334 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=334 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=335 JEV RUNSCRIPT n=63 room=9
+F=335 JEV RUNSCRIPT n=64 room=9
+F=335 JEV RUNSCRIPT n=62 room=9
+F=335 JEV SAY: Ladestock
+F=335 JEV RUNSCRIPT n=27 room=9
+F=335 JEV RUNSCRIPT n=27 room=9
+F=335 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=335 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=336 JEV RUNSCRIPT n=63 room=9
+F=336 JEV RUNSCRIPT n=64 room=9
+F=336 JEV RUNSCRIPT n=62 room=9
+F=336 JEV SAY: Ladestock
+F=336 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=336 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=337 JEV RUNSCRIPT n=63 room=9
+F=337 JEV RUNSCRIPT n=64 room=9
+F=337 JEV RUNSCRIPT n=62 room=9
+F=337 JEV SAY: Ladestock
+F=337 JEV RUNSCRIPT n=27 room=9
+F=337 JEV RUNSCRIPT n=27 room=9
+F=337 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=337 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=338 JEV RUNSCRIPT n=63 room=9
+F=338 JEV RUNSCRIPT n=64 room=9
+F=338 JEV RUNSCRIPT n=62 room=9
+F=338 JEV SAY: Ladestock
+F=338 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=338 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=339 JEV RUNSCRIPT n=63 room=9
+F=339 JEV RUNSCRIPT n=64 room=9
+F=339 JEV RUNSCRIPT n=62 room=9
+F=339 JEV SAY: Ladestock
+F=339 JEV RUNSCRIPT n=27 room=9
+F=339 JEV RUNSCRIPT n=27 room=9
+F=339 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=339 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=340 JEV RUNSCRIPT n=63 room=9
+F=340 JEV RUNSCRIPT n=64 room=9
+F=340 JEV RUNSCRIPT n=62 room=9
+F=340 JEV SAY: Ladestock
+F=340 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=340 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=341 JEV RUNSCRIPT n=63 room=9
+F=341 JEV RUNSCRIPT n=64 room=9
+F=341 JEV RUNSCRIPT n=62 room=9
+F=341 JEV SAY: Ladestock
+F=341 JEV RUNSCRIPT n=27 room=9
+F=341 JEV RUNSCRIPT n=27 room=9
+F=341 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=341 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=342 JEV RUNSCRIPT n=63 room=9
+F=342 JEV RUNSCRIPT n=64 room=9
+F=342 JEV RUNSCRIPT n=62 room=9
+F=342 JEV SAY: Ladestock
+F=342 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=342 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=343 JEV RUNSCRIPT n=63 room=9
+F=343 JEV RUNSCRIPT n=64 room=9
+F=343 JEV RUNSCRIPT n=62 room=9
+F=343 JEV SAY: Ladestock
+F=343 JEV RUNSCRIPT n=27 room=9
+F=343 JEV RUNSCRIPT n=27 room=9
+F=343 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=343 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=344 JEV RUNSCRIPT n=63 room=9
+F=344 JEV RUNSCRIPT n=64 room=9
+F=344 JEV RUNSCRIPT n=62 room=9
+F=344 JEV SAY: Ladestock
+F=344 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=344 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=345 JEV RUNSCRIPT n=63 room=9
+F=345 JEV RUNSCRIPT n=64 room=9
+F=345 JEV RUNSCRIPT n=62 room=9
+F=345 JEV SAY: Ladestock
+F=345 JEV RUNSCRIPT n=27 room=9
+F=345 JEV RUNSCRIPT n=27 room=9
+F=345 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=345 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=346 JEV RUNSCRIPT n=63 room=9
+F=346 JEV RUNSCRIPT n=64 room=9
+F=346 JEV RUNSCRIPT n=62 room=9
+F=346 JEV SAY: Ladestock
+F=346 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=346 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=347 JEV RUNSCRIPT n=63 room=9
+F=347 JEV RUNSCRIPT n=64 room=9
+F=347 JEV RUNSCRIPT n=62 room=9
+F=347 JEV SAY: Ladestock
+F=347 JEV RUNSCRIPT n=27 room=9
+F=347 JEV RUNSCRIPT n=27 room=9
+F=347 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=347 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=348 JEV RUNSCRIPT n=63 room=9
+F=348 JEV RUNSCRIPT n=64 room=9
+F=348 JEV RUNSCRIPT n=62 room=9
+F=348 JEV SAY: Ladestock
+F=348 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=348 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=349 JEV RUNSCRIPT n=63 room=9
+F=349 JEV RUNSCRIPT n=64 room=9
+F=349 JEV RUNSCRIPT n=62 room=9
+F=349 JEV SAY: Ladestock
+F=349 JEV RUNSCRIPT n=27 room=9
+F=349 JEV RUNSCRIPT n=27 room=9
+F=349 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=349 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=350 JEV RUNSCRIPT n=63 room=9
+F=350 JEV RUNSCRIPT n=64 room=9
+F=350 JEV RUNSCRIPT n=62 room=9
+F=350 JEV SAY: Ladestock
+F=350 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=350 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=351 JEV RUNSCRIPT n=63 room=9
+F=351 JEV RUNSCRIPT n=64 room=9
+F=351 JEV RUNSCRIPT n=62 room=9
+F=351 JEV SAY: Ladestock
+F=351 JEV RUNSCRIPT n=27 room=9
+F=351 JEV RUNSCRIPT n=27 room=9
+F=351 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=351 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=352 JEV RUNSCRIPT n=63 room=9
+F=352 JEV RUNSCRIPT n=64 room=9
+F=352 JEV RUNSCRIPT n=62 room=9
+F=352 JEV SAY: Ladestock
+F=352 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=352 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=353 JEV RUNSCRIPT n=63 room=9
+F=353 JEV RUNSCRIPT n=64 room=9
+F=353 JEV RUNSCRIPT n=62 room=9
+F=353 JEV SAY: Ladestock
+F=353 JEV RUNSCRIPT n=27 room=9
+F=353 JEV RUNSCRIPT n=27 room=9
+F=353 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=353 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=354 JEV RUNSCRIPT n=63 room=9
+F=354 JEV RUNSCRIPT n=64 room=9
+F=354 JEV RUNSCRIPT n=62 room=9
+F=354 JEV SAY: Ladestock
+F=354 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=354 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=355 JEV RUNSCRIPT n=63 room=9
+F=355 JEV RUNSCRIPT n=64 room=9
+F=355 JEV RUNSCRIPT n=62 room=9
+F=355 JEV SAY: Ladestock
+F=355 JEV RUNSCRIPT n=27 room=9
+F=355 JEV RUNSCRIPT n=27 room=9
+F=355 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=355 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=356 JEV RUNSCRIPT n=63 room=9
+F=356 JEV RUNSCRIPT n=64 room=9
+F=356 JEV RUNSCRIPT n=62 room=9
+F=356 JEV SAY: Ladestock
+F=356 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=356 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=357 JEV RUNSCRIPT n=63 room=9
+F=357 JEV RUNSCRIPT n=64 room=9
+F=357 JEV RUNSCRIPT n=62 room=9
+F=357 JEV SAY: Ladestock
+F=357 JEV RUNSCRIPT n=27 room=9
+F=357 JEV RUNSCRIPT n=27 room=9
+F=357 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=357 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=358 JEV RUNSCRIPT n=63 room=9
+F=358 JEV RUNSCRIPT n=64 room=9
+F=358 JEV RUNSCRIPT n=62 room=9
+F=358 JEV SAY: Ladestock
+F=358 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=358 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=359 JEV RUNSCRIPT n=63 room=9
+F=359 JEV RUNSCRIPT n=64 room=9
+F=359 JEV RUNSCRIPT n=62 room=9
+F=359 JEV SAY: Ladestock
+F=359 JEV RUNSCRIPT n=27 room=9
+F=359 JEV RUNSCRIPT n=27 room=9
+F=359 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=359 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=360 FRAME-TIMING: avg=42ms max=78ms FPS=23.8 (30 frames)
+F=360 F=360 JEV EGO: actor=1 x=223 y=323 room=9
+F=360 JEV RUNSCRIPT n=63 room=9
+F=360 JEV RUNSCRIPT n=64 room=9
+F=360 JEV RUNSCRIPT n=62 room=9
+F=360 JEV SAY: Ladestock
+F=360 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=360 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=360 step2: fgPixels=63295/4915200 (1.3%) cleanValid=1
+F=360 step2 invArea: fg=617552/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=360 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=360 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=360 step2.5 objects: loaded=2 skipped=0 culled=6
+F=360 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=360 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=360 costume HIT: actor=12 costume=0026 cel=0 pos=(16,876) surf=1168x644 sort=380
+F=360 costume HIT: actor=2 costume=0025 cel=3 pos=(996,848) surf=232x376 sort=381
+F=360 costume HIT: actor=2 costume=0025 cel=193 pos=(924,904) surf=352x644 sort=381
+F=360 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=360 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=360 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=360 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=361 JEV RUNSCRIPT n=63 room=9
+F=361 JEV RUNSCRIPT n=64 room=9
+F=361 JEV RUNSCRIPT n=62 room=9
+F=361 JEV SAY: Ladestock
+F=361 JEV RUNSCRIPT n=27 room=9
+F=361 JEV RUNSCRIPT n=27 room=9
+F=361 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=361 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=362 JEV RUNSCRIPT n=63 room=9
+F=362 JEV RUNSCRIPT n=64 room=9
+F=362 JEV RUNSCRIPT n=62 room=9
+F=362 JEV SAY: Ladestock
+F=362 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=362 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=363 JEV RUNSCRIPT n=63 room=9
+F=363 JEV RUNSCRIPT n=64 room=9
+F=363 JEV RUNSCRIPT n=62 room=9
+F=363 JEV SAY: Ladestock
+F=363 JEV RUNSCRIPT n=27 room=9
+F=363 JEV RUNSCRIPT n=27 room=9
+F=363 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=363 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=364 JEV RUNSCRIPT n=63 room=9
+F=364 JEV RUNSCRIPT n=64 room=9
+F=364 JEV RUNSCRIPT n=62 room=9
+F=364 JEV SAY: Ladestock
+F=364 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=364 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=365 JEV RUNSCRIPT n=63 room=9
+F=365 JEV RUNSCRIPT n=64 room=9
+F=365 JEV RUNSCRIPT n=62 room=9
+F=365 JEV SAY: Ladestock
+F=365 JEV RUNSCRIPT n=27 room=9
+F=365 JEV RUNSCRIPT n=27 room=9
+F=365 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=365 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=366 JEV RUNSCRIPT n=63 room=9
+F=366 JEV RUNSCRIPT n=64 room=9
+F=366 JEV RUNSCRIPT n=62 room=9
+F=366 JEV SAY: Ladestock
+F=366 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=366 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=367 JEV RUNSCRIPT n=63 room=9
+F=367 JEV RUNSCRIPT n=64 room=9
+F=367 JEV RUNSCRIPT n=62 room=9
+F=367 JEV SAY: Ladestock
+F=367 JEV RUNSCRIPT n=27 room=9
+F=367 JEV RUNSCRIPT n=27 room=9
+F=367 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=367 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=368 JEV RUNSCRIPT n=63 room=9
+F=368 JEV RUNSCRIPT n=64 room=9
+F=368 JEV RUNSCRIPT n=62 room=9
+F=368 JEV SAY: Ladestock
+F=368 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=368 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=369 JEV RUNSCRIPT n=63 room=9
+F=369 JEV RUNSCRIPT n=64 room=9
+F=369 JEV RUNSCRIPT n=62 room=9
+F=369 JEV SAY: Ladestock
+F=369 JEV RUNSCRIPT n=27 room=9
+F=369 JEV RUNSCRIPT n=27 room=9
+F=369 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=369 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=370 JEV RUNSCRIPT n=63 room=9
+F=370 JEV RUNSCRIPT n=64 room=9
+F=370 JEV RUNSCRIPT n=62 room=9
+F=370 JEV SAY: Ladestock
+F=370 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=370 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=371 JEV RUNSCRIPT n=63 room=9
+F=371 JEV RUNSCRIPT n=64 room=9
+F=371 JEV RUNSCRIPT n=62 room=9
+F=371 JEV SAY: Ladestock
+F=371 JEV RUNSCRIPT n=27 room=9
+F=371 JEV RUNSCRIPT n=27 room=9
+F=371 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=371 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=372 JEV RUNSCRIPT n=63 room=9
+F=372 JEV RUNSCRIPT n=64 room=9
+F=372 JEV RUNSCRIPT n=62 room=9
+F=372 JEV SAY: Ladestock
+F=372 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=372 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=373 JEV RUNSCRIPT n=63 room=9
+F=373 JEV RUNSCRIPT n=64 room=9
+F=373 JEV RUNSCRIPT n=62 room=9
+F=373 JEV SAY: Ladestock
+F=373 JEV RUNSCRIPT n=27 room=9
+F=373 JEV RUNSCRIPT n=27 room=9
+F=373 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=373 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=374 JEV RUNSCRIPT n=63 room=9
+F=374 JEV RUNSCRIPT n=64 room=9
+F=374 JEV RUNSCRIPT n=62 room=9
+F=374 JEV SAY: Ladestock
+F=374 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=374 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=375 JEV RUNSCRIPT n=63 room=9
+F=375 JEV RUNSCRIPT n=64 room=9
+F=375 JEV RUNSCRIPT n=62 room=9
+F=375 JEV SAY: Ladestock
+F=375 JEV RUNSCRIPT n=27 room=9
+F=375 JEV RUNSCRIPT n=27 room=9
+F=375 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=375 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=376 JEV RUNSCRIPT n=63 room=9
+F=376 JEV RUNSCRIPT n=64 room=9
+F=376 JEV RUNSCRIPT n=62 room=9
+F=376 JEV SAY: Ladestock
+F=376 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=376 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=377 JEV RUNSCRIPT n=63 room=9
+F=377 JEV RUNSCRIPT n=64 room=9
+F=377 JEV RUNSCRIPT n=62 room=9
+F=377 JEV SAY: Ladestock
+F=377 JEV RUNSCRIPT n=27 room=9
+F=377 JEV RUNSCRIPT n=27 room=9
+F=377 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=377 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=378 JEV RUNSCRIPT n=63 room=9
+F=378 JEV RUNSCRIPT n=64 room=9
+F=378 JEV RUNSCRIPT n=62 room=9
+F=378 JEV SAY: Ladestock
+F=378 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=378 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=379 JEV RUNSCRIPT n=63 room=9
+F=379 JEV RUNSCRIPT n=64 room=9
+F=379 JEV RUNSCRIPT n=62 room=9
+F=379 JEV SAY: Ladestock
+F=379 JEV RUNSCRIPT n=27 room=9
+F=379 JEV RUNSCRIPT n=27 room=9
+F=379 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=379 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=380 JEV RUNSCRIPT n=63 room=9
+F=380 JEV RUNSCRIPT n=64 room=9
+F=380 JEV RUNSCRIPT n=62 room=9
+F=380 JEV SAY: Ladestock
+F=380 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=380 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=381 JEV RUNSCRIPT n=63 room=9
+F=381 JEV RUNSCRIPT n=64 room=9
+F=381 JEV RUNSCRIPT n=62 room=9
+F=381 JEV SAY: Ladestock
+F=381 JEV RUNSCRIPT n=27 room=9
+F=381 JEV RUNSCRIPT n=27 room=9
+F=381 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=381 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=382 JEV RUNSCRIPT n=63 room=9
+F=382 JEV RUNSCRIPT n=64 room=9
+F=382 JEV RUNSCRIPT n=62 room=9
+F=382 JEV SAY: Ladestock
+F=382 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=382 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=383 JEV RUNSCRIPT n=63 room=9
+F=383 JEV RUNSCRIPT n=64 room=9
+F=383 JEV RUNSCRIPT n=62 room=9
+F=383 JEV SAY: Ladestock
+F=383 JEV RUNSCRIPT n=27 room=9
+F=383 JEV RUNSCRIPT n=27 room=9
+F=383 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=383 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=384 JEV RUNSCRIPT n=63 room=9
+F=384 JEV RUNSCRIPT n=64 room=9
+F=384 JEV RUNSCRIPT n=62 room=9
+F=384 JEV SAY: Ladestock
+F=384 JEV RUNSCRIPT n=2005 room=9
+F=384 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=384 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=385 JEV RUNSCRIPT n=63 room=9
+F=385 JEV RUNSCRIPT n=64 room=9
+F=385 JEV RUNSCRIPT n=62 room=9
+F=385 JEV SAY: Ladestock
+F=385 JEV RUNSCRIPT n=27 room=9
+F=385 JEV RUNSCRIPT n=27 room=9
+F=385 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=385 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=386 JEV RUNSCRIPT n=63 room=9
+F=386 JEV RUNSCRIPT n=64 room=9
+F=386 JEV RUNSCRIPT n=62 room=9
+F=386 JEV SAY: Ladestock
+F=386 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=386 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=387 JEV RUNSCRIPT n=63 room=9
+F=387 JEV RUNSCRIPT n=64 room=9
+F=387 JEV RUNSCRIPT n=62 room=9
+F=387 JEV SAY: Ladestock
+F=387 JEV RUNSCRIPT n=27 room=9
+F=387 JEV RUNSCRIPT n=27 room=9
+F=387 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=387 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=388 JEV RUNSCRIPT n=63 room=9
+F=388 JEV RUNSCRIPT n=64 room=9
+F=388 JEV RUNSCRIPT n=62 room=9
+F=388 JEV SAY: Ladestock
+F=388 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=388 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=389 JEV RUNSCRIPT n=63 room=9
+F=389 JEV RUNSCRIPT n=64 room=9
+F=389 JEV RUNSCRIPT n=62 room=9
+F=389 JEV SAY: Ladestock
+F=389 JEV RUNSCRIPT n=27 room=9
+F=389 JEV RUNSCRIPT n=27 room=9
+F=389 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=389 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=390 FRAME-TIMING: avg=43ms max=87ms FPS=23.3 (30 frames)
+F=390 F=390 JEV EGO: actor=1 x=223 y=323 room=9
+F=390 JEV RUNSCRIPT n=63 room=9
+F=390 JEV RUNSCRIPT n=64 room=9
+F=390 JEV RUNSCRIPT n=62 room=9
+F=390 JEV SAY: Ladestock
+F=390 room=9 hdRoom=9 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=9
+F=390 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=390 step2: fgPixels=63331/4915200 (1.3%) cleanValid=1
+F=390 step2 invArea: fg=617632/2867200 (21.5%) hdRoom=9 curRoom=9 cleanValid=1 verbDraw=0
+F=390 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=390 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=390 step2.5 objects: loaded=2 skipped=0 culled=6
+F=390 costume HIT: actor=1 costume=0002 cel=52 pos=(864,484) surf=160x248 sort=323
+F=390 costume HIT: actor=1 costume=0002 cel=31 pos=(780,676) surf=328x848 sort=323
+F=390 costume HIT: actor=12 costume=0026 cel=3 pos=(16,836) surf=1168x684 sort=380
+F=390 costume HIT: actor=2 costume=0025 cel=156 pos=(896,848) surf=376x696 sort=381
+F=390 costume HIT: actor=50 costume=0001 cel=63 pos=(992,436) surf=464x472 sort=2200
+F=390 costume HIT: actor=50 costume=0001 cel=36 pos=(996,552) surf=432x180 sort=2200
+F=390 step2.6 costumes: loaded=6 skipped=76 (noCostume=76 noCel=0 noHdCostume=0 loadFail=0)
+F=390 step2.6b ui-overlay: pixels=0 (optimized: 8-bit scan)
+F=390 step2.7 fonts: chars=9 drawn=9 fontMgr=1
+F=391 JEV RUNSCRIPT n=63 room=9
+F=391 JEV RUNSCRIPT n=64 room=9
+F=391 JEV RUNSCRIPT n=62 room=9
+F=391 JEV SAY: Ladestock
+F=391 JEV RUNSCRIPT n=27 room=9
+F=391 JEV RUNSCRIPT n=27 room=9
+F=391 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=391 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=392 JEV RUNSCRIPT n=63 room=9
+F=392 JEV RUNSCRIPT n=64 room=9
+F=392 JEV RUNSCRIPT n=62 room=9
+F=392 JEV SAY: Ladestock
+F=392 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=392 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=393 JEV RUNSCRIPT n=63 room=9
+F=393 JEV RUNSCRIPT n=64 room=9
+F=393 JEV RUNSCRIPT n=62 room=9
+F=393 JEV SAY: Ladestock
+F=393 JEV RUNSCRIPT n=27 room=9
+F=393 JEV RUNSCRIPT n=27 room=9
+F=393 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=393 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=394 JEV RUNSCRIPT n=63 room=9
+F=394 JEV RUNSCRIPT n=64 room=9
+F=394 JEV RUNSCRIPT n=62 room=9
+F=394 JEV SAY: Ladestock
+F=394 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=394 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=395 JEV RUNSCRIPT n=63 room=9
+F=395 JEV RUNSCRIPT n=64 room=9
+F=395 JEV RUNSCRIPT n=62 room=9
+F=395 JEV SAY: Ladestock
+F=395 JEV RUNSCRIPT n=27 room=9
+F=395 JEV RUNSCRIPT n=27 room=9
+F=395 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=395 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=396 JEV RUNSCRIPT n=63 room=9
+F=396 JEV RUNSCRIPT n=64 room=9
+F=396 JEV RUNSCRIPT n=62 room=9
+F=396 JEV SAY: Ladestock
+F=396 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=396 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=397 JEV RUNSCRIPT n=63 room=9
+F=397 JEV RUNSCRIPT n=64 room=9
+F=397 JEV RUNSCRIPT n=62 room=9
+F=397 JEV SAY: Ladestock
+F=397 JEV RUNSCRIPT n=27 room=9
+F=397 JEV RUNSCRIPT n=27 room=9
+F=397 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=397 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=398 JEV RUNSCRIPT n=63 room=9
+F=398 JEV RUNSCRIPT n=64 room=9
+F=398 JEV RUNSCRIPT n=62 room=9
+F=398 JEV SAY: Ladestock
+F=398 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=398 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=399 JEV RUNSCRIPT n=63 room=9
+F=399 JEV RUNSCRIPT n=64 room=9
+F=399 JEV RUNSCRIPT n=62 room=9
+F=399 JEV SAY: Ladestock
+F=399 JEV RUNSCRIPT n=27 room=9
+F=399 JEV RUNSCRIPT n=27 room=9
+F=399 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=399 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=400 JEV RUNSCRIPT n=63 room=9
+F=400 JEV RUNSCRIPT n=64 room=9
+F=400 JEV RUNSCRIPT n=62 room=9
+F=400 JEV SAY: Ladestock
+F=400 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=400 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=401 JEV RUNSCRIPT n=63 room=9
+F=401 JEV RUNSCRIPT n=64 room=9
+F=401 JEV RUNSCRIPT n=62 room=9
+F=401 JEV SAY: Ladestock
+F=401 JEV RUNSCRIPT n=27 room=9
+F=401 JEV RUNSCRIPT n=27 room=9
+F=401 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=401 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=402 JEV RUNSCRIPT n=63 room=9
+F=402 JEV RUNSCRIPT n=64 room=9
+F=402 JEV RUNSCRIPT n=62 room=9
+F=402 JEV SAY: Ladestock
+F=402 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=402 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=403 JEV RUNSCRIPT n=63 room=9
+F=403 JEV RUNSCRIPT n=64 room=9
+F=403 JEV RUNSCRIPT n=62 room=9
+F=403 JEV SAY: Ladestock
+F=403 JEV RUNSCRIPT n=27 room=9
+F=403 JEV RUNSCRIPT n=27 room=9
+F=403 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=403 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=404 JEV RUNSCRIPT n=63 room=9
+F=404 JEV RUNSCRIPT n=64 room=9
+F=404 JEV RUNSCRIPT n=62 room=9
+F=404 JEV SAY: Ladestock
+F=404 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=404 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=405 JEV RUNSCRIPT n=63 room=9
+F=405 JEV RUNSCRIPT n=64 room=9
+F=405 JEV RUNSCRIPT n=62 room=9
+F=405 JEV SAY: Ladestock
+F=405 JEV RUNSCRIPT n=27 room=9
+F=405 JEV RUNSCRIPT n=27 room=9
+F=405 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=405 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=406 JEV RUNSCRIPT n=63 room=9
+F=406 JEV RUNSCRIPT n=64 room=9
+F=406 JEV RUNSCRIPT n=62 room=9
+F=406 JEV SAY: Ladestock
+F=406 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=406 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=407 JEV RUNSCRIPT n=63 room=9
+F=407 JEV RUNSCRIPT n=64 room=9
+F=407 JEV RUNSCRIPT n=62 room=9
+F=407 JEV SAY: Ladestock
+F=407 JEV RUNSCRIPT n=27 room=9
+F=407 JEV RUNSCRIPT n=27 room=9
+F=407 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=407 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=408 JEV RUNSCRIPT n=63 room=9
+F=408 JEV RUNSCRIPT n=64 room=9
+F=408 JEV RUNSCRIPT n=62 room=9
+F=408 JEV SAY: Ladestock
+F=408 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=408 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=409 JEV RUNSCRIPT n=63 room=9
+F=409 JEV RUNSCRIPT n=64 room=9
+F=409 JEV RUNSCRIPT n=62 room=9
+F=409 JEV SAY: Ladestock
+F=409 JEV RUNSCRIPT n=27 room=9
+F=409 JEV RUNSCRIPT n=27 room=9
+F=409 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=409 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=410 JEV RUNSCRIPT n=63 room=9
+F=410 JEV RUNSCRIPT n=64 room=9
+F=410 JEV RUNSCRIPT n=62 room=9
+F=410 JEV SAY: Ladestock
+F=410 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=410 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=411 JEV RUNSCRIPT n=63 room=9
+F=411 JEV RUNSCRIPT n=64 room=9
+F=411 JEV RUNSCRIPT n=62 room=9
+F=411 JEV SAY: Ladestock
+F=411 JEV RUNSCRIPT n=27 room=9
+F=411 JEV RUNSCRIPT n=27 room=9
+F=411 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=411 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=412 JEV RUNSCRIPT n=63 room=9
+F=412 JEV RUNSCRIPT n=64 room=9
+F=412 JEV RUNSCRIPT n=62 room=9
+F=412 JEV SAY: Ladestock
+F=412 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=412 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=413 JEV RUNSCRIPT n=63 room=9
+F=413 JEV RUNSCRIPT n=64 room=9
+F=413 JEV RUNSCRIPT n=62 room=9
+F=413 JEV SAY: Ladestock
+F=413 JEV RUNSCRIPT n=27 room=9
+F=413 JEV RUNSCRIPT n=27 room=9
+F=413 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=413 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=414 JEV RUNSCRIPT n=63 room=9
+F=414 JEV RUNSCRIPT n=64 room=9
+F=414 JEV RUNSCRIPT n=62 room=9
+F=414 JEV SAY: Ladestock
+F=414 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=414 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=415 JEV RUNSCRIPT n=63 room=9
+F=415 JEV RUNSCRIPT n=64 room=9
+F=415 JEV RUNSCRIPT n=62 room=9
+F=415 JEV SAY: Ladestock
+F=415 JEV RUNSCRIPT n=27 room=9
+F=415 JEV RUNSCRIPT n=27 room=9
+F=415 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=415 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20
+F=416 JEV RUNSCRIPT n=63 room=9
+F=416 JEV RUNSCRIPT n=64 room=9
+F=416 JEV RUNSCRIPT n=62 room=9
+F=416 JEV SAY: Ladestock
+F=416 JEV RUNSCRIPT n=2005 room=9
+F=416 VERIFY obj=279(ramrod-object) src=736x128 exp=736x128 sizeOK=1 isHD=0 colors=215 posOK=1 matches=20/20
+F=416 VERIFY obj=275(cannon-treasure-door) src=544x928 exp=544x928 sizeOK=1 isHD=0 colors=45 posOK=1 matches=20/20

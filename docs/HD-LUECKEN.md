@@ -360,3 +360,34 @@ Damit ist belegt: die Objekte, die in 8 Bit gezeichnet werden, haben in den Spie
 **kein eigenes Bild**, und die geteilte Icon-Fassung greift nur in Einzelfällen (ein Treffer).
 Für den Rest müsste das Bild aus einer anderen Quelle kommen — Kandidat sind die
 Inventar-/Icon-Objekte, die als eigene Objekte mit eigener Nummer geführt werden.
+
+## Zustands-Spiegelung: eingebaut, aber nicht die Ursache
+
+Zustand 1 ist in COMI die gespiegelte Fassung von Zustand 0. Fehlt das Bild für den
+gezeichneten Zustand, nimmt `HdObjectManager` jetzt das Basis-Bild und spiegelt es —
+in `getObjectSurface` (der Masken- und Zeichenpfad) **und** in `loadObject`.
+
+Betroffen sind 49 Objekte im Spiel, zum Beispiel:
+
+```
+275 cannon-treasure-door    Raum 9   Dateien [0]  fehlt [1]
+434 town-bush-plaque        Raum 15  Dateien [0]  fehlt [1]
+1335 pepper-mill            Raum 86  Dateien [0]  fehlt [1]
+```
+
+Messung danach: Raum 86 8,58 Prozent, Raum 15 0,99 Prozent — unverändert. Die Spiegelung ist
+trotzdem richtig (sie schließt eine echte Lücke), sie erklärt den Rest aber nicht.
+
+## Der Rest in Raum 86 ist ein einziges Objekt ohne Bild
+
+Die Magenta-Flächen im Bild wurden direkt geortet (`harness/magenta_orte.py`, 32er-Blöcke,
+Rückrechnung auf Raumpixel). Ergebnis: ein senkrechter Streifen bei x 560-600, y 176-352.
+
+Bei Kamera 592 fällt das genau auf:
+
+```
+1360  carnival-snowcone-sign  rx=1152 ry=248  224x120   ->  0 Assets
+```
+
+Das ist der sichtbare Rest. Das Objekt hat kein Bild in der Sammlung. Bei den anderen
+Räumen liegt derselbe Fall vor (`1350 soda-jerk-object`, Raum 86, ebenfalls 0 Assets).

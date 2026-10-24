@@ -1,0 +1,1205 @@
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 JEV SAY: The Curse of Monkey Island
+F=0 JEV SAY: Geschichten von 1002 Seem nnern
+F=0 JEV SAY: The Curse of Monkey Island:
+F=0 JEV SAY: Oberaffig
+F=0 JEV SAY: Geschichten von 1002 Seem nnern
+F=0 JEV SAY: (aber mit mehr R tseln)
+F=0 JEV SAY: The Curse of Monkey Island
+F=0 JEV SAY: Geschichten von 1002 Seem nnern
+F=0 JEV SAY: The Curse of Monkey Island:
+F=0 JEV SAY: Oberaffig
+F=0 JEV SAY: Geschichten von 1002 Seem nnern
+F=0 JEV SAY: (aber mit mehr R tseln)
+F=0 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=0 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=0 step2: fgPixels=33141/4915200 (0.7%) cleanValid=1
+F=0 step2 invArea: fg=463040/2867200 (16.1%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 87, 200 objects:
+F=0 ROOM OBJ: oi=10 obj=1367 fl=0 state=1 pos=(0,0) sz=(640x480) name=foreign-placard-object
+F=0 ROOM OBJ: oi=9 obj=1366 fl=0 state=0 pos=(112,88) sz=(360x64) name=easyhard-choice-object
+F=0 ROOM OBJ: oi=8 obj=1365 fl=0 state=0 pos=(64,72) sz=(512x80) name=
+F=0 ROOM OBJ: oi=7 obj=1364 fl=0 state=0 pos=(64,176) sz=(512x96) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 JEV EGO: actor=1 x=0 y=0 room=87
+F=0 JEV INV: count=0 objs=
+F=0 PREWARM: room 87 — 4 objects, 0 costume frames cached
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=0 CULL obj=114 fl=3 visible=32576 invActive=0
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=0 skipped=0 culled=6
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=33141 (optimized: 8-bit scan)
+F=0 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=1 JEV SAY: The Curse of Monkey Island
+F=1 JEV SAY: Geschichten von 1002 Seem nnern
+F=1 JEV SAY: The Curse of Monkey Island:
+F=1 JEV SAY: Oberaffig
+F=1 JEV SAY: Geschichten von 1002 Seem nnern
+F=1 JEV SAY: (aber mit mehr R tseln)
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 JEV SAY: The Curse of Monkey Island
+F=2 JEV SAY: Geschichten von 1002 Seem nnern
+F=2 JEV SAY: The Curse of Monkey Island:
+F=2 JEV SAY: Oberaffig
+F=2 JEV SAY: Geschichten von 1002 Seem nnern
+F=2 JEV SAY: (aber mit mehr R tseln)
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 JEV SAY: The Curse of Monkey Island
+F=3 JEV SAY: Geschichten von 1002 Seem nnern
+F=3 JEV SAY: The Curse of Monkey Island:
+F=3 JEV SAY: Oberaffig
+F=3 JEV SAY: Geschichten von 1002 Seem nnern
+F=3 JEV SAY: (aber mit mehr R tseln)
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 JEV SAY: The Curse of Monkey Island
+F=4 JEV SAY: Geschichten von 1002 Seem nnern
+F=4 JEV SAY: The Curse of Monkey Island:
+F=4 JEV SAY: Oberaffig
+F=4 JEV SAY: Geschichten von 1002 Seem nnern
+F=4 JEV SAY: (aber mit mehr R tseln)
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 JEV SAY: The Curse of Monkey Island
+F=5 JEV SAY: Geschichten von 1002 Seem nnern
+F=5 JEV SAY: The Curse of Monkey Island:
+F=5 JEV SAY: Oberaffig
+F=5 JEV SAY: Geschichten von 1002 Seem nnern
+F=5 JEV SAY: (aber mit mehr R tseln)
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 JEV SAY: The Curse of Monkey Island
+F=6 JEV SAY: Geschichten von 1002 Seem nnern
+F=6 JEV SAY: The Curse of Monkey Island:
+F=6 JEV SAY: Oberaffig
+F=6 JEV SAY: Geschichten von 1002 Seem nnern
+F=6 JEV SAY: (aber mit mehr R tseln)
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 JEV SAY: The Curse of Monkey Island
+F=7 JEV SAY: Geschichten von 1002 Seem nnern
+F=7 JEV SAY: The Curse of Monkey Island:
+F=7 JEV SAY: Oberaffig
+F=7 JEV SAY: Geschichten von 1002 Seem nnern
+F=7 JEV SAY: (aber mit mehr R tseln)
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 JEV SAY: The Curse of Monkey Island
+F=8 JEV SAY: Geschichten von 1002 Seem nnern
+F=8 JEV SAY: The Curse of Monkey Island:
+F=8 JEV SAY: Oberaffig
+F=8 JEV SAY: Geschichten von 1002 Seem nnern
+F=8 JEV SAY: (aber mit mehr R tseln)
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 JEV SAY: The Curse of Monkey Island
+F=9 JEV SAY: Geschichten von 1002 Seem nnern
+F=9 JEV SAY: The Curse of Monkey Island:
+F=9 JEV SAY: Oberaffig
+F=9 JEV SAY: Geschichten von 1002 Seem nnern
+F=9 JEV SAY: (aber mit mehr R tseln)
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 JEV SAY: The Curse of Monkey Island
+F=10 JEV SAY: Geschichten von 1002 Seem nnern
+F=10 JEV SAY: The Curse of Monkey Island:
+F=10 JEV SAY: Oberaffig
+F=10 JEV SAY: Geschichten von 1002 Seem nnern
+F=10 JEV SAY: (aber mit mehr R tseln)
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=87
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=87
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=87
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=87
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=87
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=87
+F=11 JEV SAY: The Curse of Monkey Island
+F=11 JEV SAY: Geschichten von 1002 Seem nnern
+F=11 JEV SAY: The Curse of Monkey Island:
+F=11 JEV SAY: Oberaffig
+F=11 JEV SAY: Geschichten von 1002 Seem nnern
+F=11 JEV SAY: (aber mit mehr R tseln)
+F=12 JEV SAY: The Curse of Monkey Island
+F=12 JEV SAY: Geschichten von 1002 Seem nnern
+F=12 JEV SAY: The Curse of Monkey Island:
+F=12 JEV SAY: Oberaffig
+F=12 JEV SAY: Geschichten von 1002 Seem nnern
+F=12 JEV SAY: (aber mit mehr R tseln)
+F=13 JEV SAY: The Curse of Monkey Island
+F=13 JEV SAY: Geschichten von 1002 Seem nnern
+F=13 JEV SAY: The Curse of Monkey Island:
+F=13 JEV SAY: Oberaffig
+F=13 JEV SAY: Geschichten von 1002 Seem nnern
+F=13 JEV SAY: (aber mit mehr R tseln)
+F=14 JEV SAY: The Curse of Monkey Island
+F=14 JEV SAY: Geschichten von 1002 Seem nnern
+F=14 JEV SAY: The Curse of Monkey Island:
+F=14 JEV SAY: Oberaffig
+F=14 JEV SAY: Geschichten von 1002 Seem nnern
+F=14 JEV SAY: (aber mit mehr R tseln)
+F=15 JEV SAY: The Curse of Monkey Island
+F=15 JEV SAY: Geschichten von 1002 Seem nnern
+F=15 JEV SAY: The Curse of Monkey Island:
+F=15 JEV SAY: Oberaffig
+F=15 JEV SAY: Geschichten von 1002 Seem nnern
+F=15 JEV SAY: (aber mit mehr R tseln)
+F=16 JEV SAY: The Curse of Monkey Island
+F=16 JEV SAY: Geschichten von 1002 Seem nnern
+F=16 JEV SAY: The Curse of Monkey Island:
+F=16 JEV SAY: Oberaffig
+F=16 JEV SAY: Geschichten von 1002 Seem nnern
+F=16 JEV SAY: (aber mit mehr R tseln)
+F=17 JEV SAY: The Curse of Monkey Island
+F=17 JEV SAY: Geschichten von 1002 Seem nnern
+F=17 JEV SAY: The Curse of Monkey Island:
+F=17 JEV SAY: Oberaffig
+F=17 JEV SAY: Geschichten von 1002 Seem nnern
+F=17 JEV SAY: (aber mit mehr R tseln)
+F=18 JEV SAY: The Curse of Monkey Island
+F=18 JEV SAY: Geschichten von 1002 Seem nnern
+F=18 JEV SAY: The Curse of Monkey Island:
+F=18 JEV SAY: Oberaffig
+F=18 JEV SAY: Geschichten von 1002 Seem nnern
+F=18 JEV SAY: (aber mit mehr R tseln)
+F=19 JEV SAY: The Curse of Monkey Island
+F=19 JEV SAY: Geschichten von 1002 Seem nnern
+F=19 JEV SAY: The Curse of Monkey Island:
+F=19 JEV SAY: Oberaffig
+F=19 JEV SAY: Geschichten von 1002 Seem nnern
+F=19 JEV SAY: (aber mit mehr R tseln)
+F=20 JEV SAY: The Curse of Monkey Island
+F=20 JEV SAY: Geschichten von 1002 Seem nnern
+F=20 JEV SAY: The Curse of Monkey Island:
+F=20 JEV SAY: Oberaffig
+F=20 JEV SAY: Geschichten von 1002 Seem nnern
+F=20 JEV SAY: (aber mit mehr R tseln)
+F=21 JEV SAY: The Curse of Monkey Island
+F=21 JEV SAY: Geschichten von 1002 Seem nnern
+F=21 JEV SAY: The Curse of Monkey Island:
+F=21 JEV SAY: Oberaffig
+F=21 JEV SAY: Geschichten von 1002 Seem nnern
+F=21 JEV SAY: (aber mit mehr R tseln)
+F=22 JEV SAY: The Curse of Monkey Island
+F=22 JEV SAY: Geschichten von 1002 Seem nnern
+F=22 JEV SAY: The Curse of Monkey Island:
+F=22 JEV SAY: Oberaffig
+F=22 JEV SAY: Geschichten von 1002 Seem nnern
+F=22 JEV SAY: (aber mit mehr R tseln)
+F=23 JEV SAY: The Curse of Monkey Island
+F=23 JEV SAY: Geschichten von 1002 Seem nnern
+F=23 JEV SAY: The Curse of Monkey Island:
+F=23 JEV SAY: Oberaffig
+F=23 JEV SAY: Geschichten von 1002 Seem nnern
+F=23 JEV SAY: (aber mit mehr R tseln)
+F=24 JEV SAY: The Curse of Monkey Island
+F=24 JEV SAY: Geschichten von 1002 Seem nnern
+F=24 JEV SAY: The Curse of Monkey Island:
+F=24 JEV SAY: Oberaffig
+F=24 JEV SAY: Geschichten von 1002 Seem nnern
+F=24 JEV SAY: (aber mit mehr R tseln)
+F=25 JEV SAY: The Curse of Monkey Island
+F=25 JEV SAY: Geschichten von 1002 Seem nnern
+F=25 JEV SAY: The Curse of Monkey Island:
+F=25 JEV SAY: Oberaffig
+F=25 JEV SAY: Geschichten von 1002 Seem nnern
+F=25 JEV SAY: (aber mit mehr R tseln)
+F=26 JEV SAY: The Curse of Monkey Island
+F=26 JEV SAY: Geschichten von 1002 Seem nnern
+F=26 JEV SAY: The Curse of Monkey Island:
+F=26 JEV SAY: Oberaffig
+F=26 JEV SAY: Geschichten von 1002 Seem nnern
+F=26 JEV SAY: (aber mit mehr R tseln)
+F=27 JEV SAY: The Curse of Monkey Island
+F=27 JEV SAY: Geschichten von 1002 Seem nnern
+F=27 JEV SAY: The Curse of Monkey Island:
+F=27 JEV SAY: Oberaffig
+F=27 JEV SAY: Geschichten von 1002 Seem nnern
+F=27 JEV SAY: (aber mit mehr R tseln)
+F=28 JEV SAY: The Curse of Monkey Island
+F=28 JEV SAY: Geschichten von 1002 Seem nnern
+F=28 JEV SAY: The Curse of Monkey Island:
+F=28 JEV SAY: Oberaffig
+F=28 JEV SAY: Geschichten von 1002 Seem nnern
+F=28 JEV SAY: (aber mit mehr R tseln)
+F=29 JEV SAY: The Curse of Monkey Island
+F=29 JEV SAY: Geschichten von 1002 Seem nnern
+F=29 JEV SAY: The Curse of Monkey Island:
+F=29 JEV SAY: Oberaffig
+F=29 JEV SAY: Geschichten von 1002 Seem nnern
+F=29 JEV SAY: (aber mit mehr R tseln)
+F=30 FRAME-TIMING: avg=74ms max=448ms FPS=13.5 (30 frames)
+F=30 F=30 JEV EGO: actor=1 x=0 y=0 room=87
+F=30 JEV SAY: The Curse of Monkey Island
+F=30 JEV SAY: Geschichten von 1002 Seem nnern
+F=30 JEV SAY: The Curse of Monkey Island:
+F=30 JEV SAY: Oberaffig
+F=30 JEV SAY: Geschichten von 1002 Seem nnern
+F=30 JEV SAY: (aber mit mehr R tseln)
+F=30 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=30 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=30 step2: fgPixels=33141/4915200 (0.7%) cleanValid=1
+F=30 step2 invArea: fg=463040/2867200 (16.1%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=30 step2.5 objects: loaded=0 skipped=0 culled=6
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=33141 (optimized: 8-bit scan)
+F=30 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=31 JEV SAY: The Curse of Monkey Island
+F=31 JEV SAY: Geschichten von 1002 Seem nnern
+F=31 JEV SAY: The Curse of Monkey Island:
+F=31 JEV SAY: Oberaffig
+F=31 JEV SAY: Geschichten von 1002 Seem nnern
+F=31 JEV SAY: (aber mit mehr R tseln)
+F=32 JEV SAY: The Curse of Monkey Island
+F=32 JEV SAY: Geschichten von 1002 Seem nnern
+F=32 JEV SAY: The Curse of Monkey Island:
+F=32 JEV SAY: Oberaffig
+F=32 JEV SAY: Geschichten von 1002 Seem nnern
+F=32 JEV SAY: (aber mit mehr R tseln)
+F=33 JEV SAY: The Curse of Monkey Island
+F=33 JEV SAY: Geschichten von 1002 Seem nnern
+F=33 JEV SAY: The Curse of Monkey Island:
+F=33 JEV SAY: Oberaffig
+F=33 JEV SAY: Geschichten von 1002 Seem nnern
+F=33 JEV SAY: (aber mit mehr R tseln)
+F=34 JEV SAY: The Curse of Monkey Island
+F=34 JEV SAY: Geschichten von 1002 Seem nnern
+F=34 JEV SAY: The Curse of Monkey Island:
+F=34 JEV SAY: Oberaffig
+F=34 JEV SAY: Geschichten von 1002 Seem nnern
+F=34 JEV SAY: (aber mit mehr R tseln)
+F=35 JEV SAY: The Curse of Monkey Island
+F=35 JEV SAY: Geschichten von 1002 Seem nnern
+F=35 JEV SAY: The Curse of Monkey Island:
+F=35 JEV SAY: Oberaffig
+F=35 JEV SAY: Geschichten von 1002 Seem nnern
+F=35 JEV SAY: (aber mit mehr R tseln)
+F=36 JEV SAY: The Curse of Monkey Island
+F=36 JEV SAY: Geschichten von 1002 Seem nnern
+F=36 JEV SAY: The Curse of Monkey Island:
+F=36 JEV SAY: Oberaffig
+F=36 JEV SAY: Geschichten von 1002 Seem nnern
+F=36 JEV SAY: (aber mit mehr R tseln)
+F=37 JEV SAY: The Curse of Monkey Island
+F=37 JEV SAY: Geschichten von 1002 Seem nnern
+F=37 JEV SAY: The Curse of Monkey Island:
+F=37 JEV SAY: Oberaffig
+F=37 JEV SAY: Geschichten von 1002 Seem nnern
+F=37 JEV SAY: (aber mit mehr R tseln)
+F=38 JEV SAY: The Curse of Monkey Island
+F=38 JEV SAY: Geschichten von 1002 Seem nnern
+F=38 JEV SAY: The Curse of Monkey Island:
+F=38 JEV SAY: Oberaffig
+F=38 JEV SAY: Geschichten von 1002 Seem nnern
+F=38 JEV SAY: (aber mit mehr R tseln)
+F=39 JEV SAY: The Curse of Monkey Island
+F=39 JEV SAY: Geschichten von 1002 Seem nnern
+F=39 JEV SAY: The Curse of Monkey Island:
+F=39 JEV SAY: Oberaffig
+F=39 JEV SAY: Geschichten von 1002 Seem nnern
+F=39 JEV SAY: (aber mit mehr R tseln)
+F=40 JEV SAY: The Curse of Monkey Island
+F=40 JEV SAY: Geschichten von 1002 Seem nnern
+F=40 JEV SAY: The Curse of Monkey Island:
+F=40 JEV SAY: Oberaffig
+F=40 JEV SAY: Geschichten von 1002 Seem nnern
+F=40 JEV SAY: (aber mit mehr R tseln)
+F=41 JEV SAY: The Curse of Monkey Island
+F=41 JEV SAY: Geschichten von 1002 Seem nnern
+F=41 JEV SAY: The Curse of Monkey Island:
+F=41 JEV SAY: Oberaffig
+F=41 JEV SAY: Geschichten von 1002 Seem nnern
+F=41 JEV SAY: (aber mit mehr R tseln)
+F=42 JEV SAY: The Curse of Monkey Island
+F=42 JEV SAY: Geschichten von 1002 Seem nnern
+F=42 JEV SAY: The Curse of Monkey Island:
+F=42 JEV SAY: Oberaffig
+F=42 JEV SAY: Geschichten von 1002 Seem nnern
+F=42 JEV SAY: (aber mit mehr R tseln)
+F=43 JEV SAY: The Curse of Monkey Island
+F=43 JEV SAY: Geschichten von 1002 Seem nnern
+F=43 JEV SAY: The Curse of Monkey Island:
+F=43 JEV SAY: Oberaffig
+F=43 JEV SAY: Geschichten von 1002 Seem nnern
+F=43 JEV SAY: (aber mit mehr R tseln)
+F=44 JEV SAY: The Curse of Monkey Island
+F=44 JEV SAY: Geschichten von 1002 Seem nnern
+F=44 JEV SAY: The Curse of Monkey Island:
+F=44 JEV SAY: Oberaffig
+F=44 JEV SAY: Geschichten von 1002 Seem nnern
+F=44 JEV SAY: (aber mit mehr R tseln)
+F=45 JEV SAY: The Curse of Monkey Island
+F=45 JEV SAY: Geschichten von 1002 Seem nnern
+F=45 JEV SAY: The Curse of Monkey Island:
+F=45 JEV SAY: Oberaffig
+F=45 JEV SAY: Geschichten von 1002 Seem nnern
+F=45 JEV SAY: (aber mit mehr R tseln)
+F=46 JEV SAY: The Curse of Monkey Island
+F=46 JEV SAY: Geschichten von 1002 Seem nnern
+F=46 JEV SAY: The Curse of Monkey Island:
+F=46 JEV SAY: Oberaffig
+F=46 JEV SAY: Geschichten von 1002 Seem nnern
+F=46 JEV SAY: (aber mit mehr R tseln)
+F=46 INVOBJ: oi=10 obj=1367 fl=0 state=1 parent=0 pos=(0,0) sz=(640x480)
+F=46 INVOBJ: oi=9 obj=1366 fl=0 state=0 parent=0 pos=(112,88) sz=(360x64)
+F=46 INVOBJ: oi=8 obj=1365 fl=0 state=0 parent=0 pos=(64,72) sz=(512x80)
+F=46 INVOBJ: oi=7 obj=1364 fl=0 state=0 parent=0 pos=(64,176) sz=(512x96)
+F=46 INVOBJ: oi=6 obj=189 fl=6 state=0 parent=0 pos=(0,0) sz=(32x32)
+F=46 INVOBJ: oi=5 obj=188 fl=5 state=0 parent=0 pos=(0,0) sz=(32x40)
+F=46 INVOBJ: oi=4 obj=105 fl=4 state=0 parent=0 pos=(0,0) sz=(80x56)
+F=46 INVOBJ: oi=3 obj=114 fl=3 state=0 parent=0 pos=(0,0) sz=(640x472)
+F=46 INVOBJ: oi=2 obj=115 fl=2 state=0 parent=0 pos=(0,0) sz=(80x40)
+F=46 INVOBJ: oi=1 obj=116 fl=1 state=0 parent=0 pos=(0,0) sz=(80x40)
+F=47 JEV SAY: The Curse of Monkey Island
+F=47 JEV SAY: Geschichten von 1002 Seem nnern
+F=47 JEV SAY: The Curse of Monkey Island:
+F=47 JEV SAY: Oberaffig
+F=47 JEV SAY: Geschichten von 1002 Seem nnern
+F=47 JEV SAY: (aber mit mehr R tseln)
+F=48 JEV SAY: The Curse of Monkey Island
+F=48 JEV SAY: Geschichten von 1002 Seem nnern
+F=48 JEV SAY: The Curse of Monkey Island:
+F=48 JEV SAY: Oberaffig
+F=48 JEV SAY: Geschichten von 1002 Seem nnern
+F=48 JEV SAY: (aber mit mehr R tseln)
+F=49 JEV SAY: The Curse of Monkey Island
+F=49 JEV SAY: Geschichten von 1002 Seem nnern
+F=49 JEV SAY: The Curse of Monkey Island:
+F=49 JEV SAY: Oberaffig
+F=49 JEV SAY: Geschichten von 1002 Seem nnern
+F=49 JEV SAY: (aber mit mehr R tseln)
+F=50 JEV SAY: The Curse of Monkey Island
+F=50 JEV SAY: Geschichten von 1002 Seem nnern
+F=50 JEV SAY: The Curse of Monkey Island:
+F=50 JEV SAY: Oberaffig
+F=50 JEV SAY: Geschichten von 1002 Seem nnern
+F=50 JEV SAY: (aber mit mehr R tseln)
+F=51 JEV SAY: The Curse of Monkey Island
+F=51 JEV SAY: Geschichten von 1002 Seem nnern
+F=51 JEV SAY: The Curse of Monkey Island:
+F=51 JEV SAY: Oberaffig
+F=51 JEV SAY: Geschichten von 1002 Seem nnern
+F=51 JEV SAY: (aber mit mehr R tseln)
+F=52 JEV SAY: The Curse of Monkey Island
+F=52 JEV SAY: Geschichten von 1002 Seem nnern
+F=52 JEV SAY: The Curse of Monkey Island:
+F=52 JEV SAY: Oberaffig
+F=52 JEV SAY: Geschichten von 1002 Seem nnern
+F=52 JEV SAY: (aber mit mehr R tseln)
+F=53 JEV SAY: The Curse of Monkey Island
+F=53 JEV SAY: Geschichten von 1002 Seem nnern
+F=53 JEV SAY: The Curse of Monkey Island:
+F=53 JEV SAY: Oberaffig
+F=53 JEV SAY: Geschichten von 1002 Seem nnern
+F=53 JEV SAY: (aber mit mehr R tseln)
+F=54 JEV SAY: The Curse of Monkey Island
+F=54 JEV SAY: Geschichten von 1002 Seem nnern
+F=54 JEV SAY: The Curse of Monkey Island:
+F=54 JEV SAY: Oberaffig
+F=54 JEV SAY: Geschichten von 1002 Seem nnern
+F=54 JEV SAY: (aber mit mehr R tseln)
+F=55 JEV SAY: The Curse of Monkey Island
+F=55 JEV SAY: Geschichten von 1002 Seem nnern
+F=55 JEV SAY: The Curse of Monkey Island:
+F=55 JEV SAY: Oberaffig
+F=55 JEV SAY: Geschichten von 1002 Seem nnern
+F=55 JEV SAY: (aber mit mehr R tseln)
+F=56 JEV SAY: The Curse of Monkey Island
+F=56 JEV SAY: Geschichten von 1002 Seem nnern
+F=56 JEV SAY: The Curse of Monkey Island:
+F=56 JEV SAY: Oberaffig
+F=56 JEV SAY: Geschichten von 1002 Seem nnern
+F=56 JEV SAY: (aber mit mehr R tseln)
+F=57 JEV SAY: The Curse of Monkey Island
+F=57 JEV SAY: Geschichten von 1002 Seem nnern
+F=57 JEV SAY: The Curse of Monkey Island:
+F=57 JEV SAY: Oberaffig
+F=57 JEV SAY: Geschichten von 1002 Seem nnern
+F=57 JEV SAY: (aber mit mehr R tseln)
+F=58 JEV SAY: The Curse of Monkey Island
+F=58 JEV SAY: Geschichten von 1002 Seem nnern
+F=58 JEV SAY: The Curse of Monkey Island:
+F=58 JEV SAY: Oberaffig
+F=58 JEV SAY: Geschichten von 1002 Seem nnern
+F=58 JEV SAY: (aber mit mehr R tseln)
+F=59 JEV SAY: The Curse of Monkey Island
+F=59 JEV SAY: Geschichten von 1002 Seem nnern
+F=59 JEV SAY: The Curse of Monkey Island:
+F=59 JEV SAY: Oberaffig
+F=59 JEV SAY: Geschichten von 1002 Seem nnern
+F=59 JEV SAY: (aber mit mehr R tseln)
+F=60 FRAME-TIMING: avg=67ms max=108ms FPS=14.9 (30 frames)
+F=60 F=60 JEV EGO: actor=1 x=0 y=0 room=87
+F=60 JEV SAY: The Curse of Monkey Island
+F=60 JEV SAY: Geschichten von 1002 Seem nnern
+F=60 JEV SAY: The Curse of Monkey Island:
+F=60 JEV SAY: Oberaffig
+F=60 JEV SAY: Geschichten von 1002 Seem nnern
+F=60 JEV SAY: (aber mit mehr R tseln)
+F=60 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=60 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=60 step2: fgPixels=37892/4915200 (0.8%) cleanValid=1
+F=60 step2 invArea: fg=539056/2867200 (18.8%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=60 step2.5 objects: loaded=0 skipped=0 culled=6
+F=60 costume HIT: actor=34 costume=0439 cel=0 pos=(32,388) surf=380x612 sort=234
+F=60 step2.6 costumes: loaded=1 skipped=79 (noCostume=79 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=33110 (optimized: 8-bit scan)
+F=60 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=61 JEV SAY: The Curse of Monkey Island
+F=61 JEV SAY: Geschichten von 1002 Seem nnern
+F=61 JEV SAY: The Curse of Monkey Island:
+F=61 JEV SAY: Oberaffig
+F=61 JEV SAY: Geschichten von 1002 Seem nnern
+F=61 JEV SAY: (aber mit mehr R tseln)
+F=62 JEV SAY: The Curse of Monkey Island
+F=62 JEV SAY: Geschichten von 1002 Seem nnern
+F=62 JEV SAY: The Curse of Monkey Island:
+F=62 JEV SAY: Oberaffig
+F=62 JEV SAY: Geschichten von 1002 Seem nnern
+F=62 JEV SAY: (aber mit mehr R tseln)
+F=63 JEV SAY: The Curse of Monkey Island
+F=63 JEV SAY: Geschichten von 1002 Seem nnern
+F=63 JEV SAY: The Curse of Monkey Island:
+F=63 JEV SAY: Oberaffig
+F=63 JEV SAY: Geschichten von 1002 Seem nnern
+F=63 JEV SAY: (aber mit mehr R tseln)
+F=64 JEV SAY: The Curse of Monkey Island
+F=64 JEV SAY: Geschichten von 1002 Seem nnern
+F=64 JEV SAY: The Curse of Monkey Island:
+F=64 JEV SAY: Oberaffig
+F=64 JEV SAY: Geschichten von 1002 Seem nnern
+F=64 JEV SAY: (aber mit mehr R tseln)
+F=65 JEV SAY: The Curse of Monkey Island
+F=65 JEV SAY: Geschichten von 1002 Seem nnern
+F=65 JEV SAY: The Curse of Monkey Island:
+F=65 JEV SAY: Oberaffig
+F=65 JEV SAY: Geschichten von 1002 Seem nnern
+F=65 JEV SAY: (aber mit mehr R tseln)
+F=66 JEV SAY: The Curse of Monkey Island
+F=66 JEV SAY: Geschichten von 1002 Seem nnern
+F=66 JEV SAY: The Curse of Monkey Island:
+F=66 JEV SAY: Oberaffig
+F=66 JEV SAY: Geschichten von 1002 Seem nnern
+F=66 JEV SAY: (aber mit mehr R tseln)
+F=67 JEV SAY: The Curse of Monkey Island
+F=67 JEV SAY: Geschichten von 1002 Seem nnern
+F=67 JEV SAY: The Curse of Monkey Island:
+F=67 JEV SAY: Oberaffig
+F=67 JEV SAY: Geschichten von 1002 Seem nnern
+F=67 JEV SAY: (aber mit mehr R tseln)
+F=68 JEV SAY: The Curse of Monkey Island
+F=68 JEV SAY: Geschichten von 1002 Seem nnern
+F=68 JEV SAY: The Curse of Monkey Island:
+F=68 JEV SAY: Oberaffig
+F=68 JEV SAY: Geschichten von 1002 Seem nnern
+F=68 JEV SAY: (aber mit mehr R tseln)
+F=69 JEV SAY: The Curse of Monkey Island
+F=69 JEV SAY: Geschichten von 1002 Seem nnern
+F=69 JEV SAY: The Curse of Monkey Island:
+F=69 JEV SAY: Oberaffig
+F=69 JEV SAY: Geschichten von 1002 Seem nnern
+F=69 JEV SAY: (aber mit mehr R tseln)
+F=70 JEV SAY: The Curse of Monkey Island
+F=70 JEV SAY: Geschichten von 1002 Seem nnern
+F=70 JEV SAY: The Curse of Monkey Island:
+F=70 JEV SAY: Oberaffig
+F=70 JEV SAY: Geschichten von 1002 Seem nnern
+F=70 JEV SAY: (aber mit mehr R tseln)
+F=71 JEV SAY: The Curse of Monkey Island
+F=71 JEV SAY: Geschichten von 1002 Seem nnern
+F=71 JEV SAY: The Curse of Monkey Island:
+F=71 JEV SAY: Oberaffig
+F=71 JEV SAY: Geschichten von 1002 Seem nnern
+F=71 JEV SAY: (aber mit mehr R tseln)
+F=72 JEV SAY: The Curse of Monkey Island
+F=72 JEV SAY: Geschichten von 1002 Seem nnern
+F=72 JEV SAY: The Curse of Monkey Island:
+F=72 JEV SAY: Oberaffig
+F=72 JEV SAY: Geschichten von 1002 Seem nnern
+F=72 JEV SAY: (aber mit mehr R tseln)
+F=73 JEV SAY: The Curse of Monkey Island
+F=73 JEV SAY: Geschichten von 1002 Seem nnern
+F=73 JEV SAY: The Curse of Monkey Island:
+F=73 JEV SAY: Oberaffig
+F=73 JEV SAY: Geschichten von 1002 Seem nnern
+F=73 JEV SAY: (aber mit mehr R tseln)
+F=74 JEV SAY: The Curse of Monkey Island
+F=74 JEV SAY: Geschichten von 1002 Seem nnern
+F=74 JEV SAY: The Curse of Monkey Island:
+F=74 JEV SAY: Oberaffig
+F=74 JEV SAY: Geschichten von 1002 Seem nnern
+F=74 JEV SAY: (aber mit mehr R tseln)
+F=75 JEV SAY: The Curse of Monkey Island
+F=75 JEV SAY: Geschichten von 1002 Seem nnern
+F=75 JEV SAY: The Curse of Monkey Island:
+F=75 JEV SAY: Oberaffig
+F=75 JEV SAY: Geschichten von 1002 Seem nnern
+F=75 JEV SAY: (aber mit mehr R tseln)
+F=76 JEV SAY: The Curse of Monkey Island
+F=76 JEV SAY: Geschichten von 1002 Seem nnern
+F=76 JEV SAY: The Curse of Monkey Island:
+F=76 JEV SAY: Oberaffig
+F=76 JEV SAY: Geschichten von 1002 Seem nnern
+F=76 JEV SAY: (aber mit mehr R tseln)
+F=77 JEV SAY: The Curse of Monkey Island
+F=77 JEV SAY: Geschichten von 1002 Seem nnern
+F=77 JEV SAY: The Curse of Monkey Island:
+F=77 JEV SAY: Oberaffig
+F=77 JEV SAY: Geschichten von 1002 Seem nnern
+F=77 JEV SAY: (aber mit mehr R tseln)
+F=78 JEV SAY: The Curse of Monkey Island
+F=78 JEV SAY: Geschichten von 1002 Seem nnern
+F=78 JEV SAY: The Curse of Monkey Island:
+F=78 JEV SAY: Oberaffig
+F=78 JEV SAY: Geschichten von 1002 Seem nnern
+F=78 JEV SAY: (aber mit mehr R tseln)
+F=79 JEV SAY: The Curse of Monkey Island
+F=79 JEV SAY: Geschichten von 1002 Seem nnern
+F=79 JEV SAY: The Curse of Monkey Island:
+F=79 JEV SAY: Oberaffig
+F=79 JEV SAY: Geschichten von 1002 Seem nnern
+F=79 JEV SAY: (aber mit mehr R tseln)
+F=80 JEV SAY: The Curse of Monkey Island
+F=80 JEV SAY: Geschichten von 1002 Seem nnern
+F=80 JEV SAY: The Curse of Monkey Island:
+F=80 JEV SAY: Oberaffig
+F=80 JEV SAY: Geschichten von 1002 Seem nnern
+F=80 JEV SAY: (aber mit mehr R tseln)
+F=81 JEV SAY: The Curse of Monkey Island
+F=81 JEV SAY: Geschichten von 1002 Seem nnern
+F=81 JEV SAY: The Curse of Monkey Island:
+F=81 JEV SAY: Oberaffig
+F=81 JEV SAY: Geschichten von 1002 Seem nnern
+F=81 JEV SAY: (aber mit mehr R tseln)
+F=82 JEV SAY: The Curse of Monkey Island
+F=82 JEV SAY: Geschichten von 1002 Seem nnern
+F=82 JEV SAY: The Curse of Monkey Island:
+F=82 JEV SAY: Oberaffig
+F=82 JEV SAY: Geschichten von 1002 Seem nnern
+F=82 JEV SAY: (aber mit mehr R tseln)
+F=83 JEV SAY: The Curse of Monkey Island
+F=83 JEV SAY: Geschichten von 1002 Seem nnern
+F=83 JEV SAY: The Curse of Monkey Island:
+F=83 JEV SAY: Oberaffig
+F=83 JEV SAY: Geschichten von 1002 Seem nnern
+F=83 JEV SAY: (aber mit mehr R tseln)
+F=84 JEV SAY: The Curse of Monkey Island
+F=84 JEV SAY: Geschichten von 1002 Seem nnern
+F=84 JEV SAY: The Curse of Monkey Island:
+F=84 JEV SAY: Oberaffig
+F=84 JEV SAY: Geschichten von 1002 Seem nnern
+F=84 JEV SAY: (aber mit mehr R tseln)
+F=85 JEV SAY: The Curse of Monkey Island
+F=85 JEV SAY: Geschichten von 1002 Seem nnern
+F=85 JEV SAY: The Curse of Monkey Island:
+F=85 JEV SAY: Oberaffig
+F=85 JEV SAY: Geschichten von 1002 Seem nnern
+F=85 JEV SAY: (aber mit mehr R tseln)
+F=86 JEV SAY: The Curse of Monkey Island
+F=86 JEV SAY: Geschichten von 1002 Seem nnern
+F=86 JEV SAY: The Curse of Monkey Island:
+F=86 JEV SAY: Oberaffig
+F=86 JEV SAY: Geschichten von 1002 Seem nnern
+F=86 JEV SAY: (aber mit mehr R tseln)
+F=87 JEV SAY: The Curse of Monkey Island
+F=87 JEV SAY: Geschichten von 1002 Seem nnern
+F=87 JEV SAY: The Curse of Monkey Island:
+F=87 JEV SAY: Oberaffig
+F=87 JEV SAY: Geschichten von 1002 Seem nnern
+F=87 JEV SAY: (aber mit mehr R tseln)
+F=88 JEV SAY: The Curse of Monkey Island
+F=88 JEV SAY: Geschichten von 1002 Seem nnern
+F=88 JEV SAY: The Curse of Monkey Island:
+F=88 JEV SAY: Oberaffig
+F=88 JEV SAY: Geschichten von 1002 Seem nnern
+F=88 JEV SAY: (aber mit mehr R tseln)
+F=89 JEV SAY: The Curse of Monkey Island
+F=89 JEV SAY: Geschichten von 1002 Seem nnern
+F=89 JEV SAY: The Curse of Monkey Island:
+F=89 JEV SAY: Oberaffig
+F=89 JEV SAY: Geschichten von 1002 Seem nnern
+F=89 JEV SAY: (aber mit mehr R tseln)
+F=90 FRAME-TIMING: avg=68ms max=111ms FPS=14.7 (30 frames)
+F=90 F=90 JEV EGO: actor=1 x=0 y=0 room=87
+F=90 JEV SAY: The Curse of Monkey Island
+F=90 JEV SAY: Geschichten von 1002 Seem nnern
+F=90 JEV SAY: The Curse of Monkey Island:
+F=90 JEV SAY: Oberaffig
+F=90 JEV SAY: Geschichten von 1002 Seem nnern
+F=90 JEV SAY: (aber mit mehr R tseln)
+F=90 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=90 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=90 step2: fgPixels=37892/4915200 (0.8%) cleanValid=1
+F=90 step2 invArea: fg=539056/2867200 (18.8%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=90 step2.5 objects: loaded=0 skipped=0 culled=6
+F=90 costume HIT: actor=34 costume=0439 cel=0 pos=(32,388) surf=380x612 sort=234
+F=90 step2.6 costumes: loaded=1 skipped=79 (noCostume=79 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=33110 (optimized: 8-bit scan)
+F=90 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=91 JEV SAY: The Curse of Monkey Island
+F=91 JEV SAY: Geschichten von 1002 Seem nnern
+F=91 JEV SAY: The Curse of Monkey Island:
+F=91 JEV SAY: Oberaffig
+F=91 JEV SAY: Geschichten von 1002 Seem nnern
+F=91 JEV SAY: (aber mit mehr R tseln)
+F=92 JEV SAY: The Curse of Monkey Island
+F=92 JEV SAY: Geschichten von 1002 Seem nnern
+F=92 JEV SAY: The Curse of Monkey Island:
+F=92 JEV SAY: Oberaffig
+F=92 JEV SAY: Geschichten von 1002 Seem nnern
+F=92 JEV SAY: (aber mit mehr R tseln)
+F=93 JEV SAY: The Curse of Monkey Island
+F=93 JEV SAY: Geschichten von 1002 Seem nnern
+F=93 JEV SAY: The Curse of Monkey Island:
+F=93 JEV SAY: Oberaffig
+F=93 JEV SAY: Geschichten von 1002 Seem nnern
+F=93 JEV SAY: (aber mit mehr R tseln)
+F=94 JEV SAY: The Curse of Monkey Island
+F=94 JEV SAY: Geschichten von 1002 Seem nnern
+F=94 JEV SAY: The Curse of Monkey Island:
+F=94 JEV SAY: Oberaffig
+F=94 JEV SAY: Geschichten von 1002 Seem nnern
+F=94 JEV SAY: (aber mit mehr R tseln)
+F=95 JEV SAY: The Curse of Monkey Island
+F=95 JEV SAY: Geschichten von 1002 Seem nnern
+F=95 JEV SAY: The Curse of Monkey Island:
+F=95 JEV SAY: Oberaffig
+F=95 JEV SAY: Geschichten von 1002 Seem nnern
+F=95 JEV SAY: (aber mit mehr R tseln)
+F=96 JEV SAY: The Curse of Monkey Island
+F=96 JEV SAY: Geschichten von 1002 Seem nnern
+F=96 JEV SAY: The Curse of Monkey Island:
+F=96 JEV SAY: Oberaffig
+F=96 JEV SAY: Geschichten von 1002 Seem nnern
+F=96 JEV SAY: (aber mit mehr R tseln)
+F=97 JEV SAY: The Curse of Monkey Island
+F=97 JEV SAY: Geschichten von 1002 Seem nnern
+F=97 JEV SAY: The Curse of Monkey Island:
+F=97 JEV SAY: Oberaffig
+F=97 JEV SAY: Geschichten von 1002 Seem nnern
+F=97 JEV SAY: (aber mit mehr R tseln)
+F=98 JEV SAY: The Curse of Monkey Island
+F=98 JEV SAY: Geschichten von 1002 Seem nnern
+F=98 JEV SAY: The Curse of Monkey Island:
+F=98 JEV SAY: Oberaffig
+F=98 JEV SAY: Geschichten von 1002 Seem nnern
+F=98 JEV SAY: (aber mit mehr R tseln)
+F=99 JEV SAY: The Curse of Monkey Island
+F=99 JEV SAY: Geschichten von 1002 Seem nnern
+F=99 JEV SAY: The Curse of Monkey Island:
+F=99 JEV SAY: Oberaffig
+F=99 JEV SAY: Geschichten von 1002 Seem nnern
+F=99 JEV SAY: (aber mit mehr R tseln)
+F=100 JEV SAY: The Curse of Monkey Island
+F=100 JEV SAY: Geschichten von 1002 Seem nnern
+F=100 JEV SAY: The Curse of Monkey Island:
+F=100 JEV SAY: Oberaffig
+F=100 JEV SAY: Geschichten von 1002 Seem nnern
+F=100 JEV SAY: (aber mit mehr R tseln)
+F=101 JEV SAY: The Curse of Monkey Island
+F=101 JEV SAY: Geschichten von 1002 Seem nnern
+F=101 JEV SAY: The Curse of Monkey Island:
+F=101 JEV SAY: Oberaffig
+F=101 JEV SAY: Geschichten von 1002 Seem nnern
+F=101 JEV SAY: (aber mit mehr R tseln)
+F=102 JEV SAY: The Curse of Monkey Island
+F=102 JEV SAY: Geschichten von 1002 Seem nnern
+F=102 JEV SAY: The Curse of Monkey Island:
+F=102 JEV SAY: Oberaffig
+F=102 JEV SAY: Geschichten von 1002 Seem nnern
+F=102 JEV SAY: (aber mit mehr R tseln)
+F=103 JEV SAY: The Curse of Monkey Island
+F=103 JEV SAY: Geschichten von 1002 Seem nnern
+F=103 JEV SAY: The Curse of Monkey Island:
+F=103 JEV SAY: Oberaffig
+F=103 JEV SAY: Geschichten von 1002 Seem nnern
+F=103 JEV SAY: (aber mit mehr R tseln)
+F=104 JEV SAY: The Curse of Monkey Island
+F=104 JEV SAY: Geschichten von 1002 Seem nnern
+F=104 JEV SAY: The Curse of Monkey Island:
+F=104 JEV SAY: Oberaffig
+F=104 JEV SAY: Geschichten von 1002 Seem nnern
+F=104 JEV SAY: (aber mit mehr R tseln)
+F=105 JEV SAY: The Curse of Monkey Island
+F=105 JEV SAY: Geschichten von 1002 Seem nnern
+F=105 JEV SAY: The Curse of Monkey Island:
+F=105 JEV SAY: Oberaffig
+F=105 JEV SAY: Geschichten von 1002 Seem nnern
+F=105 JEV SAY: (aber mit mehr R tseln)
+F=106 JEV SAY: The Curse of Monkey Island
+F=106 JEV SAY: Geschichten von 1002 Seem nnern
+F=106 JEV SAY: The Curse of Monkey Island:
+F=106 JEV SAY: Oberaffig
+F=106 JEV SAY: Geschichten von 1002 Seem nnern
+F=106 JEV SAY: (aber mit mehr R tseln)
+F=107 JEV SAY: The Curse of Monkey Island
+F=107 JEV SAY: Geschichten von 1002 Seem nnern
+F=107 JEV SAY: The Curse of Monkey Island:
+F=107 JEV SAY: Oberaffig
+F=107 JEV SAY: Geschichten von 1002 Seem nnern
+F=107 JEV SAY: (aber mit mehr R tseln)
+F=108 JEV SAY: The Curse of Monkey Island
+F=108 JEV SAY: Geschichten von 1002 Seem nnern
+F=108 JEV SAY: The Curse of Monkey Island:
+F=108 JEV SAY: Oberaffig
+F=108 JEV SAY: Geschichten von 1002 Seem nnern
+F=108 JEV SAY: (aber mit mehr R tseln)
+F=109 JEV SAY: The Curse of Monkey Island
+F=109 JEV SAY: Geschichten von 1002 Seem nnern
+F=109 JEV SAY: The Curse of Monkey Island:
+F=109 JEV SAY: Oberaffig
+F=109 JEV SAY: Geschichten von 1002 Seem nnern
+F=109 JEV SAY: (aber mit mehr R tseln)
+F=110 JEV SAY: The Curse of Monkey Island
+F=110 JEV SAY: Geschichten von 1002 Seem nnern
+F=110 JEV SAY: The Curse of Monkey Island:
+F=110 JEV SAY: Oberaffig
+F=110 JEV SAY: Geschichten von 1002 Seem nnern
+F=110 JEV SAY: (aber mit mehr R tseln)
+F=111 JEV SAY: The Curse of Monkey Island
+F=111 JEV SAY: Geschichten von 1002 Seem nnern
+F=111 JEV SAY: The Curse of Monkey Island:
+F=111 JEV SAY: Oberaffig
+F=111 JEV SAY: Geschichten von 1002 Seem nnern
+F=111 JEV SAY: (aber mit mehr R tseln)
+F=112 JEV SAY: The Curse of Monkey Island
+F=112 JEV SAY: Geschichten von 1002 Seem nnern
+F=112 JEV SAY: The Curse of Monkey Island:
+F=112 JEV SAY: Oberaffig
+F=112 JEV SAY: Geschichten von 1002 Seem nnern
+F=112 JEV SAY: (aber mit mehr R tseln)
+F=113 JEV SAY: The Curse of Monkey Island
+F=113 JEV SAY: Geschichten von 1002 Seem nnern
+F=113 JEV SAY: The Curse of Monkey Island:
+F=113 JEV SAY: Oberaffig
+F=113 JEV SAY: Geschichten von 1002 Seem nnern
+F=113 JEV SAY: (aber mit mehr R tseln)
+F=114 JEV SAY: The Curse of Monkey Island
+F=114 JEV SAY: Geschichten von 1002 Seem nnern
+F=114 JEV SAY: The Curse of Monkey Island:
+F=114 JEV SAY: Oberaffig
+F=114 JEV SAY: Geschichten von 1002 Seem nnern
+F=114 JEV SAY: (aber mit mehr R tseln)
+F=115 JEV SAY: The Curse of Monkey Island
+F=115 JEV SAY: Geschichten von 1002 Seem nnern
+F=115 JEV SAY: The Curse of Monkey Island:
+F=115 JEV SAY: Oberaffig
+F=115 JEV SAY: Geschichten von 1002 Seem nnern
+F=115 JEV SAY: (aber mit mehr R tseln)
+F=116 JEV SAY: The Curse of Monkey Island
+F=116 JEV SAY: Geschichten von 1002 Seem nnern
+F=116 JEV SAY: The Curse of Monkey Island:
+F=116 JEV SAY: Oberaffig
+F=116 JEV SAY: Geschichten von 1002 Seem nnern
+F=116 JEV SAY: (aber mit mehr R tseln)
+F=117 JEV SAY: The Curse of Monkey Island
+F=117 JEV SAY: Geschichten von 1002 Seem nnern
+F=117 JEV SAY: The Curse of Monkey Island:
+F=117 JEV SAY: Oberaffig
+F=117 JEV SAY: Geschichten von 1002 Seem nnern
+F=117 JEV SAY: (aber mit mehr R tseln)
+F=118 JEV SAY: The Curse of Monkey Island
+F=118 JEV SAY: Geschichten von 1002 Seem nnern
+F=118 JEV SAY: The Curse of Monkey Island:
+F=118 JEV SAY: Oberaffig
+F=118 JEV SAY: Geschichten von 1002 Seem nnern
+F=118 JEV SAY: (aber mit mehr R tseln)
+F=119 JEV SAY: The Curse of Monkey Island
+F=119 JEV SAY: Geschichten von 1002 Seem nnern
+F=119 JEV SAY: The Curse of Monkey Island:
+F=119 JEV SAY: Oberaffig
+F=119 JEV SAY: Geschichten von 1002 Seem nnern
+F=119 JEV SAY: (aber mit mehr R tseln)
+F=120 FRAME-TIMING: avg=68ms max=116ms FPS=14.7 (30 frames)
+F=120 F=120 JEV EGO: actor=1 x=0 y=0 room=87
+F=120 JEV SAY: The Curse of Monkey Island
+F=120 JEV SAY: Geschichten von 1002 Seem nnern
+F=120 JEV SAY: The Curse of Monkey Island:
+F=120 JEV SAY: Oberaffig
+F=120 JEV SAY: Geschichten von 1002 Seem nnern
+F=120 JEV SAY: (aber mit mehr R tseln)
+F=120 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=120 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=120 step2: fgPixels=37892/4915200 (0.8%) cleanValid=1
+F=120 step2 invArea: fg=539056/2867200 (18.8%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=120 step2.5 objects: loaded=0 skipped=0 culled=6
+F=120 costume HIT: actor=34 costume=0439 cel=0 pos=(32,388) surf=380x612 sort=234
+F=120 step2.6 costumes: loaded=1 skipped=79 (noCostume=79 noCel=0 noHdCostume=0 loadFail=0)
+F=120 step2.6b ui-overlay: pixels=33110 (optimized: 8-bit scan)
+F=120 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=121 JEV SAY: The Curse of Monkey Island
+F=121 JEV SAY: Geschichten von 1002 Seem nnern
+F=121 JEV SAY: The Curse of Monkey Island:
+F=121 JEV SAY: Oberaffig
+F=121 JEV SAY: Geschichten von 1002 Seem nnern
+F=121 JEV SAY: (aber mit mehr R tseln)
+F=122 JEV SAY: The Curse of Monkey Island
+F=122 JEV SAY: Geschichten von 1002 Seem nnern
+F=122 JEV SAY: The Curse of Monkey Island:
+F=122 JEV SAY: Oberaffig
+F=122 JEV SAY: Geschichten von 1002 Seem nnern
+F=122 JEV SAY: (aber mit mehr R tseln)
+F=123 JEV SAY: The Curse of Monkey Island
+F=123 JEV SAY: Geschichten von 1002 Seem nnern
+F=123 JEV SAY: The Curse of Monkey Island:
+F=123 JEV SAY: Oberaffig
+F=123 JEV SAY: Geschichten von 1002 Seem nnern
+F=123 JEV SAY: (aber mit mehr R tseln)
+F=124 JEV SAY: The Curse of Monkey Island
+F=124 JEV SAY: Geschichten von 1002 Seem nnern
+F=124 JEV SAY: The Curse of Monkey Island:
+F=124 JEV SAY: Oberaffig
+F=124 JEV SAY: Geschichten von 1002 Seem nnern
+F=124 JEV SAY: (aber mit mehr R tseln)
+F=125 JEV SAY: The Curse of Monkey Island
+F=125 JEV SAY: Geschichten von 1002 Seem nnern
+F=125 JEV SAY: The Curse of Monkey Island:
+F=125 JEV SAY: Oberaffig
+F=125 JEV SAY: Geschichten von 1002 Seem nnern
+F=125 JEV SAY: (aber mit mehr R tseln)
+F=126 JEV SAY: The Curse of Monkey Island
+F=126 JEV SAY: Geschichten von 1002 Seem nnern
+F=126 JEV SAY: The Curse of Monkey Island:
+F=126 JEV SAY: Oberaffig
+F=126 JEV SAY: Geschichten von 1002 Seem nnern
+F=126 JEV SAY: (aber mit mehr R tseln)
+F=127 JEV SAY: The Curse of Monkey Island
+F=127 JEV SAY: Geschichten von 1002 Seem nnern
+F=127 JEV SAY: The Curse of Monkey Island:
+F=127 JEV SAY: Oberaffig
+F=127 JEV SAY: Geschichten von 1002 Seem nnern
+F=127 JEV SAY: (aber mit mehr R tseln)
+F=128 JEV SAY: The Curse of Monkey Island
+F=128 JEV SAY: Geschichten von 1002 Seem nnern
+F=128 JEV SAY: The Curse of Monkey Island:
+F=128 JEV SAY: Oberaffig
+F=128 JEV SAY: Geschichten von 1002 Seem nnern
+F=128 JEV SAY: (aber mit mehr R tseln)
+F=129 JEV SAY: The Curse of Monkey Island
+F=129 JEV SAY: Geschichten von 1002 Seem nnern
+F=129 JEV SAY: The Curse of Monkey Island:
+F=129 JEV SAY: Oberaffig
+F=129 JEV SAY: Geschichten von 1002 Seem nnern
+F=129 JEV SAY: (aber mit mehr R tseln)
+F=130 JEV SAY: The Curse of Monkey Island
+F=130 JEV SAY: Geschichten von 1002 Seem nnern
+F=130 JEV SAY: The Curse of Monkey Island:
+F=130 JEV SAY: Oberaffig
+F=130 JEV SAY: Geschichten von 1002 Seem nnern
+F=130 JEV SAY: (aber mit mehr R tseln)
+F=131 JEV SAY: The Curse of Monkey Island
+F=131 JEV SAY: Geschichten von 1002 Seem nnern
+F=131 JEV SAY: The Curse of Monkey Island:
+F=131 JEV SAY: Oberaffig
+F=131 JEV SAY: Geschichten von 1002 Seem nnern
+F=131 JEV SAY: (aber mit mehr R tseln)
+F=132 JEV SAY: The Curse of Monkey Island
+F=132 JEV SAY: Geschichten von 1002 Seem nnern
+F=132 JEV SAY: The Curse of Monkey Island:
+F=132 JEV SAY: Oberaffig
+F=132 JEV SAY: Geschichten von 1002 Seem nnern
+F=132 JEV SAY: (aber mit mehr R tseln)
+F=133 JEV SAY: The Curse of Monkey Island
+F=133 JEV SAY: Geschichten von 1002 Seem nnern
+F=133 JEV SAY: The Curse of Monkey Island:
+F=133 JEV SAY: Oberaffig
+F=133 JEV SAY: Geschichten von 1002 Seem nnern
+F=133 JEV SAY: (aber mit mehr R tseln)
+F=134 JEV SAY: The Curse of Monkey Island
+F=134 JEV SAY: Geschichten von 1002 Seem nnern
+F=134 JEV SAY: The Curse of Monkey Island:
+F=134 JEV SAY: Oberaffig
+F=134 JEV SAY: Geschichten von 1002 Seem nnern
+F=134 JEV SAY: (aber mit mehr R tseln)
+F=135 JEV SAY: The Curse of Monkey Island
+F=135 JEV SAY: Geschichten von 1002 Seem nnern
+F=135 JEV SAY: The Curse of Monkey Island:
+F=135 JEV SAY: Oberaffig
+F=135 JEV SAY: Geschichten von 1002 Seem nnern
+F=135 JEV SAY: (aber mit mehr R tseln)
+F=136 JEV SAY: The Curse of Monkey Island
+F=136 JEV SAY: Geschichten von 1002 Seem nnern
+F=136 JEV SAY: The Curse of Monkey Island:
+F=136 JEV SAY: Oberaffig
+F=136 JEV SAY: Geschichten von 1002 Seem nnern
+F=136 JEV SAY: (aber mit mehr R tseln)
+F=137 JEV SAY: The Curse of Monkey Island
+F=137 JEV SAY: Geschichten von 1002 Seem nnern
+F=137 JEV SAY: The Curse of Monkey Island:
+F=137 JEV SAY: Oberaffig
+F=137 JEV SAY: Geschichten von 1002 Seem nnern
+F=137 JEV SAY: (aber mit mehr R tseln)
+F=138 JEV SAY: The Curse of Monkey Island
+F=138 JEV SAY: Geschichten von 1002 Seem nnern
+F=138 JEV SAY: The Curse of Monkey Island:
+F=138 JEV SAY: Oberaffig
+F=138 JEV SAY: Geschichten von 1002 Seem nnern
+F=138 JEV SAY: (aber mit mehr R tseln)
+F=139 JEV SAY: The Curse of Monkey Island
+F=139 JEV SAY: Geschichten von 1002 Seem nnern
+F=139 JEV SAY: The Curse of Monkey Island:
+F=139 JEV SAY: Oberaffig
+F=139 JEV SAY: Geschichten von 1002 Seem nnern
+F=139 JEV SAY: (aber mit mehr R tseln)
+F=140 JEV SAY: The Curse of Monkey Island
+F=140 JEV SAY: Geschichten von 1002 Seem nnern
+F=140 JEV SAY: The Curse of Monkey Island:
+F=140 JEV SAY: Oberaffig
+F=140 JEV SAY: Geschichten von 1002 Seem nnern
+F=140 JEV SAY: (aber mit mehr R tseln)
+F=141 JEV SAY: The Curse of Monkey Island
+F=141 JEV SAY: Geschichten von 1002 Seem nnern
+F=141 JEV SAY: The Curse of Monkey Island:
+F=141 JEV SAY: Oberaffig
+F=141 JEV SAY: Geschichten von 1002 Seem nnern
+F=141 JEV SAY: (aber mit mehr R tseln)
+F=142 JEV SAY: The Curse of Monkey Island
+F=142 JEV SAY: Geschichten von 1002 Seem nnern
+F=142 JEV SAY: The Curse of Monkey Island:
+F=142 JEV SAY: Oberaffig
+F=142 JEV SAY: Geschichten von 1002 Seem nnern
+F=142 JEV SAY: (aber mit mehr R tseln)
+F=143 JEV SAY: The Curse of Monkey Island
+F=143 JEV SAY: Geschichten von 1002 Seem nnern
+F=143 JEV SAY: The Curse of Monkey Island:
+F=143 JEV SAY: Oberaffig
+F=143 JEV SAY: Geschichten von 1002 Seem nnern
+F=143 JEV SAY: (aber mit mehr R tseln)
+F=144 JEV SAY: The Curse of Monkey Island
+F=144 JEV SAY: Geschichten von 1002 Seem nnern
+F=144 JEV SAY: The Curse of Monkey Island:
+F=144 JEV SAY: Oberaffig
+F=144 JEV SAY: Geschichten von 1002 Seem nnern
+F=144 JEV SAY: (aber mit mehr R tseln)
+F=145 JEV SAY: The Curse of Monkey Island
+F=145 JEV SAY: Geschichten von 1002 Seem nnern
+F=145 JEV SAY: The Curse of Monkey Island:
+F=145 JEV SAY: Oberaffig
+F=145 JEV SAY: Geschichten von 1002 Seem nnern
+F=145 JEV SAY: (aber mit mehr R tseln)
+F=146 JEV SAY: The Curse of Monkey Island
+F=146 JEV SAY: Geschichten von 1002 Seem nnern
+F=146 JEV SAY: The Curse of Monkey Island:
+F=146 JEV SAY: Oberaffig
+F=146 JEV SAY: Geschichten von 1002 Seem nnern
+F=146 JEV SAY: (aber mit mehr R tseln)
+F=147 JEV SAY: The Curse of Monkey Island
+F=147 JEV SAY: Geschichten von 1002 Seem nnern
+F=147 JEV SAY: The Curse of Monkey Island:
+F=147 JEV SAY: Oberaffig
+F=147 JEV SAY: Geschichten von 1002 Seem nnern
+F=147 JEV SAY: (aber mit mehr R tseln)
+F=148 JEV SAY: The Curse of Monkey Island
+F=148 JEV SAY: Geschichten von 1002 Seem nnern
+F=148 JEV SAY: The Curse of Monkey Island:
+F=148 JEV SAY: Oberaffig
+F=148 JEV SAY: Geschichten von 1002 Seem nnern
+F=148 JEV SAY: (aber mit mehr R tseln)
+F=149 JEV SAY: The Curse of Monkey Island
+F=149 JEV SAY: Geschichten von 1002 Seem nnern
+F=149 JEV SAY: The Curse of Monkey Island:
+F=149 JEV SAY: Oberaffig
+F=149 JEV SAY: Geschichten von 1002 Seem nnern
+F=149 JEV SAY: (aber mit mehr R tseln)
+F=150 FRAME-TIMING: avg=68ms max=112ms FPS=14.7 (30 frames)
+F=150 F=150 JEV EGO: actor=1 x=0 y=0 room=87
+F=150 JEV SAY: The Curse of Monkey Island
+F=150 JEV SAY: Geschichten von 1002 Seem nnern
+F=150 JEV SAY: The Curse of Monkey Island:
+F=150 JEV SAY: Oberaffig
+F=150 JEV SAY: Geschichten von 1002 Seem nnern
+F=150 JEV SAY: (aber mit mehr R tseln)
+F=150 room=87 hdRoom=87 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=147
+F=150 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=150 step2: fgPixels=37892/4915200 (0.8%) cleanValid=1
+F=150 step2 invArea: fg=539056/2867200 (18.8%) hdRoom=87 curRoom=87 cleanValid=1 verbDraw=0
+F=150 step2.5 objects: loaded=0 skipped=0 culled=6
+F=150 costume HIT: actor=34 costume=0439 cel=0 pos=(32,388) surf=380x612 sort=234
+F=150 step2.6 costumes: loaded=1 skipped=79 (noCostume=79 noCel=0 noHdCostume=0 loadFail=0)
+F=150 step2.6b ui-overlay: pixels=33110 (optimized: 8-bit scan)
+F=150 step2.7 fonts: chars=147 drawn=130 fontMgr=1
+F=151 JEV SAY: The Curse of Monkey Island
+F=151 JEV SAY: Geschichten von 1002 Seem nnern
+F=151 JEV SAY: The Curse of Monkey Island:
+F=151 JEV SAY: Oberaffig
+F=151 JEV SAY: Geschichten von 1002 Seem nnern
+F=151 JEV SAY: (aber mit mehr R tseln)
+F=152 JEV SAY: The Curse of Monkey Island
+F=152 JEV SAY: Geschichten von 1002 Seem nnern
+F=152 JEV SAY: The Curse of Monkey Island:
+F=152 JEV SAY: Oberaffig
+F=152 JEV SAY: Geschichten von 1002 Seem nnern
+F=152 JEV SAY: (aber mit mehr R tseln)
+F=153 JEV SAY: The Curse of Monkey Island
+F=153 JEV SAY: Geschichten von 1002 Seem nnern
+F=153 JEV SAY: The Curse of Monkey Island:
+F=153 JEV SAY: Oberaffig
+F=153 JEV SAY: Geschichten von 1002 Seem nnern
+F=153 JEV SAY: (aber mit mehr R tseln)
+F=154 JEV SAY: The Curse of Monkey Island
+F=154 JEV SAY: Geschichten von 1002 Seem nnern
+F=154 JEV SAY: The Curse of Monkey Island:
+F=154 JEV SAY: Oberaffig
+F=154 JEV SAY: Geschichten von 1002 Seem nnern
+F=154 JEV SAY: (aber mit mehr R tseln)
+F=155 JEV SAY: The Curse of Monkey Island
+F=155 JEV SAY: Geschichten von 1002 Seem nnern
+F=155 JEV SAY: The Curse of Monkey Island:
+F=155 JEV SAY: Oberaffig
+F=155 JEV SAY: Geschichten von 1002 Seem nnern
+F=155 JEV SAY: (aber mit mehr R tseln)
+F=156 JEV SAY: The Curse of Monkey Island
+F=156 JEV SAY: Geschichten von 1002 Seem nnern
+F=156 JEV SAY: The Curse of Monkey Island:
+F=156 JEV SAY: Oberaffig
+F=156 JEV SAY: Geschichten von 1002 Seem nnern
+F=156 JEV SAY: (aber mit mehr R tseln)
+F=157 JEV SAY: The Curse of Monkey Island
+F=157 JEV SAY: Geschichten von 1002 Seem nnern
+F=157 JEV SAY: The Curse of Monkey Island:
+F=157 JEV SAY: Oberaffig
+F=157 JEV SAY: Geschichten von 1002 Seem nnern
+F=157 JEV SAY: (aber mit mehr R tseln)
+F=158 JEV SAY: The Curse of Monkey Island
+F=158 JEV SAY: Geschichten von 1002 Seem nnern
+F=158 JEV SAY: The Curse of Monkey Island:
+F=158 JEV SAY: Oberaffig
+F=158 JEV SAY: Geschichten von 1002 Seem nnern
+F=158 JEV SAY: (aber mit mehr R tseln)
+F=159 JEV SAY: The Curse of Monkey Island
+F=159 JEV SAY: Geschichten von 1002 Seem nnern
+F=159 JEV SAY: The Curse of Monkey Island:
+F=159 JEV SAY: Oberaffig
+F=159 JEV SAY: Geschichten von 1002 Seem nnern
+F=159 JEV SAY: (aber mit mehr R tseln)
+F=160 JEV SAY: The Curse of Monkey Island
+F=160 JEV SAY: Geschichten von 1002 Seem nnern
+F=160 JEV SAY: The Curse of Monkey Island:
+F=160 JEV SAY: Oberaffig
+F=160 JEV SAY: Geschichten von 1002 Seem nnern
+F=160 JEV SAY: (aber mit mehr R tseln)
+F=161 JEV SAY: The Curse of Monkey Island
+F=161 JEV SAY: Geschichten von 1002 Seem nnern
+F=161 JEV SAY: The Curse of Monkey Island:
+F=161 JEV SAY: Oberaffig
+F=161 JEV SAY: Geschichten von 1002 Seem nnern
+F=161 JEV SAY: (aber mit mehr R tseln)
+F=162 JEV SAY: The Curse of Monkey Island
+F=162 JEV SAY: Geschichten von 1002 Seem nnern
+F=162 JEV SAY: The Curse of Monkey Island:
+F=162 JEV SAY: Oberaffig
+F=162 JEV SAY: Geschichten von 1002 Seem nnern
+F=162 JEV SAY: (aber mit mehr R tseln)
+F=163 JEV SAY: The Curse of Monkey Island
+F=163 JEV SAY: Geschichten von 1002 Seem nnern
+F=163 JEV SAY: The Curse of Monkey Island:
+F=163 JEV SAY: Oberaffig
+F=163 JEV SAY: Geschichten von 1002 Seem nnern
+F=163 JEV SAY: (aber mit mehr R tseln)
+F=164 JEV SAY: The Curse of Monkey Island
+F=164 JEV SAY: Geschichten von 1002 Seem nnern
+F=164 JEV SAY: The Curse of Monkey Island:
+F=164 JEV SAY: Oberaffig
+F=164 JEV SAY: Geschichten von 1002 Seem nnern
+F=164 JEV SAY: (aber mit mehr R tseln)
+F=165 JEV SAY: The Curse of Monkey Island
+F=165 JEV SAY: Geschichten von 1002 Seem nnern
+F=165 JEV SAY: The Curse of Monkey Island:
+F=165 JEV SAY: Oberaffig
+F=165 JEV SAY: Geschichten von 1002 Seem nnern
+F=165 JEV SAY: (aber mit mehr R tseln)
+F=166 JEV SAY: The Curse of Monkey Island
+F=166 JEV SAY: Geschichten von 1002 Seem nnern
+F=166 JEV SAY: The Curse of Monkey Island:
+F=166 JEV SAY: Oberaffig
+F=166 JEV SAY: Geschichten von 1002 Seem nnern
+F=166 JEV SAY: (aber mit mehr R tseln)
+F=167 JEV SAY: The Curse of Monkey Island
+F=167 JEV SAY: Geschichten von 1002 Seem nnern
+F=167 JEV SAY: The Curse of Monkey Island:
+F=167 JEV SAY: Oberaffig
+F=167 JEV SAY: Geschichten von 1002 Seem nnern
+F=167 JEV SAY: (aber mit mehr R tseln)
+F=168 JEV SAY: The Curse of Monkey Island
+F=168 JEV SAY: Geschichten von 1002 Seem nnern
+F=168 JEV SAY: The Curse of Monkey Island:
+F=168 JEV SAY: Oberaffig
+F=168 JEV SAY: Geschichten von 1002 Seem nnern
+F=168 JEV SAY: (aber mit mehr R tseln)
+F=169 JEV SAY: The Curse of Monkey Island
+F=169 JEV SAY: Geschichten von 1002 Seem nnern
+F=169 JEV SAY: The Curse of Monkey Island:
+F=169 JEV SAY: Oberaffig
+F=169 JEV SAY: Geschichten von 1002 Seem nnern
+F=169 JEV SAY: (aber mit mehr R tseln)
+F=170 JEV SAY: The Curse of Monkey Island
+F=170 JEV SAY: Geschichten von 1002 Seem nnern
+F=170 JEV SAY: The Curse of Monkey Island:
+F=170 JEV SAY: Oberaffig
+F=170 JEV SAY: Geschichten von 1002 Seem nnern
+F=170 JEV SAY: (aber mit mehr R tseln)
+F=171 JEV SAY: The Curse of Monkey Island
+F=171 JEV SAY: Geschichten von 1002 Seem nnern
+F=171 JEV SAY: The Curse of Monkey Island:
+F=171 JEV SAY: Oberaffig
+F=171 JEV SAY: Geschichten von 1002 Seem nnern
+F=171 JEV SAY: (aber mit mehr R tseln)
+F=172 JEV SAY: The Curse of Monkey Island
+F=172 JEV SAY: Geschichten von 1002 Seem nnern
+F=172 JEV SAY: The Curse of Monkey Island:
+F=172 JEV SAY: Oberaffig
+F=172 JEV SAY: Geschichten von 1002 Seem nnern
+F=172 JEV SAY: (aber mit mehr R tseln)

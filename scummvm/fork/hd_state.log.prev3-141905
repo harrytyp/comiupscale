@@ -1,0 +1,547 @@
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 CURSOR_ITEM obj=257 room=3 img=1 pos=(104,56)
+F=0 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=0 step2: fgPixels=78229/4915200 (1.6%) cleanValid=1
+F=0 step2 invArea: fg=388576/2867200 (13.6%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=0 ROOM CHANGE: entering room 10, 200 objects:
+F=0 ROOM OBJ: oi=49 obj=332 fl=0 state=0 pos=(448,8) sz=(32x80) name=fort-turret-3
+F=0 ROOM OBJ: oi=48 obj=331 fl=0 state=0 pos=(288,72) sz=(24x32) name=fort-turret-2
+F=0 ROOM OBJ: oi=47 obj=330 fl=0 state=0 pos=(256,56) sz=(24x64) name=fort-turret-1
+F=0 ROOM OBJ: oi=46 obj=329 fl=0 state=0 pos=(248,160) sz=(16x16) name=fort-wall-39
+F=0 ROOM OBJ: oi=45 obj=328 fl=0 state=0 pos=(232,160) sz=(8x16) name=fort-wall-38
+F=0 ROOM OBJ: oi=44 obj=327 fl=0 state=0 pos=(256,144) sz=(8x16) name=fort-wall-37
+F=0 ROOM OBJ: oi=43 obj=326 fl=0 state=0 pos=(248,144) sz=(8x16) name=fort-wall-36
+F=0 ROOM OBJ: oi=42 obj=325 fl=0 state=0 pos=(240,144) sz=(8x16) name=fort-wall-35
+F=0 ROOM OBJ: oi=41 obj=324 fl=0 state=0 pos=(240,160) sz=(8x24) name=fort-wall-34
+F=0 ROOM OBJ: oi=40 obj=323 fl=0 state=0 pos=(304,160) sz=(16x16) name=fort-wall-33
+F=0 ROOM OBJ: oi=39 obj=322 fl=0 state=0 pos=(280,152) sz=(24x24) name=fort-wall-32
+F=0 ROOM OBJ: oi=38 obj=321 fl=0 state=0 pos=(264,152) sz=(24x32) name=fort-wall-31
+F=0 ROOM OBJ: oi=37 obj=320 fl=0 state=0 pos=(296,136) sz=(24x24) name=fort-wall-30
+F=0 ROOM OBJ: oi=36 obj=319 fl=0 state=0 pos=(288,136) sz=(16x16) name=fort-wall-29
+F=0 ROOM OBJ: oi=35 obj=318 fl=0 state=0 pos=(272,136) sz=(16x24) name=fort-wall-28
+F=0 ROOM OBJ: oi=34 obj=317 fl=0 state=0 pos=(296,120) sz=(16x24) name=fort-wall-27
+F=0 ROOM OBJ: oi=33 obj=316 fl=0 state=0 pos=(280,120) sz=(16x16) name=fort-wall-26
+F=0 ROOM OBJ: oi=32 obj=315 fl=0 state=0 pos=(352,88) sz=(16x16) name=fort-wall-25
+F=0 ROOM OBJ: oi=31 obj=314 fl=0 state=0 pos=(344,88) sz=(8x24) name=fort-wall-24
+F=0 ROOM OBJ: oi=30 obj=313 fl=0 state=0 pos=(328,96) sz=(16x16) name=fort-wall-23
+F=0 ROOM OBJ: oi=29 obj=312 fl=0 state=0 pos=(320,104) sz=(8x16) name=fort-wall-22
+F=0 ROOM OBJ: oi=28 obj=311 fl=0 state=0 pos=(304,104) sz=(16x16) name=fort-wall-21
+F=0 ROOM OBJ: oi=27 obj=310 fl=0 state=0 pos=(368,56) sz=(16x24) name=fort-wall-20
+F=0 ROOM OBJ: oi=26 obj=309 fl=0 state=0 pos=(352,64) sz=(16x16) name=fort-wall-19
+F=0 ROOM OBJ: oi=25 obj=308 fl=0 state=0 pos=(344,72) sz=(16x16) name=fort-wall-18
+F=0 ROOM OBJ: oi=24 obj=307 fl=0 state=0 pos=(336,80) sz=(8x16) name=fort-wall-17
+F=0 ROOM OBJ: oi=23 obj=306 fl=0 state=0 pos=(328,80) sz=(8x16) name=fort-wall-16
+F=0 ROOM OBJ: oi=22 obj=305 fl=0 state=0 pos=(320,88) sz=(8x16) name=fort-wall-15
+F=0 ROOM OBJ: oi=21 obj=304 fl=0 state=0 pos=(312,88) sz=(8x16) name=fort-wall-14
+F=0 ROOM OBJ: oi=20 obj=303 fl=0 state=0 pos=(304,96) sz=(8x16) name=fort-wall-13
+F=0 ROOM OBJ: oi=19 obj=302 fl=0 state=0 pos=(432,152) sz=(24x24) name=fort-wall-12
+F=0 ROOM OBJ: oi=18 obj=301 fl=0 state=0 pos=(408,152) sz=(24x24) name=fort-wall-11
+F=0 ROOM OBJ: oi=17 obj=300 fl=0 state=0 pos=(384,152) sz=(24x24) name=fort-wall-10
+F=0 ROOM OBJ: oi=16 obj=299 fl=0 state=0 pos=(368,144) sz=(16x32) name=fort-wall-9
+F=0 ROOM OBJ: oi=15 obj=298 fl=0 state=0 pos=(352,152) sz=(16x24) name=fort-wall-8
+F=0 ROOM OBJ: oi=14 obj=297 fl=0 state=0 pos=(328,152) sz=(24x24) name=fort-wall-7
+F=0 ROOM OBJ: oi=13 obj=296 fl=0 state=0 pos=(408,136) sz=(24x24) name=fort-wall-6
+F=0 ROOM OBJ: oi=12 obj=295 fl=0 state=0 pos=(384,128) sz=(24x24) name=fort-wall-5
+F=0 ROOM OBJ: oi=11 obj=294 fl=0 state=0 pos=(368,128) sz=(16x24) name=fort-wall-4
+F=0 ROOM OBJ: oi=10 obj=293 fl=0 state=0 pos=(440,96) sz=(16x24) name=fort-wall-3
+F=0 ROOM OBJ: oi=9 obj=292 fl=0 state=0 pos=(376,104) sz=(16x24) name=fort-wall-2
+F=0 ROOM OBJ: oi=8 obj=291 fl=0 state=0 pos=(360,104) sz=(16x24) name=fort-wall-1
+F=0 ROOM OBJ: oi=7 obj=290 fl=0 state=0 pos=(0,440) sz=(640x40) name=
+F=0 ROOM OBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) name=dialog-increment-icon
+F=0 ROOM OBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) name=dialog-decrement-icon
+F=0 ROOM OBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) name=system-cursor-icon
+F=0 ROOM OBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) name=inventory-bg-object
+F=0 ROOM OBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) name=increment-inventory-arrow
+F=0 ROOM OBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) name=decrement-inventory-arrow
+F=0 PREWARM: room 10 — 42 objects, 161 costume frames cached
+F=0 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=0 CULL obj=189 fl=6 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=0 CULL obj=188 fl=5 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=0 CULL obj=105 fl=4 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=0 CULL obj=114 fl=3 visible=74192 invActive=0
+F=0 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=0 CULL obj=115 fl=2 visible=0 invActive=0
+F=0 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=0 CULL obj=116 fl=1 visible=0 invActive=0
+F=0 step2.5 objects: loaded=0 skipped=0 culled=6
+F=0 costume HIT: actor=17 costume=0045 cel=6 pos=(176,900) surf=2216x940 sort=0
+F=0 costume HIT: actor=21 costume=0044 cel=36 pos=(1344,520) surf=16x20 sort=0
+F=0 costume HIT: actor=29 costume=0013 cel=1 pos=(996,280) surf=172x240 sort=84
+F=0 costume HIT: actor=27 costume=0013 cel=1 pos=(1012,320) surf=172x240 sort=94
+F=0 costume HIT: actor=22 costume=0013 cel=1 pos=(1196,412) surf=172x240 sort=117
+F=0 costume HIT: actor=28 costume=0013 cel=1 pos=(980,468) surf=172x240 sort=125
+F=0 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=0 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,676) surf=248x260 sort=195
+F=0 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,688) surf=224x376 sort=195
+F=0 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,668) surf=252x420 sort=195
+F=0 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=0 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=0 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=0 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=0 costume HIT: actor=6 costume=0038 cel=1 pos=(856,704) surf=252x420 sort=238
+F=0 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,724) surf=248x260 sort=238
+F=0 costume HIT: actor=5 costume=0037 cel=1 pos=(664,744) surf=224x376 sort=238
+F=0 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=0 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=0 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=0 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=0 costume HIT: actor=3 costume=0035 cel=5 pos=(428,1176) surf=1656x796 sort=792
+F=0 step2.6 costumes: loaded=22 skipped=58 (noCostume=58 noCel=0 noHdCostume=0 loadFail=0)
+F=0 step2.6b ui-overlay: pixels=264 (optimized: 8-bit scan)
+F=1 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=1 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=1 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=1 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=1 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=1 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=1 ACTOR: id=1 costume=0002 cel=34 pos=(160,160) elev=0 xstart=0 scale=(255,255) w=24 top=0 bot=174 room=10 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=1 ACTOR: id=3 costume=0035 cel=4 pos=(310,792) elev=300 xstart=0 scale=(255,255) w=24 top=298 bot=480 room=10 hd=1 rel=(-210,-194) limb0=(-210,-194) nLimb=1 face=1
+F=1 ACTOR: id=5 costume=0037 cel=1 pos=(229,238) elev=1 xstart=0 scale=(220,220) w=24 top=185 bot=266 room=10 hd=1 rel=(-74,-61) limb0=(-74,-61) nLimb=1 face=1
+F=1 ACTOR: id=6 costume=0038 cel=1 pos=(228,238) elev=1 xstart=0 scale=(220,220) w=24 top=176 bot=266 room=10 hd=1 rel=(-17,-72) limb0=(-17,-72) nLimb=1 face=1
+F=1 ACTOR: id=7 costume=0039 cel=6 pos=(229,238) elev=1 xstart=0 scale=(220,220) w=24 top=180 bot=236 room=10 hd=1 rel=(47,-67) limb0=(47,-67) nLimb=1 face=1
+F=1 ACTOR: id=8 costume=0040 cel=6 pos=(469,280) elev=2 xstart=0 scale=(255,255) w=24 top=212 bot=295 room=10 hd=1 rel=(-113,-66) limb0=(-113,-66) nLimb=1 face=1
+F=1 ACTOR: id=9 costume=0041 cel=12 pos=(468,280) elev=2 xstart=0 scale=(255,255) w=24 top=208 bot=246 room=10 hd=1 rel=(2,-70) limb0=(2,-70) nLimb=1 face=1
+F=1 ACTOR: id=10 costume=0042 cel=6 pos=(468,280) elev=2 xstart=0 scale=(255,255) w=24 top=205 bot=311 room=10 hd=1 rel=(-30,-73) limb0=(-30,-73) nLimb=1 face=1
+F=1 ACTOR: id=11 costume=0043 cel=6 pos=(467,280) elev=2 xstart=0 scale=(255,255) w=24 top=222 bot=307 room=10 hd=1 rel=(26,-56) limb0=(26,-56) nLimb=1 face=1
+F=1 ACTOR: id=12 costume=0040 cel=6 pos=(304,203) elev=2 xstart=0 scale=(110,110) w=24 top=174 bot=209 room=10 hd=1 rel=(-113,-66) limb0=(-113,-66) nLimb=1 face=0
+F=1 ACTOR: id=13 costume=0041 cel=12 pos=(304,203) elev=2 xstart=0 scale=(110,110) w=24 top=172 bot=188 room=10 hd=1 rel=(2,-70) limb0=(2,-70) nLimb=1 face=0
+F=1 ACTOR: id=14 costume=0042 cel=6 pos=(304,203) elev=2 xstart=0 scale=(110,110) w=24 top=171 bot=216 room=10 hd=1 rel=(-30,-73) limb0=(-30,-73) nLimb=1 face=0
+F=1 ACTOR: id=15 costume=0043 cel=6 pos=(306,203) elev=2 xstart=0 scale=(110,110) w=24 top=178 bot=215 room=10 hd=1 rel=(26,-56) limb0=(26,-56) nLimb=1 face=0
+F=1 ACTOR: id=17 costume=0045 cel=5 pos=(0,0) elev=0 xstart=0 scale=(255,255) w=24 top=225 bot=460 room=10 hd=1 rel=(45,225) limb0=(45,225) nLimb=1 face=1
+F=1 ACTOR: id=18 costume=0037 cel=1 pos=(393,195) elev=1 xstart=0 scale=(100,100) w=24 top=171 bot=208 room=10 hd=1 rel=(-74,-61) limb0=(-74,-61) nLimb=1 face=0
+F=1 ACTOR: id=19 costume=0038 cel=1 pos=(393,195) elev=1 xstart=0 scale=(100,100) w=24 top=166 bot=208 room=10 hd=1 rel=(-17,-72) limb0=(-17,-72) nLimb=1 face=0
+F=1 ACTOR: id=20 costume=0039 cel=6 pos=(393,195) elev=1 xstart=0 scale=(100,100) w=24 top=169 bot=194 room=10 hd=1 rel=(47,-67) limb0=(47,-67) nLimb=1 face=0
+F=1 ACTOR: id=21 costume=0044 cel=16 pos=(0,0) elev=0 xstart=0 scale=(255,255) w=24 top=22 bot=137 room=10 hd=1 rel=(336,136) limb0=(336,136) nLimb=1 face=1
+F=1 ACTOR: id=22 costume=0013 cel=2 pos=(307,117) elev=0 xstart=0 scale=(100,100) w=24 top=100 bot=133 room=10 hd=1 rel=(-30,-47) limb0=(-30,-47) nLimb=1 face=1
+F=1 ACTOR: id=27 costume=0013 cel=2 pos=(261,94) elev=0 xstart=0 scale=(100,100) w=24 top=77 bot=110 room=10 hd=1 rel=(-30,-47) limb0=(-30,-47) nLimb=1 face=1
+F=1 ACTOR: id=28 costume=0013 cel=2 pos=(250,125) elev=0 xstart=0 scale=(60,60) w=24 top=115 bot=135 room=10 hd=1 rel=(-30,-47) limb0=(-30,-47) nLimb=1 face=1
+F=1 ACTOR: id=29 costume=0013 cel=2 pos=(257,84) elev=0 xstart=0 scale=(100,100) w=24 top=67 bot=100 room=10 hd=1 rel=(-30,-47) limb0=(-30,-47) nLimb=1 face=1
+F=2 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=2 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=2 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=2 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=2 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=2 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=3 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=3 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=3 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=3 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=3 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=3 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=4 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=4 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=4 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=4 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=4 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=4 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=5 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=5 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=5 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=5 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=5 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=5 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=6 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=6 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=6 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=6 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=6 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=6 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=7 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=7 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=7 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=7 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=7 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=7 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=8 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=8 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=8 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=8 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=8 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=8 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=9 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=9 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=9 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=9 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=9 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=9 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=10 step2.5 FLOBJ: oi=6 obj=189 fl=6 state=0 pos=(0,0) sz=(32x32) room=10
+F=10 step2.5 FLOBJ: oi=5 obj=188 fl=5 state=0 pos=(0,0) sz=(32x40) room=10
+F=10 step2.5 FLOBJ: oi=4 obj=105 fl=4 state=0 pos=(0,0) sz=(80x56) room=10
+F=10 step2.5 FLOBJ: oi=3 obj=114 fl=3 state=0 pos=(0,0) sz=(640x472) room=10
+F=10 step2.5 FLOBJ: oi=2 obj=115 fl=2 state=0 pos=(0,0) sz=(80x40) room=10
+F=10 step2.5 FLOBJ: oi=1 obj=116 fl=1 state=0 pos=(0,0) sz=(80x40) room=10
+F=30 FRAME-TIMING: avg=145ms max=1310ms FPS=6.9 (30 frames)
+F=30 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=30 step2: fgPixels=78178/4915200 (1.6%) cleanValid=1
+F=30 step2 invArea: fg=383136/2867200 (13.4%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=30 step2.5 objects: loaded=0 skipped=0 culled=6
+F=30 ACTOR: id=1 costume=0002 cel=34 pos=(160,160) elev=0 xstart=0 scale=(255,255) w=24 top=0 bot=174 room=10 hd=1 rel=(-40,-200) limb0=(-40,-200) nLimb=2 face=1
+F=30 ACTOR: id=3 costume=0035 cel=0 pos=(310,792) elev=300 xstart=0 scale=(255,255) w=24 top=316 bot=480 room=10 hd=1 rel=(-216,-176) limb0=(-216,-176) nLimb=1 face=1
+F=30 ACTOR: id=5 costume=0037 cel=1 pos=(229,238) elev=2 xstart=0 scale=(220,220) w=24 top=184 bot=265 room=10 hd=1 rel=(-74,-61) limb0=(-74,-61) nLimb=1 face=1
+F=30 ACTOR: id=6 costume=0038 cel=1 pos=(228,238) elev=2 xstart=0 scale=(220,220) w=24 top=175 bot=265 room=10 hd=1 rel=(-17,-72) limb0=(-17,-72) nLimb=1 face=1
+F=30 ACTOR: id=7 costume=0039 cel=6 pos=(229,238) elev=2 xstart=0 scale=(220,220) w=24 top=179 bot=235 room=10 hd=1 rel=(47,-67) limb0=(47,-67) nLimb=1 face=1
+F=30 ACTOR: id=8 costume=0040 cel=6 pos=(469,280) elev=1 xstart=0 scale=(255,255) w=24 top=213 bot=296 room=10 hd=1 rel=(-113,-66) limb0=(-113,-66) nLimb=1 face=1
+F=30 ACTOR: id=9 costume=0041 cel=12 pos=(468,280) elev=1 xstart=0 scale=(255,255) w=24 top=209 bot=247 room=10 hd=1 rel=(2,-70) limb0=(2,-70) nLimb=1 face=1
+F=30 ACTOR: id=10 costume=0042 cel=6 pos=(468,280) elev=1 xstart=0 scale=(255,255) w=24 top=206 bot=312 room=10 hd=1 rel=(-30,-73) limb0=(-30,-73) nLimb=1 face=1
+F=30 ACTOR: id=11 costume=0043 cel=6 pos=(467,280) elev=1 xstart=0 scale=(255,255) w=24 top=223 bot=308 room=10 hd=1 rel=(26,-56) limb0=(26,-56) nLimb=1 face=1
+F=30 ACTOR: id=12 costume=0040 cel=6 pos=(304,203) elev=1 xstart=0 scale=(110,110) w=24 top=175 bot=210 room=10 hd=1 rel=(-113,-66) limb0=(-113,-66) nLimb=1 face=0
+F=30 ACTOR: id=13 costume=0041 cel=12 pos=(304,203) elev=1 xstart=0 scale=(110,110) w=24 top=173 bot=189 room=10 hd=1 rel=(2,-70) limb0=(2,-70) nLimb=1 face=0
+F=30 ACTOR: id=14 costume=0042 cel=6 pos=(304,203) elev=1 xstart=0 scale=(110,110) w=24 top=172 bot=217 room=10 hd=1 rel=(-30,-73) limb0=(-30,-73) nLimb=1 face=0
+F=30 ACTOR: id=15 costume=0043 cel=6 pos=(306,203) elev=1 xstart=0 scale=(110,110) w=24 top=179 bot=216 room=10 hd=1 rel=(26,-56) limb0=(26,-56) nLimb=1 face=0
+F=30 ACTOR: id=17 costume=0045 cel=7 pos=(0,0) elev=0 xstart=0 scale=(255,255) w=24 top=225 bot=461 room=10 hd=1 rel=(45,225) limb0=(45,225) nLimb=1 face=1
+F=30 ACTOR: id=18 costume=0037 cel=1 pos=(393,195) elev=2 xstart=0 scale=(100,100) w=24 top=170 bot=207 room=10 hd=1 rel=(-74,-61) limb0=(-74,-61) nLimb=1 face=0
+F=30 ACTOR: id=19 costume=0038 cel=1 pos=(393,195) elev=2 xstart=0 scale=(100,100) w=24 top=165 bot=207 room=10 hd=1 rel=(-17,-72) limb0=(-17,-72) nLimb=1 face=0
+F=30 ACTOR: id=20 costume=0039 cel=6 pos=(393,195) elev=2 xstart=0 scale=(100,100) w=24 top=168 bot=193 room=10 hd=1 rel=(47,-67) limb0=(47,-67) nLimb=1 face=0
+F=30 ACTOR: id=21 costume=0044 cel=97 pos=(0,0) elev=0 xstart=0 scale=(255,255) w=24 top=21 bot=138 room=10 hd=1 rel=(332,133) limb0=(332,133) nLimb=1 face=1
+F=30 ACTOR: id=28 costume=0013 cel=49 pos=(250,125) elev=0 xstart=0 scale=(60,60) w=24 top=2147483647 bot=0 room=10 hd=1 rel=(-6,63) limb0=(-6,63) nLimb=0 face=1
+F=30 ACTOR: id=29 costume=0013 cel=1 pos=(402,63) elev=0 xstart=0 scale=(60,60) w=24 top=55 bot=69 room=10 hd=1 rel=(-22,-37) limb0=(-22,-37) nLimb=1 face=1
+F=30 costume HIT: actor=17 costume=0045 cel=7 pos=(180,900) surf=2224x944 sort=0
+F=30 costume HIT: actor=21 costume=0044 cel=97 pos=(1328,532) surf=20x20 sort=0
+F=30 costume HIT: actor=29 costume=0013 cel=1 pos=(1588,220) surf=172x240 sort=63
+F=30 costume HIT: actor=28 costume=0013 cel=49 pos=(996,556) surf=16x12 sort=125
+F=30 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=30 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=30 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,660) surf=252x420 sort=195
+F=30 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=30 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=30 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=30 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=30 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=30 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=30 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=30 costume HIT: actor=6 costume=0038 cel=1 pos=(856,696) surf=252x420 sort=238
+F=30 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=30 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=30 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=30 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=30 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=30 step2.6 costumes: loaded=20 skipped=60 (noCostume=60 noCel=0 noHdCostume=0 loadFail=0)
+F=30 step2.6b ui-overlay: pixels=106 (optimized: 8-bit scan)
+F=60 FRAME-TIMING: avg=81ms max=127ms FPS=12.3 (30 frames)
+F=60 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=60 step2: fgPixels=77301/4915200 (1.6%) cleanValid=1
+F=60 step2 invArea: fg=383280/2867200 (13.4%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=60 step2.5 objects: loaded=0 skipped=0 culled=6
+F=60 costume HIT: actor=17 costume=0045 cel=9 pos=(168,900) surf=2240x944 sort=0
+F=60 costume HIT: actor=21 costume=0044 cel=160 pos=(1308,496) surf=48x52 sort=0
+F=60 costume HIT: actor=28 costume=0013 cel=12 pos=(1032,496) surf=84x72 sort=119
+F=60 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=60 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=60 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=60 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,660) surf=252x420 sort=195
+F=60 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=60 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=60 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,692) surf=328x332 sort=203
+F=60 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=60 costume HIT: actor=6 costume=0038 cel=1 pos=(856,696) surf=252x420 sort=238
+F=60 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=60 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=60 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=60 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=60 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=60 costume HIT: actor=9 costume=0041 cel=10 pos=(1880,884) surf=60x52 sort=280
+F=60 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=60 step2.6 costumes: loaded=19 skipped=61 (noCostume=61 noCel=0 noHdCostume=0 loadFail=0)
+F=60 step2.6b ui-overlay: pixels=278 (optimized: 8-bit scan)
+F=90 FRAME-TIMING: avg=83ms max=126ms FPS=12.0 (30 frames)
+F=90 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=90 step2: fgPixels=78279/4915200 (1.6%) cleanValid=1
+F=90 step2 invArea: fg=404432/2867200 (14.1%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=90 step2.5 objects: loaded=0 skipped=0 culled=6
+F=90 costume HIT: actor=17 costume=0045 cel=11 pos=(176,904) surf=2232x940 sort=0
+F=90 costume HIT: actor=21 costume=0044 cel=234 pos=(1348,508) surf=12x24 sort=0
+F=90 costume HIT: actor=25 costume=0013 cel=5 pos=(1704,244) surf=244x220 sort=74
+F=90 costume HIT: actor=24 costume=0013 cel=7 pos=(1652,252) surf=276x260 sort=77
+F=90 costume HIT: actor=23 costume=0013 cel=9 pos=(1592,260) surf=368x304 sort=80
+F=90 costume HIT: actor=29 costume=0013 cel=49 pos=(1020,432) surf=16x12 sort=84
+F=90 costume HIT: actor=22 costume=0013 cel=22 pos=(1556,408) surf=108x32 sort=89
+F=90 costume HIT: actor=26 costume=0013 cel=3 pos=(1356,380) surf=172x160 sort=104
+F=90 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=90 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=90 costume HIT: actor=20 costume=0039 cel=2 pos=(1500,660) surf=248x296 sort=195
+F=90 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=90 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=90 costume HIT: actor=12 costume=0040 cel=4 pos=(1408,664) surf=336x396 sort=203
+F=90 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=90 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=90 costume HIT: actor=5 costume=0037 cel=2 pos=(664,708) surf=224x412 sort=238
+F=90 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=90 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=90 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=90 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=90 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,832) surf=92x152 sort=280
+F=90 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=90 costume HIT: actor=32 costume=0034 cel=2 pos=(1236,1320) surf=204x300 sort=392
+F=90 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=90 step2.6 costumes: loaded=25 skipped=55 (noCostume=55 noCel=0 noHdCostume=0 loadFail=0)
+F=90 step2.6b ui-overlay: pixels=1 (optimized: 8-bit scan)
+F=120 FRAME-TIMING: avg=87ms max=128ms FPS=11.5 (30 frames)
+F=120 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=120 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=120 step2: fgPixels=76691/4915200 (1.6%) cleanValid=1
+F=120 step2 invArea: fg=380160/2867200 (13.3%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=120 step2.5 objects: loaded=0 skipped=0 culled=6
+F=120 costume HIT: actor=17 costume=0045 cel=13 pos=(184,900) surf=2236x944 sort=0
+F=120 costume HIT: actor=21 costume=0044 cel=80 pos=(1336,536) surf=16x16 sort=0
+F=120 costume HIT: actor=27 costume=0013 cel=0 pos=(1328,280) surf=92x88 sort=73
+F=120 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=120 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,672) surf=248x260 sort=195
+F=120 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=120 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=120 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=120 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=120 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=120 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=120 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=120 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=120 costume HIT: actor=5 costume=0037 cel=1 pos=(664,740) surf=224x376 sort=238
+F=120 costume HIT: actor=10 costume=0042 cel=4 pos=(1752,824) surf=220x424 sort=280
+F=120 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=120 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=120 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=120 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=120 step2.6 costumes: loaded=19 skipped=61 (noCostume=61 noCel=0 noHdCostume=0 loadFail=0)
+F=120 step2.6b ui-overlay: pixels=228 (optimized: 8-bit scan)
+F=150 FRAME-TIMING: avg=84ms max=128ms FPS=11.9 (30 frames)
+F=150 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=150 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=150 step2: fgPixels=76649/4915200 (1.6%) cleanValid=1
+F=150 step2 invArea: fg=380480/2867200 (13.3%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=150 step2.5 objects: loaded=0 skipped=0 culled=6
+F=150 costume HIT: actor=17 costume=0045 cel=15 pos=(176,900) surf=2244x940 sort=0
+F=150 costume HIT: actor=21 costume=0044 cel=143 pos=(1312,508) surf=32x36 sort=0
+F=150 costume HIT: actor=28 costume=0013 cel=49 pos=(1036,532) surf=16x12 sort=119
+F=150 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=150 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=150 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=150 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,660) surf=252x420 sort=195
+F=150 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=150 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=150 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=150 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=150 costume HIT: actor=6 costume=0038 cel=1 pos=(856,696) surf=252x420 sort=238
+F=150 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=150 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=150 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=150 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=150 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=150 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=150 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=150 step2.6 costumes: loaded=19 skipped=61 (noCostume=61 noCel=0 noHdCostume=0 loadFail=0)
+F=150 step2.6b ui-overlay: pixels=258 (optimized: 8-bit scan)
+F=180 FRAME-TIMING: avg=84ms max=125ms FPS=11.9 (30 frames)
+F=180 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=180 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=180 step2: fgPixels=77706/4915200 (1.6%) cleanValid=1
+F=180 step2 invArea: fg=388720/2867200 (13.6%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=180 step2.5 objects: loaded=0 skipped=0 culled=6
+F=180 costume HIT: actor=17 costume=0045 cel=17 pos=(176,900) surf=2244x940 sort=0
+F=180 costume HIT: actor=21 costume=0044 cel=215 pos=(1344,524) surf=16x20 sort=0
+F=180 costume HIT: actor=28 costume=0013 cel=4 pos=(1408,208) surf=204x196 sort=58
+F=180 costume HIT: actor=29 costume=0013 cel=49 pos=(1308,360) surf=16x12 sort=76
+F=180 costume HIT: actor=23 costume=0013 cel=49 pos=(1656,420) surf=16x12 sort=80
+F=180 costume HIT: actor=22 costume=0013 cel=49 pos=(1572,452) surf=16x12 sort=89
+F=180 costume HIT: actor=27 costume=0013 cel=22 pos=(988,532) surf=108x32 sort=125
+F=180 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=180 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=180 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,660) surf=252x420 sort=195
+F=180 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=180 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=180 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=180 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,692) surf=328x332 sort=203
+F=180 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=180 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=180 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=180 costume HIT: actor=6 costume=0038 cel=0 pos=(856,680) surf=252x440 sort=238
+F=180 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=180 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=180 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=180 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,832) surf=92x152 sort=280
+F=180 costume HIT: actor=30 costume=0034 cel=50 pos=(948,1448) surf=36x36 sort=339
+F=180 costume HIT: actor=31 costume=0034 cel=89 pos=(484,1332) surf=1020x344 sort=362
+F=180 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=180 step2.6 costumes: loaded=25 skipped=55 (noCostume=55 noCel=0 noHdCostume=0 loadFail=0)
+F=180 step2.6b ui-overlay: pixels=193 (optimized: 8-bit scan)
+F=210 FRAME-TIMING: avg=83ms max=134ms FPS=12.0 (30 frames)
+F=210 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=210 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=210 step2: fgPixels=77496/4915200 (1.6%) cleanValid=1
+F=210 step2 invArea: fg=404480/2867200 (14.1%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=210 step2.5 objects: loaded=0 skipped=0 culled=6
+F=210 costume HIT: actor=17 costume=0045 cel=19 pos=(164,900) surf=2256x928 sort=0
+F=210 costume HIT: actor=21 costume=0044 cel=19 pos=(1340,540) surf=12x12 sort=0
+F=210 costume HIT: actor=28 costume=0013 cel=49 pos=(1428,288) surf=16x12 sort=58
+F=210 costume HIT: actor=27 costume=0013 cel=7 pos=(1256,296) surf=276x260 sort=82
+F=210 costume HIT: actor=29 costume=0013 cel=1 pos=(996,280) surf=172x240 sort=84
+F=210 costume HIT: actor=24 costume=0013 cel=7 pos=(1084,380) surf=276x260 sort=109
+F=210 costume HIT: actor=22 costume=0013 cel=22 pos=(1172,512) surf=108x32 sort=115
+F=210 costume HIT: actor=23 costume=0013 cel=9 pos=(1156,408) surf=368x304 sort=117
+F=210 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=210 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=210 costume HIT: actor=20 costume=0039 cel=0 pos=(1500,616) surf=248x408 sort=195
+F=210 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=210 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=210 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,692) surf=328x332 sort=203
+F=210 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=210 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=210 costume HIT: actor=5 costume=0037 cel=1 pos=(664,740) surf=224x376 sort=238
+F=210 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=210 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=210 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=210 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=210 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,832) surf=92x152 sort=280
+F=210 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=210 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=210 step2.6 costumes: loaded=24 skipped=56 (noCostume=56 noCel=0 noHdCostume=0 loadFail=0)
+F=210 step2.6b ui-overlay: pixels=265 (optimized: 8-bit scan)
+F=240 FRAME-TIMING: avg=84ms max=130ms FPS=11.9 (30 frames)
+F=240 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=240 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=240 step2: fgPixels=75477/4915200 (1.5%) cleanValid=1
+F=240 step2 invArea: fg=381040/2867200 (13.3%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=240 step2.5 objects: loaded=0 skipped=0 culled=6
+F=240 costume HIT: actor=17 costume=0045 cel=21 pos=(184,900) surf=2236x920 sort=0
+F=240 costume HIT: actor=21 costume=0044 cel=28 pos=(1312,528) surf=32x12 sort=0
+F=240 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=240 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=240 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,672) surf=248x260 sort=195
+F=240 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=240 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=240 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=240 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=240 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=240 costume HIT: actor=5 costume=0037 cel=1 pos=(664,740) surf=224x376 sort=238
+F=240 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=240 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=240 costume HIT: actor=9 costume=0041 cel=5 pos=(1880,836) surf=60x100 sort=280
+F=240 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=240 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=240 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=240 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=240 step2.6 costumes: loaded=18 skipped=62 (noCostume=62 noCel=0 noHdCostume=0 loadFail=0)
+F=240 step2.6b ui-overlay: pixels=267 (optimized: 8-bit scan)
+F=270 FRAME-TIMING: avg=86ms max=135ms FPS=11.6 (30 frames)
+F=270 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=270 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=270 step2: fgPixels=75943/4915200 (1.5%) cleanValid=1
+F=270 step2 invArea: fg=396656/2867200 (13.8%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=270 step2.5 objects: loaded=0 skipped=0 culled=6
+F=270 costume HIT: actor=17 costume=0045 cel=23 pos=(184,900) surf=2236x920 sort=0
+F=270 costume HIT: actor=21 costume=0044 cel=195 pos=(1324,500) surf=28x44 sort=0
+F=270 costume HIT: actor=27 costume=0013 cel=9 pos=(1552,200) surf=368x304 sort=58
+F=270 costume HIT: actor=28 costume=0013 cel=49 pos=(1604,308) surf=16x12 sort=63
+F=270 costume HIT: actor=29 costume=0013 cel=49 pos=(1232,420) surf=16x12 sort=91
+F=270 costume HIT: actor=23 costume=0013 cel=6 pos=(1088,384) surf=256x244 sort=109
+F=270 costume HIT: actor=22 costume=0013 cel=8 pos=(1168,416) surf=328x292 sort=117
+F=270 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=270 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=270 costume HIT: actor=19 costume=0038 cel=0 pos=(1596,652) surf=252x440 sort=195
+F=270 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=270 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=270 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=270 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=270 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=270 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=270 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=270 costume HIT: actor=6 costume=0038 cel=1 pos=(856,696) surf=252x420 sort=238
+F=270 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=270 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=270 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,852) surf=328x332 sort=280
+F=270 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=270 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=270 step2.6 costumes: loaded=23 skipped=57 (noCostume=57 noCel=0 noHdCostume=0 loadFail=0)
+F=270 step2.6b ui-overlay: pixels=98 (optimized: 8-bit scan)
+F=300 FRAME-TIMING: avg=86ms max=134ms FPS=11.6 (30 frames)
+F=300 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=300 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=300 step2: fgPixels=74036/4915200 (1.5%) cleanValid=1
+F=300 step2 invArea: fg=377040/2867200 (13.2%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=300 step2.5 objects: loaded=0 skipped=0 culled=6
+F=300 costume HIT: actor=17 costume=0045 cel=25 pos=(184,900) surf=2216x920 sort=0
+F=300 costume HIT: actor=21 costume=0044 cel=16 pos=(1344,544) surf=8x4 sort=0
+F=300 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=300 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,660) surf=252x420 sort=195
+F=300 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,668) surf=248x260 sort=195
+F=300 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,680) surf=224x376 sort=195
+F=300 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=300 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=300 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=300 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,692) surf=328x332 sort=203
+F=300 costume HIT: actor=5 costume=0037 cel=1 pos=(664,736) surf=224x376 sort=238
+F=300 costume HIT: actor=6 costume=0038 cel=1 pos=(856,696) surf=252x420 sort=238
+F=300 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,716) surf=248x260 sort=238
+F=300 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,832) surf=92x152 sort=280
+F=300 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=300 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=300 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=300 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=300 step2.6 costumes: loaded=18 skipped=62 (noCostume=62 noCel=0 noHdCostume=0 loadFail=0)
+F=300 step2.6b ui-overlay: pixels=325 (optimized: 8-bit scan)
+F=330 FRAME-TIMING: avg=81ms max=125ms FPS=12.3 (30 frames)
+F=330 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=330 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=330 step2: fgPixels=74128/4915200 (1.5%) cleanValid=1
+F=330 step2 invArea: fg=378432/2867200 (13.2%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=330 step2.5 objects: loaded=0 skipped=0 culled=6
+F=330 costume HIT: actor=17 costume=0045 cel=27 pos=(176,900) surf=2228x772 sort=0
+F=330 costume HIT: actor=21 costume=0044 cel=113 pos=(1308,508) surf=48x44 sort=0
+F=330 costume HIT: actor=28 costume=0013 cel=32 pos=(1376,300) surf=52x28 sort=66
+F=330 costume HIT: actor=27 costume=0013 cel=2 pos=(1332,236) surf=264x344 sort=70
+F=330 costume HIT: actor=29 costume=0013 cel=22 pos=(1252,376) surf=108x32 sort=86
+F=330 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=330 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=330 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,672) surf=248x260 sort=195
+F=330 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=330 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,692) surf=328x332 sort=203
+F=330 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,684) surf=92x152 sort=203
+F=330 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,680) surf=220x424 sort=203
+F=330 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,708) surf=156x340 sort=203
+F=330 costume HIT: actor=5 costume=0037 cel=1 pos=(664,740) surf=224x376 sort=238
+F=330 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=330 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=330 costume HIT: actor=8 costume=0040 cel=6 pos=(1424,848) surf=328x332 sort=280
+F=330 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,832) surf=92x152 sort=280
+F=330 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,820) surf=220x424 sort=280
+F=330 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,888) surf=156x340 sort=280
+F=330 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=330 step2.6 costumes: loaded=21 skipped=59 (noCostume=59 noCel=0 noHdCostume=0 loadFail=0)
+F=330 step2.6b ui-overlay: pixels=105 (optimized: 8-bit scan)
+F=360 FRAME-TIMING: avg=83ms max=121ms FPS=12.0 (30 frames)
+F=360 room=10 hdRoom=10 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=360 hdgeom: scale=4 camX=0 bg=2560x1920 room=640x480 comp=2560x1920 xstart=0
+F=360 step2: fgPixels=74156/4915200 (1.5%) cleanValid=1
+F=360 step2 invArea: fg=374544/2867200 (13.1%) hdRoom=10 curRoom=10 cleanValid=1 verbDraw=0
+F=360 step2.5 objects: loaded=0 skipped=0 culled=6
+F=360 costume HIT: actor=17 costume=0045 cel=29 pos=(228,900) surf=2156x740 sort=0
+F=360 costume HIT: actor=21 costume=0044 cel=177 pos=(1304,476) surf=44x76 sort=0
+F=360 costume HIT: actor=29 costume=0013 cel=1 pos=(1360,232) surf=172x240 sort=66
+F=360 costume HIT: actor=22 costume=0013 cel=49 pos=(1160,544) surf=16x12 sort=112
+F=360 costume HIT: actor=23 costume=0013 cel=49 pos=(1188,560) surf=16x12 sort=115
+F=360 costume HIT: actor=1 costume=0002 cel=22 pos=(480,-160) surf=332x856 sort=160
+F=360 costume HIT: actor=19 costume=0038 cel=1 pos=(1596,664) surf=252x420 sort=195
+F=360 costume HIT: actor=20 costume=0039 cel=6 pos=(1500,672) surf=248x260 sort=195
+F=360 costume HIT: actor=18 costume=0037 cel=1 pos=(1688,684) surf=224x376 sort=195
+F=360 costume HIT: actor=12 costume=0040 cel=6 pos=(1408,696) surf=328x332 sort=203
+F=360 costume HIT: actor=13 costume=0041 cel=12 pos=(1216,688) surf=92x152 sort=203
+F=360 costume HIT: actor=14 costume=0042 cel=6 pos=(1264,684) surf=220x424 sort=203
+F=360 costume HIT: actor=15 costume=0043 cel=6 pos=(1180,712) surf=156x340 sort=203
+F=360 costume HIT: actor=31 costume=0034 cel=72 pos=(1944,904) surf=64x8 sort=212
+F=360 costume HIT: actor=30 costume=0034 cel=50 pos=(2044,968) surf=36x36 sort=226
+F=360 costume HIT: actor=7 costume=0039 cel=6 pos=(1076,720) surf=248x260 sort=238
+F=360 costume HIT: actor=5 costume=0037 cel=1 pos=(664,740) surf=224x376 sort=238
+F=360 costume HIT: actor=6 costume=0038 cel=1 pos=(856,700) surf=252x420 sort=238
+F=360 costume HIT: actor=10 costume=0042 cel=6 pos=(1752,824) surf=220x424 sort=280
+F=360 costume HIT: actor=11 costume=0043 cel=6 pos=(1972,892) surf=156x340 sort=280
+F=360 costume HIT: actor=8 costume=0040 cel=3 pos=(1424,768) surf=328x416 sort=280
+F=360 costume HIT: actor=9 costume=0041 cel=12 pos=(1880,836) surf=92x152 sort=280
+F=360 costume HIT: actor=3 costume=0035 cel=0 pos=(376,1264) surf=1720x708 sort=792
+F=360 step2.6 costumes: loaded=23 skipped=57 (noCostume=57 noCel=0 noHdCostume=0 loadFail=0)
+F=360 step2.6b ui-overlay: pixels=136 (optimized: 8-bit scan)

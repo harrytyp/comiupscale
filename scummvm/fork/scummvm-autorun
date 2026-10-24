@@ -1,0 +1,6 @@
+--config=/opt/data/scummvm.ini
+--fullscreen
+--gfx-mode=opengl
+--path=/opt/data/local/comi-hd-final
+--boot-param=0
+scumm:comi

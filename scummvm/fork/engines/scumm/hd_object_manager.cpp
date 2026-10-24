@@ -310,6 +310,35 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 			}
 		}
 	}
+	bool spiegeln = false;
+	if (!geladen) {
+		// Zustand 1 ist in COMI die gespiegelte Fassung von Zustand 0. Fehlt das Bild fuer den
+		// gezeichneten Zustand (Beispiel: Objekt 1335 pepper-mill, Raum 86, Zustand 1, HD-Bild
+		// nur als *_0000.png), dann das Bild des Basis-Zustands nehmen und spiegeln, statt auf
+		// 8 Bit zurueckzufallen.
+		const int basis = state & ~1;
+		if (basis != state) {
+			Common::String bp = buildObjectPath(room, info.name, basis);
+			if (loadPNG(bp, surf)) {
+				geladen = true;
+				spiegeln = true;
+				objPath = bp;
+			}
+		}
+	}
+	if (geladen && spiegeln) {
+		// Waagerecht spiegeln: Zeilenweise tauschen.
+		const int w = surf.w, h = surf.h, bpp = surf.format.bytesPerPixel;
+		for (int y = 0; y < h; ++y) {
+			byte *zeile = (byte *)surf.getBasePtr(0, y);
+			for (int x = 0; x < w / 2; ++x) {
+				byte *a = zeile + x * bpp, *b = zeile + (w - 1 - x) * bpp;
+				for (int i = 0; i < bpp; ++i) {
+					byte t = a[i]; a[i] = b[i]; b[i] = t;
+				}
+			}
+		}
+	}
 	if (geladen) {
 		cacheKey = objPath;
 	} else {
@@ -358,8 +387,31 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 
 		// Not in cache — load from disk and add to cache
 		Graphics::Surface surf;
-		if (!loadPNG(objPath, surf))
-			return nullptr;
+		bool spiegeln = false;
+		if (!loadPNG(objPath, surf)) {
+			// Zustand 1 ist in COMI die gespiegelte Fassung von Zustand 0. Fehlt das Bild fuer
+			// den gezeichneten Zustand (Beispiel: 1335 pepper-mill, Raum 86, Zustand 1, HD-Bild
+			// nur als *_0000.png), dann das Basis-Bild laden und spiegeln.
+			const int basis = state & ~1;
+			if (basis == state)
+				return nullptr;
+			Common::String bp = buildObjectPath(room, info.name, basis);
+			if (!loadPNG(bp, surf))
+				return nullptr;
+			spiegeln = true;
+		}
+		if (spiegeln) {
+			const int w = surf.w, h = surf.h, bpp = surf.format.bytesPerPixel;
+			for (int y = 0; y < h; ++y) {
+				byte *zeile = (byte *)surf.getBasePtr(0, y);
+				for (int x = 0; x < w / 2; ++x) {
+					byte *a = zeile + x * bpp, *b = zeile + (w - 1 - x) * bpp;
+					for (int i = 0; i < bpp; ++i) {
+						byte t = a[i]; a[i] = b[i]; b[i] = t;
+					}
+				}
+			}
+		}
 
 		pruneCache();
 		TextureCacheEntry entry;

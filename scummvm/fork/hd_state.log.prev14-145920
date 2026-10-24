@@ -1,0 +1,127 @@
+F=0 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=0 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=0 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=0 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=0 ROOM CHANGE: entering room 0, 200 objects:
+F=0 JEV INV: count=0 objs=
+F=0 step2.5 objects: loaded=0 skipped=0 culled=0
+F=0 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=30 FRAME-TIMING: avg=21ms max=65ms FPS=47.6 (30 frames)
+F=30 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=30 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=30 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=30 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=30 step2.5 objects: loaded=0 skipped=0 culled=0
+F=30 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=60 FRAME-TIMING: avg=21ms max=49ms FPS=47.6 (30 frames)
+F=60 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=60 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=60 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=60 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=60 step2.5 objects: loaded=0 skipped=0 culled=0
+F=60 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=90 FRAME-TIMING: avg=21ms max=50ms FPS=47.6 (30 frames)
+F=90 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=90 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=90 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=90 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=90 step2.5 objects: loaded=0 skipped=0 culled=0
+F=90 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=120 FRAME-TIMING: avg=20ms max=48ms FPS=50.0 (30 frames)
+F=120 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=120 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=120 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=120 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=120 step2.5 objects: loaded=0 skipped=0 culled=0
+F=120 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=150 FRAME-TIMING: avg=21ms max=49ms FPS=47.6 (30 frames)
+F=150 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=150 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=150 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=150 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=150 step2.5 objects: loaded=0 skipped=0 culled=0
+F=150 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=180 FRAME-TIMING: avg=20ms max=51ms FPS=50.0 (30 frames)
+F=180 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=180 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=180 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=180 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=180 step2.5 objects: loaded=0 skipped=0 culled=0
+F=180 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=210 FRAME-TIMING: avg=21ms max=49ms FPS=47.6 (30 frames)
+F=210 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=210 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=210 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=210 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=210 step2.5 objects: loaded=0 skipped=0 culled=0
+F=210 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=240 FRAME-TIMING: avg=20ms max=51ms FPS=50.0 (30 frames)
+F=240 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=240 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=240 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=240 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=240 step2.5 objects: loaded=0 skipped=0 culled=0
+F=240 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=270 FRAME-TIMING: avg=21ms max=48ms FPS=47.6 (30 frames)
+F=270 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=270 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=270 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=270 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=270 step2.5 objects: loaded=0 skipped=0 culled=0
+F=270 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=300 FRAME-TIMING: avg=21ms max=48ms FPS=47.6 (30 frames)
+F=300 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=300 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=300 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=300 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=300 step2.5 objects: loaded=0 skipped=0 culled=0
+F=300 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=330 FRAME-TIMING: avg=21ms max=52ms FPS=47.6 (30 frames)
+F=330 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=330 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=330 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=330 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=330 step2.5 objects: loaded=0 skipped=0 culled=0
+F=330 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=360 FRAME-TIMING: avg=21ms max=48ms FPS=47.6 (30 frames)
+F=360 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=360 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=360 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=360 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=360 step2.5 objects: loaded=0 skipped=0 culled=0
+F=360 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=390 FRAME-TIMING: avg=21ms max=49ms FPS=47.6 (30 frames)
+F=390 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=390 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=390 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=390 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=390 step2.5 objects: loaded=0 skipped=0 culled=0
+F=390 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=420 FRAME-TIMING: avg=21ms max=48ms FPS=47.6 (30 frames)
+F=420 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=420 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=420 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=420 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=420 step2.5 objects: loaded=0 skipped=0 culled=0
+F=420 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=450 FRAME-TIMING: avg=21ms max=49ms FPS=47.6 (30 frames)
+F=450 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=450 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=450 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=450 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=450 step2.5 objects: loaded=0 skipped=0 culled=0
+F=450 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=480 FRAME-TIMING: avg=21ms max=50ms FPS=47.6 (30 frames)
+F=480 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=480 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=480 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=480 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=480 step2.5 objects: loaded=0 skipped=0 culled=0
+F=480 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
+F=510 FRAME-TIMING: avg=21ms max=50ms FPS=47.6 (30 frames)
+F=510 room=0 hdRoom=0 bg=1 objMgr=1/1 costMgr=1/1 fontMgr=1/1 fontChars=0
+F=510 hdgeom: scale=4 camX=0 bg=2560x1920 room=0x0 comp=2560x1920 xstart=0
+F=510 step2: fgPixels=307200/4915200 (6.2%) cleanValid=0
+F=510 step2 invArea: fg=2867200/2867200 (100.0%) hdRoom=0 curRoom=0 cleanValid=0 verbDraw=0
+F=510 step2.5 objects: loaded=0 skipped=0 culled=0
+F=510 step2.6 costumes: loaded=0 skipped=80 (noCostume=80 noCel=0 noHdCostume=0 loadFail=0)
