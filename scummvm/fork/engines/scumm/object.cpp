@@ -19,6 +19,9 @@
  *
  */
 
+// Roh-fopen fuer die Texturspur der Aufnahmelaeufe (wie in gfx.cpp).
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "scumm/actor.h"
 #include "scumm/bomp.h"
 #include "scumm/he/intern_he.h"
@@ -649,6 +652,17 @@ void ScummEngine::drawObject(int obj, int scrollType) {
 		return;
 
 	ObjectData &od = _objs[obj];
+	// HD_SPY=1 schreibt mit, WELCHE 8-Bit-Textur gezeichnet wird: Objektnummer, Zustand,
+	// Lage und Groesse. Damit laesst sich eine fehlende HD-Textur im Code benennen, statt
+	// sie im Bild zu suchen.
+	if (getenv("HD_SPY")) {
+		FILE *sf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_spy.log", "a");
+		if (sf) {
+			fprintf(sf, "OBJ nr=%d state=%d x=%d y=%d w=%d h=%d\n",
+			        od.obj_nr, od.state, od.x_pos, od.y_pos, od.width, od.height);
+			fclose(sf);
+		}
+	}
 	int height, width;
 	const byte *ptr;
 	int x, a, numstrip;

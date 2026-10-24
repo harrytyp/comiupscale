@@ -1366,6 +1366,36 @@ static void hdDumpReference(const char *path, const byte *pixels, int pitch, int
  * as room objects. What is drawn after this call, actors and blast effects, stays
  * foreground and gets composited from the 8-bit layer on top of the HD background.
  */
+/**
+ * Fensteranfang im Raum, in 8-Bit-Pixeln. Hintergrundkopie UND Vordergrundpruefung
+ * muessen denselben Wert benutzen: rechnen sie verschieden, erklaert die Vordergrund-
+ * pruefung bei jeder Kamerabewegung das ganze Bild fuer Vordergrund, und die 8-Bit-Ebene
+ * wirft die HD-Ebene weg (Raum 41 ab Bild 40: gar kein HD mehr).
+ *
+ * vs->xstart ist der Index im Streifenring, kein linearer Raumabstand: beim Scrollen laeuft
+ * der Ring um und der Wert springt. Genau dort entstand die senkrechte Naht mit
+ * Hintergrundversatz in der Seeschlacht. In den Schiffskampfkarten folgt dagegen die Kamera
+ * dem Schiff, waehrend der Ring stehenbleibt — dort ist xstart richtig. Deshalb beide
+ * Quellen mit Pruefung statt einer festen Wahl.
+ */
+int ScummEngine::hdWindowLeft() const {
+	const VirtScreen *vs = &_virtscr[kMainVirtScreen];
+	const int scale = MAX(1, (int)_hdScale);
+	const int visW = MAX(1, MIN<int>(_screenWidth, vs->w));
+	const int maxLinks = MAX(0, (int)_roomWidth - _screenWidth);
+	const int kameraLinks = CLIP((int)camera._cur.x - _screenWidth / 2, 0, maxLinks);
+	const int xstartPixel = (int)vs->xstart;
+	const int bgBreite = (int)_hdBackgroundSurface.w;
+	int links = xstartPixel;
+	if (bgBreite > 0 && (xstartPixel >= bgBreite / scale || xstartPixel * scale + visW * scale > bgBreite))
+		links = kameraLinks;
+	else if (ABS(kameraLinks - xstartPixel) <= 2)
+		links = kameraLinks;
+	if (getenv("HD_LEGACY_CAMX"))
+		links = xstartPixel;
+	return links;
+}
+
 void ScummEngine::hdRefreshCleanBackground() {
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 	int visW = MIN<int>(_screenWidth, vs->w);
@@ -1381,7 +1411,7 @@ void ScummEngine::hdRefreshCleanBackground() {
 	for (int y = 0; y < visH; y++)
 		memcpy(_hdCleanBackground.getBasePtr(0, y), vs->getBasePtr(0, y + refTop), visW);
 	memset(_hdCleanValid, 1, (size_t)visW * visH);
-	_hdCleanXStart = vs->xstart;
+	_hdCleanXStart = hdWindowLeft();
 }
 
 void ScummEngine::hdShiftCleanBackground(int dx) {
@@ -1414,13 +1444,25 @@ void ScummEngine::hdShiftCleanBackground(int dx) {
 	}	_hdCleanXStart += dx;
 }
 
+// Warum die HD-Komposition ausfaellt, in eine Datei (das Protokoll geht beim Abschneiden
+// des Laufs verloren). Ohne das blieb unklar, warum ganze Raeume in 8 Bit erscheinen.
+static void hdSkipReason(const char *grund) {
+	FILE *f = fopen("/opt/data/projects/comi-hd/work/dumps/hd_skip.log", "a");
+	if (f) {
+		fprintf(f, "%s\n", grund);
+		fclose(f);
+	}
+}
+
 void ScummEngine::renderHDComposite() {
 	// Waehrend einer Zwischensequenz zeigt das Spiel ein Video. Dann darf keine HD-Ebene
 	// darueber: der HD-Hintergrund des Raums und die HD-Figuren kaemen ueber das Videobild,
 	// und es entstuende eine Mischung aus zwei Szenen (Banjo-Sequenz: Banjo in HD, dahinter
 	// der Himmel des Raums, davor die Szene am Hotel).
-	if (isSmushActive())
+	if (isSmushActive()) {
+		hdSkipReason("smush");
 		return;
+	}
 
 	// Bis zum Aufnahmezeitpunkt nur 8-Bit zeichnen (HD_OFF_UNTIL=<jiffies>). Die
 	// HD-Komposition kostet je Bild das Vielfache der 8-Bit-Ausgabe; ohne sie laeuft die
@@ -1428,8 +1470,46 @@ void ScummEngine::renderHDComposite() {
 	// nur die Darstellung, ab der Aufnahme ist HD wieder an.
 	if (const char *aus = getenv("HD_OFF_UNTIL")) {
 		const int bis = atoi(aus);
-		if (bis > 0 && VAR_TIMER_TOTAL != 0xFF && (int)VAR(VAR_TIMER_TOTAL) < bis)
+		if (bis > 0 && VAR_TIMER_TOTAL != 0xFF && (int)VAR(VAR_TIMER_TOTAL) < bis) {
+			hdSkipReason("hd_off_until");
 			return;
+		}
+	}
+
+	// Selbstheilung der Vergleichsvorlage: stimmt sie kaum noch mit dem Bildschirm
+	// ueberein, ist sie veraltet (anderer Raumzustand, Kamerawechsel). Dann wird sie hier
+	// neu aufgenommen — zu diesem Zeitpunkt enthaelt der Bildschirm Hintergrund und
+	// Raumobjekte, aber noch keine Figuren. Ohne das gilt jedes Pixel als Vordergrund und
+	// die 8-Bit-Ebene malt das ganze Bild zu (Raum 47: 98,3 Prozent, mit HD_TINT_8BIT belegt).
+	if (_hdCleanValid && _hdCleanBackground.getPixels() && _hdCurrentRoom == _currentRoom) {
+		VirtScreen *vCheck = &_virtscr[kMainVirtScreen];
+		const int cW = MIN<int>(_screenWidth, vCheck->w);
+		const int cH = MIN<int>(_screenHeight, vCheck->h);
+		const int cTop = ((int)_roomHeight > _screenHeight)
+		                 ? CLIP((int)_screenTop, 0, (int)_roomHeight - (int)_screenHeight) : 0;
+		if (cW > 0 && cH > 0 && _hdCleanBackground.w == cW && _hdCleanBackground.h == cH) {
+			int geprueft = 0, anders = 0;
+			for (int y = 0; y < cH; y += 8) {
+				const byte *vRow = (const byte *)vCheck->getBasePtr(0, y + cTop);
+				const byte *cRow = (const byte *)_hdCleanBackground.getBasePtr(0, y);
+				for (int x = 0; x < cW; x += 8) {
+					geprueft++;
+					if (vRow[x] != cRow[x])
+						anders++;
+				}
+			}
+			{
+				FILE *hf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_heal.log", "a");
+				if (hf) {
+					fprintf(hf, "heal? geprueft=%d anders=%d (%.1f%%) top=%d cTop=%d\n",
+					        geprueft, anders, 100.0 * anders / MAX(1, geprueft),
+					        (int)_screenTop, cTop);
+					fclose(hf);
+				}
+			}
+			if (geprueft > 0 && anders * 10 > geprueft * 6)
+				hdRefreshCleanBackground();
+		}
 	}
 
 	uint32 _hdFrameStartTime = _system->getMillis();
@@ -1498,7 +1578,9 @@ void ScummEngine::renderHDComposite() {
 			panFrame++;
 		}
 	}
-	const int camX = vs->xstart * scale;	// camera offset in HD pixels
+	// Eine Quelle fuer den Fensteranfang, fuer Hintergrund und Vordergrund gleich.
+	const int sdLeft = hdWindowLeft();
+	const int camX = sdLeft * scale;	// camera offset in HD pixels
 	// Vertikaler Kameraversatz. Die Schiffskampfkarten (Raeume 40 bis 43) und die
 	// hochkanten Raeume 77, 79, 82 sind hoeher als der Bildschirm, hier fehlte die
 	// Achse bisher ganz: der HD-Hintergrund stand still, waehrend die Figuren
@@ -1614,8 +1696,8 @@ void ScummEngine::renderHDComposite() {
 	// Senkrecht gibt es hier bewusst nichts. Ein Verwerfen der Referenz bei jeder senkrechten
 	// Kamerabewegung hat den Heap beschaedigt und Raum 77 mit "munmap_chunk: invalid pointer"
 	// zum Absturz gebracht, ohne das eigentliche Problem zu loesen. Siehe Issue 26.
-	if (_hdCleanValid && _hdCleanXStart >= 0 && _hdCleanXStart != (int)vs->xstart)
-		hdShiftCleanBackground(vs->xstart - _hdCleanXStart);
+	if (_hdCleanValid && _hdCleanXStart >= 0 && _hdCleanXStart != hdWindowLeft())
+		hdShiftCleanBackground(hdWindowLeft() - _hdCleanXStart);
 
 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
 	// Diff against clean background to only overlay foreground pixels.
@@ -1640,7 +1722,7 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, mod.state & 0xF))
 				continue;
-			int rx = mod.x_pos - vs->xstart;
+			int rx = mod.x_pos - sdLeft;
 			int ry = mod.y_pos - sdTop;
 			for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y++)
 				for (int x = MAX(0, rx); x < MIN(visW, rx + mod.width); x++)
@@ -1710,7 +1792,12 @@ int step2_fgPixels = 0;
 						isForeground = false;
 					}
 				} else {
-					isForeground = true;
+					// Keine gueltige Vergleichsvorlage: NICHT als Vordergrund werten.
+					// Vorher stand hier "true", und damit galt jedes Pixel als Vordergrund:
+					// die 8-Bit-Ebene malte das ganze Bild zu und die HD-Ebene war weg
+					// (Raum 47: 98,3 Prozent Vordergrund, gemessen mit HD_TINT_8BIT).
+					// "Ich weiss es nicht" darf nicht "alles in 8 Bit" bedeuten.
+					isForeground = false;
 				}
 				// Skip AKOS transparent color (index 255)
 				if (isForeground && curPix == 255)
@@ -1724,7 +1811,12 @@ int step2_fgPixels = 0;
 				if (isForeground) {
 					rowHadFg = true;
 					step2_fgPixels++;
-					uint32 color = palFg[curPix];
+					// HD_TINT_8BIT faerbt jedes Pixel aus der 8-Bit-Ebene magenta. Damit ist
+					// exakt sichtbar und zaehlbar, wo noch 8-Bit-Grafik im Bild steht — ohne
+					// Schaetzung, ohne statistisches Mass. Standardverfahren fuer fehlende
+					// Texturen (Signalfarbe) und fuer Deckungsmessungen (Instrumentierung).
+					static const bool tint8 = getenv("HD_TINT_8BIT") != nullptr;
+					uint32 color = tint8 ? 0xFFFF00FFu : palFg[curPix];
 					int hdX0 = hdXStart[sx], hdX1 = hdXStart[sx + 1];
 					const int rowLen = hdX1 - hdX0;
 					uint32 *colTop = compBase + hdX0 + hdY0 * compStride;
@@ -1760,10 +1852,19 @@ int step2_fgPixels = 0;
 			         hdStep2Sum / hdStep2N, hdStep2Max, step2_fgPixels, hdStep2N);
 	}
 
-	if (_hdFrameCount % 30 == 0)
-		hdPrintf("step2: fgPixels=%d/%d (%.1f%%) cleanValid=%d",
-			step2_fgPixels, hdW * hdH, step2_fgPixels * 100.0 / (hdW * hdH),
-			_hdCleanValid ? 1 : 0);
+	if (_hdFrameCount % 30 == 0) {
+		// Eigene Datei mit Flush: das grosse Protokoll wird erst beim Beenden
+		// geschrieben, dadurch waren die Zeilen im Lauf nicht lesbar.
+		FILE *fg = fopen("/opt/data/projects/comi-hd/work/dumps/hd_fg.log", "a");
+		if (fg) {
+			fprintf(fg, "frame=%d room=%d hdRoom=%d useClean=%d fgVon8bit=%d von8bit=%d (%.1f%%) xstart=%d camLinks=%d\n",
+			        _hdFrameCount, _currentRoom, _hdCurrentRoom,
+			        (_hdCurrentRoom == _currentRoom && _hdCleanValid) ? 1 : 0,
+			        step2_fgPixels, visW * visH,
+			        100.0 * step2_fgPixels / MAX(1, visW * visH), (int)vs->xstart, sdLeft);
+			fclose(fg);
+		}
+	}
 
 	// Step 2 debug: count foreground pixels in inventory area (0,0 to 640,280 in 8-bit)
 	// Inventory-bg-object (114) sits at (0,0) size 640x472.
@@ -2063,7 +2164,7 @@ int step2_fgPixels = 0;
 			// den Schiffskampfkarten). Nur wenn der Raum hoeher ist als der
 			// Bildschirm, sonst bleibt es bei der alten Rechnung.
 			int camYSd = sdTop;
-			int xPos = (blastX >= 0) ? blastX : od.x_pos - vs->xstart;
+			int xPos = (blastX >= 0) ? blastX : od.x_pos - sdLeft;
 			int yPos = (blastY >= 0) ? blastY : od.y_pos - camYSd;
 			int64 hdX = (int64)xPos * hdW / MAX(1, visW);
 			int64 hdY = (int64)yPos * hdH / MAX(1, visH);
@@ -2644,7 +2745,7 @@ int step2_fgPixels = 0;
 
 			// Use per-limb drawing position from the entry
 			Common::Point actorPos = a->getPos();
-			int drawX = actorPos.x - vs->xstart;
+			int drawX = actorPos.x - sdLeft;
 			// Senkrecht gilt dasselbe wie fuer Objekte: in Raeumen, die hoeher sind als
 			// der Bildschirm, muss der Kameraversatz abgezogen werden, sonst bleibt die
 			// Figur stehen, waehrend der Hintergrund an ihr vorbeifaehrt.
@@ -2834,7 +2935,7 @@ int step2_fgPixels = 0;
 			// Per-entry overlay
 			for (int ei = 0; ei < numEntries; ei++) {
 				Actor *ea = entries[ei].actor;
-				int64 hdEX = (int64)(ea->getPos().x - vs->xstart + entries[ei].drawX) * hdW / MAX(1, visW);
+				int64 hdEX = (int64)(ea->getPos().x - sdLeft + entries[ei].drawX) * hdW / MAX(1, visW);
 				int64 hdEY = (int64)(ea->getPos().y - ea->getElevation() + entries[ei].drawY) * hdH / MAX(1, visH);
 				bool isComplete = (entries[ei].drawX == ea->_hdRelX);
 				uint32 boxCol = isComplete ? 0x00FF00FF : 0x00FFFF80;
@@ -3273,7 +3374,7 @@ int step2_fgPixels = 0;
 	// Debug: fuer Aufnahmen eine Bildfolge ablegen (HD_DUMP_SEQ=1). Jedes 20. Bild eins,
 	// hoechstens 200, in /tmp/hd_seq. Paarweise mit dem Original, damit sich jedes Bild
 	// gegen die SD-Engine stellen laesst.
-	if (getenv("HD_DUMP_SEQ") && !_hdInventoryOpen) {
+	if (getenv("HD_DUMP_SEQ") && !_hdInventoryOpen && _hdCaptureArmed) {
 		static int hdSeqNo = 0, hdSeqTick = 0;
 		// Jede dritte Komposition ein Bild. Ein fester Abstand nach _hdFrameCount liefert in
 		// kurzen Laeufen nur ein oder zwei Bilder, weil die HD-Schicht langsam rechnet.

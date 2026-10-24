@@ -245,8 +245,18 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 		return false;
 
 	Common::HashMap<int, ObjectInfo>::iterator it = _objectMap.find(obj_nr);
-	if (it == _objectMap.end())
+	if (it == _objectMap.end()) {
+		// Objekt ist gar nicht im Verzeichnis der HD-Assets: es wurde nie extrahiert.
+		// Das ist die Klasse "HD-Textur fehlt" — belegt im Code, mit Nummer und Raum.
+		if (getenv("HD_SPY")) {
+			FILE *mf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_missing.log", "a");
+			if (mf) {
+				fprintf(mf, "NOMAP room=%d obj=%d state=%d\n", room, obj_nr, state);
+				fclose(mf);
+			}
+		}
 		return false;
+	}
 
 	const ObjectInfo &info = it->_value;
 
@@ -269,6 +279,16 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 	if (loadPNG(objPath, surf)) {
 		cacheKey = objPath;
 	} else {
+		// HD_SPY=1: fehlende Objekt-Textur mit Pfad mitschreiben. Damit ist die Klasse
+		// "HD-Textur fehlt" im Code belegt und nicht im Bild gesucht.
+		if (getenv("HD_SPY")) {
+			FILE *mf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_missing.log", "a");
+			if (mf) {
+				fprintf(mf, "MISSING room=%d name=%s state=%d pfad=%s\n",
+				        room, info.name.c_str(), state, objPath.c_str());
+				fclose(mf);
+			}
+		}
 		return false;
 	}
 

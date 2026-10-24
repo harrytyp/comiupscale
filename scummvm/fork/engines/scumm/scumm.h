@@ -590,6 +590,10 @@ public:
 	// Kameraausschnitt, auf den die Referenzkopie bezogen ist. Passt er nicht mehr zur
 	// Kamera, wird sie vor dem Vergleich nachgezogen (siehe renderHDComposite).
 	int _hdCleanXStart = -1;
+	// Erst nach dem Raumsprung aufzeichnen. Vorher entstehen Bilder vom Intro oder vom
+	// vorigen Raum, und eine Pruefung darauf meldet "kein HD", obwohl der Zielraum nie im
+	// Bild war. Genau so ist eine ganze Reihe ungueltiger Befunde entstanden.
+	bool _hdCaptureArmed = false;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
 	int _hdObjectMaskSize = 0;
 	int _hdCurrentRoom = -1;
@@ -1524,6 +1528,7 @@ protected:
 	/** Shift the clean 8-bit background reference + validity mask by dx pixels
 	 *  (viewport space) so it stays aligned when the camera moves. */
 	void hdShiftCleanBackground(int dx);
+	int hdWindowLeft() const;
 	void hdRefreshCleanBackground();
 	/** HD debug: dump all surfaces and state to files. */
 	void hdDebugDump();

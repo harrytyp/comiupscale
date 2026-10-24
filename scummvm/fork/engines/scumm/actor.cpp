@@ -19,6 +19,9 @@
  *
  */
 
+// Roh-fopen fuer die Texturspur der Aufnahmelaeufe (wie in gfx.cpp).
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "common/system.h"	// for setFocusRectangle/clearFocusRectangle
 #include "common/scummsys.h"
 #include "scumm/scumm.h"
@@ -2520,6 +2523,15 @@ void ScummEngine::processUpperActors() {
 }
 
 void Actor::drawActorCostume(bool hitTestMode) {
+	// HD_SPY=1: welches Kostuem wird in 8 Bit gezeichnet (AKOS, Bild)?
+	if (getenv("HD_SPY")) {
+		FILE *sf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_spy.log", "a");
+		if (sf) {
+			fprintf(sf, "AKOS nr=%d frame=%d x=%d y=%d\n",
+			        _costume, _frame, _pos.x, _pos.y);
+			fclose(sf);
+		}
+	}
 	if (_costume == 0)
 		return;
 

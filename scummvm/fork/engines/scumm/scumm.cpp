@@ -3336,6 +3336,7 @@ void ScummEngine::scummLoop(int delta) {
 				_actors[VAR(VAR_EGO)]->_room = room;
 				_sound->stopAllSounds();
 				startScene(room, nullptr, 0);
+				_hdCaptureArmed = true;
 				warning("hd_trace: HD_JUMP_ROOM -> startScene(%d)", room);
 
 			}
