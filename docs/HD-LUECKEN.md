@@ -272,3 +272,68 @@ Ordnung; der Tabellenbauer war nur zusätzlich kaputt (Importpfad) und ist repar
 Der Unterschied zwischen „Assets vorhanden" und „Objekte in der Maske" kommt daher, dass die
 Zählung pauschal je Raum erfolgte: 21 Bilder für Raum 15 heisst nicht, dass die 25 gezeichneten
 Objekte versorgt sind — es sind verschiedene Objekte.
+
+## Werkzeug: DOBJ vollständig auslesen
+
+`scripts/dump_dobj.py` gibt das Objektverzeichnis aus (Nummer, Name, Raum, Zustand):
+
+```
+1401 DOBJ-Einträge
+ 398  gold-tooth-object   room=15
+ 399  town-mudpuddle      room=15
+```
+
+Damit ist belegbar, welche Objekte es im Spiel gibt. Objekt 398 existiert also — sein Bild
+fehlt in der Sammlung, nicht in den Spieldaten.
+
+## Extraktion: Räume mit und ohne Objekte
+
+`extract_all_raw.py` meldet jetzt je Raum die Zahl der Objekte. Erste Messung:
+
+```
+Room 47: mask index None (0/0 objects agree)  ->  0 Objekte
+Room 86: mask index None (3/6 objects agree)  ->  6 Objekte
+```
+
+Raum 47 hat in den Spieldaten **keine** Objektbilder; sein Vollbild ist ein Raumbild.
+Raum 86 hat sechs, gezeichnet werden einundzwanzig.
+
+Die Extraktion deckt nur einen Teil der Räume ab (40 von 94 hatten Objektdateien). Das ist
+die eigentliche Pipeline-Lücke: `read_objects` liefert für viele Räume nichts, und der
+Grund dafür ist noch nicht bestimmt.
+
+## Warum manche Räume keine Objektbilder liefern — untersucht
+
+Werkzeuge: `scripts/count_obim.py` (OBIM je Raum), `scripts/obim_struktur.py` (Aufbau je OBIM),
+`scripts/dump_dobj.py` (Objektverzeichnis, 1401 Einträge).
+
+```
+Raum 15: 43 OBIM      Raum 86: 29 OBIM
+Raum 41:  0 OBIM      Raum 47:  0 OBIM
+```
+
+Räume 41 und 47 haben **keine** Objektbilder in den Spieldaten — dort ist nichts zu holen,
+das Vollbild ist ein Raumbild.
+
+Bei 15 und 86 haben viele OBIM **nur einen Kopf (IMHD) und kein Bild (IMAG)**:
+
+```
+OBIM 0: {'IMHD': 1, 'IMAG': 1}
+OBIM 1: {'IMHD': 1}          <- kein Bild
+OBIM 2: {'IMHD': 1}          <- kein Bild
+```
+
+Solche Objekte zeichnen ihr Bild aus einer anderen Quelle. Zwei Änderungen sind eingebaut,
+haben die Messung aber noch nicht bewegt:
+
+1. `read_objects` im v8-Zweig liest zusätzlich `IMxx`-Blöcke, wenn kein `IMAG` da ist.
+2. `HdObjectManager::loadObject` sucht unter den anderen Räumen desselben Objekts weiter,
+   wenn der Pfad im aktuellen Raum fehlt.
+
+Messung danach: Raum 86 8,65 → 8,39 Prozent, Raum 15 0,86 → 0,99 Prozent. Also **nicht**
+die Lösung — die Bilder existieren offenbar auch unter anderen Raumschlüsseln nicht.
+
+Nächster Ansatz: für ein konkretes Objekt (86, Nummer aus `hd_maskobj.log`) prüfen, ob es
+im Objektverzeichnis überhaupt einen Dateinamen hat, und ob dieser Name irgendwo in
+`hd/objects/` liegt. Damit ist entschieden, ob es ein Extraktions- oder ein Zuordnungsproblem
+ist — für genau dieses Objekt, nicht für den ganzen Raum.

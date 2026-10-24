@@ -276,7 +276,24 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 
 	// Not in cache — load from disk
 	Graphics::Surface surf;
-	if (loadPNG(objPath, surf)) {
+	bool geladen = loadPNG(objPath, surf);
+	if (!geladen) {
+		// Viele Objekte haben in ihrem Raum nur einen Kopf und kein Bild; sie leihen es sich
+		// aus einem anderen Raum. Dann unter den bekannten Raumschluesseln desselben Objekts
+		// weitersuchen, statt auf 8 Bit zurueckzufallen.
+		for (Common::HashMap<int, Common::List<int>>::const_iterator ri = info.roomStates.begin();
+		     ri != info.roomStates.end() && !geladen; ++ri) {
+			if (ri->_key == room)
+				continue;
+			if (!ri->_value.empty() && ri->_value.front() == state) {
+				Common::String alt = buildObjectPath(ri->_key, info.name, state);
+				geladen = loadPNG(alt, surf);
+				if (geladen)
+					objPath = alt;
+			}
+		}
+	}
+	if (geladen) {
 		cacheKey = objPath;
 	} else {
 		// HD_SPY=1: fehlende Objekt-Textur mit Pfad mitschreiben. Damit ist die Klasse

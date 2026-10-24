@@ -138,8 +138,36 @@ def read_objects(header, room, version):
             assert version == 8, version
             obj_name, obj_height, obj_width, obj_x, obj_y = read_imhd_v8(imhd)
             print(obj_name, obj_height, obj_width)
-            for idx, imag in enumerate(sputm.findall('IMAG', obim)):
-                assert idx == 0
+            imags = list(sputm.findall('IMAG', obim))
+            if not imags:
+                # Kein IMAG-Block: das Objekt traegt seine Bilder in IMxx-Bloecken (wie in
+                # aelteren Versionen). Frueher wurden diese Objekte stillschweigend
+                # uebersprungen — Raum 86 lieferte 6 von 29 Objekten, Raum 15 gar keins.
+                for imxx in sputm.findall('IM{:02x}', obim):
+                    for iidx, bomp in enumerate(imxx.children()):
+                        chunk = bytes(sputm.mktag(bomp.tag, bomp.data))
+                        s = sputm.generate_schema(chunk)
+                        image = next(sputm(schema=s).map_chunks(chunk))
+                        bgim = read_room_background_v8(
+                            image,
+                            obj_width,
+                            obj_height,
+                            0,
+                            transparency=header.transparency,
+                        )
+                        if bgim is None:
+                            continue
+                        im = convert_to_pil_image(bgim)
+                        path = bomp.attribs.get('path', imxx.attribs.get('path', ''))
+                        name = f'{obj_name}_{iidx:04d}'
+                        yield path, name, im, obj_x, obj_y
+                continue
+
+            for idx, imag in enumerate(imags):
+                # Frueher stand hier `assert idx == 0`. Hat ein Objekt mehrere IMAG-Bloecke,
+                # flog damit eine Ausnahme, der Aufrufer verwarf den REST des Raums, und die
+                # Extraktion lieferte nur die Objekte davor (Raum 86: 6 von 29). Jetzt werden
+                # alle Bloecke gelesen; der Index geht in den Dateinamen ein.
                 wrap = sputm.find('WRAP', imag)
                 assert wrap is not None
                 _, *frames = wrap.children()
