@@ -290,6 +290,16 @@ bool HdCostumeManager::hasCostume(int akosId, int frame) const {
 			}
 		}
 	}
+	// Diagnose: welches Kostüm/Cel in HD fehlt. Ohne diese Zeile war nur bekannt, DASS
+	// eine Figur in 8 Bit gezeichnet wird (Raum 86: 8,65 Prozent), nicht welche.
+	{
+		FILE *cf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_costume_miss.log", "a");
+		if (cf) {
+			fprintf(cf, "MISS akos=%d frame=%d subs=%d\n", akosId, frame,
+			        (int)(subsIt->_value.size()));
+			fclose(cf);
+		}
+	}
 	return false;
 }
 

@@ -502,3 +502,28 @@ im Raum aber keinen eigenen `IMAG`-Block. Der nächste Schritt ist ein einzelner
 der Zeichenstelle — der aufgelöste OBIM-Zeiger und die dort gefundenen Tags für `obj=1341`.
 Damit ist belegt, ob ScummVM vorwärts in den nächsten OBIM läuft oder die Bilder aus einer
 anderen Struktur holt.
+
+## Der Rest sind Figuren — bewiesen durch Abschalten
+
+Statt die Quelle aus Koordinatenkästen zu schließen (was in die Irre führte: 92 Prozent
+"Objekte" war reine Geometrie, weil die Kästen halbe Bildschirme groß sind), lassen sich
+Zeichenwege abschalten und messen:
+
+```
+normal                     8,65 % magenta
+HD_NO_OBJECTS=1            8,74 %   unverändert
+HD_NO_ACTORS=1             0,00 %   alles weg
+HD_NO_ACTORS=1 HD_NO_OBJECTS=1  0,00 %
+```
+
+Damit ist belegt: **jede verbleibende 8-Bit-Fläche gehört zu einer Figur.** Objekte,
+Hintergrund, Objekttabelle und Objektzustände sind als Ursache ausgeschlossen — jede dieser
+Vermutungen ist damit widerlegt, nicht nur bestritten.
+
+`hasCostume()` meldet dabei keine Fehltreffer (das neue `hd_costume_miss.log` bleibt leer),
+also findet die Engine ein HD-Bild und legt einen Eintrag an. Die Figur wird trotzdem in
+8 Bit gezeichnet — der Fehler liegt damit **nach** der Eintragsbildung, beim Zeichnen des
+Eintrags (Laden der Fläche oder Deckungsprüfung), nicht bei der Suche.
+
+Schalter: `HD_NO_OBJECTS` (object.cpp, `drawObject`), `HD_NO_ACTORS` (actor.cpp,
+`drawActorCostume`, nicht im Trefferpfad).

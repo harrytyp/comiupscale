@@ -649,6 +649,11 @@ void ScummEngine::drawRoomObjects(int arg) {
 }
 
 void ScummEngine::drawObject(int obj, int scrollType) {
+	// Diagnose: HD_NO_OBJECTS zeichnet keine Objekte in die 8-Bit-Ebene. Damit laesst sich
+	// messen, welchen Anteil die Objekte am sichtbaren 8-Bit-Rest haben, statt es aus
+	// Koordinatenkaesten zu schliessen.
+	if (getenv("HD_NO_OBJECTS"))
+		return;
 	if (_skipDrawObject)
 		return;
 

@@ -2523,6 +2523,10 @@ void ScummEngine::processUpperActors() {
 }
 
 void Actor::drawActorCostume(bool hitTestMode) {
+	// Diagnose: HD_NO_ACTORS zeichnet keine Figuren in die 8-Bit-Ebene (Gegenprobe zu
+	// HD_NO_OBJECTS, siehe object.cpp).
+	if (!hitTestMode && getenv("HD_NO_ACTORS"))
+		return;
 	// HD_SPY=1: welches Kostuem wird in 8 Bit gezeichnet (AKOS, Bild)?
 	if (getenv("HD_SPY")) {
 		FILE *sf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_spy.log", "a");
