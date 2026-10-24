@@ -1725,12 +1725,29 @@ void ScummEngine::renderHDComposite() {
 			// markiert die Maske jeden Pixel als Vordergrund, und die 8-Bit-Ebene deckt
 			// den HD-Hintergrund zu (Raum 47: 98,3 Prozent Vordergrund, 97,4 Prozent
 			// magenta, obwohl die Vorlage zu 99,2 Prozent uebereinstimmt).
-			if (mod.width >= visW && mod.height >= visH)
-				continue;
+			// Flaeckendeckung pruefen, nicht exakte Gleichheit: das Inventarobjekt 114 hat
+			// 640x472 und liegt damit ueber dem ganzen Bild, ohne exakt bildschirmgross zu
+			// sein. Ein Objekt, das mindestens 90 Prozent des Bildes abdeckt, ist der
+			// Hintergrund (oder das geschlossene Inventar), kein fehlendes HD-Objekt.
+			{
+				const int cw = MIN(mod.width, visW);
+				const int ch = MIN(mod.height, visH);
+				if (cw > 0 && ch > 0 && (long)cw * ch * 10 >= (long)visW * visH * 9)
+					continue;
+			}
 			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, mod.state & 0xF))
 				continue;
 			int rx = mod.x_pos - sdLeft;
 			int ry = mod.y_pos - sdTop;
+			// HD_SPY=1: welches Objekt die Maske fuellt (Nummer, Groesse, Lage).
+			if (getenv("HD_SPY")) {
+				FILE *of = fopen("/opt/data/projects/comi-hd/work/dumps/hd_maskobj.log", "a");
+				if (of) {
+					fprintf(of, "MASKE obj=%d w=%d h=%d rx=%d ry=%d state=%d vis=%dx%d\n",
+					        mod.obj_nr, mod.width, mod.height, rx, ry, mod.state & 0xF, visW, visH);
+					fclose(of);
+				}
+			}
 			for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y++)
 				for (int x = MAX(0, rx); x < MIN(visW, rx + mod.width); x++)
 					hdMissingMask[y * visW + x] = 1;
@@ -1805,6 +1822,23 @@ int step2_fgPixels = 0;
 					// (Raum 47: 98,3 Prozent Vordergrund, gemessen mit HD_TINT_8BIT).
 					// "Ich weiss es nicht" darf nicht "alles in 8 Bit" bedeuten.
 					isForeground = false;
+				}
+				// HD_SPY=1: die ersten 20 Vordergrundpixel mit Koordinaten und beiden
+				// Farbindizes mitschreiben. Damit ist belegt, was der Vergleich wirklich
+				// sieht, statt die naechste Hypothese zu bauen.
+				if (isForeground && getenv("HD_SPY")) {
+					static int fgSpy = 0;
+					if (fgSpy < 20) {
+						FILE *df = fopen("/opt/data/projects/comi-hd/work/dumps/hd_fgspy.log", "a");
+						if (df) {
+							fprintf(df, "FG sx=%d sy=%d cur=%d clean=%d maske=%d useClean=%d\n",
+							        sx, sy, (int)curPix,
+							        (useClean && cleanRow) ? (int)cleanRow[sx] : -1,
+							        (int)hdMissingMask[sy * visW + sx], useClean ? 1 : 0);
+							fclose(df);
+						}
+						fgSpy++;
+					}
 				}
 				// Skip AKOS transparent color (index 255)
 				if (isForeground && curPix == 255)

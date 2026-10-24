@@ -107,6 +107,23 @@ Nächster Schritt: dieselbe Regel im Raumbild-Pfad anwenden oder den 8-Bit-Bilds
 dem Laden des HD-Hintergrunds neu aufbauen. `_bgNeedsRedraw` beim Laden zu setzen hat
 nicht gereicht.
 
+## Wer die Fehlt-Maske fuellt
+
+Mit `HD_SPY=1` protokolliert (`hd_maskobj.log`). In Raum 47 ist es **Objekt 114** — der
+Inventarhintergrund, geschlossen, aber mit 640x472 über dem ganzen Bild:
+
+```
+MASKE obj=114 w=640 h=472 rx=0 ry=0 state=0
+```
+
+Damit ist die Fehlt-Maske vollstaendig gesetzt, und die Vordergrundpruefung entscheidet
+nicht mehr anhand des Bildinhalts: die ersten protokollierten Pixel zeigen
+`cur=242 clean=242 maske=1` — gleicher Wert, trotzdem Vordergrund.
+
+Die Ausnahme fuer flaeckendeckende Objekte (90 Prozent) steht im Code, wirkt aber noch
+nicht; die Protokollzeile gibt jetzt auch `visW x visH` aus, damit der naechste Lauf zeigt,
+an welcher Zahl die Bedingung scheitert.
+
 ## Drei Versuche, alle ohne Wirkung auf Raum 47
 
 | Versuch | Ergebnis |
