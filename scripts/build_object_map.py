@@ -22,6 +22,10 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 import paths
 
+# Wie in extract_all_raw.py: die nutcracker-Quellen liegen im Repo unter tools/.
+# Ohne diesen Pfad importiert das Skript eine andere (oder keine) Version und bricht ab.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'tools'))
+
 from nutcracker.sputm.resource import load_resource
 from nutcracker.sputm.index import read_dobj_v8
 from nutcracker.kernel2.element import Element
