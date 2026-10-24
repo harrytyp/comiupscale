@@ -1724,6 +1724,26 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			int rx = mod.x_pos - sdLeft;
 			int ry = mod.y_pos - sdTop;
+			// Sichtbarkeit mit der Regel der Zeichenstufe: zaehle die Pixel im Kasten, die
+			// sich vom sauberen Hintergrund unterscheiden. Geschlossenes Inventar (Objekt
+			// 114) hat rund 640 sichtbare Pixel, offen sechsstellig; unter einem Viertel
+			// gilt es als nicht sichtbar. Ohne diese Pruefung deckt die Maske den ganzen
+			// Bildschirm, weil die deklarierte Groesse 640x472 ist.
+			if (_hdCleanValid && _hdCleanBackground.getPixels() &&
+			    _hdCleanBackground.w == visW && _hdCleanBackground.h == visH) {
+				int sichtbar = 0, geprueft = 0;
+				for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y += 4) {
+					const byte *vRow = (const byte *)vs->getBasePtr(0, y + sdTop);
+					const byte *cRow = (const byte *)_hdCleanBackground.getBasePtr(0, y);
+					for (int x = MAX(0, rx); x < MIN(visW, rx + mod.width); x += 4) {
+						geprueft++;
+						if (vRow[x] != cRow[x])
+							sichtbar++;
+					}
+				}
+				if (geprueft > 0 && sichtbar * 4 < geprueft)
+					continue;
+			}
 			// HD_SPY=1: welches Objekt die Maske fuellt (Nummer, Groesse, Lage).
 			if (getenv("HD_SPY")) {
 				FILE *of = fopen("/opt/data/projects/comi-hd/work/dumps/hd_maskobj.log", "a");

@@ -170,3 +170,22 @@ Puffer, anderer Zeitpunkt im Frame oder eine andere Zeilenbasis.
 Nächster Schritt: in der Schleife die ersten 20 abweichenden Pixel mit Koordinaten und
 beiden Farbindizes protokollieren. Damit ist in einem Lauf belegt, was dort wirklich
 verglichen wird, statt der dritten Hypothese zu folgen.
+
+## Behoben: Maske benutzt jetzt dieselbe Sichtbarkeitsprüfung
+
+Die Fehlt-Maske prüft vor dem Eintrag, wie viele Pixel des Objektkastens sich tatsächlich
+vom sauberen Hintergrund unterscheiden (Stichprobe alle 4 Pixel). Unter einem Viertel gilt
+das Objekt als nicht sichtbar — dieselbe Regel, die die Zeichenstufe für das Ausblenden
+benutzt, nur eine Stelle weiter. Es ist damit **keine neue Regel**, sondern die vorhandene
+Entscheidung an der zweiten Stelle.
+
+Messung Raum 47 (gleicher Lauf, feste Zeit):
+
+```
+vorher:  Vordergrund 98,3 %   Magenta 97,37 %
+nachher: Vordergrund  1,0 %   Magenta  0,00 %
+```
+
+Das Bild ist durchgehend HD, kein Magenta mehr. Im letzten Bild einer Folge steigt der
+Magenta-Anteil wieder auf 97 Prozent — dort wechselt die Szene (Inventar/Übergang), das ist
+der nächste eigene Fall.
