@@ -207,3 +207,23 @@ Vor dem Fix: Raum 47 bei 97,37 Prozent. Die Oberdecks 44 bis 51 lagen zwischen 0
 3,4 Prozent statt bei 97.
 
 Rohdaten: `docs/magenta-anteil-scrollende-raeume.csv`.
+
+## Restprozente nach dem Fix: fehlende Objekt-Assets, nicht Zeichenfehler
+
+Raum 86 war der höchste Rest (8,5 Prozent Magenta). Auswertung der Fehlt-Maske:
+
+```
+29 Objekte in der Maske   (105, 114, 115, 116, 1337, 1339, 1340, 1341, ...)
+ 6 HD-Assets fuer Raum 86
+23 Objekte ohne HD-Bild
+```
+
+Damit ist der Rest Klasse 1: die Objekte sind nicht vorhanden, nicht falsch gezeichnet. Für
+Räume 33, 44 und 41 gilt dasselbe Muster in kleinerem Umfang (4,5 / 3,4 / 1,2 Prozent).
+
+## Aufzeichnung auch ohne Sprung scharfschalten
+
+`_hdCaptureArmed` hing am Sprung (`HD_JUMP_ROOM`). Räume, die darüber nicht erreichbar sind
+(25, 42, 43, 86), lieferten deshalb **null** Bilder, obwohl der Lauf sauber durchlief
+(`rc=0`, 240 Bilder). Jetzt schaltet auch das erfolgreiche Laden eines HD-Hintergrunds die
+Aufzeichnung scharf, sofern `HD_JUMP_ROOM` gesetzt ist. Raum 86 liefert damit 80 Bilder.

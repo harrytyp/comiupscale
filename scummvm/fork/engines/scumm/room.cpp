@@ -323,6 +323,12 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
 				_hdCurrentRoom = room;
+				// Aufzeichnung scharfschalten, sobald ein Raum mit HD-Hintergrund geladen
+				// ist. Vorher haing das am Sprung allein; in Raeumen, die nicht ueber
+				// HD_JUMP_ROOM erreichbar sind (25, 42, 43, 86), entstanden dadurch gar
+				// keine Bilder — der Lauf war in Ordnung, nur die Spur fehlte.
+				if (getenv("HD_JUMP_ROOM"))
+					_hdCaptureArmed = true;
 				// Nach dem Laden neu zeichnen lassen: das Spiel zeichnet ein Vollbild-Objekt
 				// (den Raumhintergrund) unter Umstaenden, bevor der HD-Hintergrund bereit
 				// ist. Dann greift die Regel "Vollbild-Objekt nicht ueber HD zeichnen"
