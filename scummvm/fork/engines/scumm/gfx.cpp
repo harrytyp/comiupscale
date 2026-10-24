@@ -1708,6 +1708,9 @@ void ScummEngine::renderHDComposite() {
 	// niemand mehr. Genau so fehlte die Figur auf dem Kamm in Raum 89.
 	static byte *hdMissingMask = nullptr;
 	static int hdMissingMaskSize = 0;
+	// Zaehler fuer die Quelle der 8-Bit-Pixel (HD_TINT_8BIT): Figur, Objekt, sonstiges.
+	static int tintAkteur = 0, tintObjekt = 0, tintSonst = 0;
+	tintAkteur = tintObjekt = tintSonst = 0;
 	if (visW * visH > hdMissingMaskSize) {
 		hdMissingMask = (byte *)realloc(hdMissingMask, (size_t)visW * visH);
 		hdMissingMaskSize = visW * visH;
@@ -1748,8 +1751,9 @@ void ScummEngine::renderHDComposite() {
 			if (getenv("HD_SPY")) {
 				FILE *of = fopen("/opt/data/projects/comi-hd/work/dumps/hd_maskobj.log", "a");
 				if (of) {
-					fprintf(of, "MASKE obj=%d w=%d h=%d rx=%d ry=%d state=%d vis=%dx%d\n",
-					        mod.obj_nr, mod.width, mod.height, rx, ry, mod.state & 0xF, visW, visH);
+					fprintf(of, "MASKE obj=%d w=%d h=%d rx=%d ry=%d state=%d fl=%d vis=%dx%d\n",
+					        mod.obj_nr, mod.width, mod.height, rx, ry, mod.state & 0xF,
+					        (int)mod.fl_object_index, visW, visH);
 					fclose(of);
 				}
 			}
@@ -1863,6 +1867,39 @@ int step2_fgPixels = 0;
 					// Texturen (Signalfarbe) und fuer Deckungsmessungen (Instrumentierung).
 					static const bool tint8 = getenv("HD_TINT_8BIT") != nullptr;
 					uint32 color = tint8 ? 0xFFFF00FFu : palFg[curPix];
+					if (tint8) {
+						// Quelle bestimmen: liegt an dieser Stelle eine Figur, ein Objekt oder
+						// etwas anderes (Bedienung)? Damit ist belegbar, was die 8-Bit-Pixel
+						// malt, statt es aus Protokollen zu erraten.
+						const int wx = sx + sdLeft, wy = sy + sdTop;
+						bool istAkt = false;
+						for (int ai = 1; ai < _numActors && !istAkt; ai++) {
+							const Actor *ac = _actors[ai];
+							if (!ac || !ac->isInCurrentRoom())
+								continue;
+							const Common::Point p = ac->getPos();
+							const int hw = ac->_width / 2, hh = MAX(1, ac->_bottom - ac->_top);
+							if (wx >= p.x - hw && wx < p.x + hw && wy >= p.y - hh && wy < p.y)
+								istAkt = true;
+						}
+						if (istAkt) {
+							tintAkteur++;
+						} else {
+							bool istObj = false;
+							for (int oi = 1; oi < _numLocalObjects && !istObj; oi++) {
+								const ObjectData &ob = _objs[oi];
+								if (ob.obj_nr == 0)
+									continue;
+								if (wx >= ob.x_pos && wx < ob.x_pos + ob.width &&
+								    wy >= ob.y_pos && wy < ob.y_pos + ob.height)
+									istObj = true;
+							}
+							if (istObj)
+								tintObjekt++;
+							else
+								tintSonst++;
+						}
+					}
 					int hdX0 = hdXStart[sx], hdX1 = hdXStart[sx + 1];
 					const int rowLen = hdX1 - hdX0;
 					uint32 *colTop = compBase + hdX0 + hdY0 * compStride;
@@ -1903,11 +1940,12 @@ int step2_fgPixels = 0;
 		// geschrieben, dadurch waren die Zeilen im Lauf nicht lesbar.
 		FILE *fg = fopen("/opt/data/projects/comi-hd/work/dumps/hd_fg.log", "a");
 		if (fg) {
-			fprintf(fg, "frame=%d room=%d hdRoom=%d useClean=%d fgVon8bit=%d von8bit=%d (%.1f%%) xstart=%d camLinks=%d\n",
+			fprintf(fg, "frame=%d room=%d hdRoom=%d useClean=%d fgVon8bit=%d von8bit=%d (%.1f%%) xstart=%d camLinks=%d quelle: akteur=%d objekt=%d sonst=%d\n",
 			        _hdFrameCount, _currentRoom, _hdCurrentRoom,
 			        (_hdCurrentRoom == _currentRoom && _hdCleanValid) ? 1 : 0,
 			        step2_fgPixels, visW * visH,
-			        100.0 * step2_fgPixels / MAX(1, visW * visH), (int)vs->xstart, sdLeft);
+			        100.0 * step2_fgPixels / MAX(1, visW * visH), (int)vs->xstart, sdLeft,
+			        tintAkteur, tintObjekt, tintSonst);
 			fclose(fg);
 		}
 	}

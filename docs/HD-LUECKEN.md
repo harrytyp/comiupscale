@@ -461,3 +461,44 @@ Das erklärt alle Beobachtungen auf einmal:
 Nächster Schritt: die Vordergrund-Ebene (PF/SMAP) extrahieren, hochskalieren und im Komposit
 über den HD-Hintergrund legen. Damit verschwindet der Rest — und zwar für alle Räume, nicht
 nur für Raum 86.
+
+## Messung: die 8-Bit-Pixel stammen aus Objekten, und die Objekte haben keinen Bildblock
+
+Die Engine zählt jetzt selbst, wer die 8-Bit-Pixel malt (`HD_TINT_8BIT`, Zeile `quelle:` in
+`hd_fg.log`):
+
+```
+fgVon8bit 21,9 %   Figur 5.363 (8,0 %)   Objekt 62.028 (92,0 %)   sonst 0
+```
+
+Zuordnung der Magenta-Flächen zu den Maskenrechtecken (gleicher Lauf, gleiches Bild):
+
+```
+obj 1341  104x184 bei (  8,224)  magenta 78,2 %   14.973 px
+obj 1349   72x112 bei ( 48,216)  magenta 89,6 %    7.222 px
+obj 1348   96x168 bei (192,160)  magenta 40,0 %    6.445 px
+obj 1339   72x48  bei (280,312)  magenta 50,1 %    1.733 px
+```
+
+Diese Objekte sind **keine** FL-Objekte (`fl=0` an allen Maskeneinträgen), holen ihr Bild also
+laut `getOBIMFromObjectData` aus dem Raum selbst:
+
+```cpp
+ptr = getResourceAddress(rtRoom, _roomResource) + od.OBIMoffset;
+```
+
+In Raum 86 haben aber 24 von 29 OBIM nur einen Kopf:
+
+```
+1  snowcone-object        IMHD
+2  dinghy-dogs-hair       IMHD
+4  soggy-paper-cone       IMHD
+...
+25 carnival-snowcone-sign IMHD
+```
+
+Damit steht der Widerspruch fest und ist eng umrissen: die Objekte werden gezeichnet, haben
+im Raum aber keinen eigenen `IMAG`-Block. Der nächste Schritt ist ein einzelner Log-Eintrag an
+der Zeichenstelle — der aufgelöste OBIM-Zeiger und die dort gefundenen Tags für `obj=1341`.
+Damit ist belegt, ob ScummVM vorwärts in den nächsten OBIM läuft oder die Bilder aus einer
+anderen Struktur holt.
