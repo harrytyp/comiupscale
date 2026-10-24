@@ -107,6 +107,30 @@ Nächster Schritt: dieselbe Regel im Raumbild-Pfad anwenden oder den 8-Bit-Bilds
 dem Laden des HD-Hintergrunds neu aufbauen. `_bgNeedsRedraw` beim Laden zu setzen hat
 nicht gereicht.
 
+## Wichtig: das Ausblenden ist geloest — hier wird es nicht neu aufgemacht
+
+Die Frage „ab wann blenden wir ein Objekt aus" ist bereits beantwortet und im Code gelöst:
+die Zeichenstufe misst die **tatsächlich sichtbaren Pixel** (`visiblePixels`, Stichprobe
+über jede vierte Zeile/Spalte). Geschlossenes Inventar (Objekt 114) hat rund 640 sichtbare
+Pixel, offen sechststellig; unter einem Drittel der Fläche gilt es als geschlossen und wird
+ausgeblendet. Diese Regel bleibt unangetastet.
+
+Der Fehler liegt woanders: die **Fehlt-Maske** (`hdMissingMask`) wird aus der *deklarierten*
+Objektgröße gebaut, nicht aus den sichtbaren Pixeln. Für Objekt 114 heißt das 640x472 statt
+640 Pixel — die Maske deckt den ganzen Bildschirm, und die Vordergrundprüfung entscheidet
+nicht mehr am Bildinhalt.
+
+Beleg (`HD_SPY=1`, erster Lauf):
+
+```
+FG sx=0 sy=0 cur=242 clean=242 maske=1     <- gleicher Wert, trotzdem Vordergrund
+MASKE obj=114 w=640 h=472 rx=0 ry=0        <- deklarierte Groesse, nicht sichtbare Pixel
+```
+
+Die beiden Versuche, das über Flächendeckung zu lösen, sind wieder zurückgenommen — sie
+hätten das gelöste Thema ein zweites Mal aufgemacht. Richtig ist, die Maske mit **derselben**
+Sichtbarkeitsprüfung zu bauen wie die Zeichenstufe.
+
 ## Wer die Fehlt-Maske fuellt
 
 Mit `HD_SPY=1` protokolliert (`hd_maskobj.log`). In Raum 47 ist es **Objekt 114** — der

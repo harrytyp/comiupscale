@@ -1720,21 +1720,6 @@ void ScummEngine::renderHDComposite() {
 			// (Rechteck unten aus x_pos/y_pos und Groesse)
 			if (mod.obj_nr == 0)
 				continue;
-			// Ein Objekt, das den ganzen Bildschirm deckt, ist der Raumhintergrund und
-			// kein fehlendes HD-Objekt. Wird es hier als "ohne HD-Bild" eingetragen,
-			// markiert die Maske jeden Pixel als Vordergrund, und die 8-Bit-Ebene deckt
-			// den HD-Hintergrund zu (Raum 47: 98,3 Prozent Vordergrund, 97,4 Prozent
-			// magenta, obwohl die Vorlage zu 99,2 Prozent uebereinstimmt).
-			// Flaeckendeckung pruefen, nicht exakte Gleichheit: das Inventarobjekt 114 hat
-			// 640x472 und liegt damit ueber dem ganzen Bild, ohne exakt bildschirmgross zu
-			// sein. Ein Objekt, das mindestens 90 Prozent des Bildes abdeckt, ist der
-			// Hintergrund (oder das geschlossene Inventar), kein fehlendes HD-Objekt.
-			{
-				const int cw = MIN(mod.width, visW);
-				const int ch = MIN(mod.height, visH);
-				if (cw > 0 && ch > 0 && (long)cw * ch * 10 >= (long)visW * visH * 9)
-					continue;
-			}
 			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, mod.state & 0xF))
 				continue;
 			int rx = mod.x_pos - sdLeft;
