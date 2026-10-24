@@ -337,3 +337,26 @@ Nächster Ansatz: für ein konkretes Objekt (86, Nummer aus `hd_maskobj.log`) pr
 im Objektverzeichnis überhaupt einen Dateinamen hat, und ob dieser Name irgendwo in
 `hd/objects/` liegt. Damit ist entschieden, ob es ein Extraktions- oder ein Zuordnungsproblem
 ist — für genau dieses Objekt, nicht für den ganzen Raum.
+
+## Die Objekttabelle war unvollständig — 560 von 1401
+
+Der Grund, warum Objekte wie `1339 soggy-paper-cone` (Raum 86) nie ein HD-Bild bekommen
+konnten: `config/object_map.json` enthielt nur Objekte mit vorhandener Bilddatei — **560 von
+1401** Einträgen des Objektverzeichnisses. Für die übrigen 841 kannte die Engine nicht einmal
+den Namen, also konnte sie auch kein geteiltes Bild finden.
+
+Der Tabellenbauer nimmt jetzt **alle** DOBJ-Einträge auf (Name, Raum, Zustand), auch ohne
+Datei, und ergänzt Verweise auf geteilte Bilder (die `-icon`-Fassung in einem anderen Raum).
+
+```
+object_map.json: 1401 Einträge   (vorher 560)
+841 Objekte ohne Bilddatei aufgenommen
+```
+
+Wirkung auf die Messung: **keine.** Raum 86 8,65 → 8,72 Prozent, Raum 15 0,86, Raum 33 4,44,
+Raum 44 3,29 — alle im Bereich der Schwankung.
+
+Damit ist belegt: die Objekte, die in 8 Bit gezeichnet werden, haben in den Spieldaten
+**kein eigenes Bild**, und die geteilte Icon-Fassung greift nur in Einzelfällen (ein Treffer).
+Für den Rest müsste das Bild aus einer anderen Quelle kommen — Kandidat sind die
+Inventar-/Icon-Objekte, die als eigene Objekte mit eigener Nummer geführt werden.

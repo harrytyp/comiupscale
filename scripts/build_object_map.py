@@ -157,6 +157,59 @@ def build_maps():
             'layer_files': {str(s): v for s, v in info['layer_files'].items()},
         }
 
+    # Objekte, fuer die es (noch) keine Datei gibt, trotzdem aufnehmen. Sonst kennt die
+    # Engine ihren Namen nicht und kann auch keine geteilten Bilder finden (Beispiel:
+    # Objekt 1339 soggy-paper-cone, Bild liegt als 0003_soggy-paper-cone-icon_0000.png).
+    # Ohne diesen Schritt gelten solche Objekte dauerhaft als "kein HD" und werden in
+    # 8 Bit gezeichnet, obwohl ein passendes Bild im Verzeichnis liegt.
+    ohne_datei = 0
+    for name, (obj_id, state, room, obj_class) in dobj_entries:
+        if obj_id in obj_map:
+            continue
+        obj_map[obj_id] = {'name': name, 'rooms': {}}
+        ohne_datei += 1
+    for name, (obj_id, state, room, obj_class) in dobj_entries:
+        eintrag = obj_map.get(obj_id)
+        if not eintrag:
+            continue
+        rk = str(room)
+        if rk not in eintrag['rooms']:
+            eintrag['rooms'][rk] = {'states': [], 'state_files': {}, 'layer_files': {}}
+        if state not in eintrag['rooms'][rk]['states']:
+            eintrag['rooms'][rk]['states'].append(state)
+    if ohne_datei:
+        print(f"  {ohne_datei} Objekte ohne Bilddatei aufgenommen (nur Name/Raum/Zustand)")
+
+    # Geteilte Bilder eintragen: viele Objekte haben in ihrem Raum kein Bild, das Spiel
+    # zeichnet aber die "Icon"-Fassung aus einem anderen Raum (Beispiel: 1339
+    # soggy-paper-cone liegt als 0003_soggy-paper-cone-icon_0000.png). Diese Räume werden
+    # hier ergänzt, damit die Engine sie findet.
+    name_index = {}
+    for (room_id, name), info in extracted.items():
+        name_index.setdefault(name, []).append((room_id, sorted(info['states'])))
+    geteilt = 0
+    for obj_id, eintrag in obj_map.items():
+        name = eintrag['name']
+        hat_dateien = any(r['state_files'] for r in eintrag['rooms'].values())
+        if hat_dateien:
+            continue
+        for kandidat in (name, name + '-icon'):
+            for room_id, states in name_index.get(kandidat, []):
+                rk = str(room_id)
+                if rk in eintrag['rooms']:
+                    continue
+                eintrag['rooms'][rk] = {
+                    'states': states,
+                    'state_files': {str(s): [f for f in extracted[(room_id, kandidat)]['state_files'].get(s, [])] for s in states},
+                    'layer_files': {},
+                }
+                geteilt += 1
+                break
+            if geteilt and any(kandidat == eintrag['name'] for _ in [0]):
+                break
+    if geteilt:
+        print(f"  {geteilt} geteilte Bildverweise ergänzt")
+
     if missed_in_dobj:
         print(f"  Skipped {missed_in_dobj} entries not in DOBJ ({(len(missed_names))} unique names)")
 

@@ -281,15 +281,32 @@ bool HdObjectManager::loadObject(int obj_nr, int room, int state, Graphics::Surf
 		// Viele Objekte haben in ihrem Raum nur einen Kopf und kein Bild; sie leihen es sich
 		// aus einem anderen Raum. Dann unter den bekannten Raumschluesseln desselben Objekts
 		// weitersuchen, statt auf 8 Bit zurueckzufallen.
+		// Das Spiel verwendet fuer viele Objekte geteilte "Icon"-Bilder aus anderen Raeumen
+		// (Beispiel: Objekt 1339 soggy-paper-cone in Raum 86 liegt als
+		// 0003_soggy-paper-cone-icon_0000.png in Raum 3). Deshalb auch die Icon-Variante
+		// suchen, zuerst im aktuellen Raum, dann in den bekannten anderen.
+		Common::String iconName = info.name + "-icon";
+		{
+			Common::String direkt = buildObjectPath(room, iconName, state);
+			geladen = loadPNG(direkt, surf);
+			if (geladen)
+				objPath = direkt;
+		}
 		for (Common::HashMap<int, Common::List<int>>::const_iterator ri = info.roomStates.begin();
 		     ri != info.roomStates.end() && !geladen; ++ri) {
-			if (ri->_key == room)
-				continue;
 			if (!ri->_value.empty() && ri->_value.front() == state) {
-				Common::String alt = buildObjectPath(ri->_key, info.name, state);
-				geladen = loadPNG(alt, surf);
-				if (geladen)
-					objPath = alt;
+				if (ri->_key != room) {
+					Common::String alt = buildObjectPath(ri->_key, info.name, state);
+					geladen = loadPNG(alt, surf);
+					if (geladen)
+						objPath = alt;
+				}
+				if (!geladen) {
+					Common::String alt = buildObjectPath(ri->_key, iconName, state);
+					geladen = loadPNG(alt, surf);
+					if (geladen)
+						objPath = alt;
+				}
 			}
 		}
 	}

@@ -3608,7 +3608,8 @@
     "rooms": {
       "9": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -3648,7 +3649,8 @@
     "rooms": {
       "9": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -4662,7 +4664,8 @@
     "rooms": {
       "14": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -4822,7 +4825,8 @@
     "rooms": {
       "15": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -4949,7 +4953,8 @@
     "rooms": {
       "15": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -4969,7 +4974,8 @@
     "rooms": {
       "15": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5009,7 +5015,8 @@
     "rooms": {
       "15": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5096,7 +5103,8 @@
     "rooms": {
       "15": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5116,7 +5124,8 @@
     "rooms": {
       "16": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5243,7 +5252,8 @@
     "rooms": {
       "16": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5263,7 +5273,8 @@
     "rooms": {
       "16": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5403,7 +5414,8 @@
     "rooms": {
       "18": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5683,7 +5695,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5743,7 +5756,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5783,7 +5797,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5843,7 +5858,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5883,7 +5899,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5923,7 +5940,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -5963,7 +5981,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6003,7 +6022,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6043,7 +6063,8 @@
     "rooms": {
       "20": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6123,7 +6144,8 @@
     "rooms": {
       "21": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6170,7 +6192,8 @@
     "rooms": {
       "21": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6190,7 +6213,8 @@
     "rooms": {
       "21": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6230,7 +6254,8 @@
     "rooms": {
       "21": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6250,7 +6275,8 @@
     "rooms": {
       "21": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -6752,7 +6778,8 @@
     "rooms": {
       "23": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -7093,7 +7120,8 @@
     "rooms": {
       "28": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -7794,7 +7822,8 @@
     "rooms": {
       "37": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -8914,7 +8943,8 @@
     "rooms": {
       "54": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -8962,7 +8992,8 @@
     "rooms": {
       "55": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -8978,7 +9009,8 @@
     "rooms": {
       "55": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9030,7 +9062,8 @@
     "rooms": {
       "58": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9102,7 +9135,8 @@
     "rooms": {
       "59": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9234,7 +9268,8 @@
     "rooms": {
       "61": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9338,7 +9373,8 @@
     "rooms": {
       "61": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9370,7 +9406,8 @@
     "rooms": {
       "61": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9810,7 +9847,8 @@
     "rooms": {
       "66": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9954,7 +9992,8 @@
     "rooms": {
       "68": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9970,7 +10009,8 @@
     "rooms": {
       "68": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -9986,7 +10026,8 @@
     "rooms": {
       "68": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -10034,7 +10075,8 @@
     "rooms": {
       "68": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -10122,7 +10164,8 @@
     "rooms": {
       "69": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -10350,7 +10393,8 @@
     "rooms": {
       "71": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -10426,7 +10470,8 @@
     "rooms": {
       "72": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -10594,7 +10639,8 @@
     "rooms": {
       "75": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -11082,7 +11128,8 @@
     "rooms": {
       "82": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -11146,7 +11193,8 @@
     "rooms": {
       "84": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -11290,7 +11338,8 @@
     "rooms": {
       "86": {
         "states": [
-          0
+          0,
+          1
         ],
         "state_files": {
           "0": [
@@ -11559,6 +11608,10113 @@
             "0092_saveload-slot-frame_0001.png"
           ]
         },
+        "layer_files": {}
+      }
+    }
+  },
+  "0": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "2": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "3": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "4": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "5": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "6": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "7": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "8": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "9": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "10": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "11": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "12": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "13": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "14": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "15": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "16": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "17": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "18": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "19": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "20": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "21": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "22": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "23": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "24": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "25": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "26": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "27": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "28": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "29": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "30": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "31": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "32": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "33": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "34": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "35": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "36": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "37": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "38": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "39": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "40": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "41": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "42": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "43": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "44": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "45": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "46": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "47": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "48": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "49": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "50": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "51": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "52": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "53": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "54": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "55": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "56": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "57": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "58": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "59": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "60": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "61": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "62": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "63": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "64": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "65": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "66": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "67": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "68": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "69": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "70": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "71": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "72": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "73": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "74": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "75": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "76": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "77": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "78": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "79": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "80": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "81": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "82": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "83": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "84": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "85": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "86": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "87": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "88": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "89": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "90": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "91": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "92": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "93": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "94": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "95": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "96": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "97": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "98": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "99": {
+    "name": "",
+    "rooms": {
+      "0": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "100": {
+    "name": "string-balloon-object",
+    "rooms": {
+      "1": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "276": {
+    "name": "cannon-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "277": {
+    "name": "cannon-wally-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "278": {
+    "name": "cannon-waterline-door",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "281": {
+    "name": "gaff-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "282": {
+    "name": "cannon-restraint-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "283": {
+    "name": "pirate-literature",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "285": {
+    "name": "cannon-cannon-balls",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "286": {
+    "name": "cannon-grate",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "287": {
+    "name": "cannon-useless-rope",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "288": {
+    "name": "sane-wally-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "289": {
+    "name": "cannon-guybrush-cannon-object",
+    "rooms": {
+      "9": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "290": {
+    "name": "cannon-view-cannon-door",
+    "rooms": {
+      "10": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "333": {
+    "name": "waterline-cannon-door",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "334": {
+    "name": "waterline-debris-object",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "335": {
+    "name": "cutlass-object",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "336": {
+    "name": "skeleton-arm-object",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "337": {
+    "name": "waterln-skull-object",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "338": {
+    "name": "waterln-porthole-1",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "339": {
+    "name": "waterln-porthole-2",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "340": {
+    "name": "waterline-window",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "341": {
+    "name": "waterline-cannon-muzzle",
+    "rooms": {
+      "11": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "345": {
+    "name": "treasure-ceiling-object",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "346": {
+    "name": "pile-o-treasure",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "347": {
+    "name": "treasure-treasure-1",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "348": {
+    "name": "treasure-lechuck-portrait",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "349": {
+    "name": "treasure-lechuck-portrait-2",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "350": {
+    "name": "treasure-wreath",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "351": {
+    "name": "treasure-box-o-chocolates",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "352": {
+    "name": "treasure-washer-dryer",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "353": {
+    "name": "treasure-record-collection",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "354": {
+    "name": "treasure-teddy-bear",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "355": {
+    "name": "treasure-music-box",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "357": {
+    "name": "treasure-bottle-o-wine",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "358": {
+    "name": "treasure-ladder-1",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "359": {
+    "name": "treasure-ladder-2",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "360": {
+    "name": "treasure-ladder-3",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "361": {
+    "name": "treasure-ladder-4",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "362": {
+    "name": "treasure-ladder-5",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "363": {
+    "name": "treasure-comb-object",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "364": {
+    "name": "treasure-treasure-3",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "365": {
+    "name": "treasure-treasure-4",
+    "rooms": {
+      "12": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "366": {
+    "name": "plndrmap-brimbeach-door",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "367": {
+    "name": "plndrmap-danjrbch-door",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "368": {
+    "name": "plndrmap-voodoo-x-door",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "369": {
+    "name": "plndrmap-bchclub-door",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "370": {
+    "name": "plndrmap-town-door-2",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "371": {
+    "name": "plndrmap-town-door-1",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "372": {
+    "name": "plndrmap-town-door-3",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "373": {
+    "name": "plndrmap-fortbase-door",
+    "rooms": {
+      "13": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "375": {
+    "name": "fortbase-town-door",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "378": {
+    "name": "fortbase-voodoo-door",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "379": {
+    "name": "fortbase-ruined-fort",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "380": {
+    "name": "fortbase-ruined-fort-bridge",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "381": {
+    "name": "fortbase-chicken-sign",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "382": {
+    "name": "feral-chicken-plaque",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "384": {
+    "name": "fortbase-cannon-button",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "386": {
+    "name": "fortbase-chicken-1",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "387": {
+    "name": "fortbase-chicken-2",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "388": {
+    "name": "fortbase-chicken-3",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "389": {
+    "name": "fortbase-chicken-4",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "390": {
+    "name": "fortbase-chicken-5",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "391": {
+    "name": "fortbase-chicken-6",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "392": {
+    "name": "fortbase-chicken-7",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "393": {
+    "name": "fortbase-chicken-8",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "394": {
+    "name": "fortbase-markings",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "395": {
+    "name": "fortbase-speare-banner",
+    "rooms": {
+      "14": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "398": {
+    "name": "gold-tooth-object",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "399": {
+    "name": "town-mudpuddle",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "403": {
+    "name": "town-front-door",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "405": {
+    "name": "town-speare-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "406": {
+    "name": "town-jungle-plndrmap-door",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "409": {
+    "name": "dye-vat-object",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "411": {
+    "name": "dye-pitcher-object",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "413": {
+    "name": "kenny-object",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "415": {
+    "name": "town-clearing-a-door",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "416": {
+    "name": "town-fortbase-door",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "417": {
+    "name": "town-plndrmap-door-1",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "418": {
+    "name": "town-drive-up-speaker",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "421": {
+    "name": "center-of-clock",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "422": {
+    "name": "town-chicken-coop",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "423": {
+    "name": "town-lemonade-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "424": {
+    "name": "town-price-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "425": {
+    "name": "town-disclaimer",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "426": {
+    "name": "town-barbery-coast-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "427": {
+    "name": "town-drainpipe",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "428": {
+    "name": "town-chicken-fountain",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "429": {
+    "name": "town-crowsnest-object",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "432": {
+    "name": "town-danjr-cove-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "433": {
+    "name": "town-beware-sign",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "437": {
+    "name": "town-strange-flowers",
+    "rooms": {
+      "15": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "443": {
+    "name": "biscuit-barrel",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "445": {
+    "name": "maggots-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "446": {
+    "name": "blondebeard-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "447": {
+    "name": "blondebeards-bubble",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "449": {
+    "name": "shop-window-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "450": {
+    "name": "tooth-gum-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "453": {
+    "name": "chicken-int-skeleton",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "454": {
+    "name": "breadknife-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "455": {
+    "name": "cu-el-pollo",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "456": {
+    "name": "chkn-int-slumped-patron",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "457": {
+    "name": "chkn-int-menu-bucket",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "458": {
+    "name": "chkn-int-menu-grog",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "459": {
+    "name": "chkn-int-menu-sides",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "460": {
+    "name": "chkn-int-menu-value",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "461": {
+    "name": "chkn-int-reservation-book",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "462": {
+    "name": "chkn-int-podium",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "463": {
+    "name": "chkn-int-ship-in-bottle-1",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "464": {
+    "name": "chkn-int-ship-in-bottle-2",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "465": {
+    "name": "chkn-int-doormat",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "467": {
+    "name": "book-blondebeard-object",
+    "rooms": {
+      "16": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "469": {
+    "name": "offstage-town-door",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "470": {
+    "name": "offstage-spotlight-door",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "471": {
+    "name": "offstage-lice-pirate-coat",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "476": {
+    "name": "offstage-magic-hat",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "479": {
+    "name": "offstage-stage-door",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "480": {
+    "name": "offstage-trunk",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "481": {
+    "name": "offstage-blood-island-sticker",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "482": {
+    "name": "offstage-wooden-sword-1",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "483": {
+    "name": "offstage-wooden-swords",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "484": {
+    "name": "fake-poison",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "485": {
+    "name": "fake-pikes",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "486": {
+    "name": "donkey-head",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "487": {
+    "name": "drama-masks",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "488": {
+    "name": "offstage-wig",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "489": {
+    "name": "offstage-mirror",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "490": {
+    "name": "prop-crown-object",
+    "rooms": {
+      "18": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "492": {
+    "name": "stage-offstage-door",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "493": {
+    "name": "stage-slappy-object",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "496": {
+    "name": "stage-missing-plank-1",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "497": {
+    "name": "stage-missing-plank-2",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "498": {
+    "name": "stage-missing-plank-3",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "499": {
+    "name": "stage-missing-plank-4",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "500": {
+    "name": "stage-missing-plank-5",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "501": {
+    "name": "stage-missing-plank-6",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "502": {
+    "name": "stage-prop-tree",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "503": {
+    "name": "stage-prop-tree-2",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "504": {
+    "name": "stage-balcony",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "505": {
+    "name": "stage-balcony-plank",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "506": {
+    "name": "stage-prop-headstone",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "507": {
+    "name": "stage-stu-object",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "508": {
+    "name": "stage-plaque",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "516": {
+    "name": "stage-slappy-2-object",
+    "rooms": {
+      "19": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "517": {
+    "name": "spotlight-theater-int-door",
+    "rooms": {
+      "20": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "536": {
+    "name": "spotlight-control-panel",
+    "rooms": {
+      "20": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "543": {
+    "name": "spotlight-theater-door-2",
+    "rooms": {
+      "20": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "544": {
+    "name": "barber-int-town-door",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "551": {
+    "name": "barber-int-mcmutton",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "552": {
+    "name": "barber-int-rottingham",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "553": {
+    "name": "barber-int-cutthroat-bill-object",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "554": {
+    "name": "chewed-gum-object",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "556": {
+    "name": "barber-int-vanhelgen",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "557": {
+    "name": "barber-int-chair-handle-2",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "558": {
+    "name": "barber-int-chair-handle-3",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "559": {
+    "name": "barber-int-chair-handle-4",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "560": {
+    "name": "barber-int-barber-chair-2",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "561": {
+    "name": "barber-int-barber-chair-3",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "562": {
+    "name": "barber-int-barber-chair-4",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "563": {
+    "name": "barber-int-barber-chair-5",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "566": {
+    "name": "brbr-int-portrait-1",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "567": {
+    "name": "brbr-int-portrait-2",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "568": {
+    "name": "brbr-int-portrait-3",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "569": {
+    "name": "brbr-int-portrait-4",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "570": {
+    "name": "brbr-int-portrait-5",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "571": {
+    "name": "brbr-int-portrait-6",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "572": {
+    "name": "brbr-int-portrait-7",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "573": {
+    "name": "brbr-int-portrait-8",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "574": {
+    "name": "brbr-int-portrait-9",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "575": {
+    "name": "brbr-int-parrot-portrait",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "577": {
+    "name": "barber-int-chair-handle-5",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "578": {
+    "name": "barber-int-barbercide-jar",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "580": {
+    "name": "barber-int-barber-chair-down-2",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "581": {
+    "name": "barber-int-rottingham2",
+    "rooms": {
+      "21": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "582": {
+    "name": "clearing-a-town-door",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "583": {
+    "name": "clearing-a-clearing-b-door",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "585": {
+    "name": "clearing-other-rubber-tree",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "594": {
+    "name": "clring-a-clock-tower",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "595": {
+    "name": "clring-a-theater",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "596": {
+    "name": "clring-a-docks",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "597": {
+    "name": "clring-a-fort",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "598": {
+    "name": "clring-a-distant-beach",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "599": {
+    "name": "clring-a-number-1",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "600": {
+    "name": "clring-a-number-2",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "601": {
+    "name": "clring-a-number-3",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "602": {
+    "name": "clring-a-number-4",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "603": {
+    "name": "clring-a-number-5",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "604": {
+    "name": "clring-a-caber-pile",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "605": {
+    "name": "clring-a-other-caber-pile",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "606": {
+    "name": "book-depository",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "607": {
+    "name": "clring-a-barrel-at-tree",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "608": {
+    "name": "clring-a-clring-b-door-2",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "609": {
+    "name": "clearing-rubber-tree",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "610": {
+    "name": "clearing-rubber-tree-2",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "611": {
+    "name": "clearing-rubber-tree-3",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "612": {
+    "name": "clring-a-tree-plaque",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "613": {
+    "name": "clring-a-other-tree-plaque",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "617": {
+    "name": "clearing-other-rubber-tree-2",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "618": {
+    "name": "clearing-other-rubber-tree-3",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "624": {
+    "name": "clearing-a-town-door-2",
+    "rooms": {
+      "22": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "625": {
+    "name": "clearing-b-clearing-a-door",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "626": {
+    "name": "clearing-b-rubber-tree-object",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "632": {
+    "name": "clring-b-caber-pile",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "633": {
+    "name": "clring-b-clring-a-door-2",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "635": {
+    "name": "clearing-b-rubber-tree-3",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "636": {
+    "name": "clring-b-caber-pile-2",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "637": {
+    "name": "clring-b-caber-pile-3",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "638": {
+    "name": "clring-b-caber-pile-4",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "639": {
+    "name": "clring-b-caber-pile-5",
+    "rooms": {
+      "23": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "646": {
+    "name": "pistols-pistol-1-object",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "647": {
+    "name": "pistols-pistol-2-object",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "648": {
+    "name": "pistols-lid",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "649": {
+    "name": "inventory-pistol-object",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "650": {
+    "name": "pistols-closed-box-lid",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "651": {
+    "name": "pistols-banjo-case-object",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "652": {
+    "name": "pistols-clearing-a-door",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "653": {
+    "name": "pistols-clearing-a-door-2",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "654": {
+    "name": "pistols-clearing-a-door-3",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "656": {
+    "name": "pistols-lid-2",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "657": {
+    "name": "pistols-lid-3",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "658": {
+    "name": "pistols-lid-4",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "659": {
+    "name": "pistols-lid-5",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "660": {
+    "name": "pistols-closed-box-lid-2",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "661": {
+    "name": "pistols-closed-box-lid-3",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "662": {
+    "name": "pistols-closed-box-lid-4",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "663": {
+    "name": "pistols-pistol-3-object",
+    "rooms": {
+      "24": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "664": {
+    "name": "bchclub-plndrmap-door",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "665": {
+    "name": "bchclub-beachhot-door",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "666": {
+    "name": "towels-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "667": {
+    "name": "wet-towels-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "668": {
+    "name": "ice-bucket-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "670": {
+    "name": "cabana-boy-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "671": {
+    "name": "towel-stand-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "672": {
+    "name": "beach-club-sign-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "673": {
+    "name": "deep-fryer-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "674": {
+    "name": "weenie-machine-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "676": {
+    "name": "untouchable-deep-fryer-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "677": {
+    "name": "untouchable-weenie-machine-object",
+    "rooms": {
+      "26": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "679": {
+    "name": "beachhot-bchclub-door",
+    "rooms": {
+      "27": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "680": {
+    "name": "hot-sand-1-object",
+    "rooms": {
+      "27": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "681": {
+    "name": "hot-sand-2-object",
+    "rooms": {
+      "27": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "682": {
+    "name": "hot-sand-3-object",
+    "rooms": {
+      "27": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "683": {
+    "name": "beachhot-palido",
+    "rooms": {
+      "27": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "684": {
+    "name": "map-guy-object",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "687": {
+    "name": "brimbeach-plndrmap-door",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "689": {
+    "name": "brimbeach-beachhot-door",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "690": {
+    "name": "map-guy-object-2",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "691": {
+    "name": "map-guy-object-3",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "692": {
+    "name": "map-guy-object-4",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "693": {
+    "name": "rolled-over-palido",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "694": {
+    "name": "rolled-over-palido-2",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "695": {
+    "name": "rolled-over-palido-3",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "696": {
+    "name": "rolled-over-palido-4",
+    "rooms": {
+      "28": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "701": {
+    "name": "voodoo-e-plundermap-door",
+    "rooms": {
+      "29": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "702": {
+    "name": "voodoo-e-voodoo-i-door",
+    "rooms": {
+      "29": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "703": {
+    "name": "voodoo-ext-murray-object",
+    "rooms": {
+      "29": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "704": {
+    "name": "voodoo-e-cow-skull",
+    "rooms": {
+      "29": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "705": {
+    "name": "voodoo-ex-ship",
+    "rooms": {
+      "29": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "706": {
+    "name": "voodoo-i-voodoo-e-door",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "708": {
+    "name": "paper-voodoo-doll",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "710": {
+    "name": "voodoo-alligator-object",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "712": {
+    "name": "voodoo-i-chair",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "713": {
+    "name": "voodoo-fish",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "714": {
+    "name": "voodoo-bowl",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "715": {
+    "name": "voodoo-books",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "716": {
+    "name": "voodoo-int-bubblegum-machine",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "719": {
+    "name": "lefty-scissors",
+    "rooms": {
+      "30": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "720": {
+    "name": "snake-ipecac-door",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "721": {
+    "name": "reservation-slip",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "722": {
+    "name": "snake-warning-sign",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "723": {
+    "name": "snake-snake-away",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "724": {
+    "name": "snake-jaws-of-life",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "725": {
+    "name": "snake-beating-stick",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "726": {
+    "name": "snake-cereal",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "727": {
+    "name": "snake-golf-club",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "728": {
+    "name": "snake-machete",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "729": {
+    "name": "snake-faberge-egg",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "730": {
+    "name": "snake-breakfast",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "731": {
+    "name": "snake-syrup",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "732": {
+    "name": "snake-sausage",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "733": {
+    "name": "snake-eggs",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "734": {
+    "name": "snake-coffee",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "735": {
+    "name": "snake-syrup-of-ipecac",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "736": {
+    "name": "snake-pancakes",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "737": {
+    "name": "snake-sherpa-remains",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "738": {
+    "name": "snake-vacuum-parts",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "739": {
+    "name": "snake-spare-tire",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "740": {
+    "name": "snake-encyclopedia",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "741": {
+    "name": "snake-yellow-pages",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "742": {
+    "name": "snake-secret-plans",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "743": {
+    "name": "snake-stuffed-animal",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "744": {
+    "name": "snake-snake-head",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "745": {
+    "name": "snake-jaws-of-life-2",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "746": {
+    "name": "snake-pirate-ship",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "748": {
+    "name": "snake-lots-o-stuff",
+    "rooms": {
+      "31": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "749": {
+    "name": "quicksand-quicksand",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "750": {
+    "name": "quicksand-reeds",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "751": {
+    "name": "quicksand-thorny-plant",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "752": {
+    "name": "quicksand-branch",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "753": {
+    "name": "quicksand-vine",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "754": {
+    "name": "quicksand-thorn",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "755": {
+    "name": "quicksand-hollow-reed",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "756": {
+    "name": "quicksand-pea-shooter",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "757": {
+    "name": "quicksand-balloon-start",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "758": {
+    "name": "quicksand-balloon-end",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "760": {
+    "name": "quicksand-vine-2",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "761": {
+    "name": "quicksand-vine-3",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "766": {
+    "name": "quicksand-chicken",
+    "rooms": {
+      "32": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "767": {
+    "name": "danjrbch-plndrmap-door",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "768": {
+    "name": "danjrbch-danjer-bay-door",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "769": {
+    "name": "danjerbeach-boat",
+    "rooms": {
+      "33": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "770": {
+    "name": "danjerbeach-gaping-hole",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "772": {
+    "name": "danjerbeach-pasted-plug",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "773": {
+    "name": "danjerbeach-waterfall",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "774": {
+    "name": "danjerbeach-seawater",
+    "rooms": {
+      "33": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "777": {
+    "name": "danjer-bay-danjer-beach-door",
+    "rooms": {
+      "34": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "778": {
+    "name": "danjer-bay-pirate-ship",
+    "rooms": {
+      "34": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "779": {
+    "name": "danjer-bay-danjer-beach-door-2",
+    "rooms": {
+      "34": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "782": {
+    "name": "lc-deck-lc-plank-door",
+    "rooms": {
+      "35": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "783": {
+    "name": "lc-deck-bucket-o-tar",
+    "rooms": {
+      "35": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "785": {
+    "name": "lc-deck-hold",
+    "rooms": {
+      "35": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "789": {
+    "name": "lc-deck-crownest",
+    "rooms": {
+      "35": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "790": {
+    "name": "lc-deck-lc-qurtr-walk-to-door",
+    "rooms": {
+      "35": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "791": {
+    "name": "lc-qurtr-lc-deck-door",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "793": {
+    "name": "lc-qurtr-lechimp",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "794": {
+    "name": "lc-qurtr-fossey",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "796": {
+    "name": "lc-qurtr-grease",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "797": {
+    "name": "lc-qurtr-theater-ticket",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "798": {
+    "name": "lc-qurtr-fruit-basket-1",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "799": {
+    "name": "lc-qurtr-fruit-basket-2",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "800": {
+    "name": "lc-qurtr-fruit-basket-3",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "801": {
+    "name": "lc-qurtr-mashed-potatoes",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "802": {
+    "name": "lc-qurtr-cranberries",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "803": {
+    "name": "lc-qurtr-corn-on-cob",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "804": {
+    "name": "lc-qurtr-seasoning",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "805": {
+    "name": "lc-qurtr-butter",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "806": {
+    "name": "lc-qurtr-plate",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "807": {
+    "name": "lc-qurtr-biscuit",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "808": {
+    "name": "lc-qurtr-bread",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "809": {
+    "name": "lc-qurtr-pitcher",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "810": {
+    "name": "lc-qurtr-stien",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "811": {
+    "name": "lc-qurtr-vinegar",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "812": {
+    "name": "lc-qurtr-tire-swing",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "813": {
+    "name": "lc-qurtr-other-pitcher",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "814": {
+    "name": "lc-qurtr-yeti-fur",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "815": {
+    "name": "lc-qurtr-map-vase",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "816": {
+    "name": "lc-qurtr-lechimp-2",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "817": {
+    "name": "lc-qurtr-lechimp-3",
+    "rooms": {
+      "36": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "819": {
+    "name": "lc-plank-lc-deck-door",
+    "rooms": {
+      "37": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "827": {
+    "name": "shipmap-armsdlr-door",
+    "rooms": {
+      "39": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "843": {
+    "name": "shipmap-deck-door-left",
+    "rooms": {
+      "39": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "844": {
+    "name": "shipmap-deck-door-top",
+    "rooms": {
+      "39": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "845": {
+    "name": "shipmap-deck-door-right",
+    "rooms": {
+      "39": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "846": {
+    "name": "shipmap-deck-door-bottom",
+    "rooms": {
+      "39": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "848": {
+    "name": "armsdlr-your-ship-object",
+    "rooms": {
+      "44": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "849": {
+    "name": "armsdlr-cannon-pile",
+    "rooms": {
+      "44": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "850": {
+    "name": "armsdlr-kenny",
+    "rooms": {
+      "44": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "853": {
+    "name": "gb-deck-hold-object",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "854": {
+    "name": "gb-deck-chart-object",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "855": {
+    "name": "gb-deck-mcmutton",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "856": {
+    "name": "gb-deck-vanhelgen",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "857": {
+    "name": "gb-deck-bill",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "858": {
+    "name": "gb-deck-cannon-object",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "859": {
+    "name": "gb-deck-cannon-2",
+    "rooms": {
+      "52": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "873": {
+    "name": "blood-map-village-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "874": {
+    "name": "blood-map-ext-windmill-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "875": {
+    "name": "blood-map-shipwreck-beach-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "876": {
+    "name": "blood-map-ext-hotel-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "877": {
+    "name": "blood-map-litetop-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "878": {
+    "name": "blood-map-eggbeach-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "879": {
+    "name": "blood-map-firefly-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "881": {
+    "name": "bloodmap-cemetery-door",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "884": {
+    "name": "blood-map-eggbeach-door-2",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "885": {
+    "name": "blood-map-eggbeach-door-3",
+    "rooms": {
+      "53": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "887": {
+    "name": "shipwreck-beach-blood-map-door",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "889": {
+    "name": "shipwreck-beach-cork",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "890": {
+    "name": "shipwreck-beach-compass",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "892": {
+    "name": "shipwrck-mcmutton-object",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "893": {
+    "name": "shipwreck-beach-seawater",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "894": {
+    "name": "shipwrck-pot-o-cheese",
+    "rooms": {
+      "54": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "896": {
+    "name": "village-blood-map-door",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "897": {
+    "name": "village-volcano-door",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "899": {
+    "name": "village-fruit-assortment",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "902": {
+    "name": "tofu-mask",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      },
+      "3": {
+        "states": [
+          0,
+          1
+        ],
+        "state_files": {
+          "0": [
+            "0003_tofu-mask-icon_0000.png"
+          ],
+          "1": [
+            "0003_tofu-mask-icon_0001.png"
+          ]
+        },
+        "layer_files": {}
+      }
+    }
+  },
+  "903": {
+    "name": "chafing-dish-1",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "904": {
+    "name": "chafing-dish-2",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "905": {
+    "name": "chafing-dish-3",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "906": {
+    "name": "sugar-skulls-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "907": {
+    "name": "village-mask-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "908": {
+    "name": "decorative-centerpiece",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "909": {
+    "name": "giant-idol-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "910": {
+    "name": "bowl-idol-object",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "911": {
+    "name": "gazelle-statue",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "912": {
+    "name": "village-bull-statue-1",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "913": {
+    "name": "village-bull-statue-2",
+    "rooms": {
+      "55": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "914": {
+    "name": "volcano-altar-door",
+    "rooms": {
+      "56": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "915": {
+    "name": "volcano-village-door",
+    "rooms": {
+      "56": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "916": {
+    "name": "volcano-lemonhead",
+    "rooms": {
+      "56": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "918": {
+    "name": "altar-volcano-door",
+    "rooms": {
+      "57": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "919": {
+    "name": "altar-lemonhead-object",
+    "rooms": {
+      "57": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "920": {
+    "name": "altar-caldera-object",
+    "rooms": {
+      "57": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "921": {
+    "name": "altar-caldera-object-2",
+    "rooms": {
+      "57": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "922": {
+    "name": "firefly-stump",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "923": {
+    "name": "firefly-elaine",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "925": {
+    "name": "firefly-blood-map-door",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "927": {
+    "name": "firefly-shipwrck-door",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "928": {
+    "name": "firefly-fireflies",
+    "rooms": {
+      "58": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "930": {
+    "name": "ext-windmill-blood-map-door",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "932": {
+    "name": "ext-windmill-pepper-plant",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "935": {
+    "name": "ext-windmill-blades",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "936": {
+    "name": "windmill-barrel",
+    "rooms": {
+      "59": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "937": {
+    "name": "ext-hotel-bloodmap-door-2",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "938": {
+    "name": "ext-hotel-hotel-bar-door",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "939": {
+    "name": "hotel-ex-barbecue-object",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "941": {
+    "name": "half-the-cheese-object",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "942": {
+    "name": "ext-hotel-floor-show",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "943": {
+    "name": "hotel-ex-bill-of-fare",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "944": {
+    "name": "hotel-ex-tiki",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "945": {
+    "name": "hotel-ex-tiki-1",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "946": {
+    "name": "hotel-ex-tiki-2",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "947": {
+    "name": "hotel-ex-tiki-3",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "948": {
+    "name": "hotel-ex-tiki-4",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "949": {
+    "name": "hotel-ex-tiki-5",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "950": {
+    "name": "hotel-ex-tiki-6",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "951": {
+    "name": "hotel-ex-tiki-7",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "952": {
+    "name": "hotel-ex-tiki-8",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "953": {
+    "name": "hotel-ex-tiki-9",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "954": {
+    "name": "hotel-ex-tiki-10",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "955": {
+    "name": "hotel-ex-tiki-11",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "956": {
+    "name": "hotel-ex-tiki-12",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "957": {
+    "name": "hotel-ex-tiki-13",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "958": {
+    "name": "hotel-ex-tiki-14",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "959": {
+    "name": "hotel-ex-tiki-15",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "960": {
+    "name": "hotel-ex-tiki-16",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "961": {
+    "name": "hotel-ex-tiki-17",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "962": {
+    "name": "hotel-ex-tiki-18",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "963": {
+    "name": "hotel-ex-tiki-19",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "964": {
+    "name": "hotel-ex-tiki-20",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "965": {
+    "name": "hotel-ext-mask",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "969": {
+    "name": "hotel-ex-cemetery-door",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "970": {
+    "name": "ext-hotel-bloodmap-door-3",
+    "rooms": {
+      "60": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "971": {
+    "name": "hotel-bar-portrait-door",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "972": {
+    "name": "hotel-bar-ext-hotel-door",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "975": {
+    "name": "hotel-bar-hangover-cure",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "976": {
+    "name": "hotel-bar-goodsoup",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "979": {
+    "name": "hotel-bar-fortune-teller",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "982": {
+    "name": "hotel-bar-tip-jar",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "984": {
+    "name": "hotel-bar-mirror",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "986": {
+    "name": "hotelbar-nacho-maker",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "987": {
+    "name": "hotelbar-umbrella-object",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "988": {
+    "name": "hotel-bar-spittoon",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "989": {
+    "name": "hotel-bar-brochure-stand",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "990": {
+    "name": "hotel-bar-big-whoop-brochure",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "991": {
+    "name": "hotel-bar-pickle-jar",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "992": {
+    "name": "hotel-bar-id-sign",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "993": {
+    "name": "hotel-bar-grog-poster",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "994": {
+    "name": "hotel-bar-neon-sign",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "995": {
+    "name": "hotel-bar-bar-stool",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "998": {
+    "name": "hotel-bar-xima-plaque",
+    "rooms": {
+      "61": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "999": {
+    "name": "hotel-bar-cheese-fork",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1000": {
+    "name": "hotel-bar-galley-picture",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1001": {
+    "name": "hotel-bar-vase-on-table",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1002": {
+    "name": "hotel-bar-vase-on-wall",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1004": {
+    "name": "neon-sign-pull-chain",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1007": {
+    "name": "hotel-bar-goodsoup-hungover",
+    "rooms": {
+      "61": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1008": {
+    "name": "recipe-book-prev-page",
+    "rooms": {
+      "62": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1009": {
+    "name": "recipe-book-next-page",
+    "rooms": {
+      "62": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1010": {
+    "name": "recipe-book-close-book",
+    "rooms": {
+      "62": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1012": {
+    "name": "storeroom-hotel-bar-door",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1014": {
+    "name": "storeroom-file-cabinet",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1017": {
+    "name": "refrigerator-object",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1018": {
+    "name": "freezer-object",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1019": {
+    "name": "nacho-cheese-object",
+    "rooms": {
+      "63": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1021": {
+    "name": "portrait-hotel-bar-door",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1028": {
+    "name": "portrait-other-portrait",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1029": {
+    "name": "portrait-invisible-portraits",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1030": {
+    "name": "portrait-window",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1031": {
+    "name": "portrait-daybed",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1033": {
+    "name": "portrait-stair-painting-1",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1034": {
+    "name": "portrait-stair-painting-2",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1036": {
+    "name": "portrait-guest-room-open-door",
+    "rooms": {
+      "64": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1037": {
+    "name": "guest-room-portrait-door",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1038": {
+    "name": "guest-room-bed-up",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1039": {
+    "name": "guest-room-bed-down",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1043": {
+    "name": "guest-room-window",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1044": {
+    "name": "guest-room-bed-down-2",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1045": {
+    "name": "guest-room-bed-down-3",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1046": {
+    "name": "guest-room-bed-down-4",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1049": {
+    "name": "guest-room-water-carafe",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1050": {
+    "name": "guest-room-wardrobe",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1052": {
+    "name": "guest-room-bed-down-5",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1054": {
+    "name": "guest-room-skeleton",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1055": {
+    "name": "guest-room-skeleton-2",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1056": {
+    "name": "guest-room-skeleton-3",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1057": {
+    "name": "guest-room-skeleton-4",
+    "rooms": {
+      "65": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1058": {
+    "name": "closet-portrait-door",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1061": {
+    "name": "closet-portrait-face",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1062": {
+    "name": "closet-old-portraits",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1063": {
+    "name": "closet-old-portrait-2",
+    "rooms": {
+      "66": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1064": {
+    "name": "cemetery-ext-bloodmap-door",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1065": {
+    "name": "cemetery-dog-house-door",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1070": {
+    "name": "cemetery-tombstone",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1071": {
+    "name": "cemetery-tombstone-2",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1072": {
+    "name": "cemetery-tombstone-3",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1073": {
+    "name": "cemetery-skylight",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1074": {
+    "name": "cemetery-tombstone-4",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1077": {
+    "name": "cemetery-dog-house-door-2",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1079": {
+    "name": "cemetery-hotel-ext-door",
+    "rooms": {
+      "67": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1080": {
+    "name": "dog-house-cemetery-door",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1082": {
+    "name": "dog-house-pew",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1083": {
+    "name": "dog-house-dog-bowl",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1085": {
+    "name": "dog-house-pew-hair",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1088": {
+    "name": "doghouse-pirate-hook",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1089": {
+    "name": "doghouse-carved-tombstone",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1090": {
+    "name": "doghouse-assorted-coffins",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1091": {
+    "name": "doghouse-uncarved-tombstones",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1092": {
+    "name": "doghouse-smoldering-campfire",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1093": {
+    "name": "doghouse-dog-house",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1094": {
+    "name": "doghouse-recycling-bin",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1095": {
+    "name": "doghouse-recycling-bin-contents",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1096": {
+    "name": "doghouse-chimney",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1097": {
+    "name": "doghouse-lock",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1098": {
+    "name": "doghouse-coffin-in-window",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1099": {
+    "name": "doghouse-lillies",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1100": {
+    "name": "doghouse-workbench",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1103": {
+    "name": "doghouse-grants-tomb",
+    "rooms": {
+      "68": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1105": {
+    "name": "stans-crypt-coffin-nails",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1106": {
+    "name": "stans-crypt-business-card",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1107": {
+    "name": "stans-crypt-insurance-money",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1110": {
+    "name": "stans-crypt-stan",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1111": {
+    "name": "stans-crypt-insurance-policy",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1112": {
+    "name": "stans-crypt-stans-coffin-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1113": {
+    "name": "stans-crypt-stans-coffin-3",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1114": {
+    "name": "stans-crypt-stans-coffin-4",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1115": {
+    "name": "stans-crypt-guybrushs-coffin-1",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1116": {
+    "name": "stans-crypt-guybrushs-coffin-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1122": {
+    "name": "stans-crypt-guybrushs-coffin-4",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1123": {
+    "name": "stancrpt-dead-boots",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1124": {
+    "name": "stancrpt-skull-1",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1125": {
+    "name": "stancrpt-skull-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1126": {
+    "name": "stancrpt-skull-3",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1127": {
+    "name": "stancrpt-skull-4",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1128": {
+    "name": "stancrpt-skull-5",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1129": {
+    "name": "stancrpt-skull-6",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1130": {
+    "name": "stancrpt-skull-7",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1131": {
+    "name": "stancrpt-skull-8",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1132": {
+    "name": "stancrpt-skull-9",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1133": {
+    "name": "stancrpt-skull-10",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1134": {
+    "name": "stancrpt-skull-11",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1135": {
+    "name": "stancrpt-skull-12",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1136": {
+    "name": "stancrpt-skull-13",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1137": {
+    "name": "stancrpt-skull-14",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1138": {
+    "name": "stancrpt-skull-15",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1139": {
+    "name": "stancrpt-skull-16",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1140": {
+    "name": "stancrpt-skull-17",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1141": {
+    "name": "stancrpt-bodies-1",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1142": {
+    "name": "stancrpt-bodies-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1143": {
+    "name": "stancrpt-web",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1144": {
+    "name": "stancrpt-web-2",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1145": {
+    "name": "stancrpt-skull-pile",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1146": {
+    "name": "stancrpt-bone-pile",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1147": {
+    "name": "stancrpt-sleleton-arm",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1148": {
+    "name": "stancrpt-keyhole",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1149": {
+    "name": "stancrpt-web-3",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1153": {
+    "name": "stans-file-cabinets",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1154": {
+    "name": "stans-files",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1155": {
+    "name": "stans-coffee-maker",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1156": {
+    "name": "stans-cabinet",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1157": {
+    "name": "stans-diploma",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1158": {
+    "name": "stans-water-cooler",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1159": {
+    "name": "stans-desk",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1160": {
+    "name": "stans-executive-thingy",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1161": {
+    "name": "stans-photo",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1162": {
+    "name": "stans-bankers-lamp",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1163": {
+    "name": "stans-healthy-tea",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1164": {
+    "name": "stans-crypt-initial-stan",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1165": {
+    "name": "stans-crypt-guybrushs-coffin-3",
+    "rooms": {
+      "69": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1169": {
+    "name": "family-crypt-crakwall-door",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1172": {
+    "name": "family-crypt-stump-hole",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1173": {
+    "name": "family-crypt-ghost-bride",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1174": {
+    "name": "family-crypt-brides-coffin",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1175": {
+    "name": "family-crypt-memorial-wreath",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1176": {
+    "name": "family-crypt-plaque",
+    "rooms": {
+      "70": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1178": {
+    "name": "crakwall-family-crypt-door",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1180": {
+    "name": "crakwall-crack",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1181": {
+    "name": "crakwall-ledge",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1183": {
+    "name": "crakwall-crack2",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1184": {
+    "name": "crakwall-crack3",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1185": {
+    "name": "crakwall-crack4",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1186": {
+    "name": "crakwall-crack5",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1187": {
+    "name": "crakwall-crest",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1188": {
+    "name": "crakwall-crest2",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1189": {
+    "name": "crakwall-crest3",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1190": {
+    "name": "crakwall-bowl1",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1191": {
+    "name": "crakwall-bowl2",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1192": {
+    "name": "crakwall-skull",
+    "rooms": {
+      "71": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1195": {
+    "name": "kraken-poster",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1196": {
+    "name": "morts-smuggle-bunny",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1197": {
+    "name": "morts-parrot",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1198": {
+    "name": "morts-lechuck-mask",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1199": {
+    "name": "morts-pulpy-books",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1200": {
+    "name": "morts-novel-object",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1201": {
+    "name": "morts-pirate-poster",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1202": {
+    "name": "morts-dragon-doll",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1203": {
+    "name": "morts-mort",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1205": {
+    "name": "morts-werewolf",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1206": {
+    "name": "morts-raven",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1207": {
+    "name": "morts-moby-poster",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1208": {
+    "name": "morts-human-head",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1209": {
+    "name": "morts-deer-head",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1210": {
+    "name": "morts-boar-head",
+    "rooms": {
+      "72": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1217": {
+    "name": "lighthouse-lens",
+    "rooms": {
+      "74": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1218": {
+    "name": "litetop-bloodmap-door",
+    "rooms": {
+      "74": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1220": {
+    "name": "lighthouse-fixed-lantern",
+    "rooms": {
+      "74": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1221": {
+    "name": "eggbeach-litetop-door",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1222": {
+    "name": "eggbeach-bloodmap-door-1",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1223": {
+    "name": "eggbeach-rubber-tree",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1225": {
+    "name": "eggbeach-cushion",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1226": {
+    "name": "eggbeach-blood-map-door-2",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1227": {
+    "name": "eggbeach-seawater",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1228": {
+    "name": "eggbeach-undrwatr-door",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1229": {
+    "name": "eggbeach-rockpile",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1230": {
+    "name": "eggbeach-sign",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1231": {
+    "name": "eggbeach-signpost",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1232": {
+    "name": "eggbeach-ferryman",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1233": {
+    "name": "eggbeach-bloodmap-door-3",
+    "rooms": {
+      "75": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1241": {
+    "name": "undrwatr-eggbeach-door",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1242": {
+    "name": "undrwatr-hacksaw",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1243": {
+    "name": "undrwatr-rusty-knife",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1244": {
+    "name": "undrwatr-fabulous-idol",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1245": {
+    "name": "undrwatr-deadly-meat-cleaver",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1246": {
+    "name": "undrwatr-razor-sharp-scissors",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1247": {
+    "name": "undrwatr-broken-glass",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1248": {
+    "name": "undrwatr-sword",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1249": {
+    "name": "undrwatr-axe",
+    "rooms": {
+      "76": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1250": {
+    "name": "skull-island-cliff-top-door",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1251": {
+    "name": "skull-island-view-cliffside-door",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1252": {
+    "name": "skull-island-welshman",
+    "rooms": {
+      "77": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1256": {
+    "name": "cliff-top-skull-island-door",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1257": {
+    "name": "cliff-top-cliff-face",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1258": {
+    "name": "cliff-top-lafoot",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1259": {
+    "name": "clifftop-cloud-object",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1260": {
+    "name": "clifftop-elevator-object",
+    "rooms": {
+      "78": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1262": {
+    "name": "smugglers-cave-dangerous-precipice",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1263": {
+    "name": "cave-weak-hand",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1264": {
+    "name": "cave-cruff",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1265": {
+    "name": "cave-andre",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1266": {
+    "name": "cave-chandelier",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1269": {
+    "name": "cave-smuggle-bunny",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1270": {
+    "name": "completed-diamond-ring",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1272": {
+    "name": "cave-deadly-sword",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1273": {
+    "name": "cave-treasure-chest",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1274": {
+    "name": "cave-bunny-crate",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1275": {
+    "name": "cave-barrel-o-treasure",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1276": {
+    "name": "cave-expensive-frame",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1277": {
+    "name": "cave-royal-crown",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1278": {
+    "name": "cave-other-treasure-chest",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1279": {
+    "name": "cave-yet-another-treasure-chest",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1280": {
+    "name": "cave-expensive-thing",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1281": {
+    "name": "cave-small-bunny-crate",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1282": {
+    "name": "cave-sad-smuggle-bunny",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1283": {
+    "name": "cave-hanging-smuggle-bunny",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1284": {
+    "name": "cave-treasure-smuggle-bunny",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1285": {
+    "name": "little-lechuck-object",
+    "rooms": {
+      "80": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1293": {
+    "name": "gondola-gondola-door",
+    "rooms": {
+      "81": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1295": {
+    "name": "gondola-carnival-door",
+    "rooms": {
+      "81": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1296": {
+    "name": "snow-diorama-platform",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1298": {
+    "name": "snow-diorama-monkey",
+    "rooms": {
+      "82": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1300": {
+    "name": "snow-diorama-lechuck",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1301": {
+    "name": "pirate-skier-object",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1302": {
+    "name": "pirate-sledders-object",
+    "rooms": {
+      "82": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1305": {
+    "name": "rum-diorama-platform",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1307": {
+    "name": "rum-diorama-lechuck",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1308": {
+    "name": "rum-dia-track",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1309": {
+    "name": "rum-rum-rogers",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1310": {
+    "name": "rum-captain-marley",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1311": {
+    "name": "rum-rapp-scallion",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1312": {
+    "name": "rum-young-lindy",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1313": {
+    "name": "four-map-piece-diorama",
+    "rooms": {
+      "83": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1314": {
+    "name": "hang-diorama-platform",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1317": {
+    "name": "hang-diorama-knot",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1318": {
+    "name": "hang-diorama-hanging-man",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1319": {
+    "name": "hang-diorama-taut-rope",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1320": {
+    "name": "hang-diorama-lechuck",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1321": {
+    "name": "hang-diorama-toothrot",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1322": {
+    "name": "hang-diorama-3-head",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1323": {
+    "name": "hang-dia-diorama",
+    "rooms": {
+      "84": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1325": {
+    "name": "torture-diorama-lantern",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1326": {
+    "name": "torture-diorama-oil-flask",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1327": {
+    "name": "torture-diorama-platform",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1328": {
+    "name": "torture-diorama-lechuck",
+    "rooms": {
+      "85": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1330": {
+    "name": "tort-dia-guybrush",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1331": {
+    "name": "tort-dia-diorama",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1332": {
+    "name": "tort-dia-lechuck-animatronic",
+    "rooms": {
+      "85": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1336": {
+    "name": "snowcone-object",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1337": {
+    "name": "dinghy-dogs-hair",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1339": {
+    "name": "soggy-paper-cone",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1340": {
+    "name": "meringue-pie-object",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1341": {
+    "name": "pie-toss-clown",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1343": {
+    "name": "carnival-scale",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1344": {
+    "name": "carnival-dinghy-dog",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1345": {
+    "name": "carnival-coaster-door",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1346": {
+    "name": "carnival-pies",
+    "rooms": {
+      "86": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1347": {
+    "name": "carnival-cannon",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1348": {
+    "name": "carnival-wharf-rat",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1349": {
+    "name": "pie-toss-head-hole",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1350": {
+    "name": "soda-jerk-object",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1351": {
+    "name": "must-be-this-tall-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1352": {
+    "name": "roller-coaster-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1353": {
+    "name": "carnival-murray",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1354": {
+    "name": "carnival-bunny",
+    "rooms": {
+      "86": {
+        "states": [
+          1
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1355": {
+    "name": "carnival-bigfoot-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1356": {
+    "name": "carnival-oddities-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1357": {
+    "name": "carnival-trixie-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1358": {
+    "name": "carnival-shows-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1359": {
+    "name": "carnival-rides-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1360": {
+    "name": "carnival-snowcone-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1361": {
+    "name": "carnival-guess-sign",
+    "rooms": {
+      "86": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1364": {
+    "name": "easyhard-hard-button-object",
+    "rooms": {
+      "87": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1365": {
+    "name": "easyhard-easy-button-object",
+    "rooms": {
+      "87": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1373": {
+    "name": "saveload-slot1-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1374": {
+    "name": "saveload-slot2-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1375": {
+    "name": "saveload-slot3-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1376": {
+    "name": "saveload-slot4-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1377": {
+    "name": "saveload-slot5-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1378": {
+    "name": "saveload-slot6-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1379": {
+    "name": "saveload-save-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1380": {
+    "name": "saveload-load-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1381": {
+    "name": "saveload-play-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1382": {
+    "name": "saveload-quit-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1383": {
+    "name": "saveload-next-page-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1384": {
+    "name": "saveload-prev-page-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1386": {
+    "name": "saveload-toc-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1387": {
+    "name": "saveload-bookmark-button",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1392": {
+    "name": "saveload-sfx-volume-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1393": {
+    "name": "saveload-voice-volume-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1394": {
+    "name": "saveload-music-volume-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1395": {
+    "name": "saveload-voice-checkbox",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1396": {
+    "name": "saveload-text-checkbox",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1397": {
+    "name": "saveload-text-speed-object",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1398": {
+    "name": "saveload-sentence-checkbox",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
+        "layer_files": {}
+      }
+    }
+  },
+  "1399": {
+    "name": "saveload-3d-checkbox",
+    "rooms": {
+      "92": {
+        "states": [
+          0
+        ],
+        "state_files": {},
         "layer_files": {}
       }
     }
