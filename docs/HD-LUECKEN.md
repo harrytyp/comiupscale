@@ -566,3 +566,23 @@ vorhanden, aber nicht die Ursache des 8-Bit-Rests.
 
 Offen bleibt damit allein die Deckungsfrage im Komposit: das Rechteck, in das die HD-Figur
 geschrieben wird, gegen die Fläche der 8-Bit-Figur im selben Bild.
+
+## Zerlegung des Komposits in seine Stufen
+
+Die Engine schreibt mit `HD_DUMP_STEPS=1` jeden Zwischenstand. Über Raum 86 gemessen:
+
+```
+1_hintergrund    0,00 % magenta
+2_vordergrund   21,94 %
+3_objekte       21,94 %     Objekt-Schritt deckt nichts ab
+4_kostueme       8,72 %     Kostüm-Schritt deckt 13,22 Punkte ab
+fertig           8,72 %
+```
+
+Damit ist der Rest **quantifiziert**: der Kostüm-Schritt deckt 60 Prozent des 8-Bit-Vordergrunds
+ab und lässt 8,72 Punkte stehen. Der Objekt-Schritt trägt nichts bei — seine Pixel sind
+entweder schon vorher abgedeckt oder er zeichnet nicht über sie.
+
+Zusammen mit dem Abschalttest (ohne Figuren: 0,00 Prozent) heißt das: die HD-Kostüme decken die
+8-Bit-Silhouette der Figur nur teilweise. Die verbleibenden 8,72 Prozent sind die Differenz
+zwischen 8-Bit-Figur und HD-Figur — Ausrichtung, Skalierung oder Form.
