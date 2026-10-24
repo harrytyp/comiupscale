@@ -42,6 +42,19 @@ der Vordergrundzähler meldet 302080 von 307200 Pixeln (98,3 Prozent).
 
 1. **Objekte für die 29 Räume extrahieren** und in die Textur-Packs aufnehmen
    (Pipeline, nicht Einzelfall). Danach `config/object_map.json` neu bauen.
+
+   Ablauf je Raum, so wie die vorhandenen Objekte entstanden sind:
+
+   ```
+   nutcracker sputm room decode COMI.LA0 <raum>     # legt <raum>/OBJS/*.png an
+   # jede Objekt-PNG auf 4x hochskalieren und als hd/objects/<raum>_<name>_<state>.png ablegen
+   python scripts/build_object_map.py               # Objektnummer -> Name/Zustand
+   python scripts/check_texture_packs.py            # Pack vollstaendig?
+   ```
+
+   `scripts/full_pipeline.sh` extrahiert in Zeile 95 nur die Hintergründe (`bg_<raum>.png`).
+   Die Objekt-Extraktion fehlt dort als Schritt — sie muss in die Pipeline, nicht als
+   Handarbeit daneben. Genau diese Lücke erklärt die 29 Räume ohne Objekt-Assets.
 2. **Vollbild-Objekte als Hintergrund behandeln**: Ist ein Objekt so groß wie der
    Bildschirm und existiert eine HD-Fassung, darf die 8-Bit-Version nicht darüber
    gezeichnet werden. Das ist eine Regel in der Zeichenlogik.
