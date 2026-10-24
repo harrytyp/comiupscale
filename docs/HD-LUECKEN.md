@@ -411,3 +411,26 @@ Nächster Schritt: die sechs extrahierten Namen den 21 Masken-Objekten gegenübe
 Damit steht fest, ob die Maske Objekte nennt, die gar nicht gezeichnet werden (dann ist die
 Maske zu weit), oder ob Bilder unter einem anderen Namen entstehen (dann ist die
 Namensbildung das Problem).
+
+## Kurskorrektur: der Rest kommt nicht aus Objekten
+
+Drei Belege, unabhängig voneinander:
+
+1. `hd_missing.log` wird bei einem Raum-86-Lauf **gar nicht angelegt** — `HdObjectManager` meldet
+   kein einziges fehlendes Objekt.
+2. Die Extraktion gewinnt 6 Objekte aus 29 OBIM; die übrigen 23 haben nur `IMHD` und keinen
+   Bildblock (`obim_struktur.py`). Ohne Bildblock zeichnet ScummVM nichts (`getObjectImage`).
+3. Der HD-Hintergrund ist an jeder Kameraposition zu 99,8 Prozent deckend — es gibt kein Loch,
+   das man mit einem Alpha-Test finden könnte.
+
+Der Magenta-Streifen wandert außerdem mit der Kamera (x 560-608 im ersten Bild, x 192-240 im
+zweiten), nicht mit einem Objekt.
+
+Damit gilt: die sichtbaren 8-Bit-Flächen entstehen im **Hintergrund-Pfad** von
+`renderHDComposite` — die HD-Ebene deckt dort nicht ab, obwohl das Bild deckend ist. Die
+früheren Schlüsse („fehlende Objekt-Assets") sind damit widerlegt; die Objekttabelle und die
+Zustands-Spiegelung bleiben trotzdem richtige Korrekturen, sie beheben nur etwas anderes.
+
+Nächster Schritt: im Komposit je Bild die verwendeten Versätze mitschreiben (SD links, HD
+links, Skalierung) und mit der Lage des Streifens vergleichen. Damit ist die Stelle im Code
+benannt statt im Bild gesucht.

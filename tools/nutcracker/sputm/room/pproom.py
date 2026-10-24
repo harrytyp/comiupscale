@@ -169,7 +169,12 @@ def read_objects(header, room, version):
                 # Extraktion lieferte nur die Objekte davor (Raum 86: 6 von 29). Jetzt werden
                 # alle Bloecke gelesen; der Index geht in den Dateinamen ein.
                 wrap = sputm.find('WRAP', imag)
-                assert wrap is not None
+                if wrap is None:
+                    # Kein WRAP: dieses Bild ist nicht lesbar. Frueher stand hier ein assert,
+                    # das den Generator abbrach — der Aufrufer verlor damit ALLE folgenden
+                    # Objekte des Raums (Raum 86: 6 von 29, darunter das sichtbare
+                    # 1360 carnival-snowcone-sign mit 224x120 Pixeln).
+                    continue
                 _, *frames = wrap.children()
                 for iidx, bomp in enumerate(frames):
                     chunk = bytes(sputm.mktag(bomp.tag, bomp.data))
