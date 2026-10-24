@@ -252,3 +252,23 @@ ImportError: cannot import name 'load_resource' from 'nutcracker.sputm.resource'
 Die Import-Pfade im Skript passen nicht zur installierten nutcracker-Version (die
 Extraktion selbst, `extract_all_raw.py`, benutzt andere Pfade und läuft). Das ist zu
 reparieren, bevor die Tabelle neu gebaut werden kann.
+
+## Korrektur: es ist doch Klasse 1
+
+Die Vermutung, die Objekttabelle verhindere das Laden vorhandener Assets, war falsch. Für
+Raum 15 enthält `config/object_map.json` 19 Einträge, und die vorhandenen Bilder sind
+korrekt zugeordnet:
+
+```
+412 -> bottomless-mug-object -> hd/objects/0015_bottomless-mug-object_0000.png
+```
+
+Die Objekte in der Fehlt-Maske (398, 399, 403, 405, 406, ...) haben dagegen **kein** Bild —
+weder in der Tabelle noch im Verzeichnis. Sie fehlen in der Extraktion.
+
+Damit gilt für alle Reste dasselbe: **Klasse 1, fehlende Objektbilder**. Die Tabelle ist in
+Ordnung; der Tabellenbauer war nur zusätzlich kaputt (Importpfad) und ist repariert.
+
+Der Unterschied zwischen „Assets vorhanden" und „Objekte in der Maske" kommt daher, dass die
+Zählung pauschal je Raum erfolgte: 21 Bilder für Raum 15 heisst nicht, dass die 25 gezeichneten
+Objekte versorgt sind — es sind verschiedene Objekte.
