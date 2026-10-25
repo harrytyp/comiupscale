@@ -892,3 +892,183 @@ Messlaeufe in `projects/comi-hd/work/raum44_nachmessung/{mit,ohne,tint}`, Werkze
 `harness/versatz_raum44_lauf.py`, `harness/dopplung_raum44_bild.py`,
 `harness/magenta_rest_orte.py`.
 
+## Dopplung bei anderen Figuren: vier Raeume gemessen, ein Zeichenweg
+
+Auftrag war die Beobachtung, der Kamerafix (133450b2) wirke nur bei Guybrush, andere
+Kostueme seien weiterhin gedoppelt oder falsch platziert. Gemessen wurde deshalb je Raum
+und je Akteur der Versatz zwischen der 8-Bit-Silhouette und der HD-Flaeche, zusaetzlich
+welchen Zeichenweg der Akteur nimmt.
+
+### Messplatz
+
+Ein Lauf je Raum mit der eigenen Binary-Kopie (`work/engine/scummvm-d67`, Aufnahmepfade
+auf `d67*` umgeschrieben, damit parallel laufende Aufgaben im selben Verzeichnis die
+Bilder nicht ueberschreiben, Werkzeug `harness/dopplung_binary.py`):
+
+```
+HD_JUMP_ROOM=<raum> HD_FIXED_DELTA=20 HD_EXIT_AFTER=120 HD_DUMP_STEPS=1
+HD_TRACE_DRAW=1 HD_TINT_8BIT=1
+```
+
+Der feste Zeitschritt macht das Bild reproduzierbar, die Stufendumps liefern in einem
+Lauf Hintergrund (Stufe 1), eingefärbten 8-Bit-Vordergrund (Stufe 2), Objekte
+(Stufe 3) und Kostueme (Stufe 4). Ausgewertet mit `harness/dopplung_auswertung.py`
+(Kaesten und Deckung je Akteur), `harness/dopplung_versatz_je_akteur.py` (bester Versatz
+per Kreuzkorrelation) und `harness/dopplung_spiegel.py` (welcher Anker zum HD-Kasten
+passt). Sichtblaetter: `projects/comi-hd/reports/vergleich/dopplung_akteure_raum{9,15,44,86}.png`
+(drei Felder: 8-Bit eingefaerbt, HD-Kostueme mit Kaesten der Eintraege, Ueberlagerung).
+
+### Ergebnis je Eintrag
+
+Versatz in Spielpixeln, bester Wert der Kreuzkorrelation der HD-Flaeche gegen die
+8-Bit-Silhouette; in Klammern die Deckung an dieser Stelle (Anteil der
+8-Bit-Silhouette, den die HD-Flaeche abdeckt).
+
+```
+Raum 9   (F=239, Kamera 0)
+  ai= 1  akos 0002  gliedmassen  cel34   dx  0     dy +1     (0,98)
+  ai= 1  akos 0002  gliedmassen  cel22   dx +0,5   dy +0,5   (0,99)
+  ai= 2  akos 0025  gliedmassen  cel3    dx  0     dy  0     (0,98)
+  ai= 2  akos 0025  gliedmassen  cel5    dx  0     dy  0     (0,98)
+  ai=12  akos 0026  komplett     cel0    dx  0     dy  0     (0,96)
+
+Raum 44  (F=119, Kamera 0)
+  ai= 1  akos 0002  gliedmassen  cel34   dx +0,5   dy +1     (0,96)
+  ai= 1  akos 0002  gliedmassen  cel22   dx +0,5   dy  0     (0,93)
+  ai= 4  akos 0251  gliedmassen  cel8    dx  0     dy +2     (0,98)
+  ai= 4  akos 0251  gliedmassen  cel11   dx +44    dy  0     (0,45) nicht belastbar
+  ai=17  akos 0253  komplett     cel15   dx  0     dy  0     (1,00)
+
+Raum 15  (F=119, Kamera 0)
+  ai= 1  akos 0002  gliedmassen  cel22   dx +1     dy  0     (1,00) stark verkleinert
+  ai= 1  akos 0002  gliedmassen  cel34   dx +1     dy  0     (1,00) stark verkleinert
+  ai= 4  akos 0075  komplett     cel10   dx  0     dy  0     (1,00)
+  ai=17  akos 0083  komplett     cel15   dx  0     dy  0     (0,99)
+
+Raum 86  (F=119, Kamera 0)
+  ai= 1  akos 0399  gliedmassen  cel13   dx +1     dy  0     (0,38) nicht belastbar
+  ai= 1  akos 0399  gliedmassen  cel31   dx +0,5   dy  0     (0,98)
+  ai= 3  akos 0424  komplett     cel18   dx  0     dy  0     (0,95)
+  ai= 4  akos 0426  komplett     cel0    dx  0     dy  0     (1,00)
+  ai= 5  akos 0012  komplett     cel2    dx  0     dy  0     (0,87)
+  ai=19  akos 0437  Rueckfall cel0       kein Gegenstueck im 8-Bit-Bild, siehe Befund a
+  ai=20  akos 0438  komplett     cel0    dx  0     dy  0     (0,90)
+```
+
+20 gueltige Eintraege: 18 liegen bei 0 bis 1 Spielpixel in x und y, einer bei 2 Pixeln,
+einer ist nicht belastbar (sein Fenster enthaelt die Silhouette des Nachbarn, daher der
+Ausreisser dx +44 bei nur 0,45 Deckung). Dieselbe Spanne gilt fuer die beiden nicht
+belastbaren Eintraege in x. Ein raum- oder figurenabhaengiger Unterschied ist nicht
+vorhanden: Guybrush (0002) verhaelt sich wie 0025, 0026, 0251, 0075, 0399, 0424, 0426,
+0437, 0438 und 0012, und die Starkverkleinerung in Raum 15 (Blit 13x33 HD-Punkte aus
+232x376, rund 5 Prozent) aendert nur 1 Spielpixel.
+
+Ein gespiegelter Eintrag kam in diesen Bildern nicht vor: bei allen Eintraegen liegt die
+linke Kante der HD-Flaeche exakt auf dem Anker fuer ungespiegelt (Abweichung 0,
+`harness/dopplung_spiegel.py`). Der Spiegelzweig ist mit dieser Messung also weder belegt
+noch widerlegt.
+
+### Welchen Zeichenweg nehmen die anderen Figuren
+
+Alle Akteure laufen durch dieselbe Schleife in `renderHDComposite` (Schritt 2.6,
+`gfx.cpp:2660` bis `gfx.cpp:3095`). Es gibt keinen zweiten Zeichenweg fuer einzelne
+Kostueme oder Raeume, sondern zwei Unterfaelle, die je Akteur und Bild aus den
+AKOS-Daten entschieden werden:
+
+- **komplett:** alle Gliedmassen zeigen auf dasselbe Cel (`sameCel`, `gfx.cpp:2733`).
+  Dann genau ein Eintrag an der Position `pos.x + relX` (`gfx.cpp:2744` bis `2755`).
+- **gliedmassen:** verschiedene Cels, je Gliedmass ein Eintrag an der aufgelaufenen
+  Position aus dem AKOS-Kopf (`gfx.cpp:2756` bis `2776`).
+- **Rueckfall auf Cel 0** (`gfx.cpp:2778` bis `2794`): kein Gliedmass gefunden, das
+  Kostuem existiert aber. Dann wird Cel 0 an `_hdRelX` gezeichnet.
+
+Die Zeichenposition ist in beiden Unterfaellen dieselbe Rechnung (`gfx.cpp:2932`):
+`hdCX = (pos.x + drawX * sclX / 255) * hdW / visW`, gespiegelte Figuren zusaetzlich um
+die Blitbreite nach links versetzt (`gfx.cpp:2947`). HD-Objekte (Schritt 2.5) sind an
+diesen Stellen nicht im Spiel: in allen vier Raeumen ist die Differenz Stufe 3 gegen
+Stufe 2 null. Figuren, die als Raumobjekt gezeichnet werden, gibt es dort also nicht.
+
+### Zwei Befunde, die wie eine Dopplung aussehen, aber keine Position sind
+
+**a) Der Rueckfall auf Cel 0 zeichnet ein Kostuem, das die 8-Bit-Ebene nicht zeichnet.**
+Raum 86, `ai=19`, `akos 0437`: das HD-Bild wird mit 72x60 HD-Punkten (18x15 Spielpixel)
+bei Spielpixel (552,240) gezeichnet; die 8-Bit-Silhouette hat dort 48 Punkte, die
+HD-Flaeche 614. Ein Bruchstueck ohne Gegenstueck im 8-Bit-Bild. Ursache ist der
+Rueckfall oben, wenn ein sichtbarer Akteur mit Kostuem in diesem Bild von AKOS gar nicht
+gezeichnet wurde.
+
+**b) Durchsichtige Ueberlagerungskostueme vergroessern die gemessene HD-Flaeche.**
+`akos 0253` (Raum 44) und `akos 0083` (Raum 15) sind je 896x1388 HD-Punkte gross, also
+224x347 Spielpixel, und dabei zu 1 Prozent deckend und zu 7 bis 10 Prozent
+halbtransparent (`harness/kostuem_png_info.py`). Im Bild aendern sie ueber die ganze
+Flaeche Pixel, deshalb zaehlt die Differenz Stufe 4 gegen Stufe 3 dort 17.000 Punkte,
+waehrend die 8-Bit-Silhouette nur 3.000 bis 7.800 hat. Das ist keine zweite Figur,
+sondern eine kaum sichtbare Flaeche, die der Diff-Schwellwert mitnimmt.
+
+### Ein Code-Befund, der ausserhalb dieser Raeume wirkt
+
+Die 8-Bit-Ebene zeichnet ein Kostuem nach Pufferkoordinaten:
+`bcr->_actorX = _pos.x - _vm->_virtscr[kMainVirtScreen].xstart` (`actor.cpp:2664`,
+zweite Stelle `actor.cpp:2671`). Der Komposit liest die Pufferspalte 1:1
+(`hdXStart[sx] = sx * hdW / visW`; der Kameraversatz steckt in Schritt 1, also in der
+Hintergrundkopie). Damit die HD-Flaeche deckungsgleich liegt, muss sie denselben
+Fensteranfang abziehen. Der HD-Pfad tut das seit 133450b2 nicht mehr (`gfx.cpp:2932`,
+Kommentar `gfx.cpp:2922` bis `2931`).
+
+Beides ist nur gleich, solange `vs->xstart == 0` ist. Genau dieser Fall lag in Raum 44
+vor: dort stand `hdWindowLeft()` (aus der Kamera) auf 46, waehrend der Puffer mit
+`xstart = 0` lief; das Abziehen dieses Werts setzte die Figur 46 Spielpixel nach links,
+das Weglassen ist dort richtig. In Bildern mit laufendem Fenster (`xstart != 0`) fehlt
+die Subtraktion dagegen, und die Figur sitzt um `xstart` Spielpixel zu weit rechts. Die
+richtige Groesse ist deshalb nicht `hdWindowLeft()`, sondern `vs->xstart`, also genau
+das, was die 8-Bit-Ebene selbst benutzt.
+
+Nachgewiesen ist dieser Fall hier nicht. Ein Sprunglauf landet mit `xstart = 0`; die
+erzwungene Kamerafahrt (`HD_SCROLL_TEST`) ergibt einen Zustand, in dem der Fensteranfang
+der Komposition und der des 8-Bit-Puffers auseinanderlaufen (Raum 15, F=159:
+`xstart = 368`, danach gelten 43 Prozent des Bildes als 8-Bit-Vordergrund, die
+Vordergrundpruefung erkennt also das halbe Bild falsch) — dieser Zustand ist kuenstlich
+und taugt nicht als Beleg. Der FIFO-Weg (`walk`, `JEV_CMD_FIFO`) hat den Ego nicht in
+Bewegung gesetzt (0 von 4 Kommandos ausgefuehrt, `r15w`). Eine Messung mit echtem
+Scrollen bleibt offen und gehoert zur Aufgabe "Positionierung raum- und
+figurenunabhaengig".
+
+### Grenzen dieser Messung
+
+- **Raum 3 ist so nicht messbar.** Der Sprung landet wieder in Raum 87 (Intro), im
+  Protokoll steht `room=0x480` und `xstart=65276`, und die 8-Bit-Ebene hat null
+  Vordergrundpunkte. Raum 3 ist der Startbildschirm, kein normaler Raum.
+- **Gespiegelte Figuren** kommen in den vier Aufnahmen nicht vor (siehe oben).
+- **Bewegte Figuren** sind nicht gemessen; die Stufendumps schreiben nur das letzte Bild
+  eines Laufs.
+- Die Deckungszahl ist bei Eintraegen, deren Fenster den Nachbarn mitfasst, zu niedrig
+  (0,38 und 0,45 oben) und taugt dort nicht als Fehlergroesse; der Versatz ist in diesen
+  Faellen ebenfalls nicht belastbar und als solcher gekennzeichnet.
+
+### Was daraus folgt
+
+Kein Fix an der Zeichenposition fuer diese vier Raeume: es gibt dort nichts zu
+verbessern, der Versatz liegt schon bei 0 bis 2 Spielpixeln, und die Karte verlangt einen
+Commit nur bei belegter Verbesserung. Der offene Kameraterm ist oben benannt und gehoert
+in die Positionierungsaufgabe, nicht in diese. Der Rueckfall auf Cel 0 (Befund a) ist ein
+Kandidat fuer eine eigene Aenderung: den Rueckfall nur zeichnen, wenn der Akteur in
+diesem Bild wirklich von AKOS gezeichnet wurde. Ohne Sichtpruefung nicht eingebaut, weil
+der Rueckfall fuer andere Faelle gedacht ist.
+
+### Dateien
+
+```
+Messlaeufe            projects/comi-hd/work/dopplung/r{9,15,44,86}/
+                      projects/comi-hd/work/dopplung/r15s (Kamerafahrt), r15w (FIFO-Walk)
+Binary-Kopie          projects/comi-hd/work/engine/scummvm-d67
+Sichtblaetter         projects/comi-hd/reports/vergleich/dopplung_akteure_raum{9,15,44,86}.png
+Werkzeuge             projects/comi-hd/harness/dopplung_lauf.sh
+                      projects/comi-hd/harness/dopplung_lauf_walk.sh
+                      projects/comi-hd/harness/dopplung_auswertung.py
+                      projects/comi-hd/harness/dopplung_versatz_je_akteur.py
+                      projects/comi-hd/harness/dopplung_spiegel.py
+                      projects/comi-hd/harness/dopplung_karte.py
+                      projects/comi-hd/harness/dopplung_sichtblatt.py
+                      projects/comi-hd/harness/dopplung_binary.py
+                      projects/comi-hd/harness/kostuem_png_info.py
+```
