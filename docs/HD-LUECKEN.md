@@ -1072,3 +1072,33 @@ Werkzeuge             projects/comi-hd/harness/dopplung_lauf.sh
                       projects/comi-hd/harness/dopplung_binary.py
                       projects/comi-hd/harness/kostuem_png_info.py
 ```
+
+### Nachtrag: der Rueckfall auf Cel 0 ist am Akteur belegt, und `cel <= 0` filtert einen gueltigen Cel
+
+Ein zweiter Lauf in Raum 86 mit `HD_SPY=1` (Ordner `work/dopplung/r86spy`, Protokoll
+`work/dumps/d67_actor_prob.log`, Auswertung `harness/dopplung_akteurprobe.py`) schreibt je
+Bild eine Zeile pro Akteur. Fuer `ai=19` steht in allen 120 Bildern:
+
+```
+AKTEUR ai=19 akos=437 sichtbar=1 schatten=3 limbs=0 cel0=0 cel1=0
+```
+
+Der Akteur ist also sichtbar und hat ein Kostuem, AKOS zeichnet ihn aber nie (kein
+Gliedmass), und der HD-Pfad faellt deshalb auf Cel 0 zurueck. Die 8-Bit-Ebene zeichnet an
+dieser Stelle nichts (Befund a oben), das HD-Bild schon. Damit ist die Ursache belegt und
+nicht nur aus dem Code abgeleitet.
+
+Beim Nachsehen faellt eine zweite Stelle auf: der Gliedmassen-Zweig ueberspringt Cels mit
+`if (cel <= 0) continue;` (`gfx.cpp:2760`). Der Cel-Index 0 ist aber gueltig, der Rueckfall
+zeichnet ihn selbst. Akteure, deren Gliedmassen alle auf Cel 0 zeigen, laufen deshalb
+nicht durch den Gliedmassen-Zweig, sondern durch den Rueckfall, und werden mit genau
+einem Bild gezeichnet. In Raum 86 betrifft das `ai=4` (`limbs=1 cel0=0`) und `ai=20`
+(`limbs=1 cel0=0`), in Raum 9 `ai=12`. Bei allen dreien liegt der HD-Kasten trotzdem
+deckungsgleich (dx 0, dy 0), der Rueckfall zeichnet also an der richtigen Stelle; der
+Unterschied liegt nur in der Zahl der Eintraege, nicht in der Lage.
+
+Was daraus folgt, unveraendert: den Rueckfall nur zeichnen, wenn der Akteur in diesem Bild
+wirklich von AKOS gezeichnet wurde (dann bleibt das Bruchstueck aus Raum 86 weg), und den
+Cel-Index 0 im Gliedmassen-Zweig zulassen (`cel < 0` statt `cel <= 0`). Beides ist eine
+Code-Aenderung ohne Messung am Bild und deshalb hier nicht eingebaut; sie gehoert in eine
+eigene Aufgabe mit Sichtpruefung.
