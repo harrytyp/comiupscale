@@ -2974,6 +2974,11 @@ int step2_fgPixels = 0;
 			}
 			const int hdDstStride = _hdComposite.pitch / 4;
 			uint32 *hdDstBase = (uint32 *)_hdComposite.getBasePtr(blitX, blitY);
+			// HD_ALPHA_SPY: zaehlt je Kostuem, was mit den Bildpunkten passiert, deren
+			// Quelldatei Alpha 0 hat. Das ist die Gegenprobe zur Frage, ob der
+			// Alpha-Kanal ueberhaupt ausgewertet wird.
+			const bool alphaSpy = getenv("HD_ALPHA_SPY") != nullptr;
+			int spyA0 = 0, spyA0Bg = 0, spyA0Keep = 0, spyA0Hd = 0, spyOpak = 0, spyHalb = 0;
 			for (int oy = 0; oy < blitH; oy++) {
 				int srcY = MIN(hdCostumeSurf.h - 1, (srcOffY + oy) * 255 / sclY);
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(0, srcY);
@@ -2986,9 +2991,11 @@ int step2_fgPixels = 0;
 					int maskY = blitY + oy;
 					if (alpha >= 128) {
 						// Fully opaque HD pixel: overwrite composite.
+						spyOpak++;
 						dstRow[ox] = pix;
 						hdAlphaMask[maskY * hdW + maskX] = 1;
 					} else if (alpha > 0) {
+						spyHalb++;
 						// Semi-transparent: alpha-blend with existing composite.
 						// Preserves HD objects (Step 2.5) and other HD costumes
 						// (z-sorted ToD) underneath the current costume.
@@ -3009,6 +3016,7 @@ int step2_fgPixels = 0;
 						// alpha == 0: check if something is behind (HD object or
 						// earlier z-sorted HD costume). If so, preserve it.
 						// Otherwise, restore HD background to prevent 8-bit artifacts.
+						spyA0++;
 						if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH) {
 							if (hdAlphaMask[maskY * hdW + maskX] == 0) {
 								// Liegt darunter 8-Bit-Vordergrund (Figur, Objekt), bleibt er
@@ -3039,7 +3047,12 @@ int step2_fgPixels = 0;
 									uint8 bgR = bgRowRaw[0], bgG = bgRowRaw[1], bgB = bgRowRaw[2];
 									dstRow[ox] = bgR | (bgG << 8) | (bgB << 16) | (0xFF << 24);
 									hdAlphaMask[maskY * hdW + maskX] = 1;
+									spyA0Bg++;
+								} else {
+									spyA0Keep++;
 								}
+							} else {
+								spyA0Hd++;
 							}
 							// else: leave existing (something behind)
 						}
@@ -3051,6 +3064,18 @@ int step2_fgPixels = 0;
 					// ohne eigenes HD-Bild; in Raum 89 verschwand dadurch die Figur auf
 					// dem Kamm. Wo das HD-Kostuem durchsichtig ist, holt der Zweig oben
 					// (alpha == 0) weiterhin den HD-Hintergrund zurueck.
+				}
+			}
+
+			if (alphaSpy) {
+				// Nur Eintraege mit durchsichtigen Bildpunkten protokollieren, sonst
+				// laeuft die Datei voll. Grenze 400 Zeilen je Lauf reicht fuer Raum 44.
+				static int spyZeilen = 0;
+				if (spyA0 > 0 && spyZeilen < 400) {
+					spyZeilen++;
+					hdPrintf("ALPHASPY ai=%d akos=%d cel=%d schatten=%d blit=%dx%d@%d,%d a0=%d a0bg=%d a0keep8=%d a0hd=%d opak=%d halb=%d",
+					         ai, (int)a->_costume, cel, (int)a->_shadowMode, blitW, blitH, blitX, blitY,
+					         spyA0, spyA0Bg, spyA0Keep, spyA0Hd, spyOpak, spyHalb);
 				}
 			}
 

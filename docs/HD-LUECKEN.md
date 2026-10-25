@@ -695,3 +695,100 @@ Raum 44   3,87 %
 
 Raum 86 bleibt damit sauber, ohne dass Figuren abgedunkelt werden — die Abdunkelung war fuer
 die Abdeckung nie noetig. Raum 44 unveraendert; dort liegt der Rest woanders.
+
+## Alpha-Kanal im Kostuem-Blitz: geprueft, kein blinder RGB-Schreibvorgang
+
+Verdacht: der Blit der HD-Kostueme schreibt RGB ohne den Alpha-Byte zu pruefen, deshalb
+stehen an durchsichtigen Stellen Farben der Textur im Bild. Der Code sagt etwas anderes.
+Die Zeichenschleife (`gfx.cpp:2987` bis `gfx.cpp:3058`) hat drei Zweige auf `alpha = pix >> 24`:
+
+```
+alpha >= 128    Bildpunkt wird geschrieben, Maske wird gesetzt          (2987)
+alpha 1..127    mit dem, was darunter liegt, verrechnet                (2991)
+alpha == 0      HD-Hintergrund zurueck, Maske wird gesetzt             (3014)
+```
+
+Der Alpha-Kanal wird also ausgewertet. Was an durchsichtigen Stellen trotzdem 8 Bit zeigt,
+sind zwei Regeln, die die 8-Bit-Ebene als Fuellung benutzen:
+
+1. `alpha == 0`, wenn darunter 8-Bit-Vordergrund liegt (`foregroundBelow`), dann bleibt der
+   8-Bit-Punkt stehen (`gfx.cpp:3028` bis `3053`). Eingebaut fuer Raum 89, wo die Figur unter
+   der durchsichtigen Flaeche einer grossen HD-Hand steckt.
+2. Stufe 2.6b legt danach 8-Bit-Punkte erneut ueberall dort ab, wo die HD-Maske leer ist
+   (`gfx.cpp:3145` bis `3240`), und zwar in echten Palettenfarben.
+
+Punkt 2 ist der Grund, warum der Magenta-Anteil die sichtbare 8-Bit-Flaeche unterschaetzt:
+`HD_TINT_8BIT` faerbt nur die 8-Bit-Ebene der Stufe 2 und die Haengebleibsel aus Punkt 1.
+Die Stufe 2.6b schreibt echte Farben und wird von der Messung gar nicht erfasst.
+
+### Gegenprobe mit Zaehlern im Blit (`HD_ALPHA_SPY`)
+
+Neuer Schalter, nur Zaehler, keine Aenderung am Bild. Raum 44, Sprung per `HD_JUMP_ROOM`,
+80 Bilder (F=44 bis F=123), Aufruf:
+
+```
+cd /opt/data/local/comi-hd-repo/release/linux
+HD_JUMP_ROOM=44 HD_FIXED_DELTA=20 HD_EXIT_AFTER=240 HD_DUMP_SEQ=1 HD_TINT_8BIT=1 \
+  HD_TRACE_DRAW=1 HD_ALPHA_SPY=1 timeout -k 5 120 ./scummvm --config=scummvm_video.ini --path=game comi
+python3 harness/alpha_gegenprobe.py <hd_state.log> <hd_seq>
+```
+
+Je Bild werden fuenf Kostuem-Eintraege gezeichnet (akos 253 auf ai 17, 251 auf ai 4 zweimal,
+2 auf ai 1 zweimal). Summe ueber den Lauf, in Komposit-Pixeln (2560x1920):
+
+```
+durchsichtige Kostuem-Punkte          86.463.507
+  HD-Hintergrund zurueck              83.858.560   97,0 %
+  8 Bit bleibt sichtbar                1.952.627    2,26 %
+  HD-Kostuem liegt schon darunter         652.320
+```
+
+Das sind je Bild 24.408 Komposit-Punkte, in der Aufnahme (1280x960) 6.102 Punkte, also
+**0,50 Prozent des Bildes**. Gemessenes Magenta im gleichen Lauf: Mitte 3,87 Prozent, max 3,92.
+Damit stammen **12,8 Prozent** des sichtbaren Magentas aus der Transparenz-Regel; die uebrigen
+87 Prozent sind 8-Bit-Punkte, an die kein gezeichnetes HD-Kostuem ueberhaupt heranreicht.
+
+Zusatz aus dem Protokoll: Stufe 2.6b legt je Bild **16.852** 8-Bit-Punkte in Palettenfarben
+neu ab (`step2.6b ui-overlay: pixels=16852`). Diese Punkte erscheinen im Magenta-Bild nicht,
+sind aber sichtbar. Genau das sind die braunen Stellen: Palettenbraun der 8-Bit-Ebene in
+Flaechen, die die HD-Textur durchsichtig laesst.
+
+### Messung nach dem Diagnose-Build
+
+```
+Raum 44, magenta_check.py   Bilder 80   Mitte 3,87 %   max 3,89 %
+```
+
+Gleich wie vorher (3,87 / 3,89). Die Zaehler aendern das Bild nicht, der Befund ist also nicht
+durch die Instrumentierung entstanden.
+
+### Was daraus folgt
+
+- Ein fehlender Alpha-Test ist **widerlegt**: 97 Prozent der durchsichtigen Texturpunkte
+  bekommen den HD-Hintergrund, nur 2,26 Prozent behalten 8 Bit.
+- Offen bleibt eine Entscheidung, keine Reparatur: die beiden Regeln, die 8 Bit als Fuellung
+  nehmen, abschaffen oder einschraenken. Regel 1 ist fuer Raum 89 noetig, Regel 2 fuellt
+  UI und Objekte ohne HD-Bild. Beide schreiben echte Palettenfarben, deshalb faellt es als
+  Braun auf und nicht als Magenta.
+- Moegliche, messbare Einschraenkung von Regel 1: den 8-Bit-Punkt nur stehen lassen, wenn er
+  zu einem **anderen** Akteur gehoert als dem, dessen Kostuem gerade gezeichnet wird (Daten
+  dafuer liegen vor: Position, Breite, `_top`, `_bottom` je Akteur). Wirkung hoechstens
+  0,50 Punkte in Raum 44, Risiko: Loecher in Figuren, deren Koerperteile sich in mehreren
+  Eintraegen ueberlappen. Ohne Sichtpruefung nicht eingebaut.
+
+### Dateien
+
+```
+Screenshot ohne Marker   projects/comi-hd/reports/vergleich/raum44_hd_aktuell.png
+Screenshot markiert      projects/comi-hd/reports/vergleich/raum44_hd_8bit_markiert.png
+Protokoll des Laufs      projects/comi-hd/work/raum44_alpha/hd_state_alpha_spy.log
+Bildfolge markiert       projects/comi-hd/work/raum44_alpha/tint/ (160 Dateien)
+Auswertung               projects/comi-hd/harness/alpha_gegenprobe.py
+                         projects/comi-hd/harness/alpha_orte.py
+                         projects/comi-hd/harness/alpha_rechteck.py
+```
+
+`alpha_rechteck.py` taugt nur als grobe Probe: die Rechtecke der Eintraege sind so gross, dass
+sie ein Drittel des Bildes abdecken (43,7 Prozent des Magentas liegt darin, 33,8 Prozent der
+Flaeche sind Rechteck). Eine Zuordnung "innen/aussen" ist damit nicht belastbar, deshalb steht
+die Aussage oben auf den Zaehlern im Blit, nicht auf den Rechtecken.
