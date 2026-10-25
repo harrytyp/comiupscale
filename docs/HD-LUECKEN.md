@@ -3667,8 +3667,16 @@ Jetzt: 8-Bit-Silhouette = |Stufe 2 - Stufe 1|, also die 8-Bit-Ebene selbst, unab
 davon, was spaeter daruebergelegt wird. Alles andere bleibt: Fenster um das Blit-Rechteck,
 Kreuzkorrelation, Umrechnung Kompositpunkt zu Spielpixel (Faktor Bildbreite/640).
 Zusaetzlich wird je Eintrag gezaehlt, wie viele Verschiebungen 98 Prozent des Maximums
-erreichen (`peak`). Ein scharfer Gipfel (1 von 625) heisst: die Lage ist eindeutig. Ein
-grosses `peak` heisst: das Maximum ist flacher als ein Bildpunkt.
+erreichen (`peak`). Das Zaehlraster haengt am Suchradius: `ST38_RADIUS` ist der Radius in
+Spielpixeln, das Werkzeug rechnet ihn mit dem Bildfaktor (in diesen Laeufen 2, also zwei
+Bildpunkte je Spielpixel) um, und gezaehlt wird ein Quadrat von
+(2 * Radius_in_Bildpunkten + 1)^2 Stellen. Standardradius 12 ergibt 49x49 = 2401 Stellen,
+Radius 40 ergibt 161x161 = 25921, Radius 350 ergibt 1401x1401 = 1.962.801. `peak` ist
+deshalb nur zusammen mit dem Radius lesbar: ein scharfer Gipfel (1 von 2401) heisst, die
+Lage ist eindeutig; ein grosses `peak` heisst, das Maximum ist flacher als ein Bildpunkt.
+Die 625 in den Tabellen weiter unten stammt aus `st38_profil.py`, das nicht skaliert und
+±12 Bildpunkte = 25x25 = 625 Stellen zaehlt; das ist ein engeres Raster und nicht mit der
+`peak`-Spalte von `st38_auswertung.py` zu verwechseln.
 
 Gegenprobe des neuen Werkzeugs an den alten Laeufen: Raum 9 alle Eintraege 0 bis 1 Spielpixel,
 Raum 44 ai 4 cel 8 dy 2,0, Raum 15 ai 4 cel 68 dy 1,5, alles wie in der Verifikation oben.
@@ -3682,13 +3690,21 @@ dem gescrollten Raum 61.
 
 ```
 Auswertung      projects/comi-hd/harness/st38_auswertung.py   (Maske, Versatz, peak)
-Tabelle         projects/comi-hd/work/verify/st38/tabelle.csv  (18 belastbare Eintraege nachher)
+Tabelle         projects/comi-hd/work/verify/st38/tabelle.csv  (18 belastbare Eintraege nachher,
+                                                               erzeugt mit ST38_RADIUS=40, peak von 25921)
+Hochraum vorher projects/comi-hd/work/verify/st38/hoch77_vorher.csv
+                                                               (ST38_BAND=1 ST38_RADIUS=350, peak von 1.962.801)
 Einzelprofil    projects/comi-hd/harness/st38_profil.py        (Plateau, Kanten)
 Empfindlichkeit projects/comi-hd/harness/st38_empfindlich.py   (Deckung bei erzwungenem Versatz)
 Magenta         projects/comi-hd/harness/st38_magenta.py       (Stufe 4, wie magenta_check)
 Lauf            projects/comi-hd/harness/st38_lauf.sh <raum> <n|v> <ziel> [VAR=WERT ...]
 Walk            projects/comi-hd/harness/st38_walk.sh <raum> <n|v> <ziel> <x> <y>
 ```
+
+Die aeltere `hoch77.csv` (17:36) stammt aus einer Werkzeugfassung, die die 8-Bit-Maske noch
+nicht auf das Blit-Rechteck begrenzte: dort steht `flaeche_8bit` 7644 und `deckung_8` 0,39,
+mit dem jetzigen Werkzeug sind es 3236 und 0,92 (so auch in `tabelle.csv`). Ihre Zeilen sind
+durch `tabelle.csv` (Nachher) und `hoch77_vorher.csv` (Vorher) ersetzt.
 
 Binaries: `scummvm-38n` (md5 81759d73) und `scummvm-38v` (md5 0260af89), Kopien von
 `scummvm-nach` (9ebd7e8a, Stand `82ca6baa`) und `scummvm-vor` (424a741d, `82ca6baa` mit
@@ -3710,12 +3726,20 @@ nachher  ai 1  akos 0002 cel 22     gliedmassen  33x87    0,5    0,5    0,87    
 ```
 
 Vorher stand das HD-Kostuem 240 Spielpixel zu hoch, das Maximum ist dabei eindeutig
-(1 von 625 Verschiebungen erreicht 98 Prozent), es ist also kein Plateau-Effekt. Nachher
-0,0 in beiden Achsen, ebenfalls mit scharfem Maximum. Die 240 sind der Unterschied zwischen
-`sdTop` 507 und dem Wert, den die alte Fassung abzog. Der Vorher-Lauf hat uebrigens gar
-keine belastbaren Eintraege im normalen Fenster, weil die 8-Bit-Figur 240 Zeilen tiefer
-steht als die HD-Flaeche; gemessen wurde er deshalb mit erweitertem Suchfenster ueber die
-volle Bildhoehe.
+(1 von 1.962.801 Verschiebungen erreicht 98 Prozent, `ST38_BAND=1 ST38_RADIUS=350`, Raster
+1401x1401), es ist also kein Plateau-Effekt. Nachher 0,0 in beiden Achsen, ebenfalls mit
+scharfem Maximum (1 von 25921 bei `ST38_RADIUS=40`, Raster 161x161; mit dem Standardradius
+12 waere es 1 von 2401). Die 240 sind der Unterschied zwischen `sdTop` 507 und dem Wert, den
+die alte Fassung abzog.
+
+Der Vorher-Lauf hat gar keine belastbaren Eintraege im normalen Fenster, weil die 8-Bit-Figur
+240 Zeilen tiefer steht als die HD-Flaeche: mit dem Standardradius 12 kommt dort nur "eine
+Seite fast leer" heraus, es gibt also keinen `peak`-Wert. Gemessen wurde er deshalb mit
+erweitertem Suchfenster ueber die volle Bildhoehe und Radius 350, belegt in
+`work/verify/st38/hoch77_vorher.csv`. Der grosse Radius ist dabei keine Bequemlichkeit: bei
+`ST38_RADIUS=175` deckt das Fenster nur 1284 der 8624 Punkte der 8-Bit-Figur ab und die
+Korrelation liefert dy -86 bei Deckung 0,21, bei `ST38_RADIUS=225` sind es 2976 Punkte und
+dy -136 bei 0,71. Erst 350 enthalten die ganze Figur (8624 Punkte, Deckung 0,89).
 
 Sichtbild: `projects/comi-hd/reports/vergleich/raum77_hoch_vorher_nachher.png`
 (derselbe Ausschnitt, links HD-Figur hoch ueber der 8-Bit-Figur, rechts deckungsgleich).
@@ -3738,10 +3762,14 @@ ai 1  akos 0002 cel 670  komplett  304x957   0,0   0,0   0,53              0,82 
 Die Deckung "HD auf 8-Bit" ist hier niedriger als bei den kleinen Figuren, weil die
 HD-Flaeche groesser ist als die 8-Bit-Figur (Flaechenverhaeltnis 0,65); massgeblich ist,
 dass 82 Prozent der 8-Bit-Figur bei Verschiebung null bedeckt sind und der Gipfel mit
-2 von 625 Verschiebungen eindeutig ist.
+2 von 25921 Verschiebungen eindeutig ist (`ST38_RADIUS=40`, Raster 161x161).
 
-Empfindlichkeit derselben Messung (Deckung 8-Bit auf HD bei erzwungenem Versatz):
-dx 0: 0,82; dx -10: 0,62; dx +10: 0,52; dx -100: 0,59; dx plus/minus 210: 0,22.
+Empfindlichkeit derselben Messung (Spalte "Deckung 8-Bit auf HD" aus
+`st38_empfindlich.py`, in Klammern derselbe Versatz als "Deckung HD auf 8-Bit"):
+dx 0: 0,82 (0,53); dx -10: 0,62 (0,40); dx +10: 0,52 (0,33); dx -100: 0,59 (0,38);
+dx +100: 0,48 (0,31); dx -210: 0,30 (0,19); dx +210: 0,22 (0,14).
+Beide Richtungen sind getrennt angegeben, weil das Fenster um die Figur nicht symmetrisch
+liegt; die frueher hier genannte Zahl 0,22 gilt nur fuer +210.
 Ein Fehler in Groesse des Kameraversatzes waere an dieser Stelle also nicht zu uebersehen.
 
 Grenze: fuer diesen Raum gibt es kein sauberes Vorher/Nachher-Paar. Der Walk haengt an der
@@ -3790,9 +3818,17 @@ In beiden Faellen liegt die Oberkante beider Flaechen exakt aufeinander, und die
 aendert sich zwischen dy 0 und dy 3 um weniger als drei Prozentpunkte. Der Gipfelwert ist
 also nicht aufloesbar; 1,5 und 2,0 sind die Mitte eines Plateaus, nicht ein Versatz.
 
+Die 625 in dieser Tabelle kommt aus `st38_profil.py`, das seinen Suchrand nicht skaliert und
+±12 Bildpunkte = 25x25 = 625 Stellen zaehlt. In `tabelle.csv` stehen fuer dieselben zwei
+Eintraege 137 und 44, weil diese Tabelle mit `ST38_RADIUS=40` erzeugt wurde (Raster
+161x161 = 25921 Stellen). Die Zahlen widersprechen sich nicht, sie zaehlen in verschiedenen
+Fenstern; fuer die Plateau-Aussage ist das enge Raster das aussagekraeftige, weil ein
+Plateau dort ueberhaupt erst auffaellt.
+
 Zum Vergleich ein echter Fehler in derselben Messung: Raum 77 vorher hat den Gipfel bei
-dy 240 mit 1 von 625 Verschiebungen, Raum 77 nachher bei 0,0 mit 1 von 625. Ein wirklicher
-Versatz sieht in dieser Auswertung scharf aus, ein Rasterunterschied flach.
+dy 240 mit 1 von 1.962.801 Verschiebungen (Radius 350, volle Bildhoehe), Raum 77 nachher bei
+0,0 mit 1 von 25921 (Radius 40, 161x161). Ein wirklicher Versatz sieht in dieser Auswertung
+scharf aus, ein Rasterunterschied flach.
 
 Die Unterkante differiert in beiden Faellen um 6 Spielpixel, weil die 8-Bit-Figur dort
 Schatten und Anschnitt mitbringt, die das HD-Kostuem nicht hat. Das ist Form, nicht Lage,
