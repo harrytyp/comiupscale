@@ -716,6 +716,10 @@ Die letzte Fassung bleibt stehen. Sie ist in Raeumen ohne Kameraversatz wirkungs
 (Gegenprobe: Raum 47 unveraendert 0,00 Prozent, Raum 9 0,02 Prozent wie vorher), weil dort
 `sdLeft = 0` gilt und der ausgerechnete Wert derselbe ist.
 
+Nachkontrolle mit der installierten Release-Binary (`release/linux/scummvm`, md5 gleich der
+Fork-Binary), zweiter unabhaengiger Lauf: Raum 44 **0,78 Prozent** (80 Bilder, max 0,78),
+Raum 47 **0,00 Prozent**. Beide Zeilen stehen in `reports/magenta/ergebnis.csv`.
+
 Warum das die richtige Stelle ist: der Komposit uebernimmt die 8-Bit-Ebene spaltenweise 1:1
 (`hdXStart[sx] = sx * hdW / visW`, der Kameraversatz steckt in Schritt 1, also in der
 Hintergrundkopie). Die 8-Bit-Figur steht damit in Pufferkoordinaten, und der HD-Pfad durfte
