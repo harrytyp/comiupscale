@@ -1322,14 +1322,49 @@ static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
 	rename(tmpPath.c_str(), path);
 }
 
+// Debug: die Maskenebenen des Raums als PGM ablegen (HD_DUMP_MASK=1). Jede Ebene ist
+// ein Bit je Bildpunkt; 255 heisst "gesetzt", also "der 8-Bit-Zeichner schneidet die
+// Figur hier ab" (bompApplyMask). Damit laesst sich zeigen, welche Bildpunkte hinter
+// einem Vordergrund liegen, statt es aus Koordinaten zu schliessen.
+static void hdDumpMaskPlanes(ScummEngine *vm, int visW, int visH) {
+	const int stripBase = (int)vm->_virtscr[kMainVirtScreen].xstart / 8;
+	for (int z = 0; z < vm->_gdi->_numZBuffer && z < 4; z++) {
+		char path[128];
+		snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_mask_%d.pgm", z);
+		Common::String tmpPath = Common::String(path) + ".part";
+		FILE *f = fopen(tmpPath.c_str(), "wb");
+		if (!f)
+			continue;
+		fprintf(f, "P5\n%d %d\n255\n", visW, visH);
+		for (int y = 0; y < visH; y++) {
+			for (int x = 0; x < visW; x++) {
+				// Adressierung wie drawBomp (bomp.cpp:256/258): Byte = xstart/8 + Spalte/8,
+				// Bit = revBitMask(Spalte & 7). Nicht ScummEngine::getMaskBuffer benutzen:
+				// das addiert xstart und teilt die Summe ab, was bei xstart 46 eine
+				// Maschinenspalte daneben liegt.
+				const byte b = *vm->_gdi->getMaskBuffer(stripBase + (x >> 3), y, z);
+				fputc((b & revBitMask(x & 7)) ? 255 : 0, f);
+			}
+		}
+		fclose(f);
+		remove(path);
+		rename(tmpPath.c_str(), path);
+	}
+}
+
 // Debug: einen Zwischenstand des Composites ablegen, um zu sehen, welcher Zeichenschritt den
 // Hintergrund uebermalt. Nur mit HD_DUMP_STEPS=1 aktiv.
 static void hdDumpStep(Graphics::Surface *surf, const char *name) {
 	if (!getenv("HD_DUMP_STEPS"))
 		return;
+	// HD_DUMP_FULL=1 legt die Stufen in voller Aufloesung ab (2560x1920 statt 1280x960).
+	// Die 2x2-Mittelung verschiebt Kanten um bis zu einen halben 8-Bit-Punkt und macht aus
+	// einem einzelnen verdeckten Punkt einen "geaenderten". Fuer Zaehlungen an
+	// Maskenkanten (Figur ueber Mauer) ist die volle Aufloesung noetig.
+	const int step = getenv("HD_DUMP_FULL") ? 1 : 2;
 	char path[128];
 	snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_step_%s.ppm", name);
-	hdWriteCompositeShotScaled(surf, path, 2);
+	hdWriteCompositeShotScaled(surf, path, step);
 }
 
 // Debug: den 8-Bit-Bildschirm (das Original) ablegen, und zwar im selben Bild wie die
@@ -1728,6 +1763,19 @@ void ScummEngine::renderHDComposite() {
 	// Zaehler fuer die Quelle der 8-Bit-Pixel (HD_TINT_8BIT): Figur, Objekt, sonstiges.
 	static int tintAkteur = 0, tintObjekt = 0, tintSonst = 0;
 	tintAkteur = tintObjekt = tintSonst = 0;
+	// Besitzer je 8-Bit-Pixel: Index des Akteurs, dessen Rechteck den Punkt enthaelt
+	// (255 = keiner). Schritt 2 fuellt die Karte, Schritt 2.6 liest sie. Sie trennt den
+	// eigenen 8-Bit-Rest einer Figur von fremdem Inhalt: der eigene darf weg (das
+	// HD-Kostuem ist die Fassung derselben Figur, nur ein paar Bildpunkte daneben),
+	// fremder Inhalt bleibt stehen. Ohne diese Unterscheidung bleibt ein 8-Bit-Saum um
+	// jede Figur, deren HD-Silhouette nicht punktgleich mit dem 8-Bit-Cel ist.
+	static byte *hdActorMap = nullptr;
+	static int hdActorMapSize = 0;
+	if (visW * visH > hdActorMapSize) {
+		hdActorMap = (byte *)realloc(hdActorMap, (size_t)visW * visH);
+		hdActorMapSize = visW * visH;
+	}
+	memset(hdActorMap, 255, (size_t)visW * visH);
 	if (visW * visH > hdMissingMaskSize) {
 		hdMissingMask = (byte *)realloc(hdMissingMask, (size_t)visW * visH);
 		hdMissingMaskSize = visW * visH;
@@ -1884,6 +1932,25 @@ int step2_fgPixels = 0;
 				if (isForeground) {
 					rowHadFg = true;
 					step2_fgPixels++;
+					// Besitzer merken (Raumkoordinaten, wie im Tint-Zaehler weiter unten):
+					// das Rechteck des Akteurs, nicht sein Bild. Schritt 2.6 braucht die
+					// Angabe, um den eigenen 8-Bit-Saum von fremdem Inhalt zu trennen.
+					if (!getenv("HD_NO_ACTORMAP")) {
+						const int owx = sx + sdLeft, owy = sy + sdTop;
+						for (int ai = 1; ai < _numActors; ai++) {
+							const Actor *ac = _actors[ai];
+							if (!ac || !ac->isInCurrentRoom() || ac->_costume == 0)
+								continue;
+							const Common::Point op = ac->getPos();
+							const int ohw = ac->_width / 2;
+							const int ohh = MAX(1, ac->_bottom - ac->_top);
+							if (owx >= op.x - ohw && owx < op.x + ohw &&
+							    owy >= op.y - ohh && owy < op.y) {
+								hdActorMap[sy * visW + sx] = (byte)ai;
+								break;
+							}
+						}
+					}
 					// HD_TINT_8BIT faerbt jedes Pixel aus der 8-Bit-Ebene magenta. Damit ist
 					// exakt sichtbar und zaehlbar, wo noch 8-Bit-Grafik im Bild steht — ohne
 					// Schaetzung, ohne statistisches Mass. Standardverfahren fuer fehlende
@@ -2284,7 +2351,16 @@ int step2_fgPixels = 0;
 			// to filter out noise from overlapping objects. For large
 			// FLOBJs (>50% screen = obj=114), also check inventory state
 			// from verb slot activity.
-			{
+			// Nur fuer FLOBJs. Fuer ein Raumobjekt (fl==0) taugt "Puffer gleich
+			// Vorlage" nicht als Sichtbarkeitsbeweis: die Vorlage entsteht in
+			// redrawBGAreas nach drawRoomObjects (hdRefreshCleanBackground) und
+			// enthaelt die Raumobjekte selbst, bei geschnittenen Texturen ist sie
+			// sogar bildgleich. Gemessen in Raum 61 (Kamera 56, 96 Bilder): fuenf
+			// Raumobjekte wurden damit in jedem Bild verworfen (974, 977, 996,
+			// 997, 1005/1006), gezeichnet wurde keines. Die Sichtbarkeit von
+			// Raumobjekten entscheidet der Texturabgleich weiter unten, der ohne
+			// Vorlage auskommt.
+			if (od.fl_object_index != 0) {
 				int sx = xPos;
 				int sy = yPos;
 				// Override with cached blast position if available (inventory items)
@@ -2430,7 +2506,12 @@ int step2_fgPixels = 0;
 			// der 8-Bit-Pixel im Objektbereich, die sich vom sauberen Raumpuffer
 			// unterscheiden. Ist er verschwindend klein, ist das Objekt im Original
 			// verdeckt oder unsichtbar.
-			if (_hdCleanValid && _hdCurrentRoom == _currentRoom && od.width > 0 && od.height > 0) {
+			// Dieselbe Einschraenkung wie beim CULL darueber, aus demselben Grund: die
+			// Vorlage enthaelt die Raumobjekte selbst. In Raum 61 hat dieser Abgleich das
+			// Rezeptbuch (977) in 32 Bildern und das Portraet (996) in 81 Bildern
+			// verworfen, beide mit diff=1 von 96 Stichproben.
+			if (od.fl_object_index != 0 &&
+			    _hdCleanValid && _hdCurrentRoom == _currentRoom && od.width > 0 && od.height > 0) {
 				int diffN = 0, total = 0;
 				for (int yy = 0; yy < od.height; yy += 4) {
 					const int sy = od.y_pos - sdTop + yy;
@@ -2674,6 +2755,8 @@ int step2_fgPixels = 0;
 
 	if (hdDumpNow())
 		hdDumpStep(&_hdComposite, "3_objekte");
+	if (hdDumpNow() && getenv("HD_DUMP_MASK") && _gdi->_numZBuffer > 0)
+		hdDumpMaskPlanes(this, visW, visH);
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
@@ -2682,6 +2765,8 @@ int step2_fgPixels = 0;
 	// This ensures UI overlays (title cards, verbs, text) that were drawn AFTER
 	// actors in the 8-bit engine will correctly appear ON TOP of HD costumes.
 	int step26_loaded = 0, step26_skipped = 0;
+	int step26_clipped = 0;
+	int step26_ring = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
 	// HD alpha mask was allocated before Step 2.5; objects already marked it.
 	// Dump all actors with costumes on first frame for debugging
@@ -3009,6 +3094,46 @@ int step2_fgPixels = 0;
 					sx = hdCostumeSurf.w - 1 - sx;
 				srcCols[ox] = sx;
 			}
+			// Tiefenreihenfolge: der 8-Bit-Zeichner schneidet die Figur an der
+			// Maskenebene des Raums ab (bompApplyMask in akos.cpp, die Ebene kommt aus
+			// getMaskFromBox/_zbuf des Akteurs). Diese Maske fehlte hier, deshalb deckte
+			// das HD-Kostuem Vordergruende zu, die im Original davor stehen (Raum 44:
+			// der Fuss der Figur steht vor der Steinmauer). Geprueft wird je Bildpunkt
+			// dieselbe Maske wie dort; getroffen heisst: Punkt weglassen, damit die
+			// Mauer bzw. der 8-Bit-Vordergrund darunter stehen bleibt.
+			const byte clipZ = getenv("HD_NO_CLIPMASK") ? 0 : a->getClipZPlane();
+			Common::Array<int> maskOfs;
+			Common::Array<byte> maskBit;
+			// Adressierung wie drawBomp (bomp.cpp:251 bis 255): Maschinenbyte ist
+			// xstart/8 + Spalte/8, Bit ist revBitMask(Spalte & 7). ScummEngine::
+			// getMaskBuffer addiert xstart VOR der Division, drawBomp teilt beide
+			// Summanden getrennt. Das ist nicht dasselbe: sobald
+			// (xstart & 7) + (Spalte & 7) >= 8 ist, liegt das Ergebnis ein
+			// Maschinenbyte daneben, also 8 Punkte. Deshalb hier beide Teile getrennt
+			// rechnen und den Strip-Index fertig an Gdi::getMaskBuffer geben; das ist
+			// bitgleich mit dem 8-Bit-Zeichner.
+			const int stripBase = (int)vs->xstart / 8;
+			// HD_MASK_SPY: rechnet je Bildpunkt beide Adressierungen (die alte ueber
+			// ScummEngine::getMaskBuffer und die neue wie drawBomp) und zaehlt, wo sie
+			// sich unterscheiden. Damit ist die Groesse des alten Versatzes je Bild
+			// messbar, ohne zwei Laeufe mit gleichem Bildinhalt zu brauchen.
+			const bool maskSpy = getenv("HD_MASK_SPY") != nullptr;
+			Common::Array<int> maskAltOfs;
+			if (clipZ) {
+				maskOfs.resize(blitW);
+				maskBit.resize(blitW);
+				if (maskSpy)
+					maskAltOfs.resize(blitW);
+				const int x0 = blitX / scale;
+				for (int ox = 0; ox < blitW; ox++) {
+					const int x8 = (blitX + ox) / scale;
+					maskOfs[ox] = stripBase + (x8 >> 3);
+					maskBit[ox] = revBitMask(x8 & 7);
+					if (maskSpy)
+						maskAltOfs[ox] = ((x0 + (int)vs->xstart) >> 3) + (x8 >> 3) - (x0 >> 3);
+				}
+			}
+			int geclippt = 0, spyAltSichtbar = 0, spyAltVerdeckt = 0;
 			const int hdDstStride = _hdComposite.pitch / 4;
 			uint32 *hdDstBase = (uint32 *)_hdComposite.getBasePtr(blitX, blitY);
 			// HD_ALPHA_SPY: zaehlt je Kostuem, was mit den Bildpunkten passiert, deren
@@ -3020,12 +3145,32 @@ int step2_fgPixels = 0;
 				int srcY = MIN(hdCostumeSurf.h - 1, (srcOffY + oy) * 255 / sclY);
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(0, srcY);
 				uint32 *dstRow = hdDstBase + oy * hdDstStride;
+				const byte *maskRow = clipZ ? _gdi->getMaskBuffer(0, (blitY + oy) / scale, clipZ) : nullptr;
 				for (int ox = 0; ox < blitW; ox++) {
 					int srcX = srcCols[ox];
 					uint32 pix = srcRow[srcX];
 					uint8 alpha = (pix >> 24) & 0xFF;
 					int maskX = blitX + ox;
 					int maskY = blitY + oy;
+					if (maskRow && maskSpy && maskAltOfs[ox] >= 0 && alpha > 0) {
+						const bool neu = (maskRow[maskOfs[ox]] & maskBit[ox]) != 0;
+						const bool alt = (maskRow[maskAltOfs[ox]] & maskBit[ox]) != 0;
+						if (neu != alt) {
+							if (alt)
+								spyAltSichtbar++;	// alte Rechnung liess stehen, was hierher gehoert
+							else
+								spyAltVerdeckt++;	// alte Rechnung deckte zu, was sichtbar waere
+						}
+					}
+					if (maskRow && (maskRow[maskOfs[ox]] & maskBit[ox])) {
+						// Hinter einem Vordergrund: der 8-Bit-Zeichner haette diesen
+						// Punkt nicht gezeichnet, also bleibt der Untergrund stehen.
+						// Gezaehlt werden nur sichtbare Punkte; durchsichtige kosten
+						// nichts und wuerden die Zahl verfaelschen.
+						if (alpha > 0)
+							geclippt++;
+						continue;
+					}
 					if (alpha >= 128) {
 						// Fully opaque HD pixel: overwrite composite.
 						spyOpak++;
@@ -3073,6 +3218,19 @@ int step2_fgPixels = 0;
 										foregroundBelow = (curP != clRow[0]);
 									}
 								}
+								// Der eigene 8-Bit-Rest ist kein "Inhalt darunter": das HD-Kostuem
+								// ist die Fassung derselben Figur, nur ein paar Bildpunkte
+								// daneben. Bliebe er stehen, umlaeuft die Figur ein 8-Bit-Saum
+								// (Raum 44 mit HD_TINT_8BIT: 342 Magenta-Punkte, 96 Prozent
+								// davon in der Figur). Fremder Inhalt (andere Figur, Objekt
+								// ohne HD-Bild) bleibt weiterhin stehen.
+								const byte besitzer =
+									(!getenv("HD_NO_RING") && sx8 >= 0 && sx8 < visW && sy8 >= 0 && sy8 < visH)
+									? hdActorMap[sy8 * visW + sx8] : (byte)255;
+								if (besitzer == (byte)ai) {
+									step26_ring++;
+									foregroundBelow = false;
+								}
 								if (!foregroundBelow) {
 									// Nothing behind → restore HD background
 									int bgRX = MIN(maskX + camX, _hdBackgroundSurface.w - 1);
@@ -3116,10 +3274,21 @@ int step2_fgPixels = 0;
 				}
 			}
 
+			if (getenv("HD_SPY") && (geclippt > 0 || spyAltSichtbar > 0 || spyAltVerdeckt > 0)) {
+				if (maskSpy)
+					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d alt_sichtbar=%d alt_verdeckt=%d",
+					         ai, (int)a->_costume, cel, (int)clipZ, geclippt, blitW * blitH,
+					         spyAltSichtbar, spyAltVerdeckt);
+				else
+					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d",
+					         ai, (int)a->_costume, cel, (int)clipZ, geclippt, blitW * blitH);
+			}
+			step26_clipped += geclippt;
+
 			if (hdCostumeOwn) hdCostumeScratch.free();
 		}
 		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d)", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail);
+			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d) maskiert=%d saum=%d", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail, step26_clipped, step26_ring);
 
 		// ── HD Debug Overlay ──────────────────────────────────────
 		// Visualizes costume entry positioning on screen.

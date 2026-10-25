@@ -2567,6 +2567,16 @@ void Actor::drawActorCostume(bool hitTestMode) {
 }
 
 
+byte Actor::getClipZPlane() {
+	byte z = _forceClip;
+	if (z == 100) {
+		z = _vm->getMaskFromBox(_walkbox);
+		if (z > _vm->_gdi->_numZBuffer - 1)
+			z = _vm->_gdi->_numZBuffer - 1;
+	}
+	return z;
+}
+
 void Actor::prepareDrawActorCostume(BaseCostumeRenderer *bcr) {
 	bcr->_actorID = _number;
 	bcr->_actorX = _pos.x - _vm->_virtscr[kMainVirtScreen].xstart;
@@ -2592,14 +2602,7 @@ void Actor::prepareDrawActorCostume(BaseCostumeRenderer *bcr) {
 	bcr->setFacing(this);
 
 	if (_vm->_game.version >= 7) {
-
-		bcr->_zbuf = _forceClip;
-		if (bcr->_zbuf == 100) {
-			bcr->_zbuf = _vm->getMaskFromBox(_walkbox);
-			if (bcr->_zbuf > _vm->_gdi->_numZBuffer-1)
-				bcr->_zbuf = _vm->_gdi->_numZBuffer-1;
-		}
-
+		bcr->_zbuf = getClipZPlane();
 	} else {
 		if (_forceClip)
 			bcr->_zbuf = _forceClip;

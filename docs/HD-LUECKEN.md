@@ -3863,3 +3863,128 @@ Raum  vorher  nachher  Anmerkung
 3. Tiefere Scrollstellungen als xstart 210 sind ohne Walk nicht erreichbar, `HD_SCROLL_TEST`
    bleibt untauglich.
 4. Raum 3 ist weiterhin ohne HD-Material und damit nicht messbar; Raum 13 ersetzt ihn.
+
+## Raum 44: Tiefenquelle sind die Maskenebenen, zwei Adressfehler behoben (t_e0e43766, comi-bau, 25.10.2026)
+
+Auftrag war, die Zeichenreihenfolge im Komposit nicht pro Raum zu setzen, sondern aus den
+Spieldaten abzuleiten: was im 8-Bit-Bild vorne liegt, muss auch in HD vorne liegen.
+
+### Die Quelle der Tiefeninformation
+
+Sie steht nicht in einer Objekttabelle und nicht in den sortKeys, sondern in den
+**Maskenebenen des Raums** (z-Puffer). Der 8-Bit-Zeichner schneidet jede Figur Punkt fuer
+Punkt an der Ebene ab, die ihr Walkbox zuweist:
+
+```
+Akteur   _zbuf           actor.cpp:2570  getClipZPlane() (aus _forceClip bzw. getMaskFromBox(_walkbox))
+Zeichner akos.cpp:773    bdd.maskPtr = getMaskBuffer(0, 0, _zbuf)
+Pruefung bomp.cpp:327    bompApplyMask(line_ptr, mask, maskbit, width, 255)
+Adresse  bomp.cpp:256    maskbit = revBitMask((bd.x + clip.left) & 7)
+         bomp.cpp:258    mask = maskPtr + bd.y*numStrips + (bd.x + clip.left)/8
+```
+
+Damit ist "Kiste hinten, Figur davor, Kanonen ganz vorne" nicht zu raten: Kanonen und Mauer
+sind genau die Stellen, an denen die Ebene gesetzt ist. Der HD-Hintergrund braucht keine
+eigene Ordnung, er ist das Raumbild. Objekte mit HD-Textur bringt der Objektschritt (2.5)
+mit, Objekte ohne HD-Textur muessen aus der 8-Bit-Ebene kommen (`hdMissingMask`,
+gfx.cpp:1751). Tiefe und Reihenfolge kommen damit vollstaendig aus den Spieldaten, ohne
+Raumtabelle.
+
+### Fehler 1: die Maske wurde eine Maschinenspalte daneben gelesen
+
+Der Kostuemschnitt aus t_90713baf las die Ebene ueber `ScummEngine::getMaskBuffer(x,y,z)`.
+Die Funktion addiert `vs->xstart` und teilt die **Summe** ab (gfx.cpp:4381), drawBomp teilt
+getrennt: `xstart/8 + Spalte/8` (bomp.cpp:258). Bei `xstart = 46`, keinem Vielfachen von 8,
+liegt das bis zu eine Maschinenspalte daneben. Raum 44 hat genau diesen Versatz.
+
+```cpp
+// vorher  (gfx.cpp, Kostuemschritt)
+const int stripFirst = (blitX / scale + vs->xstart) / 8;
+maskOfs[ox] = (x8 + vs->xstart) / 8 - stripFirst;
+// jetzt, bitgleich zu drawBomp
+const int stripBase = (int)vs->xstart / 8;
+maskRow = _gdi->getMaskBuffer(stripBase + ((blitX / scale) >> 3), (blitY + oy) / scale, clipZ);
+maskOfs[ox] = (x8 >> 3) - ((blitX / scale) >> 3);
+maskBit[ox] = revBitMask(x8 & 7);
+```
+
+Dieselbe Adressierung benutzt jetzt auch die Maskenaufnahme `hdDumpMaskPlanes`
+(HD_DUMP_MASK=1), sonst misst das Bild eine andere Ebene als der Zeichner liest, und der
+Stufendump wird mit `HD_DUMP_FULL=1` in voller Aufloesung geschrieben.
+
+### Fehler 2: der eigene 8-Bit-Saum galt als "Inhalt darunter"
+
+Der Zweig fuer durchsichtige Kostuempunkte holt den HD-Hintergrund nur zurueck, wenn
+darunter kein 8-Bit-Vordergrund liegt (`foregroundBelow`). Die 8-Bit-Silhouette derselben
+Figur zaehlt dort als Vordergrund, deshalb blieb um jede Figur ein Saum aus 8-Bit-Pixeln
+stehen, sobald die HD-Silhouette ein paar Punkte daneben liegt. Neu ist eine Besitzerkarte:
+Schritt 2 merkt sich je 8-Bit-Punkt, welcher Akteur ihn mit seinem Rechteck abdeckt
+(`hdActorMap`, aus `getPos()`, `_width`, `_top`, `_bottom`, also aus Spieldaten). Gehoert der
+Punkt demselben Akteur, kommt der HD-Hintergrund zurueck; fremder Inhalt (andere Figur,
+Objekt ohne HD-Bild) bleibt stehen.
+
+Schalter: `HD_NO_CLIPMASK=1` (Schnitt aus), `HD_NO_RING=1` (Saum-Ruecknahme aus),
+`HD_NO_ACTORMAP=1` (Besitzerkarte aus), `HD_DUMP_FULL=1` (Stufen in voller Aufloesung).
+
+### Messung: drei Laeufe, ein Bild, volle Aufloesung
+
+Alle Laeufe mit `HD_JUMP_ROOM=44 HD_FIXED_DELTA=20 HD_EXIT_AFTER=140 HD_DUMP_AT=100
+HD_DUMP_FULL=1 HD_DUMP_MASK=1 HD_TINT_8BIT=1`, gleiche Binary
+(`work/engine/scummvm-z44`, md5 b821ce49). Die Stufen 1 bis 3 sind zwischen "clip" und "neu"
+bytegleich (md5 ab7c39f6/b5b3c319), der Vergleich steht also auf demselben Bild.
+
+```
+                                    alt        clip       neu
+Figurpixel ueber der Mauer         1400          0          0    (Kostuem in Maske 1)
+Kanonen/Kiste in Maske 2          26359          0          0    (Kostuem in Maske 2)
+8-Bit-Rest gesamt                  6611       9077       6847    (magenta nach Stufe 4)
+  davon im Figurenfenster          6542       6624       4397
+  davon Kanonen/Kiste                69       2373       2370
+  davon Schiff/Wasser                 0         80         80
+```
+
+Zwei Aussagen stecken darin:
+
+1. **Beide Tiefenfragen sind mit 0 beantwortet.** Kein Punkt des HD-Kostuems liegt mehr in
+   einer gesetzten Maske: der Fuss steht hinter der Mauer, die Kanonen samt Kiste stehen vor
+   dem sitzenden Piraten und vor der Spielfigur. Die Ordnung kommt allein aus `_zbuf`.
+2. **Der 8-Bit-Rest im Figurenfenster faellt um 33 Prozent** (6542 auf 4397 Punkte, volle
+   Aufloesung; das sind 409 auf 275 Achtbitpunkte). Er ist nicht null, weil das HD-Kostuem an
+   Kanten halbdurchsichtig ist und weil Schritt 2.6b die 8-Bit-Ebene ausserhalb der
+   Akteurkaesten bewusst wieder nachzeichnet.
+
+Die 2370 Punkte im Kanonenfenster sind **kein** Fehler: die drei Raumobjekte 848/849/850
+(Kiste, Kanone) haben keine HD-Textur (Abschnitt "Objekt-Pfad Raum 44"), ihre 8-Bit-Fassung
+ist die einzige, die es gibt. Vorher lagen sie unter dem Kostuem des sitzenden Piraten, jetzt
+davor, wie im Original.
+
+### Was hier nicht gemessen wurde
+
+1. Ein Bild, eine Kamera (46), ein Zeitpunkt (`HD_DUMP_AT=100`, Bild F=139). Andere Stellen
+   in Raum 44 und die Raeume 40 bis 43 sind nicht nachgemessen.
+2. Die Zahlen sind Punkte des Komposits (2560x1920), nicht Achtbitpunkte; fuer den Vergleich
+   mit frueheren Abschnitten durch 16 teilen.
+3. Ob das Auge den Rest von 4397 Punkten sieht, ist nicht geprueft; das Blatt zeigt ihn
+   magenta markiert.
+4. Belegt ist, dass der Zeichner jetzt dieselbe Adresse liest wie drawBomp, nicht dass jede
+   COMI-Maske dieselbe Bedeutung hat. Raeume mit `xstart` als Vielfaches von 8 waren vom
+   Adressfehler ohnehin nicht betroffen.
+
+### Dateien
+
+```
+Bild mit markierten Bereichen  projects/comi-hd/reports/vergleich/z_raum44_nachher.png
+                               .../z_raum44_nachher_einzeln.png
+Laeufe (volle Aufloesung)      projects/comi-hd/work/t_e0e43766/{alt,clip,neu}/
+Aenderung                      scummvm/fork/engines/scumm/gfx.cpp (Kostuemschritt,
+                               hdActorMap in Schritt 2, hdDumpMaskPlanes, hdDumpStep)
+Laufskript                    projects/comi-hd/harness/z44_lauf.sh (eigene cwd + Dumps)
+Auswertung                     harness/z44_nachweis.py (die zwei Nachweiszahlen + Bild),
+                               z44_stufen.py, z44_messung.py, z44_versatzfenster.py,
+                               z44_ausschnitt.py, z44_png.py, z44_blatt.py
+Binary                         projects/comi-hd/work/engine/scummvm-z44
+```
+
+**Ueberschneidung:** der Maskenschnitt selbst stammt aus der parallel laufenden Karte
+t_90713baf (gleicher Arbeitsbaum, gleiche Datei gfx.cpp). Diese Karte hat dessen Adressierung
+korrigiert und den Saum ergaenzt. Die Aenderung ist im Baum, nicht committet.

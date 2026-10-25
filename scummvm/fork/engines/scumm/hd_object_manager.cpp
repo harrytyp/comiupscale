@@ -471,6 +471,10 @@ int HdObjectManager::preloadRoom(int room) {
 	int loaded = 0;
 	for (uint i = 0; i < jobs.size(); i++) {
 		if (jobs[i].ok) {
+			// Wie in loadPNG: weissen Upscale-Saum entfernen und Loecher in der
+			// Deckkraft schliessen. Der Batch-Decoder liefert nur das rohe PNG.
+			removeWhiteFringe(jobs[i].surface);
+			hdFillAlphaHoles(jobs[i].surface, 3);
 			TextureCacheEntry entry;
 			entry.surface.copyFrom(jobs[i].surface);
 			entry.lastUsed = ++_lruCounter;

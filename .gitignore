@@ -113,3 +113,16 @@ scummvm/fork/hd/
 /scummvm-src/
 scummvm/fork/*.dll
 scummvm/fork/dists/*.rh
+
+# Build-Artefakte und Spieldaten (nie ins Repo)
+.codegraph/
+.pipeline/
+build/x11link/
+build/out/
+build/install/
+models/
+game/
+capture_*.py
+ppm2png.py
+scummvm.ini
+hd_state.log

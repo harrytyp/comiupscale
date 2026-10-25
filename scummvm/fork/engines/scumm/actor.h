@@ -134,6 +134,13 @@ public:
 	byte _moving = 0;
 	bool _ignoreBoxes = false;
 	byte _forceClip = 0;
+	/**
+	 * Z-Ebene (Maske), gegen die dieses Kostuem gezeichnet wird: dieselbe Maske, die
+	 * der 8-Bit-Zeichner je Bildpunkt prueft (bompApplyMask in akos.cpp). 0 heisst
+	 * "kein Schnitt". Die HD-Komposition braucht denselben Wert, sonst deckt sie
+	 * Vordergruende zu, die im Original vor der Figur stehen.
+	 */
+	byte getClipZPlane();
 	uint16 _lastValidX = 0, _lastValidY = 0;
 
 	byte _initFrame = 0;
