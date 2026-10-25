@@ -2830,7 +2830,9 @@ int step2_fgPixels = 0;
 			// weil die HD-Textur einen festen Braunwert enthaelt und auf fremdem Hintergrund
 			// falsch wirkt. Stattdessen wird die HD-Flaeche als Maske genommen und abgedunkelt
 			// gezeichnet (siehe unten) — scharf und hintergrundunabhaengig.
-			const bool istSchatten = (a->_shadowMode != 0);
+			// Nur Modus 1 ist ein echter Schatten. Der Wert 3 traegt auch normale Figuren
+			// (Raum 44: akos=2, die Spielfigur) — die duerfen nicht schwarz uebermalt werden.
+			const bool istSchatten = (a->_shadowMode == 1);
 
 			Graphics::Surface hdCostumeScratch;
 			const Graphics::Surface *hdCostumeSurfPtr = nullptr;

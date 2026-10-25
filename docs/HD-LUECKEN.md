@@ -679,3 +679,19 @@ row[sx2] = (a << 24);      // schwarz, 55 Prozent der Maskendeckkraft
 
 Damit dunkelt der Schatten nur ab und trägt keine eigenen Farben. Messung: Raum 86 bleibt bei
 0,02-0,04 Prozent.
+
+## Nur Modus 1 ist ein Schatten
+
+`_shadowMode` traegt nicht nur Schatten: Raum 44 fuehrt die Spielfigur (`akos=2`) mit dem
+Wert 3. Wer `!= 0` als Schatten behandelt, malt also echte Figuren schwarz zu — genau der
+Effekt, der als "braeunlicher Schatten" auffiel.
+
+Mit `_shadowMode == 1`:
+
+```
+Raum 86   0,03 %
+Raum 44   3,87 %
+```
+
+Raum 86 bleibt damit sauber, ohne dass Figuren abgedunkelt werden — die Abdunkelung war fuer
+die Abdeckung nie noetig. Raum 44 unveraendert; dort liegt der Rest woanders.
