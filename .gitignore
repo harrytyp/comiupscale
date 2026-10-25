@@ -126,3 +126,5 @@ capture_*.py
 ppm2png.py
 scummvm.ini
 hd_state.log
+
+game/
