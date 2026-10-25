@@ -1,6 +1,42 @@
 COMI HD — Installation
+======================
 
-1. Download comi_hd_windows.zip from the NAS
-2. Extract to a local folder on your Windows PC (e.g. C:\Games\COMI-HD\)
-3. Run start_comi_hd.bat
-4. Do NOT run from the network share directly — it will be very slow
+Was du brauchst
+---------------
+1. Das Bundle scummvm-win-bundle.zip (enthält scummvm.exe, SDL2.dll, zlib1.dll,
+   scummvm.ini und die beiden Startdateien)
+2. Die HD-Texturpakete aus dem Release "HD Assets v1.0.5":
+   hd_assets_part1.zip  (Hintergründe, Objekte, Objektebenen, object_map.json)
+3. Deine eigenen Spieldateien von The Curse of Monkey Island
+   (die Original-CD oder eine GOG/Steam-Installation). Aus rechtlichen Gründen
+   sind die Spieldaten nicht im Release enthalten.
+
+Einrichten
+----------
+1. Bundle in einen lokalen Ordner entpacken, zum Beispiel C:\Games\COMI-HD\
+   Nicht direkt vom Netzlaufwerk starten, das ist deutlich langsamer.
+2. Spieldaten nach C:\Games\COMI-HD\game\ kopieren.
+   Erwartet werden die Originaldateien, also COMI.LA0, COMI.LA1, COMI.LA2,
+   die MUSIC- und SOUND-Ordner sowie VOXDISK1.BAT.
+3. hd_assets_part1.zip nach C:\Games\COMI-HD\hd\ entpacken. Der Inhalt liegt
+   dort schon unter hd\, also nach dem Entpacken prüfen, dass es
+   C:\Games\COMI-HD\hd\backgrounds\ gibt und in C:\Games\COMI-HD\hd\ auch
+   object_map.json liegt.
+4. start_comi_hd.bat doppelklicken.
+
+Ohne Punkt 3 läuft das Spiel, aber ohne die hochauflösenden Texturen. Dann greift
+für Räume ohne eigene Datei eine einfache Ersatztextur; das ist genau das Bild,
+das man auch in einigen Menüs sieht.
+
+Was die Pakete enthalten
+------------------------
+  hd_assets_v1.0.5   Hintergründe für 135 Räume, 982 Objekttexturen,
+                     234 Objektebenen, object_map.json
+  scummvm.exe        Der HD-Fork für Windows (64 Bit)
+  scummvm            Der HD-Fork für Linux (64 Bit, SDL2 wird zur Laufzeit geladen)
+
+Einstellungen
+-------------
+In scummvm.ini steht unter [comi] der Pfad zum HD-Ordner (hd_path=hd). Für das
+Spiel selbst genügt der Unterordner game. Fenstergröße und Vollbild stellt der
+ScummVM-Startdialog ein.
