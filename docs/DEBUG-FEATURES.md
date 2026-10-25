@@ -16,6 +16,27 @@ eine Messung von aussen reproduzierbar ist.
 | `HD_DUMP_SEQ` | Bildfolge, erst ab dem Raumsprung (`_hdCaptureArmed`). |
 | `HD_DUMP_DIR` | Zielordner für Aufnahmen. |
 
+### Gesundheitscheck der Aufnahme
+
+Eine Bildfolge, die nicht entsteht, sieht wie ein Messergebnis aus, ist aber keins. Zwei
+Sperren dagegen:
+
+* **Engine.** Sie zählt jede geschriebene HD-Aufnahme (`_hdSeqWritten`, nur Flächen mit
+  Breite und Höhe größer 0). Endet der Lauf über `HD_EXIT_AFTER` oder `HD_DUMP_AT` und
+  steht der Zähler auf 0, schreibt sie
+  `HD_DUMP_SEQ ist gesetzt, aber keine einzige Aufnahme geschrieben (Raum .., Aufnahme scharf=..)`
+  und beendet sich mit Rückgabewert 1. Der Abbruch steht damit im Protokoll und im
+  Exit-Code, nicht in einer stillen Leermessung.
+* **Aufnahmeordner.** `harness/aufnahme_wache.sh <ordner> [mindestzahl]` prüft nach dem
+  Lauf jede Datei: Kopfzeile vollständig, Breite und Höhe größer 0, Bilddaten nicht
+  abgeschnitten. Zu wenige brauchbare Bilder ergeben Rückgabewert 2 mit klarer Meldung.
+  Das fängt auch Läufe ab, die die Engine per `timeout` beendet. Beispiel für einen
+  Messlauf: `harness/aufnahme_wache.sh work/dumps/hd_seq 60`.
+
+Merksatz für die Auswertung: `comp=2560x0` in `HD DEBUG` heißt Höhe 0 und damit keine
+Bildpunkte. Die Stufenaufnahmen tragen ihre Größe in der Kopfzeile (`P6\n1280 0\n255\n`
+ist eine leere Fläche); `aufnahme_wache.sh` zählt solche Dateien nicht als Bild.
+
 ## Diagnose
 
 | Variable | Wirkung |
