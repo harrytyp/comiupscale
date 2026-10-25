@@ -696,6 +696,45 @@ Raum 44   3,87 %
 Raum 86 bleibt damit sauber, ohne dass Figuren abgedunkelt werden — die Abdunkelung war fuer
 die Abdeckung nie noetig. Raum 44 unveraendert; dort liegt der Rest woanders.
 
+## Raum 44: der HD-Satz sass um den Kameraversatz zu weit links
+
+Gemessen mit dem eigenen Messplatz (Kopie der Release-Binary, deren Diagnosepfade auf einen
+eigenen Ordner zeigen, damit parallele Aufgaben sich die Aufnahmen nicht loeschen):
+`HD_TINT_8BIT=1`, `HD_FIXED_DELTA=20`, `HD_JUMP_ROOM=44`, `HD_DUMP_SEQ=1`, `HD_EXIT_AFTER=240`,
+magenta in der Mitte der Folge. Ausgangswert auf HEAD ca595c97: **3,87 Prozent** (80 Bilder,
+max 3,89), identisch mit dem Wert aus der Regressionsmessung.
+
+Drei Fassungen, gleiche Messung, nur die Zeichenposition der HD-Kostueme geaendert:
+
+```
+unveraendert                                       3,87 %
+Cel-Hotspot (relX/relY) ein zweites Mal addiert    3,40 %
+Kameraversatz sdLeft nicht mehr abgezogen          0,78 %
+```
+
+Die letzte Fassung bleibt stehen. Sie ist in Raeumen ohne Kameraversatz wirkungslos
+(Gegenprobe: Raum 47 unveraendert 0,00 Prozent, Raum 9 0,02 Prozent wie vorher), weil dort
+`sdLeft = 0` gilt und der ausgerechnete Wert derselbe ist.
+
+Warum das die richtige Stelle ist: der Komposit uebernimmt die 8-Bit-Ebene spaltenweise 1:1
+(`hdXStart[sx] = sx * hdW / visW`, der Kameraversatz steckt in Schritt 1, also in der
+Hintergrundkopie). Die 8-Bit-Figur steht damit in Pufferkoordinaten, und der HD-Pfad durfte
+`sdLeft` nicht ein zweites Mal abziehen. In Raum 44 (Kamera 46) sass jedes HD-Kostuem 46
+Spielpixel zu weit links, die 8-Bit-Silhouette blieb rechts davon stehen.
+
+Der Cel-Hotspot war dagegen schon enthalten: `entries[ei].drawX` ist `relX` plus der
+aufgelaufene Limb-Versatz aus dem AKOS-Kopf, und `drawY` entsprechend. Ein zweites Einrechnen
+verbessert Raum 44 nur auf 3,40 Prozent, also deutlich schlechter als die Kamera-Korrektur, und
+verschiebt die Figur zusaetzlich senkrecht. Deshalb verworfen.
+
+Was danach uebrig bleibt: 0,78 Prozent in Raum 44, verteilt auf mehrere kleine Flaechen. Das ist
+die Differenz zwischen 8-Bit-Silhouette und HD-Textur (Alpha-Raender, Skalierung), nicht mehr die
+Lage. Fuer die naechste Stufe gehoert dort die Deckungspruefung hin, nicht die Position.
+
+Messwerkzeug: `harness/versatz_stufen.py` (Stufen 2 bis 4 eines Laufs, Kaesten und
+Kreuzkorrelation) und `harness/versatz_sichtung.py`. Ein Vergleich der Stufen ist nur im selben
+Lauf zulaessig, weil die Stufendumps jedes Bild ueberschrieben werden.
+
 ## Alpha-Kanal im Kostuem-Blitz: geprueft, kein blinder RGB-Schreibvorgang
 
 Verdacht: der Blit der HD-Kostueme schreibt RGB ohne den Alpha-Byte zu pruefen, deshalb
