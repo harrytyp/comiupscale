@@ -2866,10 +2866,11 @@ int step2_fgPixels = 0;
 						const uint32 c = row[sx2];
 						if (!(c >> 24))
 							continue;
-						row[sx2] = (150u << 24)
-						         | ((((c >> 16) & 0xFF) * 45 / 100) << 16)
-						         | ((((c >> 8) & 0xFF) * 40 / 100) << 8)
-						         | ((c & 0xFF) * 40 / 100);
+						// Reiner Schatten: schwarz, Deckkraft aus der Maske. Frueher wurden die
+						// Kostuemfarben abgedunkelt — dadurch blieb der Farbton der Figur
+						// sichtbar und der Schatten wirkte braeunlich statt transparent.
+						const uint32 a = (c >> 24) * 55 / 100;
+						row[sx2] = (a << 24);
 					}
 				}
 			}

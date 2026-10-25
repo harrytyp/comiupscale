@@ -665,3 +665,17 @@ Raum 44   7,14 -> 3,85 %
 
 Raum 44 hat danach noch 3,85 Prozent, davon 3,72 von Figuren (`HD_NO_ACTORS=1` → 0,13 Prozent).
 Die betroffenen Akteure tragen `schatten=3` (akos=2 und akos=253).
+
+## Schatten: schwarz und durchsichtig, nicht abgedunkelte Figur
+
+Die erste Fassung multiplizierte die Kostümfarben (RGB 45/40 Prozent) und behielt damit den
+Farbton der Figur — der Schatten wirkte bräunlich und wie ein Teil des Bildes. Richtig ist ein
+reiner Schatten: schwarz, Deckkraft aus der Alpha-Maske des Kostüms.
+
+```cpp
+const uint32 a = (c >> 24) * 55 / 100;
+row[sx2] = (a << 24);      // schwarz, 55 Prozent der Maskendeckkraft
+```
+
+Damit dunkelt der Schatten nur ab und trägt keine eigenen Farben. Messung: Raum 86 bleibt bei
+0,02-0,04 Prozent.
