@@ -2990,8 +2990,12 @@ raum86_komposit.png        Raum 86
 raum86_deckung.png         5 Akteure, beide Zeichenwege in einem Bild
 ```
 
-In den Deckungsbildern ist die HD-Flaeche gruen, die 8-Bit-Silhouette rot und die
-Ueberlappung weiss eingezeichnet; ein systematischer Versatz waere ein gruener und ein roter
+In den Deckungsbildern ist links die ganze Szene mit eingezeichneten Akteurkaesten zu
+sehen, danach je Akteur ein Feld: Die HD-Flaeche ist gruen, die 8-Bit-Silhouette rot und
+die Ueberlappung weiss eingezeichnet, ueber der auf 45 Prozent abgedunkelten Szene. Die
+erste Fassung dieser Bilder war bis auf die Beschriftung schwarz, Ursache und Neurechnung
+stehen im Abschnitt "Deckungsbilder: falscher Koordinatenraum" am Ende dieses Dokuments.
+Ein systematischer Versatz waere ein gruener und ein roter
 Saum an derselben Kante. Ueber jedem Feld stehen Raum, Akteur, Kostuem, Cel, Zeichenweg und
 die gemessenen dx/dy.
 
@@ -3222,4 +3226,115 @@ Messung und Bilder                projects/comi-hd/harness/fall_auswertung.py
 Tabelle je Bild                   projects/comi-hd/harness/fall_frame.py
 Lauf und Warten                   projects/comi-hd/harness/fall_lauf.sh, fall_warten.sh
 Binary des Laufs                  projects/comi-hd/work/engine/scummvm-f44 (Fork-Bau 16:45, HEAD 82ca6baa)
+```
+
+## Deckungsbilder: falscher Koordinatenraum, Raum 44 war schwarz (Aufgabe t_599ebbfa)
+
+### Befund
+
+`projects/comi-hd/reports/vergleich/nachher/raum44_deckung.png` ist bis auf die
+Beschriftungszeile schwarz. Nachgemessen an der ausgelieferten Datei: 288 x 446 Punkte,
+mittlere Helligkeit 4,36, nicht schwarze Punkte 15,74 Prozent, davon gruen 0, rot 0,
+weiss 0 und gelb 489 Punkte. Es sind also alle drei Felder leer, gezeichnet wurde nur der
+gelbe Text. Dasselbe Muster in kleinerem Umfang bei `raum09_deckung.png` (Helligkeit
+16,45), `raum15_deckung.png` (17,49) und `raum86_deckung.png` (22,29); brauchbar war
+keines der vier.
+
+### Erste Ursache: hd_box und blit wurden nicht durch die Skala geteilt
+
+`gfx.cpp` protokolliert die HD-Position und den Blit in Kompositpunkten. Die Stufendumps
+sind um `skala = Dumpbreite / 640` kleiner, in diesen Laeufen Faktor 2 (Dump 1280 breit,
+Spiel 640). `harness/baseline_auswertung.py` rechnet das richtig (`hx = e["hx"] / skala`),
+`harness/verify_bilder.py` nicht: es hat `e["hd_box"]` und `e["blit"]` roh als
+Dumpkoordinaten benutzt. Damit lag jedes Fenster auf dem doppelten Ort und war doppelt so
+gross, traf also neben dem Akteur.
+
+Belegt an den drei belastbaren Akteuren aus `work/verify/runs/nach_raum44` (Dump 1280 x 960,
+skala 2, Rand 48 Punkte):
+
+```
+Akteur      box (roh)     Fenster wie im Skript    Maskenpunkte      Fenster geteilt   hd     8bit   beide
+ai=4  cel=8   1944, 724        0 x 284              hd 0    8bit 0        198 x 206   15366  14452  14451
+ai=1  cel=34  1224, 396      104 x 299              hd 0    8bit 0        155 x 197    8152   7798   7656
+ai=1  cel=22  1156, 576      172 x 432              hd 0    8bit 0        226 x 431   26027  25412  24052
+```
+
+Ueber alle vier Raeume (15 belastbare Eintraege) blieben 11 Fenster ohne einen einzigen
+Maskenpunkt; die uebrigen vier trafen zufaellig einen Teil des Akteurs, was die Reste in
+Raum 9 und 86 erklaert.
+
+### Zweite Ursache: die Bauart war ohnehin kein Raumnachweis
+
+Die Felder wurden auf einen schwarzen Grund gezeichnet, nur die beiden Masken und die
+Ueberlappung. Auch mit richtigen Fenstern zeigt so ein Bild eine Silhouette, nicht den
+Raum. Fuer ein Nachweisbild ist das die falsche Bauart, unabhaengig vom Rechenfehler.
+
+### Korrektur und Wiederholung
+
+`harness/verify_bilder.py` ist geaendert:
+
+1. `hd_box` und `blit` werden durch `skala` geteilt, bevor zugeschnitten wird.
+2. Das Blatt beginnt mit der ganzen Szene (Komposit Stufe 4, 640 breit), Akteurkaesten
+   gelb eingezeichnet und beschriftet. Damit steht der Raum mit Figuren und Objekten
+   im Bild.
+3. Je Akteur folgt ein Feld: die auf 45 Prozent abgedunkelte Szene, darueber die
+   HD-Flaeche gruen, die 8-Bit-Silhouette rot, die Ueberlappung weiss. Die Szene bleibt
+   unter den Masken erkennbar.
+4. Leere Fenster werden ausgelassen und gemeldet, statt als schwarze Felder zu erscheinen.
+5. Am Ende prueft das Skript die mittlere Helligkeit und endet mit Rueckgabewert 1, wenn
+   ein Bild unter 20 liegt.
+
+Neu gerechnet aus denselben Laeufen; die Komposits sind in der Dateigroesse gleich den
+ausgelieferten (1.827.185 / 1.267.758 / 1.197.503 / 1.580.984 Bytes), die Laeufe sind also
+dieselben (Binary `work/verify/binary/scummvm-nach`, md5 9ebd7e8a, Arbeitsbaum 82ca6baa):
+
+```
+Bild                     Punkte      Helligkeit   Schwelle 20   Felder
+raum44_deckung.png       1237 x 494     93,87       bestanden     Szene + 3 Akteure
+raum09_deckung.png       2170 x 494     90,87       bestanden     Szene + 5 Akteure
+raum86_deckung.png       2417 x 646     59,45       bestanden     Szene + 5 Akteure
+raum15_deckung.png        966 x 494     99,63       bestanden     Szene + 2 Akteure
+```
+
+Gegenprobe, dass die Masken wirklich auf den Akteuren liegen (Fenster wie im korrigierten
+Skript): fuer ai=1 cel=22 in Raum 44 liegen 24.052 Punkte gleichzeitig in beiden Masken,
+das sind 92,4 Prozent der HD-Flaeche und 94,7 Prozent der 8-Bit-Flaeche. In Raum 9 sind es
+bei ai=2 cel=5 50.208 von 51.003 (98,4 Prozent), in Raum 86 bei ai=5 cel=2 9.213 von
+10.522 (87,6 Prozent). Diese Werte passen zu den Deckungen in `versatz.json` (0,87 bis
+0,98), die aus derselben Messung stammen.
+
+Die Zahlen der Verifikation selbst waren nie falsch: `baseline_auswertung.py` teilt die
+Rohkoordinaten durch die Skala, deshalb sind dx/dy und die Deckungswerte in `versatz.json`
+von diesem Fehler nicht betroffen. Falsch war allein das Bild, das aus denselben Dumps
+gezeichnet wurde.
+
+### Kein neuer Spielaufruf
+
+Waehrend dieser Arbeit lief bereits ein Messlauf einer anderen Karte (`scummvm-v44`,
+PID 956530, `timeout 400`). Es gilt ein Spielprozess gleichzeitig, deshalb wurde keine
+eigene Runde gestartet, sondern aus den dokumentierten Stufendumps neu gerechnet. Die
+Bilder sind damit eine Auswertung vorhandener Rohdaten, kein neuer Messlauf.
+
+### Was hier nicht gemessen wurde
+
+1. Raeume mit belastbaren Eintraegen sind 9, 15, 44 und 86. Raum 3 hat kein HD-Material
+   (Abschnitt oben), dort gibt es kein Deckungsbild, nur den Komposit.
+2. Das linke Feld ist der Komposit des Laufs, keine Videoaufnahme und kein Mitschnitt
+   mehrerer Bilder.
+3. Scrollstellungen tiefer als xstart 46 bleiben mit der Magenta-Methode nicht messbar
+   (8-Bit-Ebene vollstaendig bedeckt), das betrifft auch die Deckungsbilder.
+
+### Dateien
+
+```
+Neu gerechnet   projects/comi-hd/reports/vergleich/nachher/raum{03_,09_,15_,44_,86_}*.png
+Bild E ersetzt  projects/comi-hd/reports/vergleich/frage_E.png
+Alte Fassung    projects/comi-hd/reports/vergleich/nachher/raum{09,15,44,86}_deckung_kaputt.png
+                projects/comi-hd/reports/vergleich/frage_E_kaputt.png  (nicht geloescht)
+Bildgenerator   projects/comi-hd/harness/verify_bilder.py   (korrigiert)
+Helligkeit      projects/comi-hd/harness/bild_helligkeit.py  (Schwelle 20, Exit 1)
+Farbflaechen    projects/comi-hd/harness/deckung_farben.py   (gruen/rot/weiss, Ueberdeckung)
+Fensterprobe    projects/comi-hd/harness/deckung_diagnose.py (roh gegen geteilt, je Akteur)
+Laufuebersicht  projects/comi-hd/harness/lauf_uebersicht.py
+Laeufe          projects/comi-hd/work/verify/runs/nach_raum{9,15,44,86}/
 ```
