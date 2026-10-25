@@ -835,3 +835,60 @@ Auswertung               projects/comi-hd/harness/alpha_gegenprobe.py
 sie ein Drittel des Bildes abdecken (43,7 Prozent des Magentas liegt darin, 33,8 Prozent der
 Flaeche sind Rechteck). Eine Zuordnung "innen/aussen" ist damit nicht belastbar, deshalb steht
 die Aussage oben auf den Zaehlern im Blit, nicht auf den Rechtecken.
+
+## Nachmessung Raum 44: beide Zeichnungen teilen denselben Bezug
+
+Stand nach c45f93df, gemessen am 25.10. um 12:35 mit der ausgelieferten
+`release/linux/scummvm` (Binary vom 11:49, `gfx.cpp` seit 133450b2 unveraendert,
+HEAD c45f93df bringt nur Doku). Die Aufgabe ging von 46 Spielpixeln Versatz und
+3,87 Prozent Magenta aus; das ist der Stand VOR 133450b2. Hier steht, was danach gilt.
+
+Magenta-Anteil aus `harness/magenta_check.py 44`, Mitte der Folge:
+
+```
+vor der Kamerakorrektur   3,87 %
+Lauf 11:55                0,78 %
+dieser Lauf 12:35         0,95 %   (80 Bilder, max 0,95)
+```
+
+Die Differenz 0,78 gegen 0,95 ist Bildraster, nicht Zeichnung: die Bildfolge haengt an
+der Zahl der Kompositionen, die ausgewerteten Bilder liegen also nicht an derselben
+Stelle. Beide Werte liegen weit unter 3,87.
+
+Ortsaufloesung des Rests (tinted Stufenlauf, `harness/magenta_rest_orte.py`):
+
+```
+Stand vor der Korrektur (Binary 11:19)                    3,88 %
+  Figur, breiter Saum     (344,100)-(400,311)   24.046 px
+  zweite Figur            (534,181)-(591,269)   12.270 px
+  Randstreifen rechts     (594,141)-(603,371)    9.132 px
+  Fuesse                  (542,312)-(587,331)    1.116 px
+
+Stand jetzt (Binary 11:49)                                0,96 %
+  Randstreifen rechts     (594,140)-(603,371)    9.172 px
+  Fuesse                  (338,292)-(377,311)    2.026 px
+```
+
+Der Figurensaum ist weg. Vorher war er 56 Spielpixel breit (344 bis 400), die
+8-Bit-Figur stand also sichtbar neben dem HD-Kostuem. Jetzt bleibt am Koerper nichts
+und an den Fuessen 0,16 Prozentpunkte (Schattenkante, siehe Abschnitt zum Schatten).
+
+Geometrisch, im selben Lauf gemessen (`harness/versatz_stufen.py`, Stufenbilder 2x):
+8-Bit-Figur `(335,100)-(400,311)`, HD-Figur `(335,99)-(399,311)`. Kastenkanten also
+0 bis 0,5 Spielpixel auseinander, Schwerpunkt x 367,0 gegen 367,3 (2x) = 0,15
+Spielpixel. Der Schwerpunkt y weicht 2,9 Spielpixel ab, weil die HD-Textur eine andere
+Massenverteilung hat als die 8-Bit-Silhouette; die Kanten stimmen.
+
+Was uebrig bleibt, ist nicht die Figur: ein 9 Spielpixel breiter, 231 Pixel hoher
+Streifen am rechten Bildrand (594 bis 603). Er ist vor und nach der Korrektur gleich
+gross (9.132 gegen 9.172 px), war also vorher schon da und gehoert zur Kante der
+8-Bit-Vorlage im scrollenden Raum. Offen, eigene Aufgabe.
+
+Gegenprobe `HD_NO_ACTORS=1`: damit fehlt die 8-Bit-Figur, und die Differenz der beiden
+8-Bit-Bilder ist die Figurenmaske (17 gemeinsame Bilder, `harness/versatz_raum44.py`).
+Sichtbild vorher/nachher: `projects/comi-hd/reports/vergleich/dopplung_raum44.png`
+(oben Binary 11:19, darunter Binary 11:49, gleicher Ausschnitt, unten das ganze Bild).
+Messlaeufe in `projects/comi-hd/work/raum44_nachmessung/{mit,ohne,tint}`, Werkzeuge
+`harness/versatz_raum44_lauf.py`, `harness/dopplung_raum44_bild.py`,
+`harness/magenta_rest_orte.py`.
+
