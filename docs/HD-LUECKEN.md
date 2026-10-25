@@ -614,3 +614,31 @@ Der erste Fall ist der wahrscheinliche: ein Akteur ohne Limb-Daten erzeugt weder
 Protokollzeile und bleibt damit vollständig in 8 Bit. Genau dort ist als Nächstes eine
 Protokollzeile mit `ai`, `_costume`, `_hdNumLimbs` und den Limb-Cels nötig — und für den Fall
 ohne Limb-Daten ein Rückfall auf das vollständige Kostümbild.
+
+## Schatten in HD: der Rest fällt
+
+Ursache war die Auslassung `if (a->_shadowMode != 0) continue;`. Die Sonde zeigt, dass genau
+die fehlenden Akteure diesen Wert tragen:
+
+```
+ai=1   akos=399  sichtbar=1  schatten=3  limbs=2  cel0=13
+ai=12  akos=429  sichtbar=1  schatten=3  limbs=3  cel0=7
+```
+
+Neu: Schatten werden gezeichnet, aber nicht mit ihrer Textur, sondern als abgedunkelte Fassung
+(RGB auf 45/40 Prozent, Deckkraft 150/255) auf einer eigenen Kopie — der Zwischenspeicher
+bleibt unberührt. Damit ist der Schatten scharf und vom Hintergrund unabhängig.
+
+Messung (magenta, Mitte des Laufs):
+
+```
+Raum 86   8,65 -> 1,31 %     (max 1,91)
+Raum 15   0,86 -> 0,29 %
+Raum 33   4,44 -> 0,17 %     (einzelne Bilder bis 7,06)
+Raum 41   1,17 -> 0,00 %
+Raum 44   3,29 -> 7,14 %     <- Verschlechterung, offen
+```
+
+Raum 44 ist der einzige Rückschritt: mit `HD_NO_ACTORS=1` fällt er auf 2,78 Prozent, die
+restlichen 4,36 Punkte stammen also von Akteuren — dort ist zu prüfen, ob viele Schattenakteure
+den Eintragspuffer (256) füllen und echte Figuren verdrängen.

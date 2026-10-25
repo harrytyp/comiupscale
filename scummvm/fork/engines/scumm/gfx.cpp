@@ -2701,6 +2701,18 @@ int step2_fgPixels = 0;
 
 		for (int ai = 0; ai < _numActors && numEntries < 256; ai++) {
 			Actor *a = _actors[ai];
+			if (getenv("HD_SPY") && a) {
+				// Welche Akteure erreichen den Sammelschritt, und mit welchen Daten? Ohne diese
+				// Zeile war nicht zu sehen, warum ein Akteur mit vorhandenem HD-Kostuem keinen
+				// Eintrag bekommt (Raum 86: 16 Kostueme vorhanden, 2 Eintraege).
+				FILE *af = fopen("/opt/data/projects/comi-hd/work/dumps/hd_actor_probe.log", "a");
+				if (af) {
+					fprintf(af, "AKTEUR ai=%d akos=%d sichtbar=%d schatten=%d limbs=%d cel0=%d cel1=%d\n",
+					        ai, (int)a->_costume, (int)(a->_visible ? 1 : 0), (int)a->_shadowMode,
+					        (int)a->_hdNumLimbs, (int)a->_hdLimbCel[0], (int)a->_hdLimbCel[1]);
+					fclose(af);
+				}
+			}
 			if (!a || a->_costume == 0 || !a->_visible) {
 				step26_noCostume++;
 				step26_skipped++;
@@ -2808,8 +2820,11 @@ int step2_fgPixels = 0;
 			// aus dem sie extrahiert wurde, und wirkt auf jedem anderen Hintergrund falsch.
 			// Deshalb hier auslassen und die 8-Bit-Ebene darunter durchscheinen lassen.
 			// Siehe Issue 29.
-			if (a->_shadowMode != 0)
-				continue;
+			// Schatten werden NICHT mehr ausgelassen. Frueher stand hier ein `continue`,
+			// weil die HD-Textur einen festen Braunwert enthaelt und auf fremdem Hintergrund
+			// falsch wirkt. Stattdessen wird die HD-Flaeche als Maske genommen und abgedunkelt
+			// gezeichnet (siehe unten) — scharf und hintergrundunabhaengig.
+			const bool istSchatten = (a->_shadowMode != 0);
 
 			Graphics::Surface hdCostumeScratch;
 			const Graphics::Surface *hdCostumeSurfPtr = nullptr;
@@ -2829,7 +2844,29 @@ int step2_fgPixels = 0;
 			// Bei einem Treffer im Cache zeigt hdCostumeSurfPtr direkt auf die
 			// zwischengespeicherte Flaeche. Nur die eigene Kopie darf freigegeben werden.
 			const bool hdCostumeOwn = (hdCostumeSurfPtr == nullptr);
-			const Graphics::Surface &hdCostumeSurf = hdCostumeOwn ? hdCostumeScratch : *hdCostumeSurfPtr;
+			// Schatten: eigene Kopie, damit der Zwischenspeicher unveraendert bleibt.
+			Graphics::Surface schattenKopie;
+			if (istSchatten && !hdCostumeOwn)
+				schattenKopie.copyFrom(*hdCostumeSurfPtr);
+			const Graphics::Surface &hdCostumeSurf = hdCostumeOwn ? hdCostumeScratch
+				: (istSchatten ? schattenKopie : *hdCostumeSurfPtr);
+			if (istSchatten) {
+				// Abdunkeln: RGB auf knapp die Haelfte, Deckkraft auf 150/255. Damit wirkt die
+				// Figur als Schatten auf dem HD-Hintergrund, unabhaengig von dessen Farben.
+				Graphics::Surface &sz = hdCostumeOwn ? hdCostumeScratch : schattenKopie;
+				for (uint sy2 = 0; sy2 < sz.h; sy2++) {
+					uint32 *row = (uint32 *)sz.getBasePtr(0, sy2);
+					for (uint sx2 = 0; sx2 < sz.w; sx2++) {
+						const uint32 c = row[sx2];
+						if (!(c >> 24))
+							continue;
+						row[sx2] = (150u << 24)
+						         | ((((c >> 16) & 0xFF) * 45 / 100) << 16)
+						         | ((((c >> 8) & 0xFF) * 40 / 100) << 8)
+						         | ((c & 0xFF) * 40 / 100);
+					}
+				}
+			}
 
 			// Validate surface
 			if (getenv("HD_SPY")) {
