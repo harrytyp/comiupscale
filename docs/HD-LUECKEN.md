@@ -4229,3 +4229,127 @@ Raumobjekte `state=0`), dort ist die Ordnung nicht messbar. Fuer eine Aussage ue
 braucht es Spielstaende mit laufenden Raumskripten; `release/linux/saves` ist leer. Der
 Nachweis steht damit auf einem Raum mit wirklich gezeichneten Objekten und auf dem Pruefmittel,
 das den Fall "Objekt kommt per Skript nach oben" nachstellt.
+
+## Saum um Kostueme und Wasser: Teilalpha wurde deckend geschrieben (t_10358d65, comi-bau, 25.10.2026)
+
+Nutzerbefund an `pier_check.png` (Raum 44): um die Figuren und um die animierte Wasserflaeche liegt
+ein harter Saum, und vom Fuss ist noch etwas zu viel sichtbar.
+
+### Befund: mehr als die Haelfte aller Randpunkte ging deckend ins Bild
+
+Der Kostuemschritt schrieb jeden Punkt mit `alpha >= 128` als **voll deckend** ins Komposit
+(`gfx.cpp`, Schritt 2.6). Ein Randpunkt mit Deckkraft 130 bis 254 ist aber kein deckender Punkt: er
+traegt die Randfarbe der hochskalierten Textur (bei diesen Figuren fast Schwarz, beim Wasser Weiss)
+und wurde mit genau dieser Farbe hart ins Bild gesetzt. Gemessen im selben Bild (F=139, Raum 44,
+Komposit 2560x1920):
+
+```
+Punkte mit 0 < alpha < 255 im Kostuemschritt     46.830 je Bild
+davon deckend geschrieben (alpha >= 128)         25.264  (54 Prozent)
+davon geblendet (alpha < 128)                    21.566
+```
+
+Dieselbe Schwelle stand im Objektschritt (Schritt 2.5, `gfx.cpp`) und in den UI-Schritten; in
+Raum 44 zeichnet sie nichts (0 HD-Objekte), dort ist nur der Kostuemweg betroffen.
+
+### Der Fix
+
+Deckend wird nur noch geschrieben, wenn `alpha == 255` ist; jeder Punkt mit `0 < alpha < 255` wird
+geblendet (Quelle mal Alpha plus Ziel mal Rest). Betroffen sind beide Stellen, die Szenenflaechen
+schreiben: Kostueme (`gfx.cpp`, Schritt 2.6) und Objekte (Schritt 2.5). Die Zaehler
+`randdeckend`/`randhalb` stehen im Zustandsprotokoll
+(`step2.6 costumes: ... randdeckend=... randhalb=...` und `step2.5 objects: ...`).
+
+### Messung vorher/nachher (zwei Laeufe derselben Quelle, nur diese Aenderung)
+
+```
+Lauf                randdeckend   randhalb   geaenderte Punkte im Bild
+vorher (Zaehler)       25.264       21.566   -
+nachher (Fix)               0       46.830   21.170 von 4.915.200 (0,43 Prozent)
+```
+
+Die Aenderung liegt genau auf den Konturen: 4.367 Punkte auf der halben Aufloesung, markiert in
+`projects/comi-hd/work/saum/bilder/vorher_markiert.png` als lila Kontur um die Spielfigur, um den
+sitzenden Piraten und als Punktmuster auf der Wasserflaeche links am Bildrand. Kiste, Fass und
+Kanonen sind **nicht** markiert, sie sind Malerei des HD-Hintergrunds.
+
+An den Stellen der staerksten Aenderung war der Punkt vorher fast schwarz und ist nachher die
+geblendete Hintergrundfarbe:
+
+```
+Feld (1152,832)  vorher RGB (3,1,1)     nachher (80,46,31)    Figur ueber Holz
+Feld (0,896)     vorher RGB (11,2,1)    nachher (34,57,75)    Wasserflaeche links
+Feld (1216,960)  vorher RGB (0,0,0)     nachher (86,65,29)    Figur ueber Stein
+```
+
+Der Saum war also ein harter dunkler Ring (beim Wasser ein harter heller Ring) aus den
+Teilalpha-Punkten der Textur — kein 8-Bit-Rest und keine Maskenkante.
+
+### Ausschnitte (4-fach, vorher links, nachher rechts)
+
+`projects/comi-hd/reports/vergleich/saum_vorher_nachher.png`, vier Zeilen zu je 160x120
+Kompositpunkten:
+
+```
+Zeile                         geaenderte Punkte (>8)   stark (>60)   groesste Aenderung
+Guybrush-Kante (1150..1310, 800..920)       742            241            102
+Wasser-Kante links (0..160, 880..1000)      637            219            124
+Kanonenrand unten rechts (1960..2120, ...)    0              0              0
+Fuss an der Mauer (1156..1316, 1160..1280)   171             60            111
+```
+
+### Kanonen: kein zu knapper Beschnitt nachweisbar
+
+In Raum 44 gibt es keine HD-Objekte (`hd/objects` 0 Dateien mit Praefix `0044_`), der Objektschritt
+meldet in jedem Bild `loaded=0`, und die drei Raumobjekte 848..850 haben `state=0`. Kanonen, Kiste,
+Boot und Wasser sind Malerei des HD-Hintergrunds `hd/backgrounds/0044_armsdlr.png`. Damit kann ein
+zu knappes Objekt- oder Kostuemrechteck die Kanone nicht beschneiden: der Kanonenrand aendert sich
+durch den Fix in 0 Punkten.
+
+Zwei Gegenproben zum Beschnitt:
+
+```
+Komposit gegen Hintergrunddatei (Versatz 184 Punkte = sdLeft 46 x Skalierung 4):
+  Abweichung 5,18 Prozent, aber keine einzige Zeile ueber 1500 und keine Spalte ueber 1200
+  abweichende Punkte -> keine gerade Kante, die ein Rechteck durch die Kanone zieht.
+Raumfenster: Raum 952 Punkte breit, Fenster 640; das Rad rechts ist am FENSTERRAND
+  angeschnitten (Raumspalte 686), nicht von einem Rechteck. Nach rechts scrollen zeigt es.
+```
+
+Was am Kanonenrand auffiel, ist damit kein Rendererbeschnitt. Falls der Nutzer dort weiter etwas
+vermisst, gehoert die Stelle benannt (Bildpunkt), weil sie in der Hintergrundtextur selbst liegt
+und nicht in einem der Zeichenschritte.
+
+### Fuss
+
+Der Fussbereich aendert sich mit dem Fix in 171 Punkten (60 davon stark): der harte Ring um Fuss
+und Schattenband war Teil desselben Saums. Die Verdecksungsmaske aus t_85c519f8 ist unveraendert
+(Schnitt 1.775 Punkte des Kostuems je Bild, wie vorher). Ob danach noch Fussflaeche vor der Mauer
+steht, ist mit diesem Lauf **nicht** entschieden: der Bereich wurde nicht gegen die 8-Bit-Vorlage
+gezaehlt.
+
+### Was hier nicht gemessen wurde
+
+1. Nur Raum 44, nur F=139, nur Kameraposition 46. Die Aenderung wirkt in jedem Raum mit
+   Kostuemen und Objekten; andere Raeume sind nicht nachgemessen.
+2. Die UI-Schritte (Verbtafel, Inventarsymbole, Cursor) haben dieselbe Schwelle und wurden NICHT
+   umgestellt: sie zeichnen Bedienflaechen, keine Szenenflaechen, und waren nicht Gegenstand des
+   Befunds.
+3. Ob der helle Rand der Wassertextur zusaetzlich aus der Pipeline kommt (Randfarbe Weiss,
+   `semi`-Punkte im Cel `LFLF_0044_AKOS_0251` mit Mittelwert 165 gegen 60 im Inneren), ist offen:
+   mit korrektem Blenden ist er weich, aber noch vorhanden. Ein Bereinigen der Randfarbe im
+   Rohbild waere der naechste Schritt.
+
+### Dateien
+
+```
+Lauf vorher (nur Zaehler)   projects/comi-hd/work/saum/zaehler/  (Stufen 1..4 in voller
+                            Aufloesung, hd_ref.ppm, hd_state.log)
+Lauf nachher (Fix)          projects/comi-hd/work/saum/fix/
+Aeltere Laeufe              projects/comi-hd/work/saum/vorher/ (2x), tint/ (HD_TINT_8BIT=1)
+Binaries                    projects/comi-hd/work/engine/scummvm-saumz (Zaehler),
+                            scummvm-saumf (Fix)
+Lauf und Aufnahme           projects/comi-hd/harness/z_lauf.sh <binary> <label> 140 HD_DUMP_FULL=1
+Tafel                       projects/comi-hd/reports/vergleich/saum_vorher_nachher.png
+Auswertung                  /opt/data/tmp/saum_tafel.py, saum_diff.py, saum_mark.py
+```

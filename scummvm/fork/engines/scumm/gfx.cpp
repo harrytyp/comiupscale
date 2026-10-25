@@ -2130,6 +2130,8 @@ int step2_fgPixels = 0;
 	// die Gesamtzeit der Komposition liegt aber bei 36 bis 56 ms, also steckt sie hier.
 	uint32 hdObjT0 = g_system->getMillis();
 	static uint32 hdObjSum = 0, hdObjMax = 0, hdObjN = 0;
+	int step25_randOpak = 0;   // Randpunkte mit Teilalpha, die deckend geschrieben wurden
+	int step25_randHalb = 0;   // Randpunkte mit Teilalpha, die geblendet wurden
 	int step25_loaded = 0, step25_skipped = 0, step25_culled = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
 		// Room-change debug: print all objects with their states
@@ -2678,8 +2680,22 @@ int step2_fgPixels = 0;
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
 				for (int mx = ox0; mx < ox1; mx++) {
 					uint32 pix = srcRow[mx - (int)hdX];
-					if (((pix >> 24) & 0xFF) >= 128)
+					const uint8 oa = (pix >> 24) & 0xFF;
+					if (oa == 255) {
 						dstRow[mx] = pix;
+					} else if (oa > 0) {
+						// Randpunkt mit Teilalpha: blenden statt deckend schreiben.
+						// Vorher (>= 128) wurde die Randfarbe der Textur vollstaendig
+						// geschrieben und lag als harter Saum um das Objekt.
+						step25_randHalb++;
+						const uint32 dst = dstRow[mx];
+						const uint8 dr = dst & 0xFF, dg = (dst >> 8) & 0xFF, db = (dst >> 16) & 0xFF;
+						const uint8 sr = pix & 0xFF, sg = (pix >> 8) & 0xFF, sb = (pix >> 16) & 0xFF;
+						dstRow[mx] = ((sr * oa + dr * (255 - oa)) / 255)
+						           | (((sg * oa + dg * (255 - oa)) / 255) << 8)
+						           | (((sb * oa + db * (255 - oa)) / 255) << 16)
+						           | (0xFFu << 24);
+					}
 					// Mark in alpha mask so Step 2.6b won't overwrite with 8-bit
 					// Cover ALL pixels within HD object bounding box, not just opaque.
 					hdAlphaMask[my * hdW + mx] = 1;
@@ -2760,8 +2776,8 @@ int step2_fgPixels = 0;
 		}
 	}
 	if (_hdFrameCount % 30 == 0)
-		hdPrintf("step2.5 objects: loaded=%d skipped=%d culled=%d",
-			step25_loaded, step25_skipped, step25_culled);
+		hdPrintf("step2.5 objects: loaded=%d skipped=%d culled=%d randdeckend=%d randhalb=%d",
+			step25_loaded, step25_skipped, step25_culled, step25_randOpak, step25_randHalb);
 
 	// Step 2.5b: Render inventory items from blast queue
 	// Inventory items (obj_nr 117-274) are NOT in _objs[] for the current room.
@@ -2852,6 +2868,9 @@ int step2_fgPixels = 0;
 	// actors in the 8-bit engine will correctly appear ON TOP of HD costumes.
 	int step26_loaded = 0, step26_skipped = 0;
 	int step26_clipped = 0;
+	// Randpunkte der HD-Kostuemtexturen: Teilalpha deckend geschrieben (Fehler) bzw.
+	// geblendet (richtig). Zahl je Bild, damit vorher/nachher vergleichbar ist.
+	int step26_randOpak = 0, step26_randHalb = 0;
 	int step26_ring = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
 	// HD alpha mask was allocated before Step 2.5; objects already marked it.
@@ -3285,13 +3304,19 @@ int step2_fgPixels = 0;
 							continue;
 						}
 					}
-					if (alpha >= 128) {
-						// Fully opaque HD pixel: overwrite composite.
+					if (alpha == 255) {
+						// Voll deckender HD-Punkt: Komposit ueberschreiben.
+						// Frueher stand hier >= 128, damit gingen alle Randpunkte mit
+						// Teilalpha 128..254 als DECKEND ins Bild: ihre Farbe (bei den
+						// aufskalierten Texturen hell bzw. schwarz) wurde vollstaendig
+						// geschrieben und um Figur und Wasser lag ein harter Saum.
+						// Gemessen in Raum 44: 25.264 solche Punkte je Bild.
 						spyOpak++;
 						dstRow[ox] = pix;
 						hdAlphaMask[maskY * hdW + maskX] = 1;
 					} else if (alpha > 0) {
 						spyHalb++;
+						step26_randHalb++;
 						// Semi-transparent: alpha-blend with existing composite.
 						// Preserves HD objects (Step 2.5) and other HD costumes
 						// (z-sorted ToD) underneath the current costume.
@@ -3403,7 +3428,7 @@ int step2_fgPixels = 0;
 			if (hdCostumeOwn) hdCostumeScratch.free();
 		}
 		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d) maskiert=%d saum=%d", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail, step26_clipped, step26_ring);
+			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d) maskiert=%d saum=%d randdeckend=%d randhalb=%d", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail, step26_clipped, step26_ring, step26_randOpak, step26_randHalb);
 
 		// ── HD Debug Overlay ──────────────────────────────────────
 		// Visualizes costume entry positioning on screen.
