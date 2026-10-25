@@ -642,3 +642,26 @@ Raum 44   3,29 -> 7,14 %     <- Verschlechterung, offen
 Raum 44 ist der einzige Rückschritt: mit `HD_NO_ACTORS=1` fällt er auf 2,78 Prozent, die
 restlichen 4,36 Punkte stammen also von Akteuren — dort ist zu prüfen, ob viele Schattenakteure
 den Eintragspuffer (256) füllen und echte Figuren verdrängen.
+
+## Objekte ohne eigenes Bild gehören zum Raumbild
+
+Viele OBIM tragen nur einen Kopf (IMHD) und kein Bild (IMAG). ScummVM zeichnet sie nicht —
+sie sind Teil des Raumbilds, und die HD-Ebene deckt sie bereits ab. Die Fehlt-Maske markierte
+sie trotzdem und erzeugte damit einen Rest, den es gar nicht gibt.
+
+Jetzt wird vor dem Eintrag in die Maske geprüft, ob das Objekt in den Spieldaten ein Bild hat:
+
+```cpp
+if (!getObjectImage(getOBIMFromObjectData(mod), mod.state & 0xF))
+    continue;
+```
+
+**Wirkung (magenta, Mitte des Laufs):**
+
+```
+Raum 86   1,31 -> 0,02 %
+Raum 44   7,14 -> 3,85 %
+```
+
+Raum 44 hat danach noch 3,85 Prozent, davon 3,72 von Figuren (`HD_NO_ACTORS=1` → 0,13 Prozent).
+Die betroffenen Akteure tragen `schatten=3` (akos=2 und akos=253).

@@ -1725,6 +1725,12 @@ void ScummEngine::renderHDComposite() {
 				continue;
 			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, mod.state & 0xF))
 				continue;
+			// Hat das Objekt in den Spieldaten ueberhaupt ein Bild? Viele OBIM tragen nur einen
+			// Kopf; ScummVM zeichnet sie dann nicht, sie sind Teil des Raumbilds und die
+			// HD-Ebene deckt sie bereits ab. Eine Maske darauf erzeugt einen falschen Rest
+			// (Raum 44: obj 849, 352x304, 2,78 Prozent).
+			if (!getObjectImage(getOBIMFromObjectData(mod), mod.state & 0xF))
+				continue;
 			int rx = mod.x_pos - sdLeft;
 			int ry = mod.y_pos - sdTop;
 			// Sichtbarkeit mit der Regel der Zeichenstufe: zaehle die Pixel im Kasten, die
