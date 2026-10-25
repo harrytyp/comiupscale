@@ -1403,15 +1403,20 @@ void ScummEngine::hdRefreshCleanBackground() {
 	if (!_hdBackgroundSurface.getPixels() || !_hdCleanBackground.getPixels() || !_hdCleanValid ||
 	    _hdCleanBackground.w != visW || _hdCleanBackground.h != visH || visW <= 0 || visH <= 0)
 		return;
-	visW = MIN(visW, vs->w - vs->xstart);
+	// Die Vorlage ist in Fensterspalten abgelegt: Spalte 0 ist die Spalte, an der das
+	// sichtbare Fenster im Puffer beginnt (hdWindowLeft, in Raum 44 die 46). Vorher stand
+	// hier Pufferspalte 0, dadurch war die Vorlage gegen den Bildschirm versetzt und der
+	// Vordergrundvergleich las zwei verschiedene Raumstellen.
+	const int refLeft = hdWindowLeft();
+	visW = MIN(visW, MAX(0, (int)vs->w - refLeft));
 	if (visW <= 0)
 		return;
 	const int refTop = ((int)_roomHeight > _screenHeight)
 	                   ? CLIP((int)_screenTop, 0, (int)_roomHeight - (int)_screenHeight) : 0;
 	for (int y = 0; y < visH; y++)
-		memcpy(_hdCleanBackground.getBasePtr(0, y), vs->getBasePtr(0, y + refTop), visW);
+		memcpy(_hdCleanBackground.getBasePtr(0, y), vs->getBasePtr(refLeft, y + refTop), visW);
 	memset(_hdCleanValid, 1, (size_t)visW * visH);
-	_hdCleanXStart = hdWindowLeft();
+	_hdCleanXStart = refLeft;
 }
 
 void ScummEngine::hdShiftCleanBackground(int dx) {
@@ -1483,14 +1488,15 @@ void ScummEngine::renderHDComposite() {
 	// die 8-Bit-Ebene malt das ganze Bild zu (Raum 47: 98,3 Prozent, mit HD_TINT_8BIT belegt).
 	if (_hdCleanValid && _hdCleanBackground.getPixels() && _hdCurrentRoom == _currentRoom) {
 		VirtScreen *vCheck = &_virtscr[kMainVirtScreen];
-		const int cW = MIN<int>(_screenWidth, vCheck->w);
+		const int cLeft = hdWindowLeft();
+		const int cW = MIN<int>(MIN<int>(_screenWidth, vCheck->w), MAX(0, (int)vCheck->w - cLeft));
 		const int cH = MIN<int>(_screenHeight, vCheck->h);
 		const int cTop = ((int)_roomHeight > _screenHeight)
 		                 ? CLIP((int)_screenTop, 0, (int)_roomHeight - (int)_screenHeight) : 0;
 		if (cW > 0 && cH > 0 && _hdCleanBackground.w == cW && _hdCleanBackground.h == cH) {
 			int geprueft = 0, anders = 0;
 			for (int y = 0; y < cH; y += 8) {
-				const byte *vRow = (const byte *)vCheck->getBasePtr(0, y + cTop);
+				const byte *vRow = (const byte *)vCheck->getBasePtr(cLeft, y + cTop);
 				const byte *cRow = (const byte *)_hdCleanBackground.getBasePtr(0, y);
 				for (int x = 0; x < cW; x += 8) {
 					geprueft++;
@@ -1598,6 +1604,17 @@ void ScummEngine::renderHDComposite() {
 	                  ? CLIP((int)_screenTop, 0, (int)_roomHeight - (int)_screenHeight) : 0;
 	const int camY = sdTop * scale;
 
+	// Waagerecht derselbe Versatz wie senkrecht mit sdTop. Die 8-Bit-Ebene steht in
+	// Pufferspalten, und Pufferspalte 0 ist Raumspalte 0 (gemessen: Vorlagen aus
+	// hd/backgrounds/0044_armsdlr.png liegen im Puffer auf ihrer eigenen Raumspalte,
+	// an 0, 250 und 500 mit scharfem Treffer). Das sichtbare Fenster beginnt aber bei
+	// sdLeft (in Raum 44 die 46). Jede 8-Bit-Zeile wird deshalb ab sdLeft gelesen, sonst
+	// klebt die 8-Bit-Ebene eine Kamerabreite neben dem HD-Hintergrund ein und der
+	// Vordergrundvergleich stellt zwei verschiedene Raumstellen gegeneinander.
+	// visX begrenzt die Schleifen auf die Spalten, die im Puffer wirklich stehen.
+	const int sdX = sdLeft;
+	const int visX = MIN(visW, MAX(0, (int)vs->w - sdX));
+
 	if (_hdFrameCount % 30 == 0)
 		hdPrintf("hdgeom: scale=%d camX=%d camY=%d bg=%dx%d room=%dx%d comp=%dx%d xstart=%d vs=%dx%d pitch=%d",
 			scale, camX, camY, (int)_hdBackgroundSurface.w, (int)_hdBackgroundSurface.h,
@@ -1628,12 +1645,12 @@ void ScummEngine::renderHDComposite() {
 		return (int)_hdFrameCount == schwelle;
 	};
 
-	if (getenv("HD_DUMP_REF") && (int)vs->w > (int)vs->xstart && (int)vs->h > 0) {
-		int dumpW = MIN(visW, (int)vs->w);
+	if (getenv("HD_DUMP_REF") && (int)vs->w > sdX && (int)vs->h > 0) {
+		int dumpW = MIN(visW, (int)vs->w - sdX);
 		int dumpH = MIN(visH, (int)vs->h);
 		if (dumpW > 0 && dumpH > 0)
 		if (hdDumpNow())
-			hdDumpReference("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", (const byte *)vs->getBasePtr(0, sdTop),
+			hdDumpReference("/opt/data/projects/comi-hd/work/dumps/hd_ref.ppm", (const byte *)vs->getBasePtr(sdX, sdTop),
 			                vs->pitch, dumpW, dumpH, _currentPalette);
 	}
 
@@ -1742,9 +1759,9 @@ void ScummEngine::renderHDComposite() {
 			    _hdCleanBackground.w == visW && _hdCleanBackground.h == visH) {
 				int sichtbar = 0, geprueft = 0;
 				for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y += 4) {
-					const byte *vRow = (const byte *)vs->getBasePtr(0, y + sdTop);
+					const byte *vRow = (const byte *)vs->getBasePtr(sdX, y + sdTop);
 					const byte *cRow = (const byte *)_hdCleanBackground.getBasePtr(0, y);
-					for (int x = MAX(0, rx); x < MIN(visW, rx + mod.width); x += 4) {
+					for (int x = MAX(0, rx); x < MIN(visX, rx + mod.width); x += 4) {
 						geprueft++;
 						if (vRow[x] != cRow[x])
 							sichtbar++;
@@ -1805,10 +1822,10 @@ int step2_fgPixels = 0;
 		for (int sy = 0; sy < visH; sy++) {
 			int hdY0 = hdYStart[sy], hdY1 = hdYStart[sy + 1];
 			if (hdY1 <= hdY0) continue;
-			// The virt screen is stored in room space (buffer offset == room x),
-			// the visible window starts at xstart: reading at sx would compare
-			// the reference against a completely different room region.
-			const uint8 *visRow = (const uint8 *)vs->getBasePtr(0, sy + sdTop);
+			// Die 8-Bit-Ebene steht in Pufferspalten (Pufferspalte 0 = Raumspalte 0), das
+			// sichtbare Fenster beginnt bei sdX: Zeile ab sdX lesen, dann ist Spalte sx
+			// dieselbe Raumstelle wie in der Vorlage und im HD-Hintergrund.
+			const uint8 *visRow = (const uint8 *)vs->getBasePtr(sdX, sy + sdTop);
 			const uint8 *cleanRow = (const uint8 *)_hdCleanBackground.getPixels()
 				? (const uint8 *)_hdCleanBackground.getBasePtr(0, sy) : nullptr;
 			bool useClean = (_hdCurrentRoom == _currentRoom && _hdCleanValid && cleanRow);
@@ -1817,7 +1834,7 @@ int step2_fgPixels = 0;
 				         useClean ? 1 : 0, _hdCleanValid ? 1 : 0, _hdCurrentRoom, _currentRoom,
 				         (int)vs->xstart, _hdCleanXStart, (int)_userPut);
 			bool rowHadFg = false;
-			for (int sx = 0; sx < visW; sx++) {
+			for (int sx = 0; sx < visX; sx++) {
 				uint8 curPix = visRow[sx];
 				// Check if pixel differs from clean background
 				bool isForeground;
@@ -1967,8 +1984,8 @@ int step2_fgPixels = 0;
 			int sy = dy * visH / hdH;
 			for (int dx = 0; dx < hdW && dx < invW_8 * hdW / visW; dx++) {
 				int sx = dx * visW / hdW;
-				if (sx < 0 || sx >= visW || sy < 0 || sy >= visH) continue;
-				uint8 curPix = *(const uint8 *)vs->getBasePtr(0 + sx, sy + sdTop);
+				if (sx < 0 || sx >= visX || sy < 0 || sy >= visH) continue;
+				uint8 curPix = *(const uint8 *)vs->getBasePtr(sdX + sx, sy + sdTop);
 				bool fg = true;
 				if (_hdCurrentRoom == _currentRoom && _hdCleanValid && sy < _hdCleanValidSize / visW) {
 					int pos = sy * visW + sx;
@@ -2272,7 +2289,7 @@ int step2_fgPixels = 0;
 				int sy = yPos;
 				// Override with cached blast position if available (inventory items)
 				if (blastX >= 0) { sx = blastX; sy = blastY; }
-				int sw = MIN<int>(od.width, visW - sx);
+				int sw = MIN<int>(od.width, visX - sx);
 				int sh = MIN<int>(od.height, visH - sy);
 				int visiblePixels = 0;
 				// Sparse sampling: stride=4 reduces pixel checks by 16x
@@ -2284,7 +2301,7 @@ int step2_fgPixels = 0;
 						for (int col = 0; col < sw; col += pxStep) {
 							int pos = (sy + row) * visW + (sx + col);
 							if (_hdCleanValid[pos]) {
-								byte curPix = *(const byte *)vs->getBasePtr(0 + sx + col, sy + row + sdTop);
+								byte curPix = *(const byte *)vs->getBasePtr(sdX + sx + col, sy + row + sdTop);
 								byte cleanPix = *(const byte *)_hdCleanBackground.getBasePtr(sx + col, sy + row);
 								if (curPix != cleanPix)
 									visiblePixels++;
@@ -2420,10 +2437,10 @@ int step2_fgPixels = 0;
 					if (sy < 0 || sy >= visH)
 						continue;
 					for (int xx = 0; xx < od.width; xx += 4) {
-						const int sx = od.x_pos + xx;
-						if (sx < 0 || sx >= visW)
+						const int sx = od.x_pos - sdLeft + xx;
+						if (sx < 0 || sx >= visX)
 							continue;
-						const uint8 *vrow = (const uint8 *)vs->getBasePtr(0 + sx, sy + sdTop);
+						const uint8 *vrow = (const uint8 *)vs->getBasePtr(sdX + sx, sy + sdTop);
 						const uint8 *crow = (const uint8 *)_hdCleanBackground.getBasePtr(sx, sy);
 						total++;
 						if (*vrow != *crow)
@@ -2511,12 +2528,12 @@ int step2_fgPixels = 0;
 					const int sy8 = my / scale;
 					if (sy8 < 0 || sy8 >= visH)
 						continue;
-					const uint8 *vrow = (const uint8 *)vs->getBasePtr(0, sy8 + sdTop);
+					const uint8 *vrow = (const uint8 *)vs->getBasePtr(sdX, sy8 + sdTop);
 					const uint8 *crow = (const uint8 *)_hdCleanBackground.getBasePtr(0, sy8);
 					uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
 					for (int mx = ox0; mx < ox1; mx++) {
 						const int sx8 = mx / scale;
-						if (sx8 < 0 || sx8 >= visW)
+						if (sx8 < 0 || sx8 >= visX)
 							continue;
 						if (!_hdCleanValid[sy8 * visW + sx8])
 							continue;
@@ -3038,10 +3055,10 @@ int step2_fgPixels = 0;
 								bool foregroundBelow = false;
 								int sx8 = maskX / scale;
 								int sy8 = maskY / scale;
-								if (_hdCleanValid && sx8 >= 0 && sx8 < visW && sy8 >= 0 && sy8 < visH) {
+								if (_hdCleanValid && sx8 >= 0 && sx8 < visX && sy8 >= 0 && sy8 < visH) {
 									int pos8 = sy8 * visW + sx8;
 									if (pos8 < _hdCleanValidSize && _hdCleanValid[pos8]) {
-										byte curP = *(const byte *)vs->getBasePtr(0 + sx8, sy8 + sdTop);
+										byte curP = *(const byte *)vs->getBasePtr(sdX + sx8, sy8 + sdTop);
 										const byte *clRow = (const byte *)_hdCleanBackground.getBasePtr(sx8, sy8);
 										foregroundBelow = (curP != clRow[0]);
 									}
@@ -3203,8 +3220,8 @@ int step2_fgPixels = 0;
 			int dy_end = (sy + 1) * hdH / visH;
 			if (dy_end > hdH) dy_end = hdH;
 
-			const uint8 *srcRow = (const uint8 *)vs->getBasePtr(0, sy + sdTop);
-			for (int sx = 0; sx < visW; sx++) {
+			const uint8 *srcRow = (const uint8 *)vs->getBasePtr(sdX, sy + sdTop);
+			for (int sx = 0; sx < visX; sx++) {
 				int mpos = sy * visW + sx;
 
 				// Skip if clean background not captured for this pixel
@@ -3278,11 +3295,11 @@ int step2_fgPixels = 0;
 					const int yy = fi->y + dy;
 					if (yy < 0 || yy >= visH)
 						continue;
-					const uint8 *vrow = (const uint8 *)vs->getBasePtr(0, yy + sdTop);
+					const uint8 *vrow = (const uint8 *)vs->getBasePtr(sdX, yy + sdTop);
 					const uint8 *crow = (const uint8 *)_hdCleanBackground.getBasePtr(0, yy);
 					for (int dx = 0; dx < 8; dx++) {
 						const int xx = fi->x + dx;
-						if (xx < 0 || xx >= visW)
+						if (xx < 0 || xx >= visX)
 							continue;
 						if (!_hdCleanValid[yy * visW + xx])
 							continue;

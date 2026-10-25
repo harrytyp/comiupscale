@@ -892,6 +892,215 @@ Messlaeufe in `projects/comi-hd/work/raum44_nachmessung/{mit,ohne,tint}`, Werkze
 `harness/versatz_raum44_lauf.py`, `harness/dopplung_raum44_bild.py`,
 `harness/magenta_rest_orte.py`.
 
+
+## Schatten unter Guybrush: HD-Flaeche weg, 8-Bit-Rest bleibt
+
+Aufgabe: die braune, strukturlose Schattenflaeche unter Guybrush soll verschwinden, Fuesse
+und Figur bleiben. Die Flaeche steckt in der HD-Kostuemtextur selbst (aus der 8-Bit-Vorlage
+mit hochskaliert), nicht im Hintergrund.
+
+### Wo die Flaeche herkommt
+
+In der 8-Bit-Vorlage hat der Schatten eine eigene, dunkle, nicht schwarze Farbe:
+
+```
+LFLF_0001_AKOS_0002_aframe_*.png   (Roh-Extraktion work/extract-fix4/costumes)
+Schattenfarbe  (83,43,43)          Figur (255,199,175)   Hintergrund (0,0,0)
+356 von 688 Frames haben die Farbe, 332 sind kleine Cels ohne Schatten
+```
+
+Der Schatten ist eine breite, flache Flaeche direkt unter den Fuessen: Breite mindestens
+50 Prozent der Figurenbreite, Hoehe hoechstens 30 Prozent des Bildes, mindestens 30 Punkte.
+Genau diese Punkte, 4x auf die HD-Groesse gebracht, werden im HD-Bild auf Alpha 0 gesetzt.
+Alles andere bleibt unveraendert (Pixelgleichheit ausserhalb der Maske geprueft, RGB
+unberuehrt). Im HD-Original deckt sich die Maske 1:1 mit deckenden Pixeln, deren Farbe dort
+(153,51,4) ist, Streuung 7: eine flache Flaeche, wie beschrieben.
+
+Werkzeug: `harness/schatten_entfernen.py` (nur Guybrush, LFLF_0001_AKOS_0002), Sicherung
+`hd/costumes_backup`, Zwischenstand des verunglueckten Alpha-Experiments vom 25.10. 11:24
+in `hd/costumes_defekt_20261025` (dort war die Figur mitgeloescht, 19.072 statt 158.266
+deckende Punkte).
+
+### Messung Raum 44 (80 Bilder je Lauf, feste Kamera)
+
+```
+HD_JUMP_ROOM=44 HD_FIXED_DELTA=20 HD_EXIT_AFTER=240 HD_DUMP_SEQ=1 ./scummvm \
+  --config=scummvm_video.ini --path=game comi
+```
+
+Fenster am Fussbereich (Verbundbild 1280x960: y 584 bis 622, x 676 bis 794):
+
+```
+                                   vorher              nachher
+Bilder mit flacher Flaeche >=500 px   65 von 80           0 von 80
+Schattenfarbe je Bild (Mittel)        2218 px             7 px
+8-Bit-Anteil im Fenster               0,1 %               36,9 %
+```
+
+Die flache braune Flaeche ist damit in allen Bildern weg, die Fuesse sind unveraendert
+(Sichtpruefung und Pixelvergleich). Bild:
+`projects/comi-hd/reports/vergleich/schatten_guybrush.png`.
+
+### Was offen bleibt: die 8-Bit-Ebene malt den Schatten weiter
+
+Nach dem Entfernen fuellt die 8-Bit-Ebene die Stelle: 36,9 Prozent des Fensters sind wieder
+8-Bit, sichtbar als grober, karierter Flicken (vorher 0,1 Prozent). Ursache gemessen mit
+`HD_ALPHA_SPY=1`:
+
+```
+ALPHASPY ai=1 akos=2 cel=22 schatten=3 a0=80286 a0bg=69781 a0keep8=9444 a0hd=1061
+```
+
+Von 15.296 Schattenpunkten der Textur bleiben 9.444 stehen (`a0keep8`), weil im Zweig
+`alpha == 0` die Pruefung `foregroundBelow` die 8-Bit-Fassung **derselben** Figur als
+schutzwerten Vordergrund wertet (gfx.cpp, alpha==0-Zweig, Regel fuer Raum 89). Diese Regel
+ist fuer ein anderes HD-Kostuem gedacht, nicht fuer die eigene Figur.
+
+Zwei Wege, beide noch nicht eingebaut:
+
+1. **Regel einschraenken:** den 8-Bit-Punkt nur stehen lassen, wenn er zu einem anderen
+   Akteur gehoert. Risiko: Loecher in Figuren, deren HD-Textur innen durchsichtig ist
+   (bei akos 438 sind das 30 Prozent der Silhouette).
+2. **Marke im Asset:** Alpha 0 plus RGB 255,0,255 heisst "bewusst entfernt, immer
+   HD-Hintergrund zeigen", und der alpha==0-Zweig ueberspringt fuer diese Punkte die
+   foregroundBelow-Pruefung. Gebaut und wieder zurueckgenommen: der Linux-Build dieser
+   Umgebung kann nicht linken, weil libXcursor und libXss fehlen (`-lXcursor`, `-lXss`;
+   die Ersatzverweise liegen in `build/x11link`, fuer die beiden fehlt die Bibliothek
+   auf dem System). Der Code-Aenderung fehlt damit der Nachweis am laufenden Bild.
+
+Bis dahin gilt: die HD-Schattenflaeche ist weg, der Rest an dieser Stelle ist der
+8-Bit-Anteil, den auch die Dopplungen verursachen (eigene Aufgabe).
+
+Dateien:
+
+```
+Aufnahmen vorher/nachher     projects/comi-hd/work/raum44_schatten/{vorher,nachher}
+8-Bit-Anteil vorher/nachher  projects/comi-hd/work/raum44_schatten/{vorher_tint,nachher_tint}
+Zaehler im Blit              projects/comi-hd/work/raum44_schatten/nachher_spy/hd_state.log
+Messung                      /opt/data/kanban/workspaces/t_778e21be/endmessung.json
+```
+
+Hinweis zu den Kopien: der Messlauf liest `release/linux/hd`, die kanonische Ablage ist
+`hd/costumes` (Symlink auf `scummvm/fork/hd`). Beide sind aktualisiert. Die Kopie
+`game/hd` und der Windows-Satz enthalten weiterhin die alten Bilder.
+
+## Weisser Saum an den Texturen: im PNG vorhanden, im Spiel nur ueber den Vorwaerm-Pfad
+
+Aufgabe: pruefen, ob die HD-Texturen einen weissen RGB-Saum an den Alphagrenzen tragen, und
+ihn entfernen. Ergebnis vorweg: die Texturen tragen ihn (7.507 von 25.302 Kostuemframes),
+die Engine entfernt ihn beim Einzelladen auch schon, aber der Pfad, der die Texturen beim
+Raumwechsel vorwaermt, hat die Bereinigung uebersprungen. Diese Luecke ist geschlossen.
+
+### Befund im Testrahmen
+
+```
+hd/costumes/LFLF_0001_AKOS_0002_aframe_10.png   (316x848, Guybrush)
+Alpha-Verteilung   a=0 123.698 | 1-31 5.060 | 32-80 1.415 | 81-254 11.676 | 255 126.119
+a=0        RGB-Mittel  10/ 5/ 5   fast weiss (min>=190)  0,0 %
+0<a<=80    RGB-Mittel   2/ 1/ 0   fast weiss             0,0 %
+Rand (a>0 mit Nachbar a<32) 9.443 px                     0,0 %
+haeufigste Farbe der durchsichtigen Punkte  (0,0,0), danach die Schattenfarbe (83,43,43)
+```
+
+An genau diesem Rahmen gibt es also keinen weissen Saum: die Extraktion hat den Hintergrund
+dort auf Schwarz gesetzt (und der Schattenfix vom 25.10. hat die Schattenfarbe auf Alpha 0
+gelegt). Ein weisser Saum kann aus dieser Textur nicht kommen.
+
+### Befund ueber alle Kostuemframes
+
+```
+harness/saum_scan_schnell.py, 25.302 Dateien in hd/costumes
+Frames mit mehr als 50 weissen Saumpixeln     7.507  (29,7 %)
+weisse Saumpixel roh                          39.725.828
+Spitzenreiter  LFLF_0013_AKOS_0063_aframe_57    171.468
+```
+
+Wo der Saum sitzt, ist der Hintergrund der Datei weiss (254,254,254) und der Ring um die
+Figur ebenfalls weiss: der Upscaler hat gegen Weiss freigestellt und den Rand mitgemischt.
+Beispiel LFLF_0011_AKOS_0051_aframe_0: 36.998 Randpixel, davon 97,8 % fast weiss, die
+durchsichtigen Punkte sind zu 100 % weiss.
+
+### Was die Engine schon tut
+
+`removeWhiteFringe()` (`hd_fringe.h`) loescht fast weisse Punkte am Rand (alle Kanaele >=190,
+Nachbar mit Alpha <32, zehn Durchgaenge) und laeuft an zwei Stellen: `hd_object_manager.cpp:119`
+und `hd_costume_manager.cpp:181`, jeweils in `loadPNG()`. Zusaetzlich schliesst
+`hdFillAlphaHoles()` Loecher in der Deckkraft (Objekte in `loadPNG`, Kostueme in
+`loadCostume`).
+
+### Die Luecke: der parallele Decoder
+
+`hd_batch_decode.h` (Issue #14, Vorwaermen beim Raumwechsel) dekodiert nur PNG nach RGBA.
+`preloadCostumeRange()` (`hd_costume_manager.cpp:306`) und `preloadRoom()`
+(`hd_object_manager.cpp:442`) schrieben diese Rohflaechen direkt in den Texturspeicher, und
+der Zeichenweg nimmt Cache-Treffer ungeprueft (`gfx.cpp:2839`, `loadCostume` liefert bei
+Treffer den Zeiger auf den Cache-Eintrag). Damit wurden die vorgewaermten Frames mit weissem
+Saum und mit offenen Alpha-Loechern gezeichnet, waehrend derselbe Frame nach einem
+Einzelladen sauber war.
+
+Fix (beide Stellen, gleiche Reihenfolge wie in `loadPNG`):
+
+```cpp
+removeWhiteFringe(jobs[i].surface);
+hdFillAlphaHoles(jobs[i].surface, 3);
+```
+
+### Messung im Spiel: alte gegen neue Binary
+
+Je Raum ein Verbundbild an derselben Stelle, `HD_JUMP_ROOM=<raum> HD_DUMP_STEPS=1
+HD_DUMP_AT=60`, gezaehlt werden geaenderte Pixel und davon die vorher fast weissen
+(`harness/saum_schritte_vergleich.py`):
+
+```
+Raum   Stufe                 geaendert   davon vorher fast weiss
+44     Hintergrund                  0              0
+44     Objekte                    108              0
+44     Kostueme                   552             10
+13     alle Stufen                  0              0
+30     Vordergrund/Objekte/Kostueme 524           336
+```
+
+In Raum 30 verschwindet damit ein heller Rand an einer Figur, die aus der Objektschicht
+kommt; in Raum 44 sind es 552 Punkte, davon nur 10 fast weiss (dort vor allem geschlossene
+Alpha-Loecher). Raum 13 zeigt keinen Unterschied, weil die dort gezeichneten Frames schon
+vorher sauber geladen wurden. Die Kostuemframes selbst waren in allen drei Raeumen bereits
+durch `loadPNG` bereinigt; der sichtbare Unterschied kommt aus dem Vorwaerm-Pfad.
+
+Bilder:
+
+```
+Vorher/Nachher Kopf (Raum 44)  projects/comi-hd/reports/vergleich/weisser_saum_vorher_nachher.png
+Vorher/Nachher Figur (Raum 30) projects/comi-hd/reports/vergleich/weisser_saum_raum30_vorher_nachher.png
+Screenshot Raum 44             projects/comi-hd/reports/vergleich/raum44_nachher.png
+Rohdaten je Frame              projects/comi-hd/reports/weisser-saum/scan_kostueme.csv
+Aufnahmen                      projects/comi-hd/work/saum/raum{44,13,30}_{vorher,nachher}
+```
+
+### Was offen bleibt
+
+1. Raum 44 zeigt an seinem Testrahmen keinen weissen Saum. Wenn dort einer zu sehen war,
+   kam er nicht aus dieser Textur. Sicher belegt ist der Saum fuer die 7.507 betroffenen
+   Frames und seine Entfernung an der Figur in Raum 30.
+2. Nach dem Filter bleibt in einer Stichprobe von 150 betroffenen Frames rechnerisch
+   13,3 Prozent der weissen Randpunkte stehen (roh 691.229, danach 92.237). Die Messgroesse
+   ueberschaetzt den Rest, weil das Loeschen der Randpunkte neue Nachbarschaft zu Weiss
+   schafft (Hemd, Haut, Segel werden mitgezaehlt); in Einzelfaellen steigt die Zahl dadurch
+   ueber den Rohwert. Nicht angefasst: eine Farbangleichung an deckende Nachbarn wuerde
+   echte weisse Motivteile falsch einfaerben.
+3. Die Ladezeitwirkung des zusaetzlichen Durchlaufs beim Vorwaermen ist nicht gemessen.
+4. `HD_JUMP_ROOM` liefert nur fuer die Raeume 44, 13 und 30 Bilder; 11, 21, 16, 82, 9 und 51
+   blieben leer, dort ist keine Messung moeglich.
+
+### Build-Hinweis
+
+Der Linux-Build in dieser Umgebung linkt nur mit der SDL2-Variante ohne X11 und mit dem
+SONAME der ALSA-Bibliothek, weil die Entwicklungsverweise fuer Xcursor, Xss und asound
+fehlen. In `scummvm/fork/config.mk` steht deshalb in `LIBS`:
+
+```
+-L.../build/install/sdl2-native.nox11/lib -Wl,-Bstatic -lSDL2 -Wl,-Bdynamic -l:libasound.so.2 ...
+```
+
 ## Dopplung bei anderen Figuren: vier Raeume gemessen, ein Zeichenweg
 
 Auftrag war die Beobachtung, der Kamerafix (133450b2) wirke nur bei Guybrush, andere
@@ -1102,3 +1311,678 @@ wirklich von AKOS gezeichnet wurde (dann bleibt das Bruchstueck aus Raum 86 weg)
 Cel-Index 0 im Gliedmassen-Zweig zulassen (`cel < 0` statt `cel <= 0`). Beides ist eine
 Code-Aenderung ohne Messung am Bild und deshalb hier nicht eingebaut; sie gehoert in eine
 eigene Aufgabe mit Sichtpruefung.
+
+## Gegenpruefung (comi-pruef, 25.10.): Kriterium 2 nicht belegt
+
+Pruefung des Nachweises oben gegen die drei Kriterien der Karte `t_ff786911`. Ergebnis
+vorweg: die Code-Aenderung ist plausibel und am Objektpfad belegt, die Sichtpruefung an
+Figuren fehlt. Die Karte geht zurueck an comi-bau.
+
+### Kriterium 1, weisse Randpixel je geprueftem Frame
+
+Rohdaten nachgezaehlt (`reports/weisser-saum/scan_kostueme.csv`): 25.302 Frames, davon
+7.507 mit mehr als 50 weissen Saumpixeln, Summe roh 39.725.828. Deckt sich mit dem Bericht.
+
+Stichprobe der 150 betroffenen Frames (seed 7) unabhaengig nachgerechnet, Ergebnis je Frame
+in `reports/weisser-saum/pruef_frames_150.csv`:
+
+```
+Saumpixel roh 691.229  -> nach Filter 92.237     13,3 %
+Frames ohne Rest                                  3 von 150
+Frames mit Rest > 500                            29
+Frames, in denen die Zahl nicht sinkt            77
+```
+
+Die Kennzahl des Berichts zaehlt jeden fast weissen Punkt im Umkreis von drei Pixeln um
+Transparenz. Deshalb sinkt sie in 77 von 150 Frames gar nicht: das Loeschen legt die
+naechste Reihe frei. Eine zweite, engere Kennzahl wurde mitgemessen, naemlich fast weisser
+Punkt mit direktem Nachbarn alpha == 0, also die im Bild tatsaechlich an der Kante
+sichtbare Reihe:
+
+```
+Saumkante roh 297.180  -> nach Filter 12.244     4,1 %
+Frames mit Saumkante 0 nachher                   67 von 150
+Frames mit Rest > 20                             35
+```
+
+Damit ist die Wirkung des Filters an der Kante belegt: 95,9 Prozent der sichtbaren weissen
+Randpunkte verschwinden. Die Karte verlangt die Zahl je Frame, und in dieser Form liegt sie
+im Bericht nicht vor. Nachgemessen gilt "deutlich reduziert oder null" nicht fuer jeden
+Frame: 83 von 150 Frames behalten eine Saumkante, 35 davon mehr als 20 Punkte.
+
+### Kriterium 2, Sichtpruefung an drei Figuren in zwei Raeumen
+
+Nicht erfuellt. Auswertung der Stufendumps der drei Raeume mit Aufnahmen
+(`harness/saum_schritte_vergleich.py`, hier wiederholt):
+
+```
+Raum   Stufe      geaendert   davon vorher fast weiss
+44     Kostueme        552              10
+30     Vordergrund     524             336
+13     alle Stufen       0               0
+```
+
+Die 336 fast weissen Punkte in Raum 30 liegen in drei Flecken im oberen Bildbereich
+(x 330 bis 353, y 0 bis 39; x 690 bis 713, y 0 bis 19; x 440 bis 455, y 2 bis 17). Im Bild
+sind das die Kerzen auf dem haengenden Holzleuchter, also ein Raumobjekt. Die beiden
+Figuren des Raums, Guybrush oben links und die gruene Figur in der Mitte, aendern sich
+nicht. Der Satz im Bericht, dort verschwinde ein heller Rand "an einer Figur, die aus der
+Objektschicht kommt", ist damit falsch: es ist ein Objekt, keine Figur.
+
+In Raum 44 aendern sich 552 Punkte, davon 10 fast weiss. Der Bericht sagt selbst, dass der
+Testrahmen dort keinen weissen Saum traegt. Raum 13 zeigt ueber alle Stufen null
+Differenz.
+
+Ergebnis: keine einzige Figur mit belegtem weissem Rand vorher und sauberer Kante nachher.
+Verlangt sind drei Figuren in zwei Raeumen an Haaren, Haenden und Kleidungskanten.
+
+### Kriterium 3, Vorher-Nachher-Ausschnitt als PNG
+
+Die Dateien sind vorhanden:
+
+```
+reports/vergleich/weisser_saum_vorher_nachher.png       Raum 44, Kopf
+reports/vergleich/weisser_saum_raum30_vorher_nachher.png Raum 30, Objekt
+reports/vergleich/weisser_saum_raum13_vorher_nachher.png Raum 13
+```
+
+Nur das Bild aus Raum 30 zeigt einen Unterschied, und dort an einem Objekt. Die beiden
+anderen Blaetter zeigen denselben Bildinhalt ohne sichtbare Aenderung, taugen also nicht
+als Nachweis. Keines der drei Blaetter nennt Frame oder Kameraposition, der gezeigte
+Unterschied laesst sich damit keinem Messlauf zuordnen. Fuer Raum 44 liegt nur ein
+gemessener Frame vor, und der unterscheidet sich in 10 fast weissen Punkten.
+
+### Was fuer die Freigabe fehlt
+
+1. Zahl der weissen Randpixel je Frame vorher und nachher als Tabelle, nicht nur als Summe
+   ueber 150 Frames. Die Datei `reports/weisser-saum/pruef_frames_150.csv` ist ein Anfang,
+   sie deckt aber nur die Textur, nicht das gezeichnete Bild.
+2. Drei Figuren in zwei Raeumen, je ein Ausschnitt an Haaren, Haenden und Kleidungskanten,
+   vorher mit sichtbarem weissem Rand und nachher ohne. Die Figuren in Raum 30 und 44
+   reichen dafuer, es fehlt die Aufnahme an einer Stelle, an der die HD-Textur die Figur
+   ueberhaupt ueber einen Vorwaermtreffer zeichnet.
+3. Die Raeume mit dem groessten Saum fehlen in der Messung: `LFLF_0013_AKOS_0063` (158.972
+   rohe Saumpunkte), `LFLF_0011_AKOS_0051` (36.998), `LFLF_0035_AKOS_0192`. Fuer Raum 11
+   gibt es gar keine Aufnahme, in Raum 13 landete ein anderes Kostuem im Bild.
+4. Der Satz zur Figur aus der Objektschicht in Raum 30 ist zu berichtigen, die geaenderten
+   Punkte sitzen auf dem Kerzenleuchter.
+
+Eigene Aufnahmen der Gegenprobe:
+
+```
+reports/vergleich/saum30_vollbild_markiert.png   Raum 30, Saumstellen rot markiert
+reports/vergleich/saum30_oben.png                Raum 30, Ausschnitt 4x vorher/nachher
+reports/vergleich/saum44_vollbild_markiert.png   Raum 44, Saumstellen rot markiert
+reports/vergleich/saum44_alle_figuren.png        Raum 44, Figur 4x vorher/nachher
+```
+
+## Objekt-Pfad Raum 44: kein HD-Objekt vorhanden, Kameraversatz beim Zeichnen richtig
+
+Auftrag war zu pruefen, ob der Objektpfad denselben Fehler traegt wie die Kostueme, also den
+Kameraversatz abzieht, obwohl das Komposit spaltengenau kopiert. Ergebnis vorweg: in Raum 44
+zeichnet der Objektschritt gar nichts, weil es fuer die drei Raumobjekte keine HD-Textur gibt.
+Der Abzug im Objektpfad ist gemessen richtig. Gefunden wurde ein anderer Fehler derselben
+Klasse: die Sichtbarkeitspruefung fuer Objekte liest Raumspalten, wo Pufferspalten noetig
+sind, und verwirft dadurch in scrollenden Raeumen HD-Objekte.
+
+### Was Raum 44 an Objekten hat
+
+```
+ROOM OBJ, Raum 44 (hd_state.log)
+obj 848  pos=(0,0)      sz=248x503
+obj 849  pos=(600,168)  sz=352x304
+obj 850  pos=(512,168)  sz=88x144
+```
+
+Keine HD-Textur fuer diese drei: `hd/object_map.json` hat 560 Eintraege, keiner nennt Raum 44,
+und `hd/objects` enthaelt keine Datei mit Praefix `0044`. Folge im Objektschritt:
+
+```
+step2.5 objects: loaded=0 skipped=0 culled=1     (das eine ist das Inventarobjekt)
+Stufe 3 gegen Stufe 2: 0 von 307.200 Punkten verschieden, maximale Differenz 0
+```
+
+Der Objektschritt schreibt in Raum 44 kein einziges Pixel, eine falsche Lage aus diesem Pfad
+kann dort also nicht entstehen. Magenta-Anteil Raum 44 (HD_TINT_8BIT, feste Kamera, drei
+Messpunkte im Lauf): 0,95 / 0,95 / 0,95 Prozent.
+
+### Kamerafenster gemessen: Komposit beginnt bei Raumspalte 46, der 8-Bit-Puffer bei 0
+
+Sonde `HD_OFFSET_PROBE` in `renderHDComposite` (Umgebungsvariable, nach der Messung wieder
+entfernt): fuer jeden fuenften Punkt wird die Palettenfarbe des 8-Bit-Puffers mit dem
+HD-Hintergrund an derselben Spalte und an Spalte plus Kameraversatz verglichen. Raum 44,
+sdLeft=46, xstart=46, _screenStartStrip=5, 11.844 Stichproben je Bild:
+
+```
+F=59   ohne Kameraversatz 10.061 Treffer   mit Kameraversatz 3.795
+F=99   ohne 10.062                         mit 3.797
+F=139  ohne 10.074                         mit 3.798
+F=199  ohne 10.060                         mit 3.796
+```
+
+85 gegen 32 Prozent: die 8-Bit-Spalte sx zeigt denselben Rauminhalt wie die HD-Spalte sx,
+nicht wie sx+46.
+
+Vorlagenabgleich (sechs Ausschnitte aus `hd/backgrounds/0044_armsdlr.png`, Graustufen-NCC):
+jede Vorlage liegt im 8-Bit-Bild auf ihrer eigenen Raumspalte (40->40, 150->150, 300->300,
+420->420, 520->520, 600->600, NCC 0,81 bis 0,99), im Komposit dagegen 46 Spalten tiefer
+(150->104, 300->254, 420->374, 520->474, 600->554, NCC 0,99 bis 1,00). Damit ist beides
+gemessen: Kompositspalte c zeigt Raumspalte c+46, Pufferspalte c zeigt Raumspalte c. Das
+Fenster im HD-Hintergrund ist richtig, und die 8-Bit-Ebene wird in Schritt 2 um eine
+Kamerabreite zu weit rechts eingeklebt: waagerecht wird `vs->getBasePtr(0, ...)` gelesen,
+senkrecht dagegen korrekt `sy + sdTop`.
+
+### Der Abzug im Objektpfad ist richtig
+
+Objekte werden mit `xPos = od.x_pos - sdLeft` gezeichnet (gfx.cpp, Objektschritt), Figuren
+seit 133450b2 mit `actorPos.x` ohne Abzug. Mit dem gemessenen Fenster (Komposit beginnt bei
+Raumspalte 46) sitzt ein HD-Objekt an Kompositspalte x-46 auf Raumspalte x, also dort, wo der
+HD-Hintergrund denselben Inhalt zeigt. Gegenprobe in Raum 61 (Hotelbar, Kamera per
+HD_SCROLL_TEST auf 56): die beiden gezeichneten HD-Objekte `hotelbar-hand` (obj 1005,
+pos 424,240) und `hotelbar-glass` (obj 1006, pos 380,248) ergeben gegenueber dem
+HD-Hintergrund null veraenderte Punkte (Stufe 2 gegen Stufe 3: 0 von 307.200, maximale
+Differenz 0). Sie liegen pixelgenau auf ihrer eigenen Darstellung im Hintergrund.
+Abzug entfernt (`xPos = od.x_pos`, Testbau): dieselbe Szene zeichnet 0 Objekte
+(`loaded=0 culled=14`). Das ist kein Beleg fuer eine bessere Lage, sondern ein Ausfall.
+
+### Gefundener Fehler: Sichtbarkeitspruefung liest Raumspalten statt Pufferspalten
+
+Die beiden Pruefungen vor dem Zeichnen (Kastenabgleich und Texturabgleich im Objektschritt)
+rechneten `od.x_pos + xx` und lasen damit 8-Bit-Punkte eine Kamerabreite neben dem Objekt.
+Das Zeichnen selbst und die Fehlt-Maske (Zeile 1734) rechnen richtig in Pufferspalten.
+Gemessen in Raum 61, gleiche Objekte, nur die Kamera anders:
+
+```
+Kamera 0  (sdLeft=0)   step2.5 objects: loaded=2 skipped=1 culled=11
+Kamera 56 (sdLeft=56)  step2.5 objects: loaded=0 skipped=1 culled=8
+Kamera 56, Spalte auf od.x_pos - sdLeft korrigiert: loaded=2 skipped=1 culled=8
+```
+
+Der Ausfall haengt allein an der Kameraposition. Sichtbar aendert die Korrektur in Raum 61
+nichts (die beiden Objekte sind im HD-Hintergrund enthalten, 0 veraenderte Punkte), in Raum 44
+ebenfalls nichts (keine HD-Objekte). Deshalb nicht committet; der Quellbaum enthielt waehrend
+der Messung ausserdem unfertige fremde Aenderungen. Der Eingriff, zwei Zeilen:
+
+```cpp
+const int sx  = od.x_pos - sdLeft + xx;    // Kastenabgleich, vorher od.x_pos + xx
+const int sx8 = od.x_pos - sdLeft + xx;    // Texturabgleich, vorher od.x_pos + xx
+```
+
+### Was offen bleibt, mit Messweg
+
+1. Schritt 2 sollte die 8-Bit-Ebene waagerecht ab Pufferspalte `sdLeft` lesen, analog zu
+   `sy + sdTop` senkrecht. Das ist nach den obigen Zahlen die Ursache fuer Inhalte, die um
+   eine Kamerabreite neben dem HD-Hintergrund stehen: Figuren ohne HD-Kostuem, Schatten,
+   8-Bit-Reste von Objekten, in Raum 44 gerade auch die Kanonen und Bootsteile an den
+   Raendern. Eigene Aufgabe, weil die Aenderung alle Ebenen gleichzeitig verschiebt und eine
+   eigene Messreihe braucht (Fenster 46 in Raum 44, 56 in Raum 61 mit Kamera).
+2. Die drei Raumobjekte in Raum 44 haben keine HD-Textur; solange das so ist, kommen sie
+   allein aus dem HD-Hintergrund. Wer sie als eigene Ebene will, muss sie extrahieren.
+3. Der Satz in 133450b2, der Kameraversatz sei im Komposit schon erledigt und duerfe nicht
+   abgezogen werden, gilt fuer den Hintergrund, nicht fuer die 8-Bit-Ebene; die Messung oben
+   trennt die beiden Ebenen.
+
+### Dateien
+
+```
+Aufnahmen Raum 44 (vor jeder Aenderung)  /opt/data/kanban/workspaces/t_24d94474/raum44_vorher
+Aufnahmen Raum 61 mit Kamera 56          /opt/data/kanban/workspaces/t_24d94474/A_61_alt
+dito mit korrigierter Spalte             /opt/data/kanban/workspaces/t_24d94474/B_61_neu
+dito ohne Kameraversatz beim Zeichnen    /opt/data/kanban/workspaces/t_24d94474/C_61_ohne_abzug
+Bild Objektpositionen                    projects/comi-hd/reports/vergleich/raum44_objektpositionen.png
+Ausschnitt 1:1 um Objekt 849             projects/comi-hd/reports/vergleich/raum44_objektpositionen_ausschnitt.png
+Messskripte                              projects/comi-hd/harness/objektpfad/
+```
+
+Hinweis zum Stand: die Messungen liefen mit `release/linux/scummvm` (13:20, Stand HEAD) und
+mit Testbauten um 14:07 und 14:18. Der Quellbaum wurde ab 14:23 von einer anderen Aufgabe
+geaendert, der Binarystand in `scummvm/fork` ist deshalb nicht mehr HEAD.
+
+Bildlegende zu `raum44_objektpositionen.png` (Aufnahme 1280x960, also 2x Spielpixel):
+gruen ist der Kasten, an dem der HD-Objektschritt zeichnen wuerde (Raumspalte minus
+Kameraversatz), rot derselbe Kasten um den Kameraversatz versetzt, also die Lage, die die
+8-Bit-Ebene im Komposit einnimmt. In Raum 44 bleibt der gruene Kasten leer, weil es keine
+HD-Textur gibt; die rote Lage zeigt den gemessenen Versatz von 46 Spielpixeln.
+
+Sonde zum Nachmessen (in `renderHDComposite` hinter der Berechnung von `sdLeft`/`sdTop`,
+nach der Messung wieder entfernen):
+
+```cpp
+if (getenv("HD_OFFSET_PROBE") && _hdBackgroundSurface.getPixels()) {
+    static int probeN = 0;
+    if (++probeN % 20 == 0) {
+        int tr[2] = {0, 0}, proben = 0;
+        for (int sy = 4; sy < visH - 8; sy += 5) {
+            const byte *prow = (const byte *)vs->getBasePtr(0, sy + sdTop);
+            for (int sx = 4; sx < visW - 8; sx += 5) {
+                const uint8 idx = prow[sx];
+                const int pr = _currentPalette[idx * 3];
+                const int pg = _currentPalette[idx * 3 + 1];
+                const int pb = _currentPalette[idx * 3 + 2];
+                for (int hyp = 0; hyp < 2; hyp++) {
+                    const int roomX = sx + (hyp ? sdLeft : 0);
+                    const int hx = roomX * scale + scale / 2;
+                    const int hy = (sy + sdTop) * scale + scale / 2;
+                    if (hx < 0 || hy < 0 || hx + 1 >= (int)_hdBackgroundSurface.w ||
+                        hy + 1 >= (int)_hdBackgroundSurface.h)
+                        continue;
+                    const byte *p = (const byte *)_hdBackgroundSurface.getBasePtr(hx, hy);
+                    if (MAX(ABS((int)p[0] - pr), MAX(ABS((int)p[1] - pg), ABS((int)p[2] - pb))) <= 48)
+                        tr[hyp]++;
+                }
+                proben++;
+            }
+        }
+        hdPrintf("OFFSETPROBE frame=%d sdLeft=%d xstart=%d proben=%d ohne=%d mit=%d",
+                 _hdFrameCount, sdLeft, (int)vs->xstart, proben, tr[0], tr[1]);
+    }
+}
+```
+
+## Schattenflaeche an allen Kostuemen: 814 Frames in 64 Saetzen
+
+Aufgabe: die Regel aus dem Guybrush-Fall (Schattenflaeche in der Alphamaske auf 0) auf alle
+Kostuempngs unter `hd/costumes/` anwenden, nicht nur auf `LFLF_0001_AKOS_0002`.
+
+### Vorgehen und Sicherung
+
+```
+hd/costumes/                 25.302 PNG in 445 Saetzen  (Stand vor dem Lauf)
+hd/costumes_backup2/         Sicherung, 25.302 Dateien, Groesse und mtime je Datei
+                             geprueft, Stichprobe md5-gleich
+Werkzeug                     projects/comi-hd/harness/schatten_alle_kostueme.py
+Aufnahme/Stichprobe          projects/comi-hd/harness/schatten_stichprobe.py
+Nachpruefung                 projects/comi-hd/harness/schatten_nachpruefung.py
+Trefferliste                 kanban t_9f018d32 / treffer_scan_alle.csv
+```
+
+Die Engine laedt aus `release/linux/hd/costumes` (eigene Kopie, 4,4 GB, nicht verlinkt).
+Dort wurde dieselbe Regel getrennt angewandt, damit die RGB-Staende der Kopie unberuehrt
+bleiben; die Alphawerte stimmen danach in beiden Verzeichnissen ueberein (geprueft).
+
+### Welche Regel, und warum nicht die 8-Bit-Regel
+
+Die Regel aus dem Guybrush-Fall leitet die Schattenfarbe je Frame aus der 8-Bit-Vorlage ab
+(haeufigste dunkle Farbe im unteren Band). Ueber alle Frames mit Vorlage gemessen (13.831
+Frames, davon 9.302 mit Kandidatenfarbe) ist das nicht tragfaehig:
+
+```
+Frames, die dadurch ueber 20 % ihrer Figur verlieren   1.064  (11,4 %)
+Verteilung: 0-1 % 984, 1-5 % 3.693, 5-20 % 3.561, 20-50 % 975, ueber 50 % 89
+Beispiel LFLF_0051_AKOS_0258_aframe_50: die abgeleitete Farbe (155,50,2) sitzt in
+  28.986 Pixeln ueber das ganze Cel verteilt (y 3 bis 919) - das Kostuem ist braun,
+  kein Schatten.
+```
+
+Deshalb arbeitet der Rollout HD-only, ohne Vorlage, und mit Farbe plus Form:
+
+```
+1. unteres Band y >= 0,80 h, nur deckende Pixel (Alpha > 200)
+2. haeufigste quantisierte Farbe dort (4-Bit-Stufen), Mittelwert ihrer Pixel
+3. Kandidatenflaeche: deckende Pixel mit Farbabstand <= 40 (Summe RGB), begrenzt auf y >= 0,65 h
+4. uebernommen nur wenn die Flaeche den letzten Bildrand beruehrt, Hoehe <= 0,30 h,
+   Breite >= 0,40 w, Fuellung der Bounding-Box >= 0,50
+5. Farbfamilie der Schattenflaeche: R 140..205, G 38..62, B 0..12
+   (gemessen: alle 814 uebernommenen Flaechen liegen in R 151..198, G 41..58, B 0..8)
+```
+
+Punkt 4 trennt flache Bodenflaechen von Figurteilen, Punkt 5 trennt sie von Kostuemfarben.
+Ohne Punkt 5 bleiben 63 Treffer stehen, die kein Schatten sind, darunter
+`LFLF_0025_AKOS_0150_aframe_8` mit (69,126,40) und 60 Prozent der Figur (gruen),
+`LFLF_0053_AKOS_0269_aframe_36` mit (215,92,0) (orange) und
+`LFLF_0055_AKOS_0284_aframe_211` mit (255,227,99) (hellgelb). Mit Punkt 5 verliert kein
+einziger Frame mehr als 28,6 Prozent seiner Figur.
+
+### Zahlen
+
+```
+Frames geprueft                       25.302
+Treffer der Formregel                     877
+davon in der Schattenfarbe und geaendert  814  in 64 Saetzen, 34 Raeumen
+davon ausserhalb der Farbfamilie           63  nicht angetastet
+entfernte Pixel                    11.980.977  (Median 15.233 je Frame, max 134.663)
+Anteil der Figur, der entfernt wurde  Median 0,101, p90 0,136, max 0,286
+Raeume mit den meisten Treffern      13 (96), 28 (76), 64 (67), 26 (56), 57 (54)
+```
+
+Nachpruefung ueber alle 814 geaenderten Dateien (Pixelvergleich gegen `hd/costumes_backup2/`):
+
+```
+RGB veraendert                             0 Dateien
+Alpha ungleich 0 an geaenderten Punkten     0 Dateien
+Alphawerte weichen von release/linux ab     0 Dateien
+zweiter Lauf der Regel auf der Datei        0 neue Treffer (idempotent)
+unterste deckende Zeile ueber der Fusszeile 0 Frames (Fuesse in allen 814 erhalten)
+```
+
+Nebenbefund: `LFLF_0001_AKOS_0002_aframe_348` (Guybrush, Raum 1) trug die Schattenflaeche
+noch (Farbe 165/53/2), der frueherere Lauf hatte ihn nicht erfasst; er ist jetzt mit
+behandelt.
+
+### Stichprobe: 20 Frames aus 16 Saetzen
+
+`projects/comi-hd/reports/stichprobe_schatten/stichprobe.txt` (Zahlen je Frame) und
+`stichprobe20.png` (Sammelbild vorher|nachher, entfernte Flaeche gruen umrandet), Einzelbilder
+`*_vorher_nachher.png`. Deckkraft vorher/nachher zum Beispiel:
+
+```
+LFLF_0013_AKOS_0064_aframe_71   174.977 -> 165.496   entfernt   9.481   5,4 %  Fuesse ja
+LFLF_0026_AKOS_0155_aframe_24   179.380 -> 161.423   entfernt  17.957  10,0 %  Fuesse ja
+LFLF_0035_AKOS_0192_aframe_17   170.580 -> 166.211   entfernt   4.369   2,6 %  Fuesse ja
+LFLF_0016_AKOS_0087_aframe_187   83.688 ->  73.009   entfernt  10.679  12,8 %  Fuesse ja
+```
+
+### Aufnahmen aus drei Raeumen
+
+```
+projects/comi-hd/reports/vergleich/schatten_raum13_nachher.png   (96 Treffer im Raum)
+projects/comi-hd/reports/vergleich/schatten_raum30_nachher.png   (4 Treffer)
+projects/comi-hd/reports/vergleich/schatten_raum44_nachher.png   (1 Treffer)
+Rohbilder      projects/comi-hd/work/schatten_aufnahme/raum{13,30,44}/h*.ppm
+Befehl         harness/schatten_aufnahme.sh 13 30 44
+```
+
+### Was offen bleibt
+
+1. Ein A/B im laufenden Spiel (unbehandelte gegen behandelte Texturen, Pixelvergleich der
+   Bildfolgen) ist nicht gelungen: zwei Laeufe desselben Raums zeigen 13 gegen 13 Bilder mit
+   Unterschieden ueber das ganze Bild, also nicht denselben Animationsstand. Die Aenderung
+   ist deshalb je Datei gemessen (Alpha, Fuesse, Idempotenz), die Aufnahmen oben zeigen den
+   Lauf mit behandelten Texturen, nicht den Vergleich.
+2. Die Regel findet nur Schatten in der gemessenen Farbfamilie. Ein anders gefaerbter
+   Schatten (dunkler in dunklen Raeumen) wird nicht angefasst; das ist die sichere Richtung
+   (lieber stehen lassen als Figur wegnehmen), aber es ist eine Luecke.
+3. 45,3 Prozent der Frames (11.471) haben keine 8-Bit-Vorlage in
+   `projects/comi-hd/work/extract-fix4/costumes`. Sie sind nur ueber die HD-Regel abgedeckt;
+   eine Gegenprobe gegen die Vorlage ist dort nicht moeglich.
+4. Der 8-Bit-Rest unter Guybrush (Abschnitt "Was offen bleibt: die 8-Bit-Ebene malt den
+   Schatten weiter") bleibt bestehen. Die HD-Textur ist jetzt in allen 64 Saetzen frei von
+   der Flaeche, gezeichnet wird an diesen Stellen weiterhin die 8-Bit-Fassung, solange die
+   Regel im `alpha == 0`-Zweig nicht eingeschraenkt ist.
+
+
+## Gegenprobe Kanonen Raum 44: 46 Punkte waagerecht, 0 senkrecht (comi-pruef, 25.10.)
+
+Auftrag war, nach dem Fix im Objekt-Pfad zu pruefen, ob die 8-Bit-Kanone auf der HD-Kanone
+sitzt (Ziel 0 bis 1 Spielpunkt, also 0 bis 0,5 Kompositpunkte) und ob keine neue Dopplung
+entstanden ist. Ergebnis vorweg: der Objekt-Pfad ist in Raum 44 nicht die Stelle, an der
+etwas zu holen oder zu verderben ist, weil er dort nichts zeichnet. Die Kanone sitzt
+46 Spielpunkte daneben, und zwar waagerecht die Kamerabreite, senkrecht genau. Die Ursache
+ist Schritt 2 (offene Aufgabe `t_f072e2ac`), nicht der Objekt-Pfad.
+
+### Messaufbau
+
+Ein Lauf, ein Bildstand, damit sich Stufen und 8-Bit-Puffer nicht auseinanderziehen:
+
+```
+Binary     projects/comi-hd/work/engine/scummvm-d67 (13:45, Objekt-Pfad unveraendert)
+Raum 44, Kamera 46:  hdgeom scale=4 camX=184 camY=0 room=952x480 comp=2560x1920 xstart=46
+Schalter   HD_JUMP_ROOM=44 HD_DUMP_STEPS=1 HD_DUMP_SEQ=1 HD_TRACE_DRAW=1 HD_EXIT_AFTER=160
+Aufnahme   kanban/workspaces/t_cf9ce439/vorher_ohne_tint (Stufen 1 bis 4, 54 r/h-Paare)
+           kanban/workspaces/t_cf9ce439/vorher (dito mit HD_TINT_8BIT=1, fuer die Ortskarte)
+```
+
+Ohne `HD_TINT_8BIT`, weil die Einfaerbung die Palettenfarbe im Komposit veraendert und
+damit jeden exakten Farbvergleich unbrauchbar macht. Der erste Lauf mit Einfaerbung ergab
+deshalb 0 Prozent Farbgleichheit an allen Stellen; der zweite zeigt 100 Prozent.
+
+### Zahlen
+
+```
+Objektschritt (Stufe 2 gegen 3)              0 Punkte von 307.200
+HD-Texturen fuer die drei Raumobjekte        hd/objects: 982 Dateien, keine mit 0044
+                                             object_map.json: kein Eintrag 0044
+8-Bit-Ebene eingeklebt (Stufe 2 gegen 1)     31.655 Punkte = 10,3 %
+eingeklebte Punkte mit Farbe des Puffers
+  an derselben Spalte gelesen                100,0 %  (11.181 geprueft)
+  46 Spalten weiter links gelesen            12,3 %
+Puffer gegen Raumbild, Vorlagensuche
+  Krug/Theke (Raumspalte 452)                +0 Spalten, NCC 0,982   (bei -46: 0,092)
+  Boot hinten (96)                           +0 Spalten, NCC 0,985   (bei -46: 0,300)
+  Theke mitte (250)                          +0 Spalten, NCC 0,988   (bei -46: 0,005)
+Ueberklebt je Kasten, richtige Stelle / eine Kamerabreite rechts
+  Kanonen-/Krugkasten (Raum 512..600)         9,6 % / 33,7 %
+  Person rechts (Raum 600..640)              20,5 % / 91,4 %
+  Figur (Raum 340..400)                       9,4 % / 42,2 %
+  Kanonenrad rechter Rand (Raum 592..640,
+    Zeilen 352..448)                          0,0 % / 87,9 %
+Kostuemschritt (Stufe 4 gegen 3)             16.715 Punkte, dichteste Spalten 340..399
+```
+
+Die drei Zeilen mit 100 Prozent und mit 0 Spalten sind der Kern: der Kompositpunkt bekommt
+die Farbe des Pufferpunkts derselben Spalte (also wird gelesen, wo geschrieben wird), und
+der Puffer fuehrt Raumspalten. Damit landet der 8-Bit-Inhalt auf Kompositspalte gleich
+Raumspalte, waehrend der HD-Hintergrund an dieser Stelle Raumspalte plus Kamera zeigt.
+Der Versatz ist die Kamerabreite: 46 Punkte waagerecht, 0 senkrecht, weil senkrecht
+`sy + sdTop` gelesen wird und `sdTop` in Raum 44 null ist.
+
+### Sichtpruefung
+
+`reports/vergleich/raum44_kanone_vorher.png`: oben der Komposit mit gruenem Kasten auf der
+HD-Kanone (466..554) und rotem Kasten eine Kamerabreite rechts (512..600), rechts daneben
+derselbe Ausschnitt ohne 8-Bit-Ebene. Im Komposit liegen zwei Fassungen derselben Stelle
+uebereinander, im reinen HD-Bild ist jede einmal da. `reports/vergleich/
+raum44_kanone_rand_vorher.png` zeigt denselben Vergleich am Kanonenrad am rechten Rand:
+links das Rad einmal, rechts das Rad plus eine versetzte, angeschnittene Kopie, dazu der
+Steinblock und das Gewaechs doppelt. Das ist die Dopplung, die die Karte meint, und sie
+kommt aus Schritt 2. `reports/vergleich/raum44_figur_vorher.png` zeigt den Figurenbereich
+(Spalten 300..440): die 8-Bit-Figur erscheint nur im Bild mit 8-Bit-Ebene, und zwar einmal
+und nicht als Doppelgaenger, weil das HD-Kostuem an derselben Stelle gezeichnet wird (siehe
+Punkt 3 unten).
+
+### Berichtigung einer frueheren Messung
+
+Der fruehere Befund in dieser Sache (dx = -1 Kompositpunkt, "in sich stimmig") war falsch.
+Damals wurde der r-Frame gegen den Komposit mit einem Suchradius von plus/minus 10 Punkten
+verglichen; der tatsaechliche Versatz ist 92 Kompositpunkte, also weit ausserhalb. Was als
+Versatz von 1 Punkt gemessen wurde, war das Rauschen der Farbunterschiede. Mit weiter Suche
+und exaktem Farbvergleich ist das Bild eindeutig.
+
+### Was daraus fuer den naechsten Schritt folgt
+
+1. Der Objekt-Pfad braucht in Raum 44 keine Aenderung; er zeichnet dort null Punkte, und
+   wo er zeichnet (Raum 61), sitzt er nach der Messung von `t_24d94474` pixelgenau.
+2. Schritt 2 ist die Stelle (`t_f072e2ac`). Nach dem Umbau muss diese Messung den Versatz 0
+   zeigen, und zwar auf beiden Achsen.
+3. Zusatz, der beim Umbau mitgeprueft werden muss: Figur (8-Bit-Ebene) und HD-Kostuem
+   liegen heute beide auf denselben Kompositspalten 340..399, also beide 46 Punkte rechts
+   des Hintergrundinhalts. Sie fallen nur deshalb zusammen, weil beide den Kameraversatz
+   nicht abziehen. Wird die 8-Bit-Ebene kuenftig 46 Punkte weiter links eingeklebt, steht
+   das HD-Kostuem 46 Punkte rechts davon, solange der Kostuemweg den Abzug nicht wieder
+   zieht. Diese Wechselwirkung ist der Grund, warum der Kostuemweg in derselben Messreihe
+   mitlaufen muss.
+
+### Dateien
+
+```
+Sichtbilder   projects/comi-hd/reports/vergleich/raum44_kanone_vorher.png
+              projects/comi-hd/reports/vergleich/raum44_kanone_rand_vorher.png
+              projects/comi-hd/reports/vergleich/raum44_figur_vorher.png
+Messskripte   projects/comi-hd/harness/objektpfad/gegenprobe44.py      (Zahlen + Sichtbild)
+              projects/comi-hd/harness/objektpfad/kanone_zahlen.py     (Kanonenkasten)
+              projects/comi-hd/harness/objektpfad/paste_herkunft.py    (Farbgleichheit)
+              projects/comi-hd/harness/objektpfad/puffer_raumspalte_weit.py
+              projects/comi-hd/harness/objektpfad/figur_lage.py        (Kostuem gegen Figur)
+              projects/comi-hd/harness/objektpfad/kanone_sichtbild.py
+              projects/comi-hd/harness/objektpfad/rand_sichtbild.py
+              kanban/workspaces/t_cf9ce439/lauf44.sh                   (Messlauf)
+Rohdaten      kanban/workspaces/t_cf9ce439/vorher_ohne_tint
+```
+
+Nachher-Messung offen: sie braucht den Schritt-2-Umbau aus `t_f072e2ac`. Der Messweg oben
+ist dafuer unveraendert anwendbar, ein zweiter Lauf mit der neuen Binary genuegt.
+
+## Schritt 2 liest die 8-Bit-Ebene jetzt ab der Fensterspalte (Raum 44, 46 px)
+
+Der in "Objekt-Pfad Raum 44" offen gelassene Punkt 1 ist gebaut: die 8-Bit-Ebene wird in
+`renderHDComposite` waagerecht ab `sdLeft` gelesen, genau wie senkrecht ab `sdTop`. Vorher las
+jede Stelle ab Pufferspalte 0, das sichtbare Fenster beginnt aber bei `sdLeft` (Raum 44: 46).
+
+### Beleg, dass Pufferspalte 0 die Raumspalte 0 ist
+
+Drei Ausschnitte aus dem 8-Bit-Puffer (Spalten 0..119, 250..389, 500..639) wurden im
+HD-Raumbild gesucht, mit oertlicher Mittelwertfreiheit gegen den Helligkeitsverlauf:
+
+```
+Ausschnitt   0..119   bester Treffer Raumspalte   0  NCC 0,6591  (Nachbar +1: 0,4564)
+Ausschnitt 250..389   bester Treffer Raumspalte 250  NCC 0,6380  (Nachbar -1: 0,3897)
+Ausschnitt 500..639   bester Treffer Raumspalte 500  NCC 0,8486  (Nachbar -1: 0,6023)
+```
+
+Zusaetzlich in-engine (Sonde mit vier Hypothesen, Raum 44, Bild 80, sdLeft=46, 11.625 Proben):
+Pufferspalte = Raumspalte 9.876 Treffer (85 Prozent), Spalte+46 3.720 (32 Prozent),
+Spalte+40 4.005 (34 Prozent), Spalte+6 7.111 (61 Prozent). Die 8-Bit-Ebene steht also in
+Raumspalten, das Fenster ist um den Kameraversatz dagegen versetzt.
+
+### Was umgestellt ist
+
+`sdX = sdLeft` und `visX = MIN(visW, vs->w - sdX)`. Ab `sdX` gelesen wird an allen Stellen, die
+das Fenster betreffen: Vorlagenaufnahme (`hdRefreshCleanBackground`), Selbstheilungspruefung der
+Vorlage, Vordergrundschleife (visRow/cleanRow), Objekt-Sichtbarkeit und Fehlt-Maske, die beiden
+Objektvergleiche, Inventarbereich, Figuren-Rueckfall, Schriftpruefung. Die Vorlage liegt damit
+in Fensterspalten, `_hdCleanXStart` bleibt der Fensteranfang im Raum (der Streifenweg in
+`drawRoomBackground` rechnet schon immer so). `hd_ref.ppm` ist jetzt das Fensterbild, also das,
+was der Bildschirm zeigt. Die rechten `sdLeft` Spalten haben keinen Pufferinhalt (der Puffer
+haelt Raumspalten 0..639, das Fenster braucht 46..685); dort bleibt der HD-Hintergrund stehen.
+
+### Messwerte nach dem Umbau
+
+Eingeklebte Pixel sind die Pixel, die sich zwischen Stufe 1 und Stufe 2 unterscheiden. Geprueft
+wird, ob ihre Farbe an derselben Bildstelle der 8-Bit-Vorlage entspricht (Toleranz 24).
+
+```
+Raum 44, Bild 80:   11.755 eingeklebt (3,8 Prozent), gleiche Bildstelle 11.755 von 11.755 (100,0 Prozent)
+                    Gegenprobe Vorlage +40 Spalten 739 (6,3), -40 Spalten 748 (6,4)
+Raum 44 vorher:      5,5 Prozent gleiche Bildstelle, beste Gegenprobe +40 Spalten 32,9 Prozent
+Raum 61, Kamera 56:     17 eingeklebt, 17 von 17 deckungsgleich
+Raum 13/47:          Stufen 2, 3, 4 pixelgleich zu vorher (0 abweichende Punkte)
+Raum 30:             208 abweichende Punkte (0,017 Prozent, Animationsphase; xstart 0, gleicher Codepfad)
+8-Bit-Anteil Raum 44 (HD_TINT_8BIT): 10,9 Prozent vorher, 3,8 Prozent nachher
+```
+
+Der Rueckgang des 8-Bit-Anteils ist die Folge der Ausrichtung: vorher galt fast das ganze Bild
+als Vordergrund, weil die Vordergrundpruefung den Puffer gegen eine um 46 Spalten versetzte
+Vorlage stellte. Was jetzt noch eingeklebt wird, sitzt deckungsgleich (100 Prozent), und die
+HD-Ebene bleibt stehen, wo sie hingehoert.
+
+Aufnahmen und Messskripte: `projects/comi-hd/work/messung_schritt2/`,
+`projects/comi-hd/harness/objektpfad/` (ausschnitt_lage.py, deckung_ref.py, ab_vergleich.py,
+spaltenlage_raum.py).
+
+## Beweisvideo Raum 44: 6,6 Prozent des Bildes sind 8 Bit, verteilt ueber das ganze Bild
+
+Auftrag war, statt Einzelbildern einen laengeren Lauf aufzunehmen und je Bild den sichtbaren
+8-Bit-Anteil zu messen, weil die gelieferten Standbilder den Fehler nicht zeigten, den der
+Spieler sieht (Dopplungen links am Boot, falsch stehende Person rechts, Kanonen).
+
+### Messaufbau
+
+```
+Binary      release/linux/scummvm, 25.10. 13:20, sha256 25b2c5b5...
+            Kopie mit eigenen Aufnahmepfaden: work/engine/scummvm-bw4, sha256 43c887cd...
+            (harness/beweis_binary.py, sonst loeschen parallele Aufgaben die Bildfolge)
+Lauf        HD_JUMP_ROOM=44 HD_FIXED_DELTA=100 HD_EXIT_AFTER=700
+            HD_DUMP_SEQ=1 HD_TINT_8BIT=1 HD_TRACE_DRAW=1, Raum 44 bestaetigt (bw4room.txt)
+Umfang      200 Bilder, das ist die Obergrenze der Engine (hdSeqNo < 200), also 600
+            Kompositionen; bei 100 ms Zeitschritt sind das 60 s Spielzeit, Laufzeit 143 s
+Werkzeug    harness/beweis_lauf.sh, harness/beweis_auswertung.py, harness/beweis_zahlen.py
+```
+
+Je Bild liegen zwei Aufnahmen aus demselben Lauf vor: `h*.ppm` (HD-Komposit, 2 Dumppixel je
+Spielpixel) und `r*.ppm` (die 8-Bit-Ebene desselben Bildes in Palettenfarben). Damit wird der
+sichtbare 8-Bit-Anteil auf zwei Wegen gemessen:
+
+1. Signalfarbe: `HD_TINT_8BIT` faerbt jedes Pixel der 8-Bit-Vordergrundebene magenta. Exakt.
+2. Palettenfarbe: die Stufe 2.6b schreibt danach 8-Bit-Punkte in echter Palettenfarbe ueber
+   den HD-Hintergrund. Diese Punkte sind nicht magenta. Erkannt wird die Flaeche, indem der
+   2x2-Block des Komposits mit dem Pixel der 8-Bit-Aufnahme verglichen wird; die Stufe
+   schreibt genau den Palettenwert dieses Pixels.
+
+Gegenprobe der zweiten Groesse gegen den Engine-Zaehler im Protokoll (`step2.6b ui-overlay:
+pixels=`, 22 Zeilen im Lauf):
+
+```
+Engine-Zaehler            19.336 / 19.346 / 19.645 Punkte je Bild
+auf das 8-Bit-Fenster
+  (594 von 640 Spalten)    17.956 erwartet
+aus den Bildern gezaehlt   17.424 im Mittel = 97,0 %
+```
+
+### Zahlen (185 Bilder mit geladener HD-Ebene)
+
+```
+8-Bit sichtbar gesamt   min 6,37   median 6,58   max 6,73   Mittel 6,60  Prozent der Flaeche
+  Signalfarbe (Tint)    min 0,81   median 0,92   max 0,97   Mittel 0,93
+  Palettenfarbe (2.6b)  min 5,53   median 5,67   max 5,78   Mittel 5,67
+Palettenpunkte je Bild  16.993 / 17.422 / 17.754
+Flaechen ueber 60 Spielpixel je Bild   41 bis 46
+groesste Einzelflaeche  9.132 Dumppunkte = 2.283 Spielpixel, Streifen x 594..603, y 141..371
+```
+
+Die 15 Bilder vor dem Sprung (Bildnummern 0 bis 14) zeigen den dunklen Moment nach
+`startScene(44)`, in dem die HD-Ebene noch nicht geladen ist; dort ist das Bild die
+8-Bit-Fassung selbst (rund 70 Prozent Palettenfarbe) und die Zahl sagt nichts aus. Sie sind in
+der CSV als `hd_geladen=nein` markiert und in den Statistiken nicht enthalten.
+
+### Warum die Standbilder den Fehler nicht zeigten
+
+Der sichtbare 8-Bit-Anteil ist nicht eine grosse Dopplung an einer Stelle, sondern ein
+Flickenmuster ueber das ganze Bild: 5,67 Punkte Palettenfarbe plus 0,92 Punkte Signalfarbe.
+Die groesste zusammenhaengende Flaeche ist der bekannte Randstreifen (x 594..603), der Rest
+sind 41 bis 46 kleine Flaechen auf Texturkanten: Takelage, Wellen, Figur, Theke, Banner,
+Schilder. In einem Standbild sieht das wie Textur aus, markiert ist es eindeutig. Der
+Kernbefund fuer die Messmethode: wer nur die Signalfarbe misst, sieht 0,92 Prozent und
+unterschaetzt den sichtbaren 8-Bit-Anteil um den Faktor 7.
+
+### Bezug zum Versatz von 46 Spalten
+
+Der Befund oben (Abschnitt "Gegenprobe Kanonen Raum 44") erklaert die Lage: Schritt 2 klebt
+die 8-Bit-Ebene spaltengenau in den Komposit, waehrend der HD-Hintergrund dort Raumspalte
+plus Kamera zeigt. In Raum 44 sind das 46 Spielpixel waagerecht, 0 senkrecht. Deshalb steht
+jede 8-Bit-Flaeche eine Kamerabreite neben ihrem HD-Gegenstueck, und deshalb sind es viele
+kleine Flaechen und nicht eine: nur wo die 8-Bit-Vorlage Struktur hat (Kanten, duenne
+Details), faellt die versetzte Kopie auf. Die Zahl hier ist der Ist-Stand vor dem Umbau von
+Schritt 2 (`t_f072e2ac`) und damit die Vorher-Zahl fuer dessen Nachmessung.
+
+### Was die Zahlen nicht zeigen
+
+1. Der Sprunglauf haelt die Kamera bei 46 (in 22 der 24 `hdgeom`-Zeilen camX 184, xstart 46;
+   die zwei Zeilen davor gehoeren zum Zustand vor dem Sprung), der Vordergrund bleibt bei
+   32.534 bis 33.467 Punkten (10,6 bis 10,9 Prozent, davon 23.976 bis 25.414 Objekt, 8.038
+   sonst, 9 bis 520 Figur). Andere Kamerapositionen von Raum 44 werden mit diesem Verfahren
+   nicht erfasst. `HD_SCROLL_TEST` erzeugt laut frueherem Befund einen kuenstlichen Zustand
+   und bleibt aussen vor.
+2. Die Szene steht weitgehend: zwischen zwei Bildern aendern sich im Median 1,69 Prozent der
+   Punkte, der 8-Bit-Anteil bleibt dabei in dem engen Band 6,37 bis 6,73 Prozent. Acht Bilder
+   liegen bei 6,73 Prozent, die naechsten vier bei 6,72, es gibt also kein "schlimmstes"
+   Bild. Die drei Beispielbilder sind deshalb 20 Bilder (6 s Spielzeit) auseinandergelegt,
+   statt drei Mal denselben Zustand zu zeigen.
+3. Die Palettenfarbe ist nur im 8-Bit-Fenster pruefbar (594 von 640 Spalten). Im 46 Pixel
+   breiten Streifen rechts davon wird nur die Signalfarbe erfasst.
+4. Die Abschaltprobe (`HD_NO_ACTORS=1 HD_NO_OBJECTS=1`) taugt nicht als Anteilsmass: zwei
+   Laeufe mit identischer Einstellung unterscheiden sich schon in 1,07 Prozent der
+   8-Bit-Punkte, weil die Bewegungsphase nicht reproduzierbar ist. Sie wird deshalb nur als
+   Blinkvergleich fuers Auge verwendet, nicht als Zahl.
+
+### Dateien
+
+```
+Video, alle 200 Bilder, 20 fps       projects/comi-hd/reports/vergleich/raum44_beweis.mp4
+                                     (1280x960, 10,0 s, 3,7 MB)
+Blinkvergleich normal gegen ohne     projects/comi-hd/reports/vergleich/raum44_beweis_blinken.mp4
+  8-Bit-Figuren/-Objekte             (185 Paare, 18,5 s; Schalterprobe, keine Messung)
+Drei markierte Standbilder           projects/comi-hd/reports/vergleich/raum44_beweis_{1,2,3}.png
+Zahlen je Bild                       projects/comi-hd/work/raum44_beweis_lang/bilder.csv
+Zusammenfassung                      projects/comi-hd/work/raum44_beweis_lang/zusammenfassung.json
+Rohbilder h/r                        projects/comi-hd/work/raum44_beweis_lang/raw/ (400 Dateien)
+Markierte Einzelbilder des Videos    projects/comi-hd/work/raum44_beweis_lang/markiert/
+Protokolle des Laufs                 .../hd_state.log, .../hd_fg.log, .../stdout.log
+Werkzeuge                            projects/comi-hd/harness/beweis_binary.py
+                                     projects/comi-hd/harness/beweis_lauf.sh
+                                     projects/comi-hd/harness/beweis_auswertung.py
+                                     projects/comi-hd/harness/beweis_zahlen.py
+```
+
+Die Markierung im Video: halbtransparentes Gelb auf jedem sichtbaren 8-Bit-Punkt, gelbe
+Kontur und rote Kaesten mit Nummer auf den acht groessten Flaechen, Kopfzeile mit beiden
+Anteilen, Fusszeile mit Spielpixel-Koordinaten der beiden groessten Flaechen.
