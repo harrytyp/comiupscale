@@ -2023,6 +2023,12 @@ Pfad, der 8-Bit-Inhalt malt. Damit kann Wasser aus Schritt 2 keine Objekte ueber
 sondern nur den Hintergrund. Ein Wasser-punkt, der nach dem Objektschritt ins Bild kommt,
 kann ausschliesslich aus 2.6b stammen.
 
+Nachtrag 25.10.2026: Schritt 2.6 schneidet seit `t_90713baf` je Bildpunkt an der Maskenebene
+des Akteurs ab (dieselbe Maske, die `bompApplyMask` im 8-Bit-Zeichner prueft). Die
+Zeilennummern oben sind dadurch verschoben, 2.6 beginnt jetzt bei `gfx.cpp:2755`. Siehe
+"Tiefenreihenfolge: HD-Kostuem schneidet an der Maskenebene des Akteurs ab" am Ende dieser
+Datei.
+
 ### Gemessen: kein Wasser nach dem Objektschritt
 
 Drei Laeufe, je ein Bild, Stufendumps (`HD_DUMP_STEPS=1`), Vergleich der Stufen:
@@ -2833,6 +2839,11 @@ Offen und als eigene Aufgabe gefuehrt: der CULL darf fuer Raumobjekte nicht aus 
 gleich Vorlage" auf Unsichtbarkeit schliessen. Kein Pixelunterschied, weil die Texturen aus
 dem Hintergrund kommen; sichtbar wird es erst bei Objekten mit eigener HD-Zeichnung.
 
+Nachtrag 25.10.2026: erledigt in `t_e6e97530`, siehe "Objekt-CULL greift nur noch bei FLOBJs"
+am Ende dieser Datei. Der letzte Satz oben ist dabei widerlegt: die Texturen dieser Objekte
+sind keine Ausschnitte des Hintergrunds (NCC 0,14 Kissen und 0,22 Hand gegen den Hintergrund),
+ihr Fehlen im HD-Bild war also nicht unsichtbar.
+
 ## Unabhaengige Verifikation des Kostuemankers ueber fuenf Raeume (comi-pruef, 25.10.2026)
 
 Karte `t_0eaca6e2`. Auftrag: den Fix aus `82ca6baa` unabhaengig pruefen, Raeume 3, 9, 15, 44
@@ -3338,3 +3349,481 @@ Fensterprobe    projects/comi-hd/harness/deckung_diagnose.py (roh gegen geteilt,
 Laufuebersicht  projects/comi-hd/harness/lauf_uebersicht.py
 Laeufe          projects/comi-hd/work/verify/runs/nach_raum{9,15,44,86}/
 ```
+
+## Objekt-CULL greift nur noch bei FLOBJs (t_e6e97530, comi-bau, 25.10.2026)
+
+Nachtrag zum Abschnitt darueber: die dort offen gelassene Frage ist mit Messung entschieden.
+Der Pixelvergleich gegen `_hdCleanBackground` laeuft nur noch fuer FLOBJs
+(`od.fl_object_index != 0`), also fuer Objekte, deren Bildschirmlage aus der Blast-Queue
+kommt. Fuer Raumobjekte entscheidet der Texturabgleich, der ohne Vorlage auskommt.
+
+### Messung: welche Pruefung verwirft in Raum 61 was
+
+Sonde `HD_OBJCULL2` (temporaer, wieder entfernt), Lauf 17:00, Binary aus HEAD `82ca6baa` plus
+Sonde, `HD_JUMP_ROOM=61 HD_SCROLL_TEST=1 HD_FIXED_DELTA=20 HD_EXIT_AFTER=140`. Je Raumobjekt
+(fl==0) die drei Instanzen, gezaehlt ueber alle Bilder:
+
+```
+obj   Asset                       CULL  davon mit gueltiger  Kasten   gezeichnet
+                                        Vorlage / ohne       (diff<2%)
+973   hotel-bar-storeroom-door       96     0 / 96              0        0
+974   hotel-bar-cushion              96    96 /  0              0        0
+977   hotel-bar-recipe-book          96    64 /  0             32        0
+996   hotel-bar-portrait             96    15 /  0             81        0
+997   tip-jar-animation-object       96    96 /  0              0        0
+1003  hotelbar-neon                  47     0 / 47              0        0
+1005  hotelbar-hand                 96    64 /  0              0       32
+1006  hotelbar-glass                96    64 /  0              0       32
+```
+
+Zwei Aussagen stecken darin:
+
+1. Der CULL verwirft die Raumobjekte auch dann, wenn die Vorlage im ganzen Kasten gueltig ist
+   (974, 977, 997, 1005, 1006). Das ist der Fehler aus der Karte.
+2. Der Kastenabgleich darunter hat denselben Fehler und ist nicht kleiner: er hat das
+   Rezeptbuch in 32 Bildern und das Portraet in 81 Bildern verworfen, beide mit
+   `diff=1` von 96 Stichproben. Deshalb ist er mit derselben Bedingung eingeschraenkt worden.
+
+Ohne gueltige Vorlage (`sampled=0`) verwarf der CULL das Tor (973) und das Neon (1003). Beide
+stehen ausserhalb des Fensters: 736..792 und 792..904 Raumspalten, das Fenster zeigt bei
+Kamera 56 die Spalten 56..696. Sie bekommen keinen Blitbereich und bleiben unveraendert.
+
+### Aenderung
+
+Zwei Bedingungen in `renderHDComposite` (gfx.cpp, Objektschritt):
+
+```
+CULL            if (od.fl_object_index != 0) { ... }
+Kastenabgleich  if (od.fl_object_index != 0 && _hdCleanValid && ...) { ... }
+```
+
+Der Texturabgleich (Schwelle 35 Prozent Treffer gegen die Palettenfarben des 8-Bit-Bildes)
+bleibt fuer alle Objekte aktiv, ebenso die Inventarerkennung.
+
+### Abnahme
+
+```
+Raum 61, 140 Bilder, Kamera 0 bis 56, Objekt 1005 hotelbar-hand
+                          vorher        nachher
+Bewertungen im Objektschritt (F=44..139)   96      96
+davon gezeichnet                           32      96
+Kamera 56 (F=90..139) gezeichnet         10/50   50/50
+step2.5 loaded je Bild (ab F=90)             0       8
+```
+
+Die Karte nennt 14 von 68 Bildern bei Kamera 56. In diesem Lauf beginnt Kamera 56 bei Bild 90
+und umfasst 50 Bilder; 10 davon wurden vorher gezeichnet, nicht 14. Gezaehlt wurde ueber
+`VERIFY obj=1005` (Debug-Build) und `step2.5 objects: loaded=`.
+
+Was im gerenderten Bild passiert, am Beispiel Kissen (974), Bild 00030, Kamera 56:
+
+```
+                              vorher          nachher
+NCC Kasten gegen HD-Textur      0,140           0,954
+NCC Kasten gegen HD-Hintergrund 0,998           0,169
+bester Versatz der Textur          -            0 (NCC 0,954 gegen 0,810 bei 1 px)
+```
+
+Vorher stand im Kasten also der HD-Hintergrund, das Kissen fehlte im HD-Bild. Die Annahme der
+Karte, die Objekttexturen seien aus dem Hintergrund geschnitten, trifft fuer diese Objekte
+nicht zu: Kissen 0,138 und Hand 0,217 NCC gegen den Hintergrund an derselben Stelle. Fuer die
+Hand aendert das Zeichnen erwartungsgemaess wenig (0,818 vorher, 0,825 nachher), fuer das
+Kissen viel. Tip-Jar 0,982 bei Versatz 0.
+
+### Gegenproben (unveraendert)
+
+```
+Raum 25, FLOBJs 105/114/115/116/188/189   CULL/RENDER/loaded/skipped/culled  vorher = nachher
+Raum 13                                  CULL 6, culled 30 (Summe)          vorher = nachher
+Raum 44                                  CULL 6, RENDER 5, culled 15        vorher = nachher
+Magenta-Anteil (HD_TINT_8BIT, Mitte)     13: 0,02  30: 0,09  44: 0,12  47: 0,00
+                                         nachher 13: 0,02  30: 0,09 (max 0,10)  44: 0,12  47: 0,00
+188/189 (Dialogpfeile)                   Texturabgleich verwirft 74 Bilder, vorher wie nachher
+```
+
+### Was diese Messung nicht belegt
+
+- Die Zahlen gelten fuer Raum 61 mit seinen sechs sichtbaren Raumobjekten. Andere Raeume mit
+  Raumobjekten, die eigene HD-Zeichnungen haben und im 8-Bit-Bild verdeckt sind, sind nicht
+  gemessen. Dort traegt allein der Texturabgleich.
+- Bild 00030 ist ein Bild aus der stehenden Kamera-Phase. Die Lage ist dort geprueft, nicht
+  waehrend einer Bewegung.
+- Der Vergleich der Komposits vorher/nachher ist nur ueber Objektkaesten ausgewertet; die
+  acht Bit-Ebene ist zwischen den Laeufen nicht bildgleich (Animationsphase), rund 50 bis 65
+  Punkte Unterschied im Rohpuffer.
+
+### Dateien
+
+```
+Laufskripte   harness/objektpfad/cull_raum61_lauf.sh, cull_raum_lauf.sh
+Auswertung    harness/objektpfad/cull_gates_zaehlen.py, cull_objekte_uebersicht.py,
+              cull_vergleich.py, objekt_im_komposit.py, objekt_lage_suche.py,
+              objekt_textur_gegen_bg.py, objekt_diff_je_kasten.py
+Laufdaten     work/cull_t_e6e97530/{probe2,nachher_probe,nachher,raum25_vor,raum25_nach,
+              r13_vor,r13_nac,r44_vor,r44_nac}
+Binaries      work/engine/scummvm-vor (HEAD 82ca6baa), scummvm-nac (mit Aenderung),
+              scummvm-magvor / scummvm-magnac (dieselben fuer die Magenta-Messung)
+Bericht       projects/comi-hd/reports/cull-nur-flobj-raum61.md
+```
+
+Die Aenderung ist im Baum, nicht committet (Regel: committen erst nach Koljas Sichtpruefung).
+`release/linux/scummvm` ist unberuehrt.
+
+## Tiefenreihenfolge: HD-Kostuem schneidet an der Maskenebene des Akteurs ab (t_90713baf, comi-bau, 25.10.2026)
+
+Befund am Bild D der Abnahme (Fall A1): die Lage der Figur stimmt, doppelt gezeichnet wird
+nichts mehr, aber der Fuss steht vor der Steinmauer. Im Original ist die Stelle verdeckt: die
+Mauer liegt dort davor. Die Frage war nicht die Zeichenreihenfolge der Akteure (die stimmt,
+Schritt 2.6 zeichnet nach `sortKey`, siehe oben), sondern der Bildpunktschnitt, den der
+8-Bit-Zeichner auf die Figur anwendet und der in Schritt 2.6 fehlte.
+
+### Ursache
+
+`akos.cpp` schneidet jede Figur Bildpunkt fuer Bildpunkt an einer Maskenebene des Raums ab
+(`bompApplyMask`). Welche Ebene das ist, steht im Akteur: `_forceClip`, und bei 100 die
+Ebene aus `getMaskFromBox(_walkbox)`. Der 8-Bit-Zeichner malt also nur, was nicht auf dieser
+Ebene liegt; die Punkte dahinter bleiben stehen, im Raum 44 die Steinmauer.
+
+Schritt 2.6 (HD-Kostueme, `gfx.cpp`, ab Zeile 2755) kannte diese Maske nicht. Er malte das
+HD-Rechteck des Kostuems vollstaendig und zuletzt, nach den Objekten. Damit deckte der HD-Fuss
+den 8-Bit-Vordergrund zu, der nach dem Original davor gehoert.
+
+### Aenderung
+
+Die Ebenenwahl ist aus `prepareDrawActorCostume` in eine eigene Methode gewandert, damit beide
+Zeichner dieselbe Zahl benutzen:
+
+```
+Actor::getClipZPlane()      actor.cpp:2570   (Deklaration actor.h:143)
+                            _forceClip, bei 100 getMaskFromBox(_walkbox), begrenzt auf
+                            _numZBuffer-1; Rueckgabe 0 heisst "kein Schnitt"
+prepareDrawActorCostume     actor.cpp:2605   bcr->_zbuf = getClipZPlane()
+```
+
+In Schritt 2.6 wird jetzt je Bildpunkt dieselbe Maske geprueft (`gfx.cpp:3092` bis `3140`):
+
+```
+clipZ    = HD_NO_CLIPMASK ? 0 : a->getClipZPlane()
+maskOfs  = Spaltenversatz in die Maske, maskBit = Bit im Maskenbyte
+je Punkt getMaskBuffer(blitX/scale, (blitY+oy)/scale, clipZ)
+Bit gesetzt  ->  Punkt weglassen, Untergrund bleibt stehen
+```
+
+Gezaehlt wird mit: je Kostuem eine Zeile `CLIP kostuem ai=.. akos=.. cel=.. z=.. geclippt=..
+von ..` (nur mit `HD_SPY`), und die Summe des Bildes in der Zeile `step2.6 costumes: ... maskiert=`
+(`gfx.cpp:3244` bis `3252`). Schalter `HD_NO_CLIPMASK=1` stellt den alten Zustand wieder her;
+dieselbe Binary faehrt also beide Seiten des Vergleichs.
+
+### Messung
+
+Binary `work/engine/scummvm-z2p` (HEAD `cbb44bee` plus die offenen Aenderungen aus
+`t_e6e97530` und dieser Aufgabe), `HD_JUMP_ROOM=44 HD_FIXED_DELTA=20 HD_EXIT_AFTER=140`,
+Raum 44, letztes Bild F=139. Zwei Laeufe, die sich nur im Schalter unterscheiden:
+
+```
+work/fall44/vorher   17:33   HD_NO_CLIPMASK=1   (alter Zustand)
+work/fall44/nachher  17:35   ohne               (mit Schnitt)
+```
+
+Dass die beiden Laeufe dieselbe Szene zeigen, ist nicht angenommen, sondern geprueft. Die
+Stufendumps und die Masken sind byteweise gleich:
+
+```
+hd_ref.ppm (8-Bit-Bildschirm)     gleich
+hd_step_1_hintergrund.ppm         gleich
+hd_step_2_vordergrund.ppm         gleich
+hd_step_3_objekte.ppm             gleich
+hd_mask_0..3.pgm                  gleich
+hd_step_4_kostueme.ppm            UNTERSCHIED   <- nur der Kostuemschritt
+```
+
+Damit misst der Pixelvergleich genau eine Sache: was Schritt 2.6 anders zeichnet.
+
+Gezaehlt im Fenster um die Figur (8 Bit x 285 bis 392, y 95 bis 484; deckt Kopf, Koerper und
+Fuesse, rechts endet es an der Kante des naechsten Akteurs bei x=392):
+
+```
+                                vorher      nachher
+Figurpunkte im Fenster (Stufe 4 gegen Stufe 3, Schwelle 32)
+                                  8381         7974
+davon auf Maskenebene 1
+(das ist "hinter der Mauer")       407            0
+Punkte, die sich zwischen den Laeufen aendern (jede Differenz)
+                                     -          500     davon 500 auf Ebene 1, 0 daneben
+davon mit hartem Sprung (>=32)       -          408
+Kasten der Aenderung                     x8 297..349, y8 291..311
+Fusskante der Figur                                  y8 311,5
+Mittelfarbe in den 500 Punkten  R 95 G101 B 92   R169 G143 B 89
+                                (dunkler Schuh)  (Mauerbraun)
+```
+
+Der Kasten der Aenderung endet bei y8 311, also genau an der Fusskante: der Unterschied sitzt
+am Schuh und nirgends sonst an der Figur. Dass die Punkte vorher wirklich vor der Mauer standen
+und nicht zufaellig anders gefaerbt waren, zeigt die Mittelfarbe: vorher Schuhdunkel, nachher
+das Braun der Mauer daneben.
+
+Dass die Figur im Original dort gar nicht steht, sagt die 8-Bit-Ebene selbst: von 26.065
+8-Bit-Punkten im Fenster liegen nur 175 (0,7 Prozent) auf Ebene 1. Der 8-Bit-Zeichner malt die
+Figur dort also nicht.
+
+Die Ebenen 1 und 2 sind im Figurenfenster deckungsgleich (0 Punkte Unterschied, im ganzen Bild
+478). Die Zuordnung "Figur zu Ebene 1" traegt deshalb auch dann, wenn eine andere Ebene
+gezogen wird.
+
+Der Zaehler der Engine ueber alle 96 Bilder mit Kostuem (F=44 bis 139):
+
+```
+ai= 1 akos=0002 Ebene 1   je Bild 1680 von 174460 Punkten (1,0 %)   cels 22
+ai= 4 akos=0251 Ebene 2   je Bild 40273 bis 40409 von 379392 (10,6 %)  cels 10, 11, 91
+ai=17 akos=0253 Ebene 3   je Bild 26447 bis 40711 von 988256 (4,1 %)  cels 0 bis 29
+```
+
+Der Wert fuer die Spielfigur (ai=1) ist in allen 96 Bildern derselbe: 1680 Punkte des
+Kostuemrechtecks liegen auf ihrer Ebene. Der Zaehler nennt Punkte mit Deckkraft groesser null;
+im Bild F=139 aendern davon 500 das Bild ueberhaupt, 408 mit hartem Farbsprung, und diese 500
+liegen alle im Kasten y8 291..311, also am Fuss. Die restlichen 1180 sind nicht
+aufgeschluesselt (Punkte, deren Zeichenergebnis dem Untergrund gleicht; die Maske trifft auch
+halbdurchsichtige Saumstellen).
+
+Im ganzen Bild aendern sich 21.397 Punkte (jede Differenz, dieselbe Schwelle wie die 500). 500
+davon liegen im Figurenfenster, weitere 8.180 auf Ebene 1 ausserhalb des Fensters und 12.717
+ausserhalb von Ebene 1. Die beiden letzten Gruppen gehoeren zu den anderen Akteuren, die jetzt
+auf ihren eigenen Ebenen 2 und 3 geschnitten werden; die Ebenen liegen fast deckungsgleich (im
+ganzen Bild 478 Punkte Unterschied). Ob dort richtig geschnitten wird, ist nicht einzeln
+geprueft.
+
+### Abnahme
+
+```
+Bild   projects/comi-hd/reports/vergleich/z_raum44.png
+       oben ganze Figur vorher/nachher, unten der Fuss 8-fach vergroessert,
+       Fusskante rot, Maske magenta; Zahlen unter der oberen Reihe
+```
+
+Sichtpruefung des Bildes: vorher steht der schwarze Schuh ueber dem runden Mauerstein, nachher
+ist er an ihm abgeschnitten und der Stein ist ganz zu sehen. Der andere Fuss und der Rest der
+Figur sind unveraendert, die Figurpunkte sinken um genau die 407 Punkte.
+
+### Was diese Messung nicht belegt
+
+1. Gemessen ist ein Bild (F=139) in einem Raum (44). Die 140 Bilder des Laufs sind gelaufen,
+   auf Stufen gedumpt ist nur das letzte.
+2. Der Schnitt wirkt jetzt in allen Raeumen auf alle Akteure. Andere Raeume sind nicht gemessen.
+   Eine Stelle, an der eine Figur vor einem Vordergrundobjekt steht und dort Punkte verliert,
+   die sie nach dem Original zeigen muesste, ist damit nicht ausgeschlossen; die Maske ist
+   dieselbe wie im 8-Bit-Zeichner, aber das HD-Kostuem ist groesser als die 8-Bit-Silhouette
+   und ragt an Stellen in die Maske, an denen der 8-Bit-Zeichner nichts zu schneiden hatte.
+3. Die 1180 maskierten Punkte ohne sichtbare Aenderung sind nicht aufgeschluesselt.
+4. Die beiden Laeufe sind nicht in allen Bildern in derselben Animationsphase: in 14 Bildern
+   (F=50, 51, 64, 65, 78 bis 81, 102 bis 117) steht ein anderer Cel-Index fuer den Kopf (34
+   gegen 415), und die Zeile `step2.6b ui-overlay` meldet 398 gegen 350 Punkte. Bei F=139 sind
+   die Cel-Indizes gleich, und die Stufen 1 bis 3 sind byteweise gleich; der Pixelvergleich ist
+   deshalb sauber, die uebrigen Bilder des Laufs taugen aber nicht als Paarvergleich.
+5. Nicht geprueft ist, ob der Schnitt die Figur an Stellen ausduennt, an denen sie stehen
+   bleibt, weil die HD-Zeichnung dort ueber die 8-Bit-Figur hinausgeht (breitere Schultern,
+   laengerer Mantel). Im Raum 44 liegt die Aenderung vollstaendig im Maskenbereich.
+
+### Dateien
+
+```
+Aenderung      scummvm/fork/engines/scumm/actor.h:143, actor.cpp:2570 und 2605,
+               gfx.cpp:3092 bis 3140 (Schnitt), 3244 bis 3252 (Zaehler)
+               (Zeilennummern nach Stand 25.10.2026 17:56; an derselben Datei arbeitet eine
+               weitere Aufgabe, die Nummern verschieben sich dadurch)
+Messlaeufe     projects/comi-hd/work/fall44/{vorher,nachher}/
+Binary         projects/comi-hd/work/engine/scummvm-z2p
+Vergleichsbild projects/comi-hd/reports/vergleich/z_raum44.png
+Auswertung     projects/comi-hd/harness/z_auswertung.py   (messen, bild: Zahlen und Bild)
+               projects/comi-hd/harness/z_details.py      (Ebenen, Kasten, Restprobe)
+               projects/comi-hd/harness/z_schwelle.py     (Aenderung je Schwelle)
+               projects/comi-hd/harness/z_clip_log.py     (CLIP-Zeilen je Akteur)
+               projects/comi-hd/harness/z_gesamt.py      (ganzes Bild, gleiche Schwelle)
+               projects/comi-hd/harness/z_untergrund.py   (Stufe 4 gegen 1/2/3)
+               projects/comi-hd/harness/z_ganze_figur.py  (Zaehlung im Kostuemrechteck,
+                                                          durch den Nachbarakteur verunreinigt)
+               projects/comi-hd/harness/z_bbox.py, z_zeilen.py, z_bild_check.py
+                                                          (Hilfsproben: Umriss, Zeilenprofil,
+                                                           fertiges Bild)
+```
+
+Die Aenderung ist im Baum, nicht committet (Regel: committen erst nach Koljas Sichtpruefung).
+`release/linux/scummvm` ist unberuehrt.
+
+## Hohe Raeume, gescrollte Raeume und die zwei dy-Ausreisser (t_38e44d85, comi-bau, 25.10.2026)
+
+Nachtrag zur unabhaengigen Verifikation weiter oben. Dort blieben vier Punkte offen: hohe
+Raeume, die komplette Figur im gescrollten Raum, ein fuenfter messbarer Raum (Raum 3 hat kein
+HD-Material) und die zwei dy-Ausreisser (1,5 und 2,0 Spielpixel). Alle vier sind jetzt
+gemessen. Am Code aendert sich nichts, der Anker aus `82ca6baa` bleibt wie er ist.
+
+### Messaufbau: 8-Bit-Maske ohne Magenta
+
+Bisher galt: 8-Bit-Silhouette = Magenta in Stufe 2 (`HD_TINT_8BIT`), HD-Flaeche =
+|Stufe 4 - Stufe 3|. Das hat eine harte Grenze: ueberdeckt das HD-Kostuem die 8-Bit-Figur
+vollstaendig, ist kein Magenta mehr zu sehen, und genau dort stand bisher "eine Seite fast
+leer" (das war der Grund, warum tiefe Scrollstellungen und Raum 61 nicht messbar waren).
+
+Jetzt: 8-Bit-Silhouette = |Stufe 2 - Stufe 1|, also die 8-Bit-Ebene selbst, unabhaengig
+davon, was spaeter daruebergelegt wird. Alles andere bleibt: Fenster um das Blit-Rechteck,
+Kreuzkorrelation, Umrechnung Kompositpunkt zu Spielpixel (Faktor Bildbreite/640).
+Zusaetzlich wird je Eintrag gezaehlt, wie viele Verschiebungen 98 Prozent des Maximums
+erreichen (`peak`). Ein scharfer Gipfel (1 von 625) heisst: die Lage ist eindeutig. Ein
+grosses `peak` heisst: das Maximum ist flacher als ein Bildpunkt.
+
+Gegenprobe des neuen Werkzeugs an den alten Laeufen: Raum 9 alle Eintraege 0 bis 1 Spielpixel,
+Raum 44 ai 4 cel 8 dy 2,0, Raum 15 ai 4 cel 68 dy 1,5, alles wie in der Verifikation oben.
+Die Methode erfindet also keine neuen Zahlen, sie macht nur die vorher verdeckten Faelle
+messbar.
+
+Ergebnis im Nachher-Stand, 18 belastbare Eintraege ueber sechs Raeume (9, 13, 15, 44, 77, 86):
+dx liegt ueberall zwischen 0,0 und 1,0, dy in 16 Faellen zwischen 0,0 und 1,0 und in zwei
+Faellen bei 1,5 und 2,0 (die beiden Plateaufaelle weiter unten). Dazu kommt der Eintrag aus
+dem gescrollten Raum 61.
+
+```
+Auswertung      projects/comi-hd/harness/st38_auswertung.py   (Maske, Versatz, peak)
+Tabelle         projects/comi-hd/work/verify/st38/tabelle.csv  (18 belastbare Eintraege nachher)
+Einzelprofil    projects/comi-hd/harness/st38_profil.py        (Plateau, Kanten)
+Empfindlichkeit projects/comi-hd/harness/st38_empfindlich.py   (Deckung bei erzwungenem Versatz)
+Magenta         projects/comi-hd/harness/st38_magenta.py       (Stufe 4, wie magenta_check)
+Lauf            projects/comi-hd/harness/st38_lauf.sh <raum> <n|v> <ziel> [VAR=WERT ...]
+Walk            projects/comi-hd/harness/st38_walk.sh <raum> <n|v> <ziel> <x> <y>
+```
+
+Binaries: `scummvm-38n` (md5 81759d73) und `scummvm-38v` (md5 0260af89), Kopien von
+`scummvm-nach` (9ebd7e8a, Stand `82ca6baa`) und `scummvm-vor` (424a741d, `82ca6baa` mit
+`gfx.cpp` aus `12f1a869`) mit eigenen Aufnahmepfaden (Praefix 38n/38v). Noetig, weil
+mehrere Aufgaben gleichzeitig im selben Baum laufen und sonst in dieselben Dumpdateien
+schreiben.
+
+### Hohe Raeume: Raum 77 (987 Zeilen, Fenster sdTop 507)
+
+Der Fix aendert in Raeumen, die hoeher sind als der Bildschirm, die senkrechte Semantik:
+vorher `camera._cur.y` (Fenstermitte), jetzt `sdTop` (Fensteranfang). Raum 77 ist ein solcher
+Raum mit HD-Material, der im Sprunglauf verwertbar ist (640x987, Hintergrund `0077_skulisle`).
+
+```
+Stand    Akteur                     Pfad        Blit     dx    dy    Deckung  peak
+vorher   ai 9  akos 0380 cel 3      komplett    216x600   0,0  +240,0   0,89     1
+nachher  ai 9  akos 0380 cel 3      komplett    216x600   0,0    0,0    0,89     1
+nachher  ai 1  akos 0002 cel 22     gliedmassen  33x87    0,5    0,5    0,87     5
+```
+
+Vorher stand das HD-Kostuem 240 Spielpixel zu hoch, das Maximum ist dabei eindeutig
+(1 von 625 Verschiebungen erreicht 98 Prozent), es ist also kein Plateau-Effekt. Nachher
+0,0 in beiden Achsen, ebenfalls mit scharfem Maximum. Die 240 sind der Unterschied zwischen
+`sdTop` 507 und dem Wert, den die alte Fassung abzog. Der Vorher-Lauf hat uebrigens gar
+keine belastbaren Eintraege im normalen Fenster, weil die 8-Bit-Figur 240 Zeilen tiefer
+steht als die HD-Flaeche; gemessen wurde er deshalb mit erweitertem Suchfenster ueber die
+volle Bildhoehe.
+
+Sichtbild: `projects/comi-hd/reports/vergleich/raum77_hoch_vorher_nachher.png`
+(derselbe Ausschnitt, links HD-Figur hoch ueber der 8-Bit-Figur, rechts deckungsgleich).
+
+### Komplette Figur im gescrollten Raum: Raum 61 (xstart 210)
+
+`HD_FIX_CAMERA` taugt fuer diesen Nachweis nicht: die Kamera-Nachfuehrung der Engine
+ueberschreibt den Wert im selben Bild. In Raum 44 gesetzt auf 200 kam als xstart 8 heraus.
+Der Scroll entsteht nur, wenn der Ego laeuft, also ueber das FIFO-Kommando `walk`.
+
+Lauf: Raum 61 (1024x480), `walk 600 200`, `HD_EXIT_AFTER=213`, Dump im Bild 212 bei
+xstart 210. Guybrush wird dort als ganze Figur gezeichnet (ein Eintrag, akos 0002,
+cel 670, Blit 304x957).
+
+```
+Akteur                   Pfad      Blit     dx    dy   Deckung HD->8-Bit  8-Bit->HD  peak
+ai 1  akos 0002 cel 670  komplett  304x957   0,0   0,0   0,53              0,82       2
+```
+
+Die Deckung "HD auf 8-Bit" ist hier niedriger als bei den kleinen Figuren, weil die
+HD-Flaeche groesser ist als die 8-Bit-Figur (Flaechenverhaeltnis 0,65); massgeblich ist,
+dass 82 Prozent der 8-Bit-Figur bei Verschiebung null bedeckt sind und der Gipfel mit
+2 von 625 Verschiebungen eindeutig ist.
+
+Empfindlichkeit derselben Messung (Deckung 8-Bit auf HD bei erzwungenem Versatz):
+dx 0: 0,82; dx -10: 0,62; dx +10: 0,52; dx -100: 0,59; dx plus/minus 210: 0,22.
+Ein Fehler in Groesse des Kameraversatzes waere an dieser Stelle also nicht zu uebersehen.
+
+Grenze: fuer diesen Raum gibt es kein sauberes Vorher/Nachher-Paar. Der Walk haengt an der
+Wanduhr, `HD_FIXED_DELTA` legt nur den Spielschritt fest, und der Vorher-Lauf landete bei
+xstart 274 mit einer anderen Pose (cel 675). Der Vorher/Nachher-Beleg fuer den gescrollten
+Fall bleibt deshalb Raum 44 (46 Spielpixel, siehe Verifikation oben); Raum 61 belegt die
+Lage im gescrollten Raum im Nachher-Stand.
+
+Die frueheren "scroll"-Laeufe mit `HD_SCROLL_TEST` sind fuer diese Frage unbrauchbar: in
+`work/verify/runs/nach_raum{15,44,86}_scroll` kommt kein belastbarer Eintrag heraus, meist
+steht "eine Seite fast leer", die 8-Bit-Ebene liegt dort nicht im selben Fenster wie die
+HD-Flaeche.
+
+Sichtbild: `projects/comi-hd/reports/vergleich/raum61_scroll_komplett.png`
+(rot 8-Bit, gruen HD, gelb Deckung: die Figur ist weitgehend gelb, an den Raendern
+bleiben rot/grune Saeume, weil HD- und 8-Bit-Umriss nicht identisch sind).
+
+### Fuenfter Raum: Raum 13
+
+Raum 3 hat kein HD-Material (`hd/backgrounds` ohne 0003), deshalb Raum 13 als Ersatz
+(640x480, Plankarten-Szene, 349 Kostuemdateien).
+
+```
+Stand    Akteur                   Pfad         Blit        dx    dy   Deckung  peak
+nachher  ai 17 akos 0063 cel 53   komplett     2508x1100   0,0   0,0   0,85     1
+nachher  ai 1  akos 0064 cel 16   gliedmassen    26x67     1,0   0,0   0,98     4
+vorher   ai 17 akos 0063 cel 53   komplett     2508x1100   0,0   0,0   0,85     1
+vorher   ai 1  akos 0064 cel 16   gliedmassen    26x67     1,0   0,0   0,98     4
+```
+
+Vorher und nachher sind Punkt fuer Punkt identisch, wie es sein muss: Raum 13 hat
+xstart 0 und sdTop 0, der Fix darf dort nichts aendern. Damit sind nach dem Fix sechs
+Raeume mit belastbaren Zahlen gemessen (9, 13, 15, 44, 61, 86) plus Raum 77 als hoher Raum.
+
+Sichtbild: `projects/comi-hd/reports/vergleich/raum13_deckung.png`.
+
+### Die zwei dy-Ausreisser: Plateau, kein Versatz
+
+```
+Fall                     Spitze        Verschiebungen mit >=98 %   Oberkante   Profil dy -3 .. +3
+Raum 15 ai 4 cel 68      0,971 @ dy +1,5      46 von 625            0,0 Spielpixel  0,875 ... 0,971 ... 0,964
+Raum 44 ai 4 cel  8      0,981 @ dy +2,0      74 von 625            0,0 Spielpixel  0,887 ... 0,981 ... 0,978
+```
+
+In beiden Faellen liegt die Oberkante beider Flaechen exakt aufeinander, und die Deckung
+aendert sich zwischen dy 0 und dy 3 um weniger als drei Prozentpunkte. Der Gipfelwert ist
+also nicht aufloesbar; 1,5 und 2,0 sind die Mitte eines Plateaus, nicht ein Versatz.
+
+Zum Vergleich ein echter Fehler in derselben Messung: Raum 77 vorher hat den Gipfel bei
+dy 240 mit 1 von 625 Verschiebungen, Raum 77 nachher bei 0,0 mit 1 von 625. Ein wirklicher
+Versatz sieht in dieser Auswertung scharf aus, ein Rasterunterschied flach.
+
+Die Unterkante differiert in beiden Faellen um 6 Spielpixel, weil die 8-Bit-Figur dort
+Schatten und Anschnitt mitbringt, die das HD-Kostuem nicht hat. Das ist Form, nicht Lage,
+und geht in die Kreuzkorrelation als breiter Fuss ein.
+
+Sichtbilder: `projects/comi-hd/reports/vergleich/raum15_ausreisser_dy.png`,
+`projects/comi-hd/reports/vergleich/raum44_ausreisser_dy.png`.
+
+### magenta_check
+
+Magenta wird hier aus Stufe 4 des Laufs gezaehlt (nach den HD-Kostuemen), das ist dasselbe
+Mass wie der magenta_check der frueheren Karten: sichtbare 8-Bit-Grafik im fertigen Komposit.
+Gegenprobe an Raum 44 mit derselben Rechnung: vorher 2,09, nachher 0,12, identisch mit der
+Verifikation oben.
+
+```
+Raum  vorher  nachher  Anmerkung
+44    2,09    0,12     Fix wirkt, 8-Bit-Ebene wird jetzt bedeckt
+13    0,02    0,02     unveraendert (keine Kamera)
+77    0,00    0,00     das grosse Overlay-Kostuem 0376 deckt die 8-Bit-Ebene in beiden Staenden zu
+61    -       0,27     kein Paar, siehe oben (verschiedene Scrollstaende)
+30    -       0,10     Raum nicht verwertbar, Akteure ausserhalb des Bildes
+9, 15, 86      unveraendert 0,02 / 0,01 / 0,03 wie in der Verifikation
+```
+
+### Was offen bleibt
+
+1. Die komplette Figur im gescrollten Raum ist nur im Nachher-Stand gemessen; ein Paar
+   scheitert an der nicht reproduzierbaren Walk-Taktung.
+2. Raum 61 liefert nur einen verwertbaren Eintrag. Die uebrigen Akteure stehen dort an der
+   Bildkante oder sind so klein, dass unter 30 Punkten im Fenster liegen.
+3. Tiefere Scrollstellungen als xstart 210 sind ohne Walk nicht erreichbar, `HD_SCROLL_TEST`
+   bleibt untauglich.
+4. Raum 3 ist weiterhin ohne HD-Material und damit nicht messbar; Raum 13 ersetzt ihn.
