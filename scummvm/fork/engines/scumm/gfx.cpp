@@ -2914,11 +2914,15 @@ int step2_fgPixels = 0;
 
 			// Use per-limb drawing position from the entry
 			Common::Point actorPos = a->getPos();
-			// Senkrecht gilt dasselbe wie fuer Objekte: in Raeumen, die hoeher sind als
-			// der Bildschirm, muss der Kameraversatz abgezogen werden, sonst bleibt die
-			// Figur stehen, waehrend der Hintergrund an ihr vorbeifaehrt.
-			int drawY = actorPos.y - a->getElevation()
-			          - (((int)_roomHeight > _screenHeight) ? (int)camera._cur.y : 0);
+			// Anker in Raumkoordinaten. Der Komposit zeigt das Fenster ab sdLeft/sdTop
+			// (Hintergrundkopie 1673-1686, Objekte 1751-1752 und 2274-2275), also wird
+			// derselbe Versatz abgezogen. sdTop ist 0 in Raeumen, die nicht hoeher sind
+			// als der Bildschirm; der fruehere Sonderfall "nur bei
+			// _roomHeight > _screenHeight" faellt damit weg, ohne dass ein Raum ihn
+			// braucht. Vorher stand dort camera._cur.y, also die Fenstermitte statt des
+			// Fensteranfangs.
+			const int drawX = actorPos.x - sdLeft;
+			const int drawY = actorPos.y - a->getElevation() - sdTop;
 			// Apply facing direction: in 8-bit, paintCelByleRLECommon negates
 			// xMoveCur when !_drawActorToRight, then compData.x += xMoveCur.
 			// This means: facing right → screenX = actorX + xMoveCur
@@ -2936,17 +2940,23 @@ int step2_fgPixels = 0;
 			// Getestet und verworfen: drawX wegzulassen (Verdacht auf doppelten Cel-Hotspot)
 			// macht es schlechter — Raum 44 von 3,87 auf 4,30 Prozent. Also ist drawX richtig.
 			//
-			// Kameraversatz: die 8-Bit-Ebene zeichnet die Figur in Pufferkoordinaten, und der
-			// Komposit uebernimmt die Pufferspalte 1:1 (hdXStart[sx] = sx * hdW / visW, der
-			// Kameraversatz steckt in Schritt 1, also in der Hintergrundkopie). Der HD-Pfad zog
-			// sdLeft hier ein zweites Mal ab und sass damit in scrollenden Raeumen um den
-			// Kameraversatz zu weit links. Gemessen in Raum 44 (Kamera 46): 3,87 auf 0,78 Prozent
-			// magenta. In Raeumen ohne Versatz (sdLeft 0) ist die Aenderung wirkungslos.
+			// Beide Zeichenwege enden hier: complete-character (ein Eintrag, drawX/drawY
+			// aus _hdRelX/_hdRelY) und per-limb (ein Eintrag je Glied, drawX/drawY aus
+			// _hdLimbDrawX/Y) unterscheiden sich nur in der Zahl der Eintraege, nicht in
+			// der Rechnung. Deshalb gibt es genau diesen einen Anker und keine
+			// Sonderfaelle je Raum, Kostuem oder Figur.
 			//
 			// Der Cel-Hotspot (relX/relY aus dem AKOS-Kopf) steckt bereits in
 			// entries[ei].drawX/drawY; ein zweites Einrechnen wurde gemessen und verworfen
 			// (Raum 44: 3,40 Prozent, also schlechter als 0,78).
-			int64 hdCX = (int64)(actorPos.x + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
+			//
+			// Frueher stand hier ohne sdLeft, weil die 8-Bit-Ebene selbst um eine
+			// Kamerabreite versetzt eingeklebt wurde und beide Ebenen so gemeinsam
+			// danebenlagen; gegen den HD-Hintergrund blieb der Fehler trotzdem sichtbar
+			// (3,87 Prozent magenta in Raum 44). Seit 12f1a869 liest Schritt 2 die
+			// 8-Bit-Ebene ab sdLeft (gfx.cpp:1828), also zieht der Kostuemanker denselben
+			// Versatz ab wie Hintergrund und Objekte.
+			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
 			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, visH);
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
