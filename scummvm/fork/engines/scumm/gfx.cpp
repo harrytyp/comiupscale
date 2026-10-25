@@ -2897,7 +2897,6 @@ int step2_fgPixels = 0;
 
 			// Use per-limb drawing position from the entry
 			Common::Point actorPos = a->getPos();
-			int drawX = actorPos.x - sdLeft;
 			// Senkrecht gilt dasselbe wie fuer Objekte: in Raeumen, die hoeher sind als
 			// der Bildschirm, muss der Kameraversatz abgezogen werden, sonst bleibt die
 			// Figur stehen, waehrend der Hintergrund an ihr vorbeifaehrt.
@@ -2919,7 +2918,18 @@ int step2_fgPixels = 0;
 				limbDrawX = -limbDrawX;
 			// Getestet und verworfen: drawX wegzulassen (Verdacht auf doppelten Cel-Hotspot)
 			// macht es schlechter — Raum 44 von 3,87 auf 4,30 Prozent. Also ist drawX richtig.
-			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
+			//
+			// Kameraversatz: die 8-Bit-Ebene zeichnet die Figur in Pufferkoordinaten, und der
+			// Komposit uebernimmt die Pufferspalte 1:1 (hdXStart[sx] = sx * hdW / visW, der
+			// Kameraversatz steckt in Schritt 1, also in der Hintergrundkopie). Der HD-Pfad zog
+			// sdLeft hier ein zweites Mal ab und sass damit in scrollenden Raeumen um den
+			// Kameraversatz zu weit links. Gemessen in Raum 44 (Kamera 46): 3,87 auf 0,78 Prozent
+			// magenta. In Raeumen ohne Versatz (sdLeft 0) ist die Aenderung wirkungslos.
+			//
+			// Der Cel-Hotspot (relX/relY aus dem AKOS-Kopf) steckt bereits in
+			// entries[ei].drawX/drawY; ein zweites Einrechnen wurde gemessen und verworfen
+			// (Raum 44: 3,40 Prozent, also schlechter als 0,78).
+			int64 hdCX = (int64)(actorPos.x + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
 			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, visH);
 
 			// Skip if the actor hasn't been positioned yet (origin = loading state)
@@ -3114,7 +3124,7 @@ int step2_fgPixels = 0;
 			// Per-entry overlay
 			for (int ei = 0; ei < numEntries; ei++) {
 				Actor *ea = entries[ei].actor;
-				int64 hdEX = (int64)(ea->getPos().x - sdLeft + entries[ei].drawX) * hdW / MAX(1, visW);
+				int64 hdEX = (int64)(ea->getPos().x + entries[ei].drawX) * hdW / MAX(1, visW);
 			if (getenv("HD_SPY")) {
 				// Doppel-Asset-Diagnose: 8-Bit-Position, Versatz und HD-Zielposition nebeneinander.
 				FILE *pf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_place.log", "a");
