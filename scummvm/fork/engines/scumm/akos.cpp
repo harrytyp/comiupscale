@@ -383,6 +383,8 @@ byte AkosRenderer::drawLimb(const Actor *a, int limb) {
 		xMoveCur = _xMove + (int16)READ_LE_UINT16(&costumeInfo->relX);
 		yMoveCur = _yMove + (int16)READ_LE_UINT16(&costumeInfo->relY);
 		// Save relX/relY for HD overlay (limb 0 only)
+		// Getestet und verworfen: _hdRelX/_hdRelY immer neu setzen aendert in Raum 44 nichts
+		// (3,87 Prozent unveraendert). Der Versatz kommt also nicht aus einem alten Rel-Wert.
 		if (limb == 0 || a->_hdRelX == 0) {
 			const_cast<Actor *>(a)->_hdRelX = (int16)READ_LE_UINT16(&costumeInfo->relX);
 			const_cast<Actor *>(a)->_hdRelY = (int16)READ_LE_UINT16(&costumeInfo->relY);
