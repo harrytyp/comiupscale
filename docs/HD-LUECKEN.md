@@ -3988,3 +3988,244 @@ Binary                         projects/comi-hd/work/engine/scummvm-z44
 **Ueberschneidung:** der Maskenschnitt selbst stammt aus der parallel laufenden Karte
 t_90713baf (gleicher Arbeitsbaum, gleiche Datei gfx.cpp). Diese Karte hat dessen Adressierung
 korrigiert und den Saum ergaenzt. Die Aenderung ist im Baum, nicht committet.
+
+## Maskengenauigkeit Raum 44: der Fuss vor dem Mauerwerk (t_85c519f8)
+
+Rueckmeldung war: der Fuss ist hinter der Mauer, aber die verdeckende Maske trifft die
+Konturen nicht, ein Rest des Fusses bleibt sichtbar. Gemessen an einem Bild (F=139, Kamera
+xstart=46, volle Aufloesung 2560x1920, `HD_FIXED_DELTA=20`, **ein** Binary mit Schalter, damit
+die beiden Laeufe bis auf den Schalter identisch sind).
+
+### Die drei Verdachtsfaelle der Aufgabe, einzeln geprueft
+
+1. **Weichzeichnung: nein.** Die Maske wird bitweise gelesen (`maskOfs`/`maskBit` je Spalte,
+   ein Bit je Achtbitpunkt) und durch ganzzahlige Skalierung auf 4x4-Bloecke abgebildet
+   (`gfx.cpp`, Kostuemschritt). Es gibt keinen Zwischenschritt, der glaetten koennte.
+2. **Versatz: nein.** Die 8-Bit-Spur in Achtbitpunkten um -3 bis +3 verschoben und die
+   Ueberdeckung mit den gemalten Kostuempunkten gezaehlt: bestes Ergebnis bei 0,0 mit 124.791
+   von 205.355 Punkten (60,8 Prozent), je ein Punkt daneben 121.366 (-1,0) und 119.426 (0,-1).
+   Die Maske ist ausserdem bitgleich zu `drawBomp` adressiert (Byte `xstart/8 + Spalte/8`,
+   Bit `revBitMask(Spalte & 7)`): in der alten Rechnung ueber `ScummEngine::getMaskBuffer`
+   lag das Ergebnis ab `(xstart & 7) + (Spalte & 7) >= 8` eine Maschinenspalte daneben.
+3. **Nur die Figur, nicht die Kostuemflaeche: ja, das ist die Ursache.** Das HD-Kostuem malt
+   Punkte, die keine Grundlage in der 8-Bit-Ebene haben: 205.355 gemalte Punkte, davon
+   **80.564 ohne 8-Bit-Punkt an derselben Stelle** (Toleranz 0) und **57.454 ohne 8-Bit-Punkt
+   im Quadrat von einem Punkt ringsum** (Toleranz 1, Regel der Engine). Die Maske deckt diese
+   Stellen nicht ab, weil dort gar kein Vordergrund steht, den der 8-Bit-Zeichner abschneidet:
+   es ist Mauerwerk, das im Hintergrund liegt und deshalb nicht in der Maske auftaucht. Der
+   Kostuem-Pixel malt also seine eigene Umgebung (Rand des Cel-Rechtecks, aufgenommener
+   Hintergrund) ueber das Mauerwerk.
+
+### Verworfene Ursache: die Auffuellung der Alpha-Loecher
+
+`hdFillAlphaHoles` fuellte jeden durchsichtigen Punkt mit zwei deckenden Nachbarn, an jeder
+Treppenstufe einer schraegen Kontur also auch den Punkt ausserhalb, mit drei Durchgaengen bis
+zu drei Punkte Zuwachs. Als eigene Fix-Fassung gebaut (Flutfuellung, nur von innen
+umschlossene Loecher): 911 auf **901** Punkte auf Mauerwerk, 3.014 HD-Punkte im ganzen Bild
+geaendert. Damit ist die Auffuellung als Hauptursache **ausgeschlossen**, nicht die Erklaerung.
+
+### Fix (im Arbeitsbaum, nicht committet)
+
+- Schritt 2 schreibt je Achtbitpunkt mit, ob der 8-Bit-Zeichner dort gemalt hat
+  (`hdFg8Map`, Ablage als `hd_fg_8bit.pgm` bei `HD_DUMP_MASK=1`).
+- Schritt 2.6 schneidet das Kostuem daran ab: `HD_CLIP_8BIT=1`, Toleranz in Achtbitpunkten
+  ueber `HD_CLIP8_TOL` (Standard 1). Ohne die Umgebungsvariable verhaelt sich der Build wie
+  bisher, deshalb sind beide Fassungen derselbe Build. Geprueft wird auf Vorhandensein
+  (`getenv("HD_CLIP_8BIT") != nullptr`), also schaltet auch `HD_CLIP_8BIT=0` den Schnitt ein;
+  zum Abschalten die Variable weglassen.
+- Die Zaehlung steht als `sil8` in der Zeile `CLIP kostuem` (`hd_state.log`).
+
+### Zahlen
+
+```
+Ausschnitt Fuss/Mauer (8-Bit x 290..344, y 278..321; Aufruf halboffen
+290 345 278 322), Toleranz 1 (Regel der Engine)
+  vorher   6.737 gemalte Punkte, davon    342 ohne 8-Bit-Grundlage
+  nachher  6.395 gemalte Punkte, davon      0 ohne 8-Bit-Grundlage
+derselbe Ausschnitt, Toleranz 0 (streng, ohne Aufweitung)
+  vorher   6.737 gemalte Punkte, davon    981 ohne 8-Bit-Punkt an derselben Stelle
+  nachher  6.395 gemalte Punkte, davon    639
+ganzes Bild, Toleranz 1
+  vorher  205.355 gemalt / 57.454 ohne Grundlage
+  nachher 147.901 gemalt /      0 ohne Grundlage      (alle Fehlpunkte weg)
+ganzes Bild, Toleranz 0 (strenger Massstab ohne Aufweitung)
+  vorher  80.564 ohne Grundlage   nachher 23.110 (der ausgelieferte Schnitt arbeitet mit einem Punkt Toleranz)
+Spielerfigur akos=2, F=139
+  1.127 Punkte am Silhouettenschnitt, 1.775 am Maskenschnitt (unveraendert)
+Stufen 1, 2, 3 und die 8-Bit-Referenz: 0 abweichende Punkte zwischen beiden Laeufen
+```
+
+Was die Toleranz 1 stehen laesst, steht in den Ausschnittszahlen: streng gemessen (Toleranz 0)
+malt das Kostuem nach dem Schnitt noch **639** Punkte ohne 8-Bit-Punkt an genau derselben
+Stelle, vorher 981. Diese 639 Punkte liegen hoechstens einen Achtbitpunkt neben einem
+8-Bit-Punkt; der Schnitt mit Toleranz 1 entfernt damit genau die 342 Punkte, die weiter weg
+lagen (981 - 639 = 342, dieselbe Zahl, die vor dem Schnitt bei Toleranz 1 uebrig blieb).
+Bei `HD_CLIP8_TOL=0` blieben diese 639 Punkte auf dem Stand von Schritt 3, also auf dem
+Komposit vor den Kostuemen: nachgemessen an denselben Punkten
+(`maske_toleranz0_untergrund.py`) ist das 386-mal HD-Hintergrund/Objektschicht und 253-mal
+das hochskalierte 8-Bit-Bild. Ein durchgehender Punkt breiter 8-Bit-Rand waere es also nicht;
+wie die Fassung mit Toleranz 0 aussieht, ist nicht Gegenstand dieser Messung.
+
+Mit der Regel der Engine (Toleranz 1 = Quadrat von einem Achtbitpunkt ringsum) ist die Zahl
+null, im Ausschnitt wie im ganzen Bild; das Ziel der Aufgabe ist damit erreicht. Eine Fassung
+mit `HD_CLIP8_TOL=0` ist fuer die Abnahme nicht noetig. Die frueher an dieser Stelle behauptete
+Nebenwirkung dieser Fassung (ein Punkt breiter 8-Bit-Rand um jede Figur) ist in dieser
+allgemeinen Form nicht belegt; was an den 639 Punkten stuende, steht im Absatz darueber.
+
+Die frueheren Zahlen dieser Liste (367, 25, 58.462, 1.008) waren ein Messfehler, kein
+Engine-Verhalten: `scipy.ndimage.binary_dilation` nimmt ohne `structure` einen Kreuz-Kern mit
+vier Nachbarn, der beim Aufweiten die Ecken auslaesst. Die Engine prueft ein volles Quadrat
+(`gfx.cpp`, Schritt 2.6: `dy` und `dx` je `-clip8Tol..+clip8Tol`). Die drei Auswerteskripte
+(`maske_silhouette.py`, `maske_blatt2.py`, `maske_ausschnitt_zaehlung.py`) laufen jetzt mit
+demselben Quadrat und liefern die Zahlen oben. Alle drei importieren `scipy.ndimage` hart:
+fehlt scipy, brechen sie mit `ImportError` ab, statt still ohne Aufweitung zu rechnen und
+Toleranz-0-Zahlen unter dem Etikett "Toleranz 1" auszugeben. In den beiden Skripten, die die
+Toleranz als Argument nehmen (`maske_silhouette.py`, `maske_ausschnitt_zaehlung.py`), wird sie
+nicht ungeprueft an `binary_dilation` weitergereicht: `iterations=0` heisst bei scipy nicht
+"keine Aufweitung", sondern "aufweiten bis keine Aenderung mehr" und erlaubt damit jeden
+Bildpunkt; bei Toleranz 0 wird die Aufweitung deshalb uebersprungen. `maske_blatt2.py` hat die
+Toleranz als feste Konstante 1. Die Vorgabe ist in `maske_silhouette.py` Toleranz 0 (strenge
+Fassung), in `maske_ausschnitt_zaehlung.py` Toleranz 1; die Zahlen oben sind alle mit
+ausdruecklichem Argument erzeugt.
+
+### Grenzen dieser Messung
+
+1. Ein Bild, eine Kamera (46), ein Zeitpunkt (F=139) in Raum 44. Andere Stellen des Raums und
+   andere Raeume sind nicht nachgemessen.
+2. Die Zahlen sind Punkte des Komposits (2560x1920), nicht Achtbitpunkte; fuer den Vergleich
+   mit frueheren Abschnitten durch 16 teilen.
+3. Massstab ist die Regel der Engine (Quadrat, Toleranz 1). Mit dem Kreuz-Kern von scipy
+   waeren es 367 im Ausschnitt und 1.008 im Bild; dieser Kern bildet die Engine nicht ab.
+4. Der Arbeitsbaum enthaelt zu diesem Zeitpunkt auch die unversionierte Objektordnungs-
+   Aenderung einer parallel laufenden Karte (object.cpp, scumm.h, gfx.cpp). Die Messung haengt
+   nicht davon ab, weil beide Laeufe dasselbe Binary benutzen und sich nur im Schalter
+   unterscheiden.
+
+### Dateien
+
+```
+Bild                      projects/comi-hd/reports/vergleich/maske_fuss_vorher_nachher.png
+Laeufe                    projects/comi-hd/work/fall44/s8b_aus (ohne Schnitt),
+                          .../s8b_clip (mit Schnitt)
+Aenderung                 scummvm/fork/engines/scumm/gfx.cpp
+                          (hdFg8Map in Schritt 2, Silhouettenschnitt in Schritt 2.6,
+                           hd_fg_8bit.pgm in hdDumpMaskPlanes)
+Binary                    projects/comi-hd/work/engine/scummvm-maske8
+Laufskript                projects/comi-hd/harness/maske_lauf.sh (eigener Aufnahmeordner
+                          je Lauf), maske_wartelauf.sh (wartet auf freien Motor)
+Auswertung                harness/maske_silhouette.py (Zahl ohne 8-Bit-Grundlage),
+                          maske_versatz.py (Versatzmessung), maske_streuung2.py,
+                          maske_ausschnitt_zaehlung.py, maske_blatt2.py (Bild),
+                          maske_toleranz0_untergrund.py (Untergrund an den streng
+                          verletzten Punkten), maske_vergleich.py (Determinismus),
+                          maske_spur.py, maske_blatt_pruefen.py (Blatt gegen die
+                          Laeufe pruefen)
+Bild md5                  6f4af59dc6a73de0d14313739d739168 (2664x734, 3 Bahnen
+                          880x704, Kopf 30, Abstand 12; Zoom 4x HD, 16x 8-Bit)
+Kopfzeile Bahn 2          "rot = 342 im Ausschnitt (57.454 im ganzen Bild)",
+                          Bahn 3 "rot = 0 im Ausschnitt (0 im ganzen Bild)";
+                          die roten Punkte im Bild sind immer die des Ausschnitts
+```
+
+## HD-Objekte in der Reihenfolge der 8-Bit-Zeichenwarteschlange (t_ab8b98de, comi-bau, 25.10.2026)
+
+Auftrag war, die HD-Objektschicht in der Reihenfolge zu zeichnen, in der die 8-Bit-Engine ihre
+Objekte zeichnet, statt in einer eigenen festen Ordnung (Hintergrund, Objekte, Figuren).
+
+### Die 8-Bit-Engine sortiert nicht nach Tiefe
+
+Die Tiefe eines Objekts ist die Position seines **letzten** Zeichenaufrufs. Zwei Stellen rufen
+`drawObject`, und beide zaehlen:
+
+```
+drawRoomObjects   object.cpp:644   absteigender Index (COMI, version 8), nur Objekte mit
+                                   gesetzter Zustandsmaske
+processDrawQue    object.cpp:1244  in der Reihenfolge von _drawObjectQue, gefuellt von
+                                   addObjectToDrawQue (object.cpp:1254) aus setObjectState
+                                   (object.cpp:1759)
+```
+
+Ein Objekt, das ein Skript mit `setObjectState` anfasst, wird also nach allen Raumobjekten
+gezeichnet und liegt damit oben, auch wenn sein Index der hoechste ist. Genau dort ist die
+Indexordnung falsch, und nur dort. Eine Tiefentabelle gibt es in den Spieldaten nicht.
+
+### Umsetzung
+
+```
+object.cpp  hdStampObjectDraw(obj)     nach den Sichtbarkeitspruefungen, direkt vor dem Malen
+object.cpp  hdResetObjectDrawStamps()  beim Raumwechsel (Aufruf gfx.cpp:2141)
+gfx.cpp     Schritt 2.5                aufsteigend nach Stempel; nie gezeichnete Objekte
+                                       fallen auf die alte Indexordnung zurueck
+Schalter    HD_OBJ_QUEUE=0             alte Ordnung im selben Bau, fuer die Gegenprobe
+Spur        HD_TRACE_DRAW=1            "8BITDRAW oi=.. nr=.. state=.." je Aufruf,
+                                       "QORDER .. reihenfolge=oi=obj/stempel" je Bild
+                                       mit Zeichenaufrufen
+```
+
+### Pruefmittel fuer den Zustandswechsel (HD_QUEUE_TEST=<Objektnummer>)
+
+In einem Sprunglauf laufen die Raumskripte nicht, deshalb bleiben fast alle Raumobjekte auf
+`state=0`. Was ein Skript mit `setObjectState` tut, loest deshalb der Hauptlauf aus: das Objekt
+kommt in die Zeichen-Warteschlange und wird von `processDrawQue` zuletzt gezeichnet. Ohne dieses
+Mittel gaebe es nur den Fall "alle Objekte in Indexordnung", und der unterscheidet die beiden
+Ordnungen nicht.
+
+### Messung Raum 61, zwei Laeufe derselben Binary
+
+```
+Binary    projects/comi-hd/work/engine/scummvm-zqueue (md5 e57ff8df2a93d3b1ceb26521a6f19bfe)
+Lauf      HD_JUMP_ROOM=61 HD_FIXED_DELTA=20 HD_EXIT_AFTER=140 HD_DUMP_STEPS=1 HD_DUMP_REF=1
+          HD_TRACE_DRAW=1 HD_QUEUE_TEST=1006, einmal HD_OBJ_QUEUE=1, einmal HD_OBJ_QUEUE=0
+Pruefung  projects/comi-hd/harness/zqueue_pruef.py
+Bilder    projects/comi-hd/harness/zqueue_pixel.py, zqueue_zoom61.py
+```
+
+Gezeichnet werden sechs Raumobjekte: 997 (oi 8), 977 (11), 974 (28), 996 (33), 1005 (42),
+1006 (43). Die Spur je Bild:
+
+```
+8-Bit  43, 42, 33, 28, 11, 8    drawRoomObjects, absteigender Index
+dann   43                       processDrawQue, Pruefobjekt 1006
+```
+
+| Messung | neue Ordnung | alte Ordnung |
+| --- | --- | --- |
+| Bilder mit mindestens zwei gezeichneten Objekten | 92 | 92 |
+| davon Zug um Zug wie in 8 Bit | 92 | 19 |
+| abweichend | 0 | 73 |
+| Objektpunkte (Schritt 3 gegen 2) | 29106 | 29106 |
+| Punkte, in denen sich beide Ordnungen unterscheiden | 80 | 80 |
+| davon naeher an der 8-Bit-Vorlage | 64 | 16 |
+
+Die Naehe zur Vorlage ist nur eine Plausibilitaetsprobe, das Schichtkriterium ist die Spur:
+stimmt die Reihenfolge Zug um Zug, kann kein Objektpunkt in einer anderen Ebene liegen.
+Falsch geschichtete Punkte: vorher 80, nachher 0. Ohne Pruefobjekt stimmen 19 von 19 Bildern.
+Ohne jeden Schalter ist die neue Ordnung die Vorgabe: der Lauf mit `env -u HD_OBJ_QUEUE`
+(`harness/zqueue_ohne_schalter.sh`) meldet in allen 19 Bildern `QORDER .. alt=0`, also die
+Stempelordnung und keine Abweichung.
+
+Der sichtbare Unterschied ist klein, weil sich Objekt 1006 nur auf 80 Punkten mit anderen
+Objekten ueberlappt. Bilder: `reports/vergleich/q61_vorher_nachher.png` (neu, alt,
+Unterschiedspunkte) und `reports/vergleich/q61_zoom_vorher_nachher.png` (Ausschnitt sechsfach).
+
+### Raum 44: keine HD-Objekte, also nichts zu ordnen
+
+`object_map.json` hat 0 Eintraege fuer Raum 44, `hd/objects` 0 Dateien mit Praefix `0044_`,
+`objects_layers` ebenso. Die drei Raumobjekte 848, 849, 850 stehen auf `state=0`, deshalb
+zeichnet `drawRoomObjects` sie nicht: 0 Zeichenaufrufe im ganzen Lauf, 0 QORDER-Zeilen mit
+einem gezeichneten Objekt. Punkte der Objektschicht (Schritt 3 gegen 2): 0. Punkte der
+Kostuemschicht (Schritt 4 gegen 3): 50979.
+
+Kanonen, Kiste, Boot und Wasser in Raum 44 sind also Malerei des HD-Hintergrunds, die Personen
+kommen aus der Kostuemschicht. Ein Vorher/Nachher der Objektschicht kann es dort nicht geben,
+und die frueheren Tiefenfehler in Raum 44 koennen nicht an der Objektordnung gelegen haben.
+Bild: `reports/vergleich/zqueue_raum44.png`, links das fertige Komposit mit beschrifteten
+Flaechen (Boot, Wasser, Kiste, Kanonen, Person, Pirat), rechts die Objektschicht allein: leer.
+
+### Grenzen
+
+Die Raeume 15, 40, 41, 42, 43, 77 und 86 haben im Sprunglauf 0 Zeichenaufrufe (alle
+Raumobjekte `state=0`), dort ist die Ordnung nicht messbar. Fuer eine Aussage ueber alle Raeume
+braucht es Spielstaende mit laufenden Raumskripten; `release/linux/saves` ist leer. Der
+Nachweis steht damit auf einem Raum mit wirklich gezeichneten Objekten und auf dem Pruefmittel,
+das den Fall "Objekt kommt per Skript nach oben" nachstellt.

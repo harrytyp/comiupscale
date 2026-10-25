@@ -648,6 +648,27 @@ void ScummEngine::drawRoomObjects(int arg) {
 	}
 }
 
+void ScummEngine::hdStampObjectDraw(int oi) {
+	if (oi <= 0)
+		return;
+	if (oi >= _hdObjDrawCap) {
+		const int neu = MAX(_numLocalObjects, oi + 1);
+		uint32 *a = new uint32[neu];
+		for (int i = 0; i < neu; i++)
+			a[i] = (_hdObjDrawStamp && i < _hdObjDrawCap) ? _hdObjDrawStamp[i] : 0;
+		delete[] _hdObjDrawStamp;
+		_hdObjDrawStamp = a;
+		_hdObjDrawCap = neu;
+	}
+	_hdObjDrawStamp[oi] = ++_hdObjDrawNr;
+}
+
+void ScummEngine::hdResetObjectDrawStamps() {
+	for (int i = 0; i < _hdObjDrawCap; i++)
+		_hdObjDrawStamp[i] = 0;
+	_hdObjDrawNr = 0;
+}
+
 void ScummEngine::drawObject(int obj, int scrollType) {
 	// Diagnose: HD_NO_OBJECTS zeichnet keine Objekte in die 8-Bit-Ebene. Damit laesst sich
 	// messen, welchen Anteil die Objekte am sichtbaren 8-Bit-Rest haben, statt es aus
@@ -726,6 +747,12 @@ void ScummEngine::drawObject(int obj, int scrollType) {
 	ptr = getObjectImage(getOBIMFromObjectData(od), getState(od.obj_nr));
 	if (!ptr)
 		return;
+
+	// Ab hier wird wirklich gezeichnet: Aufruf stempeln, damit die HD-Objektschicht
+	// dieselbe Reihenfolge benutzt (letzter Aufruf liegt oben).
+	hdStampObjectDraw(obj);
+	if (getenv("HD_TRACE_DRAW"))
+		hdPrintf("8BITDRAW oi=%d nr=%d state=%d", obj, od.obj_nr, od.state & 0xF);
 
 	x = 0xFFFF;
 

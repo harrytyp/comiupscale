@@ -47,6 +47,7 @@
 #include "image/png.h"
 #include "scumm/util.h"
 #include "common/config-manager.h"
+#include "common/algorithm.h"
 #include <cstdlib>
 #include <cmath>
 
@@ -1326,6 +1327,12 @@ static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
 // ein Bit je Bildpunkt; 255 heisst "gesetzt", also "der 8-Bit-Zeichner schneidet die
 // Figur hier ab" (bompApplyMask). Damit laesst sich zeigen, welche Bildpunkte hinter
 // einem Vordergrund liegen, statt es aus Koordinaten zu schliessen.
+// Zusaetzlich wird die eigene 8-Bit-Spur abgelegt (hd_fg_8bit.pgm): 255 heisst, der
+// 8-Bit-Zeichner hat an diesem Punkt etwas gemalt (Vordergrund gegen die saubere
+// Vorlage). Das ist die Silhouette, an der sich das HD-Kostuem messen lassen muss.
+static byte *hdFg8Map = nullptr;
+static int hdFg8Size = 0;
+
 static void hdDumpMaskPlanes(ScummEngine *vm, int visW, int visH) {
 	const int stripBase = (int)vm->_virtscr[kMainVirtScreen].xstart / 8;
 	for (int z = 0; z < vm->_gdi->_numZBuffer && z < 4; z++) {
@@ -1349,6 +1356,23 @@ static void hdDumpMaskPlanes(ScummEngine *vm, int visW, int visH) {
 		fclose(f);
 		remove(path);
 		rename(tmpPath.c_str(), path);
+	}
+
+	// Eigene Spur der 8-Bit-Ebene: wo hat der 8-Bit-Zeichner gemalt?
+	if (hdFg8Map) {
+		char path[128];
+		snprintf(path, sizeof(path), "/opt/data/projects/comi-hd/work/dumps/hd_fg_8bit.pgm");
+		Common::String tmpPath = Common::String(path) + ".part";
+		FILE *f = fopen(tmpPath.c_str(), "wb");
+		if (f) {
+			fprintf(f, "P5\n%d %d\n255\n", visW, visH);
+			for (int y = 0; y < visH; y++)
+				for (int x = 0; x < visW; x++)
+					fputc(hdFg8Map[y * visW + x] ? 255 : 0, f);
+			fclose(f);
+			remove(path);
+			rename(tmpPath.c_str(), path);
+		}
 	}
 }
 
@@ -1776,6 +1800,15 @@ void ScummEngine::renderHDComposite() {
 		hdActorMapSize = visW * visH;
 	}
 	memset(hdActorMap, 255, (size_t)visW * visH);
+	// Eigene Spur der 8-Bit-Ebene (Vordergrund gegen die saubere Vorlage). Schritt 2 fuellt
+	// sie, Schritt 2.6 liest sie als Silhouette: was das Original nicht malt, malt das
+	// HD-Kostuem auch nicht (HD_CLIP_8BIT).
+	if (visW * visH > hdFg8Size) {
+		hdFg8Map = (byte *)realloc(hdFg8Map, (size_t)visW * visH);
+		hdFg8Size = visW * visH;
+	}
+	if (hdFg8Map)
+		memset(hdFg8Map, 0, (size_t)visW * visH);
 	if (visW * visH > hdMissingMaskSize) {
 		hdMissingMask = (byte *)realloc(hdMissingMask, (size_t)visW * visH);
 		hdMissingMaskSize = visW * visH;
@@ -1923,6 +1956,9 @@ int step2_fgPixels = 0;
 				// Skip AKOS transparent color (index 255)
 				if (isForeground && curPix == 255)
 					isForeground = false;
+				// Spur der 8-Bit-Ebene merken (Schritt 2.6 schneidet daran ab).
+				if (hdFg8Map)
+					hdFg8Map[sy * visW + sx] = isForeground ? 1 : 0;
 				// Track foreground pixels in inventory area (top-left 640x280 in 8-bit)
 				if (sx < 640 && sy < 280) {
 					step2_invTotal++;
@@ -2100,6 +2136,9 @@ int step2_fgPixels = 0;
 		static int prevRoom = -1;
 		if (_currentRoom != prevRoom) {
 			prevRoom = _currentRoom;
+			// Neue Szene, neue Zeichenreihenfolge: die Stempel des vorigen Raums gelten
+			// nicht mehr, sonst erben Objekte ihre alte Lage von einem fremden Objekt.
+			hdResetObjectDrawStamps();
 			hdPrintf("ROOM CHANGE: entering room %d, %d objects:", _currentRoom, _numLocalObjects);
 			for (int di = _numLocalObjects - 1; di > 0; di--) {
 				ObjectData &dod = _objs[di];
@@ -2237,7 +2276,54 @@ int step2_fgPixels = 0;
 
 		// V8 (COMI): objects drawn in reverse ID order — highest ID = behind, lowest ID = front
 		// Match the original engine (object.cpp line 640-643) for correct z-ordering.
-		for (int oi = _numLocalObjects - 1; oi > 0; oi--) {
+		// Diese Ordnung gilt nur noch als Rueckfall (HD_OBJ_QUEUE=0) und fuer Objekte,
+		// die in diesem Bild nicht gezeichnet wurden.
+		//
+		// Regulaer gilt: die 8-Bit-Engine sortiert Objekte nicht nach Index, sondern
+		// zeichnet sie in der Reihenfolge ihrer Zeichen-Aufrufe — Raumobjekte in
+		// drawRoomObjects, Nachzuegler ueber die Zeichen-Warteschlange in processDrawQue
+		// (object.cpp:1217/1230). Jeder Aufruf von drawObject stempelt seinen Index
+		// (hdStampObjectDraw, object.cpp); hier wird nach diesem Stempel aufsteigend
+		// komponiert. Der zuletzt gezeichnete Eintrag liegt oben, genau wie in 8 Bit.
+		static Common::Array<int> hdObjOrder;
+		const char *hdQueueEnv = getenv("HD_OBJ_QUEUE");
+		const bool hdAlteOrdnung = hdQueueEnv && *hdQueueEnv && atoi(hdQueueEnv) == 0;
+		hdObjOrder.clear();
+		if (hdAlteOrdnung) {
+			for (int oi = _numLocalObjects - 1; oi > 0; oi--)
+				hdObjOrder.push_back(oi);
+		} else {
+			hdObjOrder.resize(_numLocalObjects);
+			for (int oi = 0; oi < _numLocalObjects; oi++)
+				hdObjOrder[oi] = oi;
+			Common::sort(hdObjOrder.begin(), hdObjOrder.end(),
+				[this](int a, int b) {
+					const uint32 sa = (a > 0 && a < _hdObjDrawCap) ? _hdObjDrawStamp[a] : 0;
+					const uint32 sb = (b > 0 && b < _hdObjDrawCap) ? _hdObjDrawStamp[b] : 0;
+					if (sa != sb)
+						return sa < sb;   // frueher gezeichnet = weiter hinten
+					return a > b;         // nie gezeichnet: alte Ordnung, hoher Index hinten
+				});
+		}
+		// Nur in Bildern mit Zeichenaufrufen spuruen (und dann jedes): der 20-Bilder-Takt
+		// fiel mit Bildern ohne Zeichnen zusammen, dadurch stand in der Spur nie eine
+		// Reihenfolge neben den 8BITDRAW-Zeilen desselben Bildes.
+		static uint32 hdOrderTraceNr = 0;
+		if (getenv("HD_TRACE_DRAW") && _hdObjDrawNr != hdOrderTraceNr) {
+			hdOrderTraceNr = _hdObjDrawNr;
+			Common::String ord;
+			for (uint k = 0; k < hdObjOrder.size(); k++) {
+				const int oi2 = hdObjOrder[k];
+				if (oi2 <= 0 || _objs[oi2].obj_nr == 0)
+					continue;
+				ord += Common::String::format("%d=%d/%d ", oi2, _objs[oi2].obj_nr,
+					(int)((oi2 < _hdObjDrawCap) ? _hdObjDrawStamp[oi2] : 0));
+			}
+			hdPrintf("QORDER room=%d alt=%d nr=%u reihenfolge=%s", _currentRoom,
+				hdAlteOrdnung ? 1 : 0, (unsigned)_hdObjDrawNr, ord.c_str());
+		}
+		for (uint hoi = 0; hoi < hdObjOrder.size(); hoi++) {
+			const int oi = hdObjOrder[hoi];
 			ObjectData &od = _objs[oi];
 			if (od.obj_nr == 0)
 				continue;
@@ -3134,6 +3220,15 @@ int step2_fgPixels = 0;
 				}
 			}
 			int geclippt = 0, spyAltSichtbar = 0, spyAltVerdeckt = 0;
+			// HD_CLIP_8BIT: das Kostuem zusaetzlich an der 8-Bit-Silhouette abschneiden. Die
+			// Maske deckt nur Vordergruende ab, an denen der 8-Bit-Zeichner die Figur
+			// abschneidet. Wo er gar nichts malt (Mauerwerk, das im Hintergrund steht), deckt
+			// sie nicht, und das HD-Kostuem malt dort seine eigenen Randpunkte ueber das
+			// Mauerwerk. HD_CLIP8_TOL ist die Toleranz in 8-Bit-Punkten (Standard 1), damit
+			// ein Punkt Versatz zwischen Cel und Textur die Silhouette nicht aushoehlt.
+			const bool clip8 = getenv("HD_CLIP_8BIT") != nullptr;
+			const int clip8Tol = getenv("HD_CLIP8_TOL") ? atoi(getenv("HD_CLIP8_TOL")) : 1;
+			int geclippt8 = 0;
 			const int hdDstStride = _hdComposite.pitch / 4;
 			uint32 *hdDstBase = (uint32 *)_hdComposite.getBasePtr(blitX, blitY);
 			// HD_ALPHA_SPY: zaehlt je Kostuem, was mit den Bildpunkten passiert, deren
@@ -3170,6 +3265,25 @@ int step2_fgPixels = 0;
 						if (alpha > 0)
 							geclippt++;
 						continue;
+					}
+					if (clip8) {
+						// Silhouette der 8-Bit-Ebene: nur malen, wo der 8-Bit-Zeichner selbst
+						// etwas gemalt hat (Toleranz clip8Tol Punkte ringsum).
+						const int sx8 = maskX / scale;
+						const int sy8 = maskY / scale;
+						bool erlaubt = false;
+						for (int dy = -clip8Tol; dy <= clip8Tol && !erlaubt; dy++)
+							for (int dx = -clip8Tol; dx <= clip8Tol && !erlaubt; dx++) {
+								const int nx8 = sx8 + dx, ny8 = sy8 + dy;
+								if (hdFg8Map && nx8 >= 0 && nx8 < visX && ny8 >= 0 && ny8 < visH &&
+								    hdFg8Map[ny8 * visW + nx8])
+									erlaubt = true;
+							}
+						if (!erlaubt) {
+							if (alpha > 0)
+								geclippt8++;
+							continue;
+						}
 					}
 					if (alpha >= 128) {
 						// Fully opaque HD pixel: overwrite composite.
@@ -3276,12 +3390,13 @@ int step2_fgPixels = 0;
 
 			if (getenv("HD_SPY") && (geclippt > 0 || spyAltSichtbar > 0 || spyAltVerdeckt > 0)) {
 				if (maskSpy)
-					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d alt_sichtbar=%d alt_verdeckt=%d",
+					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d sil8=%d alt_sichtbar=%d alt_verdeckt=%d",
 					         ai, (int)a->_costume, cel, (int)clipZ, geclippt, blitW * blitH,
-					         spyAltSichtbar, spyAltVerdeckt);
+					         geclippt8, spyAltSichtbar, spyAltVerdeckt);
 				else
-					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d",
-					         ai, (int)a->_costume, cel, (int)clipZ, geclippt, blitW * blitH);
+					hdPrintf("CLIP kostuem ai=%d akos=%d cel=%d z=%d geclippt=%d von %d sil8=%d",
+					         ai, (int)a->_costume, cel, (int)clipZ, geclippt, blitW * blitH,
+					         geclippt8);
 			}
 			step26_clipped += geclippt;
 
@@ -3693,10 +3808,15 @@ int step2_fgPixels = 0;
 		        _hdComposite.w, _hdComposite.h, (int)camera._cur.x);
 	}
 	// Debug: einmalige Zustandsmeldung, damit die Werte im Log stehen (nur im Testlauf relevant).
+	// Achtung: jeder %d braucht sein Argument. Hier fehlte die Hoehe der Kompositflaeche,
+	// dadurch las der Formatstring die naechsten Werte von der falschen Stelle: die Hoehe
+	// zeigte die 0/1 von HD_AUTO_SHOTS (also 0 im Normalfall, siehe "comp=2560x0") und die
+	// Bildnummer einen Rest vom Stapel (autoshots=591221504). Die Flaeche selbst war nie
+	// kaputt — die Stufenaufnahmen daneben sind 2560x1920.
 	if (_hdFrameCount == 30)
 		warning("HD DEBUG: frame=%d bg=%dx%d screen=%dx%d comp=%dx%d autoshots=%d",
 		        _hdFrameCount, _hdBackgroundSurface.w, _hdBackgroundSurface.h,
-		        _screenWidth, _screenHeight, _hdComposite.w,
+		        _screenWidth, _screenHeight, _hdComposite.w, _hdComposite.h,
 		        getenv("HD_AUTO_SHOTS") ? 1 : 0);
 	// Debug: fuer die Videoaufnahme einen gleichmaessigen Schwenk ueber den Kameraweg fahren.
 	// Kamerafahrt fuer die Videoaufnahme liegt jetzt oben bei der Berechnung von camX/camY.
@@ -3779,6 +3899,10 @@ int step2_fgPixels = 0;
 			snprintf(spath, sizeof(spath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/h%05d.ppm", hdSeqNo);
 			snprintf(rpath, sizeof(rpath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/r%05d.ppm", hdSeqNo);
 			hdWriteCompositeShotScaled(&_hdComposite, spath, 2);
+			// Nur eine Flaeche mit echter Hoehe ist eine Aufnahme. Eine 0 hohe Flaeche
+			// schreibt eine Kopfzeile ohne Bildpunkte — genau das sah wie "Bilder da" aus.
+			if (_hdComposite.w > 0 && _hdComposite.h > 0)
+				_hdSeqWritten++;
 			int seqW = MIN(_screenWidth, (int)vs->w - (int)vs->xstart);
 			int seqH = MIN(_screenHeight, (int)vs->h);
 			if (seqW > 0 && seqH > 0)

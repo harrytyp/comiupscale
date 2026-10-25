@@ -594,8 +594,19 @@ public:
 	// vorigen Raum, und eine Pruefung darauf meldet "kein HD", obwohl der Zielraum nie im
 	// Bild war. Genau so ist eine ganze Reihe ungueltiger Befunde entstanden.
 	bool _hdCaptureArmed = false;
+	// Zahl der wirklich geschriebenen Bildfolgen-Aufnahmen (HD_DUMP_SEQ). Die Messlaeufe
+	// pruefen sie beim Beenden: null Aufnahmen heisst, die Messung hat nichts gemessen.
+	int _hdSeqWritten = 0;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
 	int _hdObjectMaskSize = 0;
+	// Reihenfolge der 8-Bit-Objektzeichnung: drawObject setzt je Aufruf einen Stempel auf
+	// den _objs-Index. Die HD-Objektschicht komponiert danach aufsteigend, der zuletzt
+	// gezeichnete Eintrag liegt oben. Das ist die Reihenfolge, in der die 8-Bit-Engine
+	// ihre Objekte wirklich zeichnet (Raumobjekte in drawRoomObjects, Nachzuegler in
+	// processDrawQue), keine aus dem Index abgeleitete Ordnung.
+	uint32 *_hdObjDrawStamp = nullptr;
+	int _hdObjDrawCap = 0;
+	uint32 _hdObjDrawNr = 0;
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
 	// JEV HARNESS (projects/comi-hd/harness): play-loop support
@@ -1514,6 +1525,9 @@ protected:
 	void drawObject(int obj, int scrollType);
 	void drawRoomObjects(int arg);
 	void drawRoomObject(int i, int arg);
+	/** HD: stempelt einen wirklich gezeichneten 8-Bit-Aufruf (Reihenfolge der HD-Objektschicht). */
+	void hdStampObjectDraw(int oi);
+	void hdResetObjectDrawStamps();
 	void drawBox(int x, int y, int x2, int y2, int color);
 	void drawLine(int x1, int y1, int x2, int y2, int color);
 	void drawPixel(VirtScreen *vs, int x, int y, int16 color, bool useBackbuffer = false);

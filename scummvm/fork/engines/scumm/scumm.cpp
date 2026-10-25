@@ -3292,6 +3292,22 @@ void ScummEngine::scummLoop(int delta) {
 		static int frames = 0;
 		static int phase = 0;
 		++frames;
+		// Gesundheitscheck fuer die Messlaeufe: HD_DUMP_SEQ versprochen und keine einzige
+		// Aufnahme geschrieben heisst, es wurde nichts gemessen. Statt still eine leere
+		// Messung zu protokollieren, bricht der Lauf hier mit exit(1) und klarer Meldung ab
+		// (error() -> fatalError() -> exit(1), sdl.cpp:677).
+		auto hdAufnahmenPruefen = [this]() {
+			if (!getenv("HD_DUMP_SEQ") || _hdSeqWritten > 0)
+				return;
+			// Bewusst fatalError() statt error(): error() landet in einem Build mit
+			// Debugger in der Debugger-Konsole und der Lauf haengt (gemessen: Abbruch
+			// erst nach dem timeout, exit 124). fatalError() beendet mit exit(1)
+			// (sdl.cpp:677), das sehen die Messkripte am Rueckgabewert.
+			warning("HD_DUMP_SEQ ist gesetzt, aber keine einzige Aufnahme geschrieben "
+			        "(Raum %d, Aufnahme scharf=%d). Messung abgebrochen statt stiller Leermessung.",
+			        _currentRoom, _hdCaptureArmed ? 1 : 0);
+			g_system->fatalError();
+		};
 		// Aufnahmelauf selbst beenden statt per timeout abschiessen: ein abgebrochener Lauf
 		// schreibt Bilddateien mitten im Schreiben ab, und halbe Aufnahmen haben die Messung
 		// verfaelscht (Raum 25: 38,6 statt 1,4 Prozent Abweichung).
@@ -3302,6 +3318,7 @@ void ScummEngine::scummLoop(int delta) {
 			const int bis = atoi(aufnahme);
 			if (bis > 0 && VAR_TIMER_TOTAL != 0xFF && (int)VAR(VAR_TIMER_TOTAL) >= bis + 70) {
 				warning("hd_trace: Aufnahmezeit erreicht, Spiel wird beendet");
+				hdAufnahmenPruefen();
 				g_system->quit();
 			}
 		}
@@ -3309,6 +3326,7 @@ void ScummEngine::scummLoop(int delta) {
 			const int grenze = atoi(ende);
 			if (grenze > 0 && frames > grenze) {
 				warning("hd_trace: HD_EXIT_AFTER=%d erreicht, Spiel wird beendet", grenze);
+				hdAufnahmenPruefen();
 				g_system->quit();
 			}
 		}
@@ -3340,6 +3358,18 @@ void ScummEngine::scummLoop(int delta) {
 				warning("hd_trace: HD_JUMP_ROOM -> startScene(%d)", room);
 
 			}
+		}
+		// Pruefmittel fuer die Zeichenreihenfolge (HD_QUEUE_TEST=<Objektnummer>): das
+		// Raumskript erreicht man in einem Sprunglauf nicht, deshalb wird hier dasselbe
+		// ausgeloest, was ein Skript mit setObjectState tut — das Objekt kommt in die
+		// Zeichen-Warteschlange und wird von processDrawQue ZULETZT gezeichnet, also oben.
+		// Damit laesst sich zeigen, ob die HD-Schicht dieser Reihenfolge folgt.
+		if (const char *queueTest = getenv("HD_QUEUE_TEST")) {
+			static int queueTestNr = -1, queueTestFrames = 0;
+			if (queueTestNr < 0)
+				queueTestNr = atoi(queueTest);
+			if (queueTestNr > 0 && phase == 2 && ++queueTestFrames >= 3)
+				setObjectState(queueTestNr, 1, -1, -1);
 		}
 	}
 
