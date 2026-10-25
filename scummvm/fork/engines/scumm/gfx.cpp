@@ -2917,6 +2917,8 @@ int step2_fgPixels = 0;
 			int limbDrawX = entries[ei].drawX;
 			if (mirror)
 				limbDrawX = -limbDrawX;
+			// Getestet und verworfen: drawX wegzulassen (Verdacht auf doppelten Cel-Hotspot)
+			// macht es schlechter — Raum 44 von 3,87 auf 4,30 Prozent. Also ist drawX richtig.
 			int64 hdCX = (int64)(drawX + limbDrawX * sclX / 255) * hdW / MAX(1, visW);
 			int64 hdCY = (int64)(drawY + entries[ei].drawY * sclY / 255) * hdH / MAX(1, visH);
 
@@ -3088,6 +3090,17 @@ int step2_fgPixels = 0;
 			for (int ei = 0; ei < numEntries; ei++) {
 				Actor *ea = entries[ei].actor;
 				int64 hdEX = (int64)(ea->getPos().x - sdLeft + entries[ei].drawX) * hdW / MAX(1, visW);
+			if (getenv("HD_SPY")) {
+				// Doppel-Asset-Diagnose: 8-Bit-Position, Versatz und HD-Zielposition nebeneinander.
+				FILE *pf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_place.log", "a");
+				if (pf) {
+					fprintf(pf, "PLACE ai=%d akos=%d cel=%d pos=%d,%d sdLeft=%d draw=%d,%d hdX=%d hdW=%d visW=%d\n",
+					        entries[ei].ai, (int)ea->_costume, entries[ei].cel,
+					        ea->getPos().x, ea->getPos().y, sdLeft,
+					        entries[ei].drawX, entries[ei].drawY, (int)hdEX, hdW, visW);
+					fclose(pf);
+				}
+			}
 				int64 hdEY = (int64)(ea->getPos().y - ea->getElevation() + entries[ei].drawY) * hdH / MAX(1, visH);
 				bool isComplete = (entries[ei].drawX == ea->_hdRelX);
 				uint32 boxCol = isComplete ? 0x00FF00FF : 0x00FFFF80;
