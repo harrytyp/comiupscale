@@ -361,8 +361,11 @@ comiupscale/
 
 ## License
 
-- **ScummVM fork:** GPL v2 (https://www.scummvm.org/)
-- **Documentation:** MIT License
-- **Game Data:** © LucasArts / Disney, not included
+- **ScummVM fork:** GNU General Public License v3. The fork under `scummvm/fork/` ships the
+  original `COPYING`, `COPYRIGHT` and the third-party `LICENSES/` folder unchanged. The root
+  `LICENSE` file carries the notice, the license text stays with the sources.
+- **Documentation and helper scripts:** MIT, see `LICENSE-MIT`.
+- **Game Data:** (c) LucasArts / Disney, not included in this repository.
 
 *COMI-HD is a fan project. Not affiliated with LucasArts, Disney, or ScummVM.*
+
