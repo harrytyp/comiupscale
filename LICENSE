@@ -1,14 +1,9 @@
-COMI-HD is a fork of ScummVM and is distributed under the same license.
-ScummVM is Copyright (C) 2001-2026 by the ScummVM team and contributors.
-The copyright holders are listed in scummvm/fork/COPYRIGHT, the contact details in
-scummvm/fork/AUTHORS, and the licenses of bundled third-party components in
-scummvm/fork/LICENSES/.
-The documentation and helper scripts in this repository (README, docs/, scripts/,
-tools/) are licensed under the MIT License, see LICENSE-MIT.
-The game data is not part of this repository and remains the property of its
-rights holders (LucasArts / Disney).
+COMI-HD, a fork of ScummVM.
+Copyright (C) 2001-2026 the ScummVM team and contributors.
+See scummvm/fork/COPYRIGHT for the full list.
 
---------------------------------------------------------------------------------
+This program is free software, licensed under the GNU General Public License v3.
+The documentation and helper scripts are MIT licensed, see LICENSE-MIT.
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
