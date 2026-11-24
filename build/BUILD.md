@@ -204,3 +204,14 @@ For headless/CI environments, software rendering via LLVMpipe also works:
 sudo apt install mesa-utils libgl1-mesa-dri
 # Then run with: LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe
 ```
+
+## Install dependencies first
+
+One command covers apt, dnf, pacman and zypper. It detects the distribution, lists the packages
+that are missing and installs them with sudo.
+
+```bash
+bash build/install-deps.sh            # installs what is missing
+bash build/install-deps.sh --check    # only reports, exit 1 if something is missing
+bash build/install-deps.sh --dry-run  # shows the package manager command
+```
