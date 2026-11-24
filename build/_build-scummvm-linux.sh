@@ -34,7 +34,13 @@ fi
 
 # ── Build libpng + zlib natively (if not already) ────────
 NATIVE_PREFIX="$INSTALL_DIR/native-prefix"
-if [ ! -f "$NATIVE_PREFIX/lib/libpng16.a" ] || [ ! -f "$NATIVE_PREFIX/lib/libz.a" ]; then
+# zlib und libpng: liegen die Quellen nicht vor (Linux laedt sie nicht herunter), werden die
+# Systembibliotheken benutzt. Vorher brach der Build hier mit "No such file or directory" ab,
+# obwohl zlib1g-dev und libpng-dev installiert waren.
+if [ ! -d "$DEPS_DIR/zlib-1.3.1" ] || [ ! -d "$DEPS_DIR/libpng-1.6.44" ]; then
+    info "zlib/libpng sources not present, using system libraries"
+    export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+elif [ ! -f "$NATIVE_PREFIX/lib/libpng16.a" ] || [ ! -f "$NATIVE_PREFIX/lib/libz.a" ]; then
     info "Building zlib natively..."
     cd "$DEPS_DIR/zlib-1.3.1"
     CC=gcc CXX=g++ ./configure --prefix="$NATIVE_PREFIX" --static 2>&1 | tail -3
@@ -63,13 +69,16 @@ cd "$BUILD_DIR_LINUX"
 # Only configure if not already configured
 if [ ! -f "config.mk" ]; then
     info "Configuring ScummVM for Linux..."
+# --with-sdl-prefix: ohne diese Angabe findet configure das selbst gebaute SDL2 nicht und
+#   faellt auf "Checking for SDL... no" zurueck. --enable-engine braucht den Bindestrich:
+#   "scumm_7_8" wird stillschweigend ignoriert, dann fehlt genau der Engine-Teil fuer COMI.
     "$FORK_DIR/configure" \
         --opengl-mode=gl \
         --enable-verbose-build \
         --disable-nasm \
         --disable-all-engines \
-        --enable-engine=scumm \
-        --enable-engine=scumm_7_8 \
+        --enable-engine=scumm,scumm-7-8 \
+        --with-sdl-prefix="$SDL2_NATIVE_DIR" \
         --with-png-prefix="$NATIVE_PREFIX" \
         --with-zlib-prefix="$NATIVE_PREFIX" \
         2>&1 | tail -5
