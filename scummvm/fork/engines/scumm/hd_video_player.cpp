@@ -69,6 +69,14 @@ HdVideoPlayer::~HdVideoPlayer() {
 	close();
 }
 
+// Siehe hd_video_player.h: ein vorhandenes videos/-Verzeichnis ohne diese Datei ist
+// eine Fehlkonfiguration des Pakets, ein Paket ganz ohne Videos der Normalfall.
+static bool s_videoDirSeen = false;
+
+bool HdVideoPlayer::videoDirSeen() {
+	return s_videoDirSeen;
+}
+
 bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 	Common::String baseName = sanFilename;
 	int dotPos = baseName.findLastOf('.');
@@ -104,11 +112,14 @@ bool HdVideoPlayer::hasVideo(const Common::String &sanFilename) {
 		Common::String::size_type pos = gp.rfind('/');
 		if (pos != Common::String::npos)
 			gp.erase(pos);
+		else
+			gp = ".";   // blosser Name ("game") -> Schwesterverzeichnis ist das Arbeitsverzeichnis
 		Common::String hdPath = gp + "/hd";
 		hdDir = Common::FSNode(Common::Path(hdPath, Common::Path::kNativeSeparator));
 	}
 
 	Common::FSNode videoDir = hdDir.getChild("videos");
+	s_videoDirSeen = videoDir.exists();
 	if (!videoDir.exists()) {
 		// Videos directory not present — no HD video
 		return false;

@@ -50,6 +50,16 @@ class ScummEngine;
  */
 void hdFillAlphaHoles(Graphics::Surface &s, int passes = 3);
 
+/**
+ * Aufteilung des Cel-Dekodepfads (Mikrosekunden seit Programmstart, Summen).
+ * Nur fuer die Perf-Messung (Backlog 11): trennt PNG-Dekode, Lochfuellung,
+ * Kopie in den Zwischenspeicher (mit Zeilenbereichen), Kopie zum Aufrufer und
+ * Cache-Pruefung. Ohne diese Aufteilung ist "45 ms je Dekode" nur eine Summe.
+ */
+void hdCostumeLoadDetail(uint64 &pngUs, uint64 &fillUs, uint64 &copyUs,
+                         uint64 &destUs, uint64 &pruneUs, uint64 &pixels,
+                         uint64 &decodeUs, uint64 &convUs, uint64 &fringeUs);
+
 class HdCostumeManager {
 public:
 	HdCostumeManager(ScummEngine *vm);
@@ -79,9 +89,16 @@ public:
 	 * Kopie entfaellt. Der Zeiger gilt nur innerhalb des laufenden Bildes, solange
 	 * kein weiteres loadCostume dazwischenkommt. Der Cache hat ein Budget von 1,5 GB
 	 * und verdraengt in der Praxis nichts.
+	 *
+	 * rowFirstOut/rowLastOut/spanRowsOut liefern die Zeilenbereiche (erste und letzte
+	 * gedeckte Spalte je Quellzeile) genau zu der Flaeche, die zurueckgegeben wurde.
+	 * Nicht ueber getRowSpans nachfragen: bei Kostuemen mit mehreren Unterbildern
+	 * (Koerperteile) kann die Nachfrage ein anderes Unterbild treffen als das geladene.
 	 */
 	bool loadCostume(int akosId, int frame, Graphics::Surface &dest,
-	                 const Graphics::Surface **cachedOut = nullptr);
+	                 const Graphics::Surface **cachedOut = nullptr,
+	                 const uint16 **rowFirstOut = nullptr, const uint16 **rowLastOut = nullptr,
+	                 int *spanRowsOut = nullptr);
 	bool isFrameCached(int akosId, int frame) const;
 	/**
 	 * Liefert je Quellzeile die erste und letzte Spalte mit Deckung.
@@ -96,8 +113,43 @@ public:
 	 *  range the actors are currently playing. Returns frames loaded. */
 	int preloadCostumeRange(int akosId, int from, int to);
 
+	/** Beim Raumeintritt den ganzen Satz eines Kostuems vorbereiten (bis zu maxFrames
+	 *  noch nicht zwischengespeicherte Cels) und dabei die teuren Schritte auf
+	 *  `threads` Worker verteilen. Rueckgabe: wirklich geladene Cels.
+	 *  Anlass: der Erstzugriff im Zeichenweg kostet 25 ms je Cel, Raum 84 braucht 103
+	 *  davon; der 12-ms-Vorlauf neben dem Bild kann das nicht aufholen. */
+	int preloadCostumeSet(int akosId, int maxFrames, int threads = 4);
+
+	/** Gemeinsamer Kern: Cels im Bildbereich [from..to] aufbereiten und eintragen. */
+	int hdPreloadCels(int akosId, int from, int to, int maxFrames, int threads);
+
+	/**
+	 * Asynchroner Vorlauf (Aufgabe 11, Weg (b)): bereitet bis zu maxFrames noch fehlende
+	 * Cels im Hintergrund vor, beginnend beim Rahmen fromFrame (mit Umlauf). Der Aufruf
+	 * kehrt sofort zurueck; der Worker dekodiert unabhaengig vom Bildtakt. Ein Satz
+	 * gleichzeitig, laufende oder fertige Cels werden nicht doppelt angefordert.
+	 * Anlass: im kalten Raum ist die Restzeit des Bildes null, deshalb dekodierte der
+	 * Zeichenweg jedes Cel selbst (Raum 84: 103 x 25 ms). Rueckgabe: Anzahl der Auftraege.
+	 */
+	int requestAsync(int akosId, int fromFrame, int maxFrames);
+
+	/** Fertige Cels in den Zwischenspeicher eintragen (Hauptthread, ohne Dekode). */
+	int pumpAsync();
+
+	/** Auftraege, die noch laufen oder auf das Eintragen warten (nur fuer die Messung). */
+	int asyncPending();
+
+	/** Worker-Rumpf (von hdAsyncThunk gerufen): Auftrag aufbereiten, Ergebnisliste fuellen. */
+	void hdAsyncRun();
+
 	/** Returns true if HD costume mode is active. */
 	bool isEnabled() const { return _enabled; }
+
+	/**
+	 * Zaehler fuer die Perf-Messung: Bilder aus dem Zwischenspeicher gegen wirklich
+	 * dekodierte. Trennt "Dekode je Bild" von "Zeichnen ist teuer" (Backlog 11).
+	 */
+	static void hdCostumeStats(int &treffer, int &dekode);
 
 private:
 	struct CostumeKey {
@@ -121,10 +173,9 @@ private:
 		int lastUsed;
 		// Erste und letzte Spalte mit Deckung je Quellzeile, einmal beim Laden bestimmt.
 		// Eine leere Zeile wird als first=1, last=0 abgelegt, also first > last.
-		// ACHTUNG: zurzeit nur vorbereitet, der Zeichenweg nutzt sie noch nicht. Der
-		// Versuch, damit die durchsichtigen Raender zu ueberspringen, liess auch die
-		// Wiederherstellung des HD-Hintergrunds ausfallen, wodurch 8-Bit-Reste
-		// durchgeschienen waeren. Erst nutzen, wenn das mitgezogen ist.
+		// Der Zeichenweg begrenzt damit jede Zeile auf den Figurenumriss (Schritt 2.6 in
+		// gfx.cpp); die Bereiche kommen aus loadCostume, damit sie zu genau der Flaeche
+		// gehoeren, die gezeichnet wird.
 		Common::Array<uint16> rowFirst;
 		Common::Array<uint16> rowLast;
 	};
@@ -153,6 +204,25 @@ private:
 	// Cache eviction budget (bytes) — current + previous room's costumes
 	// stay cached; eviction only when the budget is exceeded.
 	static const uint32 _cacheBudgetBytes = 1500 * 1024 * 1024;
+
+	// ── Asynchroner Vorlauf (Weg (b)) ────────────────────────────────────────
+	// Ein Worker dekodiert die angeforderten Cels, der Hauptthread traegt sie in
+	// pumpAsync() ein. Geteilt sind nur diese drei Felder, alle Zugriffe unter
+	// _asyncMutex; der Zwischenspeicher selbst wird ausschliesslich vom Hauptthread
+	// angefasst (kein Zeiger aus dem Cache wird ungueltig).
+	struct AsyncResult {
+		CostumeKey key;
+		Graphics::Surface surface;
+		Common::Array<uint16> rowFirst;
+		Common::Array<uint16> rowLast;
+	};
+	// Elaborierte Typnamen statt SDL.h im Header (forbidden.h in gfx.cpp vertraegt es nicht).
+	struct SDL_mutex *_asyncMutex;
+	struct SDL_Thread *_asyncThread;
+	bool _asyncBusy;
+	Common::Array<CostumeKey> _asyncKeys;    // laufender Auftrag
+	Common::Array<AsyncResult> _asyncDone;   // fertig aufbereitet, wartet auf Eintrag
+
 
 	// Base HD path
 	Common::String _hdPath;

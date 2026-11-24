@@ -30,6 +30,7 @@
 #include "scumm/he/intern_he.h"
 #endif
 #include "scumm/hd_asset_manager.h"
+#include "scumm/hd_costume_manager.h"
 #include "scumm/object.h"
 #include "scumm/resource.h"
 #include "scumm/scumm_v3.h"
@@ -317,18 +318,55 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 	free(_hdCleanValid);
 	_hdCleanValid = nullptr;
 	_hdCleanValidSize = 0;
+	_hdCleanXStart = -1;
+	_hdCleanYStart = -1;
 	_hdCurrentRoom = -1;
+	// Anker fuer die Aufteilung des Raumeintritts: ab hier laeuft die Uhr, _hdEntryBgMs
+	// ist der Anteil des HD-Hintergrunds. Ohne diese zwei Werte war nur die Wanduhr je Raum
+	// bekannt und "Hintergrund oder Erstzugriffe" blieb eine Vermutung.
+	{
+		int hdEntryKt0 = 0, hdEntryKd0 = 0;
+		HdCostumeManager::hdCostumeStats(hdEntryKt0, hdEntryKd0);
+		_hdEntryDecodes0 = hdEntryKd0;
+		_hdEntryRoom = room;
+		_hdEntryBgMs = 0;
+		_hdEntryStartMs = g_system->getMillis();
+	}
 	if (_hdAssetManager->isEnabled()) {
 		if (_hdAssetManager->hasBackground(room)) {
 			_hdBackgroundSurface.free();
 			if (_hdAssetManager->loadBackground(room, _hdBackgroundSurface)) {
+				_hdEntryBgMs = g_system->getMillis() - _hdEntryStartMs;
 				_hdCurrentRoom = room;
 				// Aufzeichnung scharfschalten, sobald ein Raum mit HD-Hintergrund geladen
 				// ist. Vorher haing das am Sprung allein; in Raeumen, die nicht ueber
 				// HD_JUMP_ROOM erreichbar sind (25, 42, 43, 86), entstanden dadurch gar
 				// keine Bilder — der Lauf war in Ordnung, nur die Spur fehlte.
-				if (getenv("HD_JUMP_ROOM"))
-					_hdCaptureArmed = true;
+				// Aber nur der Zielraum scharfschalten: sonst sammelt die Titelszene
+				// (Raum 87) die ersten 15 Aufnahmen ein, und der Sweep rechnet sie dem
+				// angefragten Raum zu. Genau so kamen fuer 25, 77 und 82 "15 Bilder,
+				// 0,000 Prozent" zustande, obwohl vom Raum selbst kein Bild dabei war.
+				// HD_CAPTURE_ROOM schaltet die Aufnahme scharf, ohne zu springen. Dann
+				// laesst sich der Raum ueber --boot-param betreten (Eingangsskript laeuft,
+				// Figuren sind da) und trotzdem messen. Beides zusammen betritt den Raum
+				// zweimal: gemessen Raum 10 mit HD_JUMP_ROOM+--boot-param 25,8 Prozent,
+				// davon 22,5 ausserhalb jeder Figur, also kein Figurenfehler.
+				const char *zielRaum = getenv("HD_CAPTURE_ROOM");
+				if (!zielRaum)
+					zielRaum = getenv("HD_JUMP_ROOM");
+				if (zielRaum) {
+					const int ziel = atoi(zielRaum);
+					if (ziel <= 0 || room == ziel) {
+						_hdCaptureArmed = true;
+						// Anker fuer den Frame-Takt: Raumeintritt, nicht erst die erste
+						// Komposition (der Versatz dazwischen ist die Ladezeit).
+						if (_hdCaptureArmFrame < 0)
+							_hdCaptureArmFrame = (int)_hdFrameCount;
+						// Anker fuer den Zeit-Takt: Spielzeit beim Raumeintritt.
+						if (_hdCaptureArmTime < 0)
+							_hdCaptureArmTime = _hdGameMs;
+					}
+				}
 				// Nach dem Laden neu zeichnen lassen: das Spiel zeichnet ein Vollbild-Objekt
 				// (den Raumhintergrund) unter Umstaenden, bevor der HD-Hintergrund bereit
 				// ist. Dann greift die Regel "Vollbild-Objekt nicht ueber HD zeichnen"

@@ -19,6 +19,9 @@
  *
  */
 
+// getenv fuer die Aufnahmeschalter (HD_CAM_FREEZE) erlauben, wie room.cpp und gfx.cpp.
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "common/config-manager.h"
 #include "common/system.h"
 
@@ -1460,13 +1463,26 @@ void ScummEngine_v6::o6_stopObjectScript() {
 	stopObjectScript(pop());
 }
 
+// Aufnahmelauf: die Kamerabefehle des Raumskripts stilllegen (HD_SCROLL_TEST + HD_CAM_FREEZE).
+// Ohne das ueberschreibt das Skript jede Vorgabe des Testantriebs, und zwei Laeufe treffen
+// keine gemeinsame Kamerastelle (Raum 40). Nur fuer Aufnahmen, nie im Spiel.
+static bool hdCameraEinfrieren() {
+	return getenv("HD_SCROLL_TEST") != nullptr && getenv("HD_CAM_FREEZE") != nullptr;
+}
+
 void ScummEngine_v6::o6_panCameraTo() {
 	if (_game.version >= 7) {
 		int y = pop();
 		int x = pop();
+		if (hdCameraEinfrieren()) {
+			warning("hd_trace: panCameraTo(%d,%d) ignoriert (HD_CAM_FREEZE)", x, y);
+			return;
+		}
 		panCameraTo(x, y);
 	} else {
-		panCameraTo(pop(), 0);
+		const int x = pop();
+		if (!hdCameraEinfrieren())
+			panCameraTo(x, 0);
 	}
 }
 
@@ -1481,14 +1497,19 @@ void ScummEngine_v6::o6_setCameraAt() {
 	if (_game.version >= 7) {
 		int x, y;
 
-		camera._follows = 0;
-
 		y = pop();
 		x = pop();
 
+		if (hdCameraEinfrieren()) {
+			warning("hd_trace: setCameraAt(%d,%d) ignoriert (HD_CAM_FREEZE)", x, y);
+			return;
+		}
+		camera._follows = 0;
 		setCameraAt(x, y);
 	} else {
-		setCameraAtEx(pop());
+		const int x = pop();
+		if (!hdCameraEinfrieren())
+			setCameraAtEx(x);
 	}
 }
 

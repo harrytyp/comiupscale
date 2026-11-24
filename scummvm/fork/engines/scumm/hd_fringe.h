@@ -17,6 +17,7 @@
 #define SCUMM_HD_FRINGE_H
 
 #include "common/scummsys.h"
+#include "common/array.h"
 #include "graphics/surface.h"
 
 namespace Scumm {
@@ -28,6 +29,27 @@ namespace Scumm {
 // Maximum peel passes for the soft transition ring.
 #define HD_FRINGE_MAX_PASSES 10
 
+// Ist der Bildpunkt an (x,y) fast weiss (alle drei Kanaele ueber der Schwelle)?
+static inline bool hdFringeWeiss(uint32 p) {
+	return (p & 0xFF) >= HD_FRINGE_WHITE_MIN &&
+	       ((p >> 8) & 0xFF) >= HD_FRINGE_WHITE_MIN &&
+	       ((p >> 16) & 0xFF) >= HD_FRINGE_WHITE_MIN;
+}
+
+// Hat der Bildpunkt an (x,y) einen 4-Nachbarn mit Alpha unter der Randschwelle?
+static inline bool hdFringeHatRand(const uint32 *px, int w, int h, int x, int y) {
+	const size_t idx = (size_t)y * w + x;
+	if (x > 0 && ((px[idx - 1] >> 24) & 0xFF) < HD_FRINGE_EDGE_ALPHA)
+		return true;
+	if (x + 1 < w && ((px[idx + 1] >> 24) & 0xFF) < HD_FRINGE_EDGE_ALPHA)
+		return true;
+	if (y > 0 && ((px[idx - (size_t)w] >> 24) & 0xFF) < HD_FRINGE_EDGE_ALPHA)
+		return true;
+	if (y + 1 < h && ((px[idx + (size_t)w] >> 24) & 0xFF) < HD_FRINGE_EDGE_ALPHA)
+		return true;
+	return false;
+}
+
 static inline void removeWhiteFringe(Graphics::Surface &surf) {
 	if (surf.format.bytesPerPixel != 4 || !surf.getPixels() || surf.w <= 0 || surf.h <= 0)
 		return;
@@ -35,55 +57,67 @@ static inline void removeWhiteFringe(Graphics::Surface &surf) {
 	const int w = surf.w;
 	const int h = surf.h;
 	uint32 *px = (uint32 *)surf.getPixels();
-	byte *origAlpha = new byte[w * h];
 
-	int cleared = 0;
-	for (int pass = 0; pass < HD_FRINGE_MAX_PASSES; pass++) {
-		// Snapshot current alpha: decisions use the state at pass start,
-		// so one pass cannot erode deeper than one layer.
-		for (int i = 0; i < w * h; i++)
-			origAlpha[i] = (px[i] >> 24) & 0xFF;
-
-		int passCleared = 0;
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
-				const int idx = y * w + x;
-				const byte a = origAlpha[idx];
-				if (a == 0)
-					continue;
-				// Only pass 0 may clear fully opaque white (hard fringe
-				// line). Later passes restrict to semi-transparent pixels
-				// so opaque interior content can never be eroded.
-				if (pass > 0 && a == 255)
-					continue;
-				const uint32 p = px[idx];
-				const byte r = p & 0xFF;
-				const byte g = (p >> 8) & 0xFF;
-				const byte b = (p >> 16) & 0xFF;
-				if (r < HD_FRINGE_WHITE_MIN || g < HD_FRINGE_WHITE_MIN || b < HD_FRINGE_WHITE_MIN)
-					continue;
-				// Adjacent (4-neighborhood) to a (semi-)transparent pixel?
-				bool edge = false;
-				if (x > 0 && origAlpha[idx - 1] < HD_FRINGE_EDGE_ALPHA)
-					edge = true;
-				else if (x + 1 < w && origAlpha[idx + 1] < HD_FRINGE_EDGE_ALPHA)
-					edge = true;
-				else if (y > 0 && origAlpha[idx - w] < HD_FRINGE_EDGE_ALPHA)
-					edge = true;
-				else if (y + 1 < h && origAlpha[idx + w] < HD_FRINGE_EDGE_ALPHA)
-					edge = true;
-				if (edge) {
-					px[idx] &= 0x00FFFFFF; // keep RGB, set alpha = 0
-					passCleared++;
-				}
-			}
+	// Ein Rand kann nur an einem Bildpunkt sitzen, der einen 4-Nachbarn mit
+	// Alpha < 32 hat, und ein neuer Rand entsteht nur dort, wo im Durchgang davor ein
+	// Bildpunkt freigelegt wurde. Statt je Durchgang das ganze Bild zu lesen (frueher:
+	// Alpha-Schnappschuss plus Vollbildschleife, bis zu zehnmal) laeuft deshalb nur der
+	// erste Durchgang ueber das Bild, jeder weitere nur ueber die Nachbarschaft der
+	// zuletzt freigelegten Punkte. Freigelegt wird gesammelt und am Ende eines
+	// Durchgangs angewendet, damit alle Entscheidungen eines Durchgangs denselben Stand
+	// sehen - genau wie der frueher benutzte Alpha-Schnappschuss.
+	Common::Array<uint32> kandidaten;
+	for (int y = 0; y < h; y++) {
+		const uint32 *row = px + (size_t)y * w;
+		for (int x = 0; x < w; x++) {
+			const uint32 p = row[x];
+			if (((p >> 24) & 0xFF) == 0)
+				continue;
+			if (!hdFringeWeiss(p))
+				continue;
+			if (hdFringeHatRand(px, w, h, x, y))
+				kandidaten.push_back((uint32)((size_t)y * w + x));
 		}
-		cleared += passCleared;
-		if (passCleared == 0)
-			break;
 	}
 
-	delete[] origAlpha;
+	int cleared = 0;
+	for (int pass = 0; pass < HD_FRINGE_MAX_PASSES && !kandidaten.empty(); pass++) {
+		for (uint i = 0; i < kandidaten.size(); i++)
+			px[kandidaten[i]] &= 0x00FFFFFF; // keep RGB, set alpha = 0
+		cleared += (int)kandidaten.size();
+		if (pass + 1 >= HD_FRINGE_MAX_PASSES)
+			break;
+
+		// Naechster Durchgang: nur die 4-Nachbarn der eben freigelegten Punkte. Ab
+		// Durchgang 1 zaehlen allein halbdurchsichtige Punkte, damit deckende weisse
+		// Innenflaechen (Augen, Hemd, Glanzlichter) nie erodiert werden. Doppelte
+		// Kandidaten sind harmlos: der Punkt wird beim zweiten Mal als Alpha 0 erkannt
+		// und uebersprungen.
+		Common::Array<uint32> naechste;
+		for (uint i = 0; i < kandidaten.size(); i++) {
+			const int idx = (int)kandidaten[i];
+			const int x = idx % w;
+			const int y = idx / w;
+			for (int d = 0; d < 4; d++) {
+				const int nx = x + (d == 0 ? -1 : (d == 1 ? 1 : 0));
+				const int ny = y + (d == 2 ? -1 : (d == 3 ? 1 : 0));
+				if (nx < 0 || nx >= w || ny < 0 || ny >= h)
+					continue;
+				const size_t nidx = (size_t)ny * w + nx;
+				const uint32 p = px[nidx];
+				const byte a = (p >> 24) & 0xFF;
+				if (a == 0 || a == 255)
+					continue;
+				if (!hdFringeWeiss(p))
+					continue;
+				if (!hdFringeHatRand(px, w, h, nx, ny))
+					continue;
+				naechste.push_back((uint32)nidx);
+			}
+		}
+		kandidaten = naechste;
+	}
+
 	if (cleared)
 		debug(2, "HdFringe: removed %d white fringe pixels (%dx%d)", cleared, w, h);
 }

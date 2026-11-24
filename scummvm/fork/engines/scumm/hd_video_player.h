@@ -45,6 +45,13 @@ public:
 	static bool hasVideo(const Common::String &sanFilename);
 
 	/**
+	 * Whether the videos/ directory was present at the last hasVideo() call.
+	 * A video folder that exists but lacks this file is a misconfigured pack
+	 * and worth a warning; a pack without videos at all is the normal case.
+	 */
+	static bool videoDirSeen();
+
+	/**
 	 * Open an MP4 video file for playback.
 	 * @param mp4Path  Full path to the MP4 file
 	 * @param width    Expected frame width (e.g., 2560)

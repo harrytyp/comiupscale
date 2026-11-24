@@ -1210,6 +1210,31 @@ void SmushPlayer::unpause() {
 	}
 }
 
+// Ein angezeigtes Zwischensequenz-Bild als PPM ablegen (nur mit HD_SMUSH_DUMP=<verzeichnis>).
+// Der Videopfad ist der einzige Bereich ohne Aufnahmemoeglichkeit (gfx.cpp schreibt waehrend
+// SMUSH bewusst keine Bilder). Beide Zweige liefern RGBA: der MP4-Zweig von ffmpeg, der
+// SMUSH-Zweig aus _hdScaleBuffer. Damit laesst sich jedes Bild gegen einen unabhaengigen
+// Decoder (ffmpeg sanm) stellen. Vorgabe unveraendert.
+static void hdSmushPPM(const char *dir, int nr, const byte *rgba, int w, int h) {
+	Common::String pfad = Common::String::format("%s/smush_%04d.ppm", dir, nr);
+	Common::DumpFile f;
+	if (!f.open(Common::Path(pfad)))
+		return;
+	f.writeString(Common::String::format("P6\n%d %d\n255\n", w, h));
+	byte *zeile = new byte[w * 3];
+	for (int y = 0; y < h; y++) {
+		const byte *src = rgba + (size_t)y * w * 4;
+		for (int x = 0; x < w; x++) {
+			zeile[x * 3 + 0] = src[x * 4 + 0];
+			zeile[x * 3 + 1] = src[x * 4 + 1];
+			zeile[x * 3 + 2] = src[x * 4 + 2];
+		}
+		f.write(zeile, w * 3);
+	}
+	delete[] zeile;
+	f.close();
+}
+
 // getenv ist in ScummVM gesperrt (common/forbidden.h); fuer die Aufnahmeschalter wird es
 // hier bewusst benutzt, wie in gfx.cpp und scumm.cpp auch.
 #undef getenv
@@ -1237,7 +1262,15 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 
 	// Check for HD video replacement
 	_hdVideo = new HdVideoPlayer();
-	if (_hdVideo->hasVideo(filename)) {
+	const bool hdVorhanden = _hdVideo->hasVideo(filename);
+	if (getenv("HD_SMUSH_TEST"))
+		warning("hd_trace: SMUSH-HD-Video fuer %s: %s", filename, hdVorhanden ? "gefunden" : "nicht gefunden");
+	// Sichtbarer Fehlerpfad: ein vorhandenes videos/-Verzeichnis ohne diese Datei ist
+	// eine Fehlkonfiguration (falscher Name, unvollstaendiger Satz). Ein Paket ohne
+	// Videos ist der Normalfall und bleibt still.
+	if (!hdVorhanden && HdVideoPlayer::videoDirSeen())
+		warning("HD: kein Video fuer %s im Ordner videos/ - 8-Bit-Rueckfall", filename);
+	if (hdVorhanden) {
 		// Build path to MP4 — use hd_path config when available
 		Common::String mp4Path;
 		if (ConfMan.hasKey("hd_path", "comi")) {
@@ -1252,6 +1285,8 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 			Common::String::size_type pos = gp.rfind('/');
 			if (pos != Common::String::npos)
 				gp.erase(pos);
+			else
+				gp = ".";   // blosser Name ("game") -> Schwesterverzeichnis ist das Arbeitsverzeichnis
 			mp4Path = gp + "/hd";
 		}
 		if (mp4Path.lastChar() != '/' && mp4Path.lastChar() != '\\')
@@ -1282,6 +1317,7 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 			_hdVideoActive = true;
 			_hdFrameBuffer = (byte *)malloc(_hdVideo->getFrameSize());
 		} else {
+			warning("HD: Video %s laesst sich nicht starten (ffmpeg im PATH?), 8-Bit-Rueckfall", mp4Path.c_str());
 			delete _hdVideo;
 			_hdVideo = nullptr;
 		}
@@ -1320,6 +1356,12 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 	}
 
 	int skipped = 0;
+
+	// Messmittel Videopfad: jedes angezeigte Bild als PPM ablegen.
+	const char *hdDumpDir = getenv("HD_SMUSH_DUMP");
+	int hdDumpNr = 0;
+	int hdAngezeigt = 0;
+	int hdGelesen = 0;
 
 	for (;;) {
 		bool skipFrame = false;
@@ -1396,12 +1438,17 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 				skipped = 0;
 			if (_updateNeeded) {
 				if (!skipFrame) {
+					++hdAngezeigt;
 					if (_hdVideoActive && _hdFrameBuffer) {
 						// Render HD video frame from ffmpeg pipe
 						if (_hdVideo->readFrame(_hdFrameBuffer)) {
+							++hdGelesen;
 							_vm->_system->copyRectToScreen(_hdFrameBuffer,
 								_hdVideo->getWidth() * 4, 0, 0,
 								_hdVideo->getWidth(), _hdVideo->getHeight());
+							if (hdDumpDir)
+								hdSmushPPM(hdDumpDir, hdDumpNr++, _hdFrameBuffer,
+									_hdVideo->getWidth(), _hdVideo->getHeight());
 						} else {
 							// HD video ended
 							_endOfFile = true;
@@ -1438,6 +1485,8 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 									}
 								}
 								_vm->_system->copyRectToScreen(_hdScaleBuffer, hdW * 4, 0, 0, hdW, hdH);
+								if (hdDumpDir)
+									hdSmushPPM(hdDumpDir, hdDumpNr++, (const byte *)_hdScaleBuffer, hdW, hdH);
 							} else {
 								_vm->_system->copyRectToScreen(_dst, _width, 0, 0, frameWidth, frameHeight);
 							}
@@ -1473,7 +1522,21 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 		_vm->_system->delayMillis(10);
 	}
 
+	// Vor release() ablesen: release() loescht _hdVideo und setzt _hdVideoActive=false,
+	// die Abschlusszeile darunter meldete deshalb immer hdvideo=0.
+	const int hdAktiv = _hdVideoActive ? 1 : 0;
+
 	release();
+
+	// Abschlusszeile fuer den Messlauf: Bildzahl ohne PPM-Flut (die Bildfolge selbst nur mit
+	// HD_SMUSH_DUMP). Quelle und Anzeige unterscheiden sich, weil der Motor bei Zeitnot
+	// Bilder ueberspringt; gelesen zaehlt die Bilder, die ffmpeg wirklich geliefert hat.
+	if (getenv("HD_SMUSH_TEST"))
+		warning("hd_trace: SMUSH %s beendet: angezeigt=%d gelesen=%d quellbilder=%d (speed=%d, hdvideo=%d)",
+		        _seekFile.c_str(), hdAngezeigt, hdGelesen, _frame, (int)speed, hdAktiv);
+
+	if (getenv("HD_SMUSH_TEST") && getenv("HD_SMUSH_TEST_EXIT"))
+		_vm->_system->quit();
 
 	// Reset mouse state
 	CursorMan.showMouse(oldMouseState);

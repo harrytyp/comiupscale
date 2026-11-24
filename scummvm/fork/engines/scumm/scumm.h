@@ -590,13 +590,43 @@ public:
 	// Kameraausschnitt, auf den die Referenzkopie bezogen ist. Passt er nicht mehr zur
 	// Kamera, wird sie vor dem Vergleich nachgezogen (siehe renderHDComposite).
 	int _hdCleanXStart = -1;
+	// Dasselbe fuer die senkrechte Achse: Referenzzeile 0 entspricht Raumzeile
+	// _hdCleanYStart. Raeume, die senkrecht scrollen (40-43 Schiffskampf, 77/79/82), haben
+	// ohne diesen Anker in jedem Bild eine ungueltige Vorlage: alles gilt als Vordergrund,
+	// die 8-Bit-Ebene ersetzt die HD-Ebene (gemessen fg=94 Prozent nach dem ersten
+	// Y-Schritt).
+	int _hdCleanYStart = -1;
 	// Erst nach dem Raumsprung aufzeichnen. Vorher entstehen Bilder vom Intro oder vom
 	// vorigen Raum, und eine Pruefung darauf meldet "kein HD", obwohl der Zielraum nie im
 	// Bild war. Genau so ist eine ganze Reihe ungueltiger Befunde entstanden.
 	bool _hdCaptureArmed = false;
+	// Bildnummer, bei der die Aufnahme scharfgeschaltet wurde (Raumeintritt, startScene).
+	// Der Frame-Takt (HD_CAPTURE_FRAME=1) zaehlt ab hier, NICHT ab dem ersten komponierten
+	// Bild: zwischen Raumeintritt und erster Komposition liegen je nach Ladezeit
+	// unterschiedlich viele Schleifendurchlaeufe, und genau dieser Versatz hat den
+	// Animationsstand zweier Laeufe verschoben (Raum 40: Kamera fenster 640 gegen 486 px
+	// breit bei gleicher Bildnummer). -1 = noch nicht scharfgeschaltet.
+	int _hdCaptureArmFrame = -1;
+	// Spielzeit (VAR_TIMER_TOTAL) beim Raumeintritt. Der Zeit-Takt (HD_CAPTURE_TIME=1) zaehlt
+	// ab hier: nur die Spielzeit treibt Skripte und Kamera, der Bildzaehler nicht. Gemessen:
+	// gleicher Bildindex, gleiche Bildnummernliste, aber verschiedene Kamerafenster
+	// (Raum 40), weil ein Schleifendurchlauf nicht immer genau einen Zeichenaufruf hat.
+	int _hdCaptureArmTime = -1;
+	// Eigene Spielzeituhr des Harness: Summe der delta-Werte aus scummLoop. Sie treibt die
+	// Skripte (decreaseScriptDelay, Timer-Variablen) und ist mit HD_FIXED_DELTA exakt
+	// vorhersagbar. VAR_TIMER_TOTAL taugt dafuer nicht: in COMI steht sie im Sprunglauf auf
+	// 0xFF (gemessen ueber frames.txt t=-1), obwohl vars.cpp fuer v8 die Nummer 15 setzt.
+	int _hdGameMs = 0;
 	// Zahl der wirklich geschriebenen Bildfolgen-Aufnahmen (HD_DUMP_SEQ). Die Messlaeufe
 	// pruefen sie beim Beenden: null Aufnahmen heisst, die Messung hat nichts gemessen.
 	int _hdSeqWritten = 0;
+	// Schmutzbereiche der 8-Bit-Ebene im laufenden Bild (Streifen zu 8 Bildpunkten,
+	// Ober- und Unterkante in Virt-Screen-Zeilen). Wird in updateDirtyScreen gefuellt,
+	// bevor die Streifen dort zurueckgesetzt werden, und ersetzt in Schritt 2 die
+	// reine Pixel-Schwelle gegen die Vorlage. HD_FG_DIRTY=1 schaltet die Nutzung ein.
+	int _hdDirtyTop[512];
+	int _hdDirtyBot[512];
+	bool _hdDirtyValid = false;
 	byte *_hdObjectMask = nullptr; // 640×480 byte array: 1 = pixel covered by HD object
 	int _hdObjectMaskSize = 0;
 	// Reihenfolge der 8-Bit-Objektzeichnung: drawObject setzt je Aufruf einen Stempel auf
@@ -609,6 +639,14 @@ public:
 	uint32 _hdObjDrawNr = 0;
 	int _hdCurrentRoom = -1;
 	int _hdFrameCount = 0;
+	// Raumeintritt aufteilen (Aufgabe 11, Schritt 16): bisher war nur die Wanduhr je Raum
+	// bekannt (Median 0,70 s weniger durch zlib-ng), nicht wohin die Zeit geht. _hdEntryStartMs
+	// wird in room.cpp vor dem HD-Hintergrund gesetzt, _hdEntryBgMs ist dessen Dekode; gfx.cpp
+	// schreibt beim ersten fertigen Bild eine Zeile "raumeintritt" mit allen Abschnitten.
+	uint32 _hdEntryStartMs = 0;
+	uint32 _hdEntryBgMs = 0;
+	int _hdEntryRoom = -1;
+	int _hdEntryDecodes0 = 0;
 	// JEV HARNESS (projects/comi-hd/harness): play-loop support
 	bool _jevRecording = false;
 	int _jevRecEvery = 3;
@@ -630,6 +668,10 @@ public:
 	int _jevKeyDownLeft[8] = {0};
 	int _jevKeyDownN = 0;
 	int _jevPendingClick = 0;
+	// Ein injizierter Klick wird nirgends zurueckgesetzt (parseEvents sieht ihn nicht), die
+	// Tastenvar bleibt sonst fuer den ganzen Lauf auf 1 und die Skripte sehen ein dauerhaft
+	// gehaltenes Maustaste. Zaehler: nach N Frames loslassen.
+	int _jevClickRelease = 0;
 	int _jevClickX = 0;
 	int _jevClickY = 0;
 	// Last cursor position requested by the harness. COMI shows the object name and picks the
@@ -1528,6 +1570,16 @@ protected:
 	/** HD: stempelt einen wirklich gezeichneten 8-Bit-Aufruf (Reihenfolge der HD-Objektschicht). */
 	void hdStampObjectDraw(int oi);
 	void hdResetObjectDrawStamps();
+	/**
+	 * HD: Spielzustand -> Dateiname des Texturpakets. Im v8-Format zaehlt
+	 * getObjectImage() die Bilder eines Objekts ab 1 (state 1 ist der erste Frame im
+	 * OFFS-Block), die Paketdateien sind dagegen ab 0 benannt (_0000 ist der erste
+	 * Frame, nutcracker zaehlt dort ab 0). Ohne diese Umrechnung laedt Zustand N den
+	 * Frame N, also einen zu weit: Raum 22 zeigte das Fass im Zustand "leer" statt
+	 * "vorhanden", gemessen 4472 falsche Bildpunkte bei 100 Prozent Treffer fuer die
+	 * Datei _0000 im 8-Bit-Bild. Abschaltbar mit HD_STATE_OFFSET=0.
+	 */
+	int hdPackState(int objState) const;
 	void drawBox(int x, int y, int x2, int y2, int color);
 	void drawLine(int x1, int y1, int x2, int y2, int color);
 	void drawPixel(VirtScreen *vs, int x, int y, int16 color, bool useBackbuffer = false);
@@ -1544,6 +1596,7 @@ protected:
 	void hdShiftCleanBackground(int dx);
 	int hdWindowLeft() const;
 	void hdRefreshCleanBackground();
+	void hdShiftCleanBackgroundY(int dy);
 	/** HD debug: dump all surfaces and state to files. */
 	void hdDebugDump();
 	void hdDumpSDComposite();

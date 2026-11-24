@@ -280,8 +280,17 @@ int ScummEngine::getScaleFromSlot(int slot, int x, int y) {
 	int scaleX = 0, scaleY = 0;
 	ScaleSlot &s = _scaleSlots[slot-1];
 
-	if (s.y1 == s.y2 && s.x1 == s.x2)
-		error("Invalid scale slot %d", slot);
+	if (s.y1 == s.y2 && s.x1 == s.x2) {
+		// Leerer Skalenplatz. In COMI kommt das genau einmal vor: Raum 81,
+		// Box 1 nennt Platz 1, der Raum fuellt aber keinen seiner vier Plaetze
+		// (SCAL: 4 x alle Felder 0; geprueft ueber alle 100 Raeume, sonst
+		// nennt keine Box einen leeren Platz). Bisher endete das in
+		// error("Invalid scale slot"), im Messlauf im Debugger und damit als
+		// Haenger ohne Bild. Dieselbe Notloesung wie bei kaputten Skalentabellen
+		// weiter oben: keine Skalierung (255).
+		warning("HD: Skalenplatz %d in Raum %d ist leer, benutze 255", slot, _currentRoom);
+		return 255;
+	}
 
 	if (s.y1 != s.y2) {
 		if (y < 0)

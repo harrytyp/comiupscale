@@ -27,8 +27,18 @@ fi
 
 # PNG/zlib must be visible to configure (USE_PNG), otherwise the build
 # silently ships without HD texture support. Same env as the Linux build.
+# zlib-ng statt zlib 1.3.1 (gebaut von _build-zlibng-mingw.sh): ohne den
+# Pfad gewinnt die alte zlib aus mingw-prefix, und Windows dekodiert wieder
+# langsamer als Linux. Fehlt der Pfad, baut der Cross-Build wie bisher.
+ZNG_PREFIX="$INSTALL_DIR/zlib-ng-2.3.3-mingw"
+if [ -f "$ZNG_PREFIX/lib/libz.a" ]; then
+    info "zlib-ng (MinGW) gefunden: $ZNG_PREFIX"
+    export LDFLAGS="-L$ZNG_PREFIX/lib -L$MINGW_PREFIX/lib"
+else
+    warn "zlib-ng (MinGW) fehlt, nehme zlib aus mingw-prefix (langsamerer Dekode)"
+    export LDFLAGS="-L$MINGW_PREFIX/lib"
+fi
 export CPPFLAGS="-I$MINGW_PREFIX/include"
-export LDFLAGS="-L$MINGW_PREFIX/lib"
 export PKG_CONFIG_PATH="$MINGW_PREFIX/lib/pkgconfig"
 
 # Add toolchain to PATH
@@ -102,6 +112,14 @@ if [ "$(strings "$SDL2_MINGW_DIR/bin/SDL2.dll" 2>/dev/null | grep -cE "directsou
     err "SDL2.dll has no audio support — rebuild SDL2 with audio enabled"
     err "  cd build/deps/SDL2-2.30.11 && ./configure --host=x86_64-w64-mingw32 --enable-audio --enable-directsound --enable-wasapi --enable-winmm"
     exit 1
+fi
+
+# ── Verify zlib-ng made it into the binary ──────────────
+# Ohne diesen Nachweis merkt niemand, dass Windows wieder mit zlib 1.3.1
+# dekodiert, waehrend Linux zlib-ng hat (gleiche Pixel, nur 1,5-mal langsamer).
+if [ "$(strings "$SCUMMVM_WIN" 2>/dev/null | grep -c "zlib-ng")" -eq 0 ]; then
+    warn "scummvm.exe enthaelt kein zlib-ng — Windows dekodiert langsamer als Linux."
+    warn "  Behebung: bash build/_build-zlibng-mingw.sh, dann neu linken."
 fi
 
 ok "Windows binary: $SCUMMVM_WIN ($(du -h "$SCUMMVM_WIN" | cut -f1))"

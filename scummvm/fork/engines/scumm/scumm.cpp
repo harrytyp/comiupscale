@@ -2878,7 +2878,18 @@ Common::Error ScummEngine::go() {
 		// but this way if it overshoots that time will count as part
 		// of the main loop.
 
+		// Bildzeit: Dauer einer Schleifenrunde inklusive Warten, Zeichnen und Nachladen.
+		// FRAME-TIMING misst nur die HD-Komposition, die Vorladung liegt danach und der
+		// 33-ms-Deckel unten ebenfalls - eine Kundenaussage ueber FPS braucht die Runde.
+		static uint32 hdLoopT0 = 0, hdLoopSum = 0, hdLoopMax = 0, hdLoopWart = 0, hdLoopScumm = 0;
+		static int hdLoopN = 0;
+		const uint32 hdLoopNow = _system->getMillis();
+		if (!hdLoopT0)
+			hdLoopT0 = hdLoopNow;
+
 		waitForTimer(delta * 4);
+		hdLoopWart += _system->getMillis() - hdLoopNow;
+		const uint32 hdScummT0 = _system->getMillis();
 
 		// Run the main loop
 		if (!isPaused()) {
@@ -2910,6 +2921,25 @@ Common::Error ScummEngine::go() {
 		if (shouldQuit()) {
 			// TODO: Maybe perform an autosave on exit?
 			runQuitScript();
+		}
+
+		// Runde schliessen: Bildzeit, davon Warten und scummLoop (Rest ist Deckel/Render).
+		{
+			const uint32 hdRoundEnd = _system->getMillis();
+			hdLoopScumm += hdRoundEnd - hdScummT0;
+			const uint32 hdRoundDt = hdRoundEnd - hdLoopT0;
+			hdLoopSum += hdRoundDt;
+			hdLoopN++;
+			if (hdRoundDt > hdLoopMax)
+				hdLoopMax = hdRoundDt;
+			if (hdLoopN >= 30) {
+				hdPrintf("hdperf: bildzeit %u ms im Schnitt, max %u ms (30 Runden, %.1f FPS, davon warten %u ms, scummLoop %u ms)",
+				         hdLoopSum / hdLoopN, hdLoopMax,
+				         hdLoopSum > 0 ? 30000.0 / hdLoopSum : 0.0,
+				         hdLoopWart / hdLoopN, hdLoopScumm / hdLoopN);
+				hdLoopSum = 0; hdLoopMax = 0; hdLoopWart = 0; hdLoopScumm = 0; hdLoopN = 0;
+			}
+			hdLoopT0 = hdRoundEnd;
 		}
 	}
 
@@ -3330,6 +3360,20 @@ void ScummEngine::scummLoop(int delta) {
 				g_system->quit();
 			}
 		}
+		// Ende nach Aufnahmen statt nach Bildern. Ein festes Bildlimit trifft Raeume
+		// mitten in ihrer Zwischensequenz: in SMUSH-Bildern wird die HD-Schicht bewusst
+		// nicht komponiert (gfx.cpp, isSmushActive), es gibt dort also nichts zu messen.
+		// Raeume 25, 77 und 82 lieferten deshalb bei 90 Bildern null Aufnahmen, Raum 40
+		// je nach Lauf 0 oder 36. Mit dieser Grenze endet jeder Lauf bei derselben
+		// Bildzahl, und die Mittelwerte sind untereinander vergleichbar.
+		if (const char *aufnahmen = getenv("HD_EXIT_AFTER_SHOTS")) {
+			const int ziel = atoi(aufnahmen);
+			if (ziel > 0 && (int)_hdSeqWritten >= ziel) {
+				warning("hd_trace: HD_EXIT_AFTER_SHOTS=%d erreicht (%d Aufnahmen), Spiel wird beendet",
+				        ziel, (int)_hdSeqWritten);
+				g_system->quit();
+			}
+		}
 		const char *loadSlot = getenv("HD_LOAD_SLOT");
 		const char *saveSlot = getenv("HD_SAVE_SLOT");
 		const char *jumpRoom = getenv("HD_JUMP_ROOM");
@@ -3355,6 +3399,16 @@ void ScummEngine::scummLoop(int delta) {
 				_sound->stopAllSounds();
 				startScene(room, nullptr, 0);
 				_hdCaptureArmed = true;
+				_hdCaptureArmFrame = (int)_hdFrameCount;
+				_hdCaptureArmTime = _hdGameMs;
+				// Der Sprung fuehrt das Eingangsskript des Raums nicht aus; normalerweise
+				// schaltet genau dieses Skript die Bedienleiste und das Inventar ab
+				// (SO_USERPUT_OFF, script_v5.cpp:870). Bleibt die Oberflaeche an, liegt das
+				// Inventarbrett (Objekt 114) ueber dem Raumbild und die Aufnahme verweigert
+				// jedes Bild (Raeume 25, 77, 82: null Bilder, Lauf bis zum Timeout).
+				// HD_HIDE_UI=1 holt das fuer die Messung nach, ohne Variable unveraendert.
+				if (getenv("HD_HIDE_UI"))
+					_userPut = 0;
 				warning("hd_trace: HD_JUMP_ROOM -> startScene(%d)", room);
 
 			}
@@ -3411,7 +3465,11 @@ void ScummEngine::scummLoop(int delta) {
 	
 	if (delta > 15 && _hdScale <= 1)
 		delta = 15;
-	
+
+	// Harness-Spielzeituhr: Summe der delta-Werte, wie sie die Skripte sehen. Nur fuer die
+	// Aufnahme (HD_CAPTURE_TIME), ohne Einfluss auf den Spielablauf.
+	_hdGameMs += delta;
+
 	decreaseScriptDelay(delta);
 
 	_talkDelay -= delta;
@@ -3512,6 +3570,17 @@ void ScummEngine::scummLoop(int delta) {
 						_jevMouseX = jx;
 						_jevMouseY = jy;
 						warning("JEV HARNESS: RIGHT_CLICK %d %d", jx, jy);
+					} else if (jevPrefix(jp, "inv")) {
+						// Inventar direkt ueber den Spielweg oeffnen/schliessen. Klicks und die
+						// Taste i erreichen in einem per HD_JUMP_ROOM betretenen Raum keinen
+						// Skriptpfad, der das Inventar aufmacht; der Engineschalter schon.
+						jp += 3;
+						while (*jp == ' ')
+							jp++;
+						const int jopen = jevPrefix(jp, "close") ? 0 : 1;
+						const int jscript = (VAR_INVENTORY_SCRIPT != 0xFF) ? VAR(VAR_INVENTORY_SCRIPT) : -1;
+						runInventoryScript(jopen);
+						hdPrintf("JEV HARNESS: INVENTORY %d invScript=%d room=%d", jopen, jscript, _currentRoom);
 					} else if (jevPrefix(jp, "useobj")) {
 						// Run an object's verb script directly, bypassing the sentence script.
 						// COMI's interaction goes through VAR_SENTENCE_SCRIPT, which depends on
@@ -3860,6 +3929,13 @@ void ScummEngine::scummLoop(int delta) {
 					_mouseAndKeyboardStat = MBS_RIGHT_CLICK;
 				}
 				_jevPendingClick = 0;
+				_jevClickRelease = 4;
+			}
+			// Loslassen nachstellen: ohne das bleibt die Maustaste im Spiel gedrueckt
+			// (VAR_RIGHTBTN_HOLD steht im ganzen Lauf auf 1).
+			if (_jevClickRelease > 0 && --_jevClickRelease == 0) {
+				_leftBtnPressed = 0;
+				_rightBtnPressed = 0;
 			}
 			checkExecVerbs();
 
@@ -3982,6 +4058,63 @@ load_game:
 	} else {
 		walkActors();
 		moveCamera();
+	// Aufnahmeantrieb: Kamera direkt nach moveCamera() setzen, vor dem Zeichnen (HD_SCROLL_TEST). Im Renderpfad
+	// gesetzt, zeichnete die 8-Bit-Ebene noch das alte Fenster, waehrend die HD-Komposition
+	// schon das neue las: die Aufnahme zeigte zwei Fenster und wich ueber 42 Prozent des
+	// ganzen Bildes ab (Raum 40). Hier steht der Sprung vor dem Zeichnen, damit beide
+	// Ebenen dasselbe Fenster zeigen. Ohne HD_SCROLL_TEST passiert nichts.
+	if (getenv("HD_SCROLL_TEST")) {
+		const int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
+		const int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
+		const char *panZiel = getenv("HD_JUMP_ROOM");
+		const bool panHier = !panZiel || atoi(panZiel) <= 0 || atoi(panZiel) == (int)_currentRoom;
+		if (panHier) {
+			const char *holdEnv = getenv("HD_SCROLL_HOLD");
+			const int holdShots = holdEnv ? atoi(holdEnv) : 0;
+			if (holdShots > 0) {
+				const char *stepEnv = getenv("HD_SCROLL_STEP");
+				const int step = MAX(8, stepEnv ? atoi(stepEnv) : 160);
+				const int nx = maxCam / step + 1;
+				const int ny = (maxCamY > 0) ? maxCamY / step + 1 : 1;
+				const int idx = MIN(nx * ny - 1, (int)_hdSeqWritten / holdShots);
+				const int px = MIN(maxCam, (idx % nx) * step) + _screenWidth / 2;
+				const int py = ((maxCamY > 0) ? MIN(maxCamY, (idx / nx) * step) : 0) + _screenHeight / 2;
+				setCameraAt(px, py);
+				camera._follows = 0;
+				_cameraIsFrozen = true;	// moveCamera steigt vorher aus (camera.cpp:294)
+			} else {
+				// Schwenk: 4 Pixel je Schleifendurchlauf, oder je HD_PAN_MS aus der Spielzeit.
+				// Aus der Spielzeit, weil die Zahl der Kompositionen von der Rechenzeit abhaengt
+				// und die Kamera damit von Lauf zu Lauf woanders stand. Mit HD_FIXED_DELTA ist
+				// die Spielzeit eine reine Funktion der Durchlaufnummer.
+				static int panSchritt = 0;
+				const char *panMsEnv = getenv("HD_PAN_MS");
+				int schritt;
+				if (getenv("HD_PAN_SHOT")) {
+					// Schwenk an die Zahl der geschriebenen Aufnahmen binden: Aufnahme k steht
+					// damit in jedem Lauf an derselben Kamerastelle, unabhaengig davon, wann die
+					// HD-Ebene den Raum uebernommen hat. Nur so lassen sich zwei Laeufe
+					// Stelle fuer Stelle vergleichen (vorher: null gemeinsame Fenster).
+					// 4 Pixel je Aufnahme reichen bei 36 Aufnahmen nicht ueber einen Raum. HD_SCROLL_STEP
+					// sagt, wie weit je Aufnahme gerueckt wird (Vorgabe 40 px), damit eine Serie alle
+					// Kamerafenster des Raums abdeckt.
+					const char *pstepEnv = getenv("HD_SCROLL_STEP");
+					const int pstep = MAX(4, pstepEnv ? atoi(pstepEnv) : 40);
+					schritt = MIN(200, ((int)_hdSeqWritten * pstep) / 4);
+				} else if (panMsEnv && atoi(panMsEnv) > 0) {
+					const int perMs = MAX(1, atoi(panMsEnv));
+					schritt = MIN(200, MAX(0, _hdGameMs - _hdCaptureArmTime) / perMs);
+				} else {
+					schritt = MIN(200, panSchritt++);
+				}
+				setCameraAt(MIN(maxCam, schritt * 4 + 100), camera._cur.y);
+				if (maxCamY > 0)
+					camera._cur.y = camera._dest.y = MIN(maxCamY, schritt * 4 + 100);
+				camera._follows = 0;
+				_cameraIsFrozen = true;
+			}
+		}
+	}
 		updateObjectStates();
 		if (_game.version > 3)
 			displayDialog();
@@ -4872,6 +5005,20 @@ void ScummEngine::scummLoop_handleSound() {
 
 #ifdef ENABLE_SCUMM_7_8
 void ScummEngine_v7::scummLoop_handleSound() {
+	// Zwischensequenz gezielt abspielen (HD_SMUSH_TEST=<name>): der Videopfad hat bisher
+	// kein Messmittel. scummLoop_handleSound laeuft in jeder Schleife, play() blockiert bis
+	// zum Ende der Sequenz, die Bilder schreibt HD_SMUSH_DUMP (smush_player.cpp).
+	if (const char *smushTest = getenv("HD_SMUSH_TEST")) {
+		static int rahmen = 0;
+		if (++rahmen == 20) {
+			warning("hd_trace: HD_SMUSH_TEST=%s", smushTest);
+			_splayer->play(smushTest, _smushFrameRate ? _smushFrameRate : 12);
+			warning("hd_trace: HD_SMUSH_TEST=%s beendet", smushTest);
+			if (getenv("HD_SMUSH_TEST_EXIT"))
+				_system->quit();
+		}
+	}
+
 	ScummEngine_v6::scummLoop_handleSound();
 	if (_imuseDigital) {
 		_imuseDigital->flushTracks();

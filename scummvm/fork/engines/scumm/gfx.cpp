@@ -21,6 +21,8 @@
 
 // We need raw fopen/fwrite for HD debug log (append mode)
 #define FORBIDDEN_SYMBOL_ALLOW_ALL
+#include <stdarg.h>
+#include <chrono>
 
 #include "common/system.h"
 #include "scumm/actor.h"
@@ -539,6 +541,17 @@ void ScummEngine::markRectAsDirty(VirtScreenNumber virt, int left, int right, in
 	}
 }
 
+// Feine Uhr fuer die Aufteilung des Kostuempfads. g_system->getMillis() hat
+// Millisekunden-Aufloesung, das ist je Eintrag zu grob (Rundung summiert sich).
+static inline uint64 hdUsNow() {
+	return (uint64)std::chrono::duration_cast<std::chrono::microseconds>(
+	       std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
+// Vorausdeklaration: die Spur wird schon in drawDirtyScreenParts benutzt, die Definition
+// steht weiter unten bei hdSkipReason.
+static void hdSkipReasonf(const char *fmt, ...);
+
 /**
  * Update all dirty screen areas. This method blits all of the internal engine
  * graphics to the actual display, as needed. In addition, the 'shaking'
@@ -551,6 +564,18 @@ static inline void hdNoteFrameStart() { g_hdFrameStartMs = g_system->getMillis()
 
 void ScummEngine::drawDirtyScreenParts() {
 	hdNoteFrameStart();
+	// Spur fuer Raeume ohne ein einziges Bild (HD_TRACE_SKIP=1). Beantwortet die Frage,
+	// ob die Zeichenstufe ueberhaupt laeuft: ohne diese Zeile wird entweder gar nicht
+	// gezeichnet oder die HD-Komposition faellt an der Bedingung unten aus.
+	if (getenv("HD_TRACE_SKIP")) {
+		static int n = 0;
+		n++;
+		if (n == 1 || n % 30 == 0)
+			hdSkipReasonf("draw n=%d room=%d hdroom=%d scale=%d bg=%d inv=%d armed=%d shots=%d",
+			              n, _currentRoom, _hdCurrentRoom, (int)_hdScale,
+			              _hdBackgroundSurface.getPixels() ? 1 : 0,
+			              _hdInventoryOpen ? 1 : 0, _hdCaptureArmed ? 1 : 0, (int)_hdSeqWritten);
+	}
 	// Update verbs
 	updateDirtyScreen(kVerbVirtScreen);
 
@@ -576,9 +601,11 @@ void ScummEngine::drawDirtyScreenParts() {
 		hdCompSum += hdCompT;
 		hdCompN++;
 		if (hdCompT > hdCompMax) hdCompMax = hdCompT;
-		if (hdCompN % 30 == 0)
+		if (hdCompN >= 30) {
 			hdPrintf("hdperf: komposition gesamt %u ms im Schnitt, max %u ms (%u Bilder)",
 			         hdCompSum / hdCompN, hdCompMax, hdCompN);
+			hdCompSum = 0; hdCompMax = 0; hdCompN = 0;
+		}
 	}
 }
 
@@ -628,6 +655,24 @@ void ScummEngine::updateDirtyScreen(VirtScreenNumber slot) {
 	// Do nothing for unused virtual screens
 	if (vs->h == 0)
 		return;
+
+	// Schmutzbereiche der Spielebene festhalten, BEVOR sie unten zurueckgesetzt werden.
+	// renderHDComposite laeuft erst danach und braucht sie, um Vordergrund von
+	// Hintergrund zu trennen (HD_FG_DIRTY=1).
+	if (slot == kMainVirtScreen) {
+		const int nStr = MIN((int)_gdi->_numStrips, (int)(sizeof(_hdDirtyTop) / sizeof(_hdDirtyTop[0])));
+		for (int i = 0; i < nStr; i++) {
+			_hdDirtyTop[i] = vs->tdirty[i];
+			_hdDirtyBot[i] = vs->bdirty[i];
+		}
+		_hdDirtyValid = true;
+		if (getenv("HD_FG_DIRTY") && _hdFrameCount % 30 == 0) {
+			int belegt = 0, flaeche = 0;
+			for (int i = 0; i < nStr; i++)
+				if (vs->bdirty[i] > vs->tdirty[i]) { belegt++; flaeche += vs->bdirty[i] - vs->tdirty[i]; }
+			hdPrintf("hdDirty: streifen=%d belegt=%d flaeche=%d von %d", nStr, belegt, flaeche * 8, (int)vs->w * (int)vs->h);
+		}
+	}
 
 	int i;
 	int w = 8;
@@ -1178,6 +1223,10 @@ void ScummEngine::redrawBGAreas() {
 		}
 	}
 
+	// HD_DUMP_BGRAW war hier falsch angesetzt: fuer V6+ laeuft redrawBGAreas nur bei
+	// Kamerawechsel, der Dump entstand deshalb nie. Die saubere Vorlage (HD_DUMP_CLEAN)
+	// ist genau dieses Bild (Hintergrund plus Raumobjekte) und wird je Raum geschrieben.
+
 	drawRoomObjects(val);
 	_bgNeedsRedraw = false;
 	// Die Referenz fuer die Vordergrundpruefung muss den Hintergrund samt den
@@ -1269,11 +1318,11 @@ void ScummEngine::redrawBGStrip(int start, int num) {
  */
 // Debug-Helfer: verkleinerte Ausgabe (Box-Filter), damit eine Frameaufnahme nicht
 // gigabyteweise Daten schreibt.
-static void hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path, int step) {
+static bool hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path, int step) {
 	Common::String tmpPath = Common::String(path) + ".part";
 	FILE *f = fopen(tmpPath.c_str(), "wb");
 	if (!f || step < 1)
-		return;
+		return false;
 	int w = surf->w / step, h = surf->h / step;
 	fprintf(f, "P6\n%d %d\n255\n", w, h);
 	int n = step * step;
@@ -1298,7 +1347,7 @@ static void hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path
 	// Erst nach dem vollstaendigen Schreiben umbenennen, damit nie eine halbe
 	// Aufnahme liegen bleibt (der Lauf wird am Ende beendet).
 	remove(path);
-	rename(tmpPath.c_str(), path);
+	return rename(tmpPath.c_str(), path) == 0;
 }
 
 static void hdWriteCompositeShot(Graphics::Surface *surf, const char *path) {
@@ -1476,6 +1525,45 @@ void ScummEngine::hdRefreshCleanBackground() {
 		memcpy(_hdCleanBackground.getBasePtr(0, y), vs->getBasePtr(refLeft, y + refTop), visW);
 	memset(_hdCleanValid, 1, (size_t)visW * visH);
 	_hdCleanXStart = refLeft;
+	_hdCleanYStart = refTop;
+}
+
+/**
+ * Senkrechtes Gegenstueck zu hdShiftCleanBackground. Ohne ihn ist die Vorlage nach dem
+ * ersten senkrechten Schritt ungueltig: in den Schiffskampfkarten (40-43) und den hohen
+ * Raeumen (77, 79, 82) gilt dann jedes Pixel als Vordergrund, das Inventarbrett (Objekt 114)
+ * wird als fehlendes Objekt maskiert und die 8-Bit-Ebene ersetzt die HD-Ebene
+ * (gemessen Raum 40: fg=94 Prozent ab dem ersten Schritt, vorher 3).
+ * Arbeitet nur innerhalb der vorhandenen Flaeche (memmove), legt nichts an und gibt nichts
+ * frei; die neu sichtbaren Zeilen werden als ungueltig markiert, nicht erfunden.
+ */
+void ScummEngine::hdShiftCleanBackgroundY(int dy) {
+	const int w = MIN<int>(_screenWidth, _hdCleanBackground.w);
+	const int h = MIN<int>(_screenHeight, _hdCleanBackground.h);
+	if (w <= 0 || h <= 0 || !_hdCleanValid || !_hdCleanBackground.getPixels())
+		return;
+	const int pitch = _hdCleanBackground.pitch;
+	byte *base = (byte *)_hdCleanBackground.getPixels();
+	if (dy >= h || dy <= -h) {
+		// Sprung um eine ganze Bildhoehe: nichts ist wiederverwendbar.
+		memset(base, 0, (size_t)pitch * h);
+		memset(_hdCleanValid, 0, (size_t)_hdCleanValidSize);
+		_hdCleanYStart = -1;
+		return;
+	}
+	if (dy > 0) {
+		memmove(base, base + (size_t)dy * pitch, (size_t)(h - dy) * pitch);
+		memmove(_hdCleanValid, _hdCleanValid + (size_t)dy * w, (size_t)(h - dy) * w);
+		memset(base + (size_t)(h - dy) * pitch, 0, (size_t)dy * pitch);
+		memset(_hdCleanValid + (size_t)(h - dy) * w, 0, (size_t)dy * w);
+	} else {
+		const int ady = -dy;
+		memmove(base + (size_t)ady * pitch, base, (size_t)(h - ady) * pitch);
+		memmove(_hdCleanValid + (size_t)ady * w, _hdCleanValid, (size_t)(h - ady) * w);
+		memset(base, 0, (size_t)ady * pitch);
+		memset(_hdCleanValid, 0, (size_t)ady * w);
+	}
+	_hdCleanYStart += dy;
 }
 
 void ScummEngine::hdShiftCleanBackground(int dx) {
@@ -1518,11 +1606,41 @@ static void hdSkipReason(const char *grund) {
 	}
 }
 
+// Dieselbe Datei mit Formatierung. Nur fuer die env-gesteuerte Spur (HD_TRACE_SKIP=1),
+// damit ohne die Variable nichts zusaetzlich rechnet oder schreibt.
+static void hdSkipReasonf(const char *fmt, ...) {
+	char buf[256];
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+	hdSkipReason(buf);
+}
+
+int ScummEngine::hdPackState(int objState) const {
+	if (objState < 0)
+		return 0;
+	static int aus = -1;
+	if (aus < 0) {
+		const char *v = getenv("HD_STATE_OFFSET");
+		aus = (v && *v && atoi(v) == 0) ? 1 : 0;
+	}
+	if (aus || _game.version != 8 || objState == 0)
+		return objState;
+	return objState - 1;
+}
+
 void ScummEngine::renderHDComposite() {
 	// Waehrend einer Zwischensequenz zeigt das Spiel ein Video. Dann darf keine HD-Ebene
 	// darueber: der HD-Hintergrund des Raums und die HD-Figuren kaemen ueber das Videobild,
 	// und es entstuende eine Mischung aus zwei Szenen (Banjo-Sequenz: Banjo in HD, dahinter
 	// der Himmel des Raums, davor die Szene am Hotel).
+	// Zeitgeber fuer die drei Abschnitte, die von den vorhandenen Posten nicht erfasst
+	// werden (Vorstufe, Maskenaufbau, Zwischenschritt vor 2.5). In Raum 85 stehen 104 ms
+	// Komposition gegen 45 ms in den gemessenen Schritten; ohne diese Aufteilung ist der
+	// Rest nur eine Vermutung.
+	uint32 hdStufeT0 = g_system->getMillis();
+
 	if (isSmushActive()) {
 		hdSkipReason("smush");
 		return;
@@ -1540,16 +1658,40 @@ void ScummEngine::renderHDComposite() {
 		}
 	}
 
+	// Prozent der Stichproben, in denen die Vergleichsvorlage nicht mehr zum Bildschirm
+	// passt (Heilungspruefung weiter unten). -1 = in diesem Bild nicht geprueft. Wird je
+	// Aufnahme nach cam.txt geschrieben, damit sich eine veraltete Vorlage (und damit ein
+	// Bild, das fast nur aus 8 Bit besteht) von einem wirklich fehlerfreien Raum trennen
+	// laesst.
+	int hdHealPct = -1;
+	int hdRefW = 0, hdRefH = 0;
+	int hdCw = -1, hdCh = -1;
+	if (_hdCleanBackground.getPixels()) {
+		hdRefW = _hdCleanBackground.w;
+		hdRefH = _hdCleanBackground.h;
+	}
+
+
 	// Selbstheilung der Vergleichsvorlage: stimmt sie kaum noch mit dem Bildschirm
 	// ueberein, ist sie veraltet (anderer Raumzustand, Kamerawechsel). Dann wird sie hier
 	// neu aufgenommen — zu diesem Zeitpunkt enthaelt der Bildschirm Hintergrund und
 	// Raumobjekte, aber noch keine Figuren. Ohne das gilt jedes Pixel als Vordergrund und
 	// die 8-Bit-Ebene malt das ganze Bild zu (Raum 47: 98,3 Prozent, mit HD_TINT_8BIT belegt).
+	//
+	// Vorsicht, gemessen: die Groessenpruefung verlangt die *sichtbare* Breite
+	// (640 - Kamera), die eine 640 breite Vorlage nie hat. In geschwenkten Fenstern heilt die
+	// Vorlage deshalb nie (hdHealPct = -2 in cam.txt). Das ist ein echter Fehler, aber der
+	// naheliegende Umbau (Pruefung gegen die Vorlagenbreite, Block hinter den Kameraantrieb)
+	// wurde GEBAUT UND ZURUECKGENOMMEN: dann heilt die Vorlage jeden Frame aus dem fertigen
+	// Bild, also mit Figuren darin, und Raum 25 ging von 0,000 auf 68,198 Prozent
+	// (sweep10_healfix_scroll.csv). Ein richtiger Fix muss die Vorlage im Zeichenablauf
+	// erneuern (room.cpp nach drawRoomObjects) oder aus einer Aufnahme ohne Figuren.
 	if (_hdCleanValid && _hdCleanBackground.getPixels() && _hdCurrentRoom == _currentRoom) {
 		VirtScreen *vCheck = &_virtscr[kMainVirtScreen];
 		const int cLeft = hdWindowLeft();
 		const int cW = MIN<int>(MIN<int>(_screenWidth, vCheck->w), MAX(0, (int)vCheck->w - cLeft));
 		const int cH = MIN<int>(_screenHeight, vCheck->h);
+		hdCw = cW; hdCh = cH;
 		const int cTop = ((int)_roomHeight > _screenHeight)
 		                 ? CLIP((int)_screenTop, 0, (int)_roomHeight - (int)_screenHeight) : 0;
 		if (cW > 0 && cH > 0 && _hdCleanBackground.w == cW && _hdCleanBackground.h == cH) {
@@ -1574,10 +1716,29 @@ void ScummEngine::renderHDComposite() {
 			}
 			if (geprueft > 0 && anders * 10 > geprueft * 6)
 				hdRefreshCleanBackground();
+			if (geprueft > 0)
+				hdHealPct = (int)(100.0 * anders / geprueft + 0.5);
+		} else {
+			hdHealPct = -2;	// Groesse der Vorlage passt nicht zum Fenster
 		}
 	}
 
 	uint32 _hdFrameStartTime = _system->getMillis();
+	// Aufteilung des Raumeintritts (Aufgabe 11, Schritt 16). Bisher war nur die Wanduhr je
+	// Raum bekannt; "Hintergrund, Erstzugriffe oder Vorladung" war damit eine Vermutung.
+	// Die Uhr startet beim ersten Bild, das fuer diesen Raum wirklich komponiert, die
+	// Vorladung misst sich in diesem Bild mit, die Zeile schreibt die Uebergabe unten.
+	static uint32 hdEntryStamp = 0;
+	static uint32 hdEntryFrameT0 = 0;
+	static uint32 hdEntryPrewarmStart = 0;
+	static uint32 hdEntryPrewarmMs = 0;
+	if (_hdEntryRoom == _currentRoom && _hdCurrentRoom == _currentRoom &&
+	    _hdEntryStartMs != 0 && _hdEntryStartMs != hdEntryStamp) {
+		hdEntryStamp = _hdEntryStartMs;
+		hdEntryFrameT0 = _hdFrameStartTime;
+		hdEntryPrewarmStart = 0;
+		hdEntryPrewarmMs = 0;
+	}
 	VirtScreen *vs = &_virtscr[kMainVirtScreen];
 
 	// COMI V8 uses the Verb system (drawVerbBitmap) for inventory rendering.
@@ -1619,30 +1780,13 @@ void ScummEngine::renderHDComposite() {
 	int visH = _screenHeight;
 	hdW = visW * scale;
 	hdH = visH * scale;
-	// Kamerafahrt fuer die Videoaufnahme. Muss vor der Berechnung von camX/camY stehen,
-	// sonst arbeitet die Komposition dieses Bildes noch mit dem alten Wert.
-	// Ohne HD_SCROLL_TEST passiert nichts, der Schwenk ist eine Testfahrt, kein Spielverhalten.
-	if (getenv("HD_SCROLL_TEST")) {
-		static int panFrame = 0;
-		// COMI blendet die Oberflaeche per Skript aus (SO_USERPUT_OFF, script_v5.cpp:870).
-		// Der Schiffskampf schaltet damit auf seine eigene Steuerung um und verbirgt
-		// Verbleiste und Inventar. Der Aufnahmelauf betritt die Raeume per boot-param
-		// ohne dieses Skript, deshalb wird hier nachgeholt, was der Raum selbst tut,
-		// statt mit Rechtsklicks gegen das offene Inventar zu arbeiten.
+	// Testantrieb: Kamera steht jetzt in scummLoop (vor dem Zeichnen, HD_SCROLL_TEST).
+	// Im Renderpfad gesetzt, war die 8-Bit-Ebene ein Fenster hinterher: die Aufnahme
+	// zeigte zwei verschiedene Fenster und wich ueber 42 Prozent des ganzen Bildes ab
+	// (Raum 40). Hier bleibt nur, was die Oberflaeche betrifft, die das Raumskript im
+	// Sprunglauf nicht abschaltet.
+	if (getenv("HD_SCROLL_TEST"))
 		_userPut = 0;
-		int maxCam = MAX(0, (int)_roomWidth - _screenWidth);
-		int maxCamY = MAX(0, (int)_roomHeight - _screenHeight);
-		if (panFrame < 200) {
-			// Waagerecht uebernimmt setCameraAt den Wert (camera.cpp:246). Senkrecht nicht:
-			// im Verfolgungsmodus setzt die Kamera sich auf die Position der Figur
-			// (camera.cpp:307) und ueberschreibt den Aufruf. Deshalb dort direkt setzen,
-			// begrenzt auf den Raum, sonst laeuft der Wert aus dem Hintergrund heraus.
-			setCameraAt(MIN(maxCam, (panFrame * 4) + 100), camera._cur.y);
-			if (maxCamY > 0)
-				camera._cur.y = camera._dest.y = MIN(maxCamY, (panFrame * 4) + 100);
-			panFrame++;
-		}
-	}
 	// Eine Quelle fuer den Fensteranfang, fuer Hintergrund und Vordergrund gleich.
 	const int sdLeft = hdWindowLeft();
 	const int camX = sdLeft * scale;	// camera offset in HD pixels
@@ -1680,8 +1824,11 @@ void ScummEngine::renderHDComposite() {
 			(int)_roomWidth, (int)_roomHeight, hdW, hdH, (int)vs->xstart,
 			(int)vs->w, (int)vs->h, (int)vs->pitch);
 
-	if (visW <= 0 || visH <= 0)
+	if (visW <= 0 || visH <= 0) {
+		if (getenv("HD_TRACE_SKIP"))
+			hdSkipReasonf("vis leer visW=%d visH=%d room=%d", visW, visH, _currentRoom);
 		return;
+	}
 
 	// Originalbild ablegen (nur mit HD_DUMP_REF=1), damit es sich Bild fuer Bild neben die
 	// HD-Komposition legen laesst. Breite auf den Virt-Screen begrenzt, sonst liest die
@@ -1734,6 +1881,10 @@ void ScummEngine::renderHDComposite() {
 	uint32 hdT0 = g_system->getMillis();
 	static uint32 hdT1Sum = 0, hdT2Sum = 0, hdFrameN = 0;
 	static uint32 hdT1Max = 0, hdT2Max = 0;
+	static uint32 hdVorSum = 0;
+	static int hdVorN = 0;
+	hdVorSum += g_system->getMillis() - hdStufeT0;
+	hdVorN++;
 	for (int y = 0; y < hdH; y++) {
 		const int sy = srcBgY + y;
 		if (sy >= _hdBackgroundSurface.h)
@@ -1757,12 +1908,20 @@ void ScummEngine::renderHDComposite() {
 	hdFrameN++;
 	hdT1Sum += hdT1;
 	if (hdT1 > hdT1Max) hdT1Max = hdT1;
-	if (hdFrameN % 30 == 0)
+	if (hdFrameN >= 30) {
 		hdPrintf("hdperf: hintergrund %u ms im Schnitt, max %u ms (%u Bilder)",
 		         hdT1Sum / hdFrameN, hdT1Max, hdFrameN);
+		hdT1Sum = 0; hdT2Sum = 0; hdT1Max = 0; hdFrameN = 0;
+	}
 
 	if (hdDumpNow())
 		hdDumpStep(&_hdComposite, "1_hintergrund");
+
+	// Abschnitt Maskenaufbau (Raumobjekte ohne HD-Bild, Sichtbarkeitsprobe, Fuellen der
+	// Maskenflaechen) - dieser Block lief bisher in keinem Posten mit.
+	uint32 hdMaskT0 = g_system->getMillis();
+	static uint32 hdMaskSum = 0;
+	static int hdMaskN = 0;
 
 	// Die Referenzkopie des Hintergrunds ist auf den Ausschnitt bezogen, in dem sie geschrieben
 	// wurde. Passt der nicht mehr zur Kamera, gilt in der Vordergrundpruefung unten jedes Pixel
@@ -1774,6 +1933,10 @@ void ScummEngine::renderHDComposite() {
 	// zum Absturz gebracht, ohne das eigentliche Problem zu loesen. Siehe Issue 26.
 	if (_hdCleanValid && _hdCleanXStart >= 0 && _hdCleanXStart != hdWindowLeft())
 		hdShiftCleanBackground(hdWindowLeft() - _hdCleanXStart);
+	// Senkrecht dasselbe. Ohne diesen Aufruf bleibt die Vorlage ab dem ersten Y-Schritt
+	// ungueltig und die 8-Bit-Ebene uebernimmt das Bild (siehe hdShiftCleanBackgroundY).
+	if (_hdCleanValid && _hdCleanYStart >= 0 && _hdCleanYStart != sdTop)
+		hdShiftCleanBackgroundY(sdTop - _hdCleanYStart);
 
 	// Step 2: Composite game content (8-bit → 32-bit via palette) over HD background
 	// Diff against clean background to only overlay foreground pixels.
@@ -1800,6 +1963,31 @@ void ScummEngine::renderHDComposite() {
 		hdActorMapSize = visW * visH;
 	}
 	memset(hdActorMap, 255, (size_t)visW * visH);
+	// Besitzerkarte einmal je Bild aus den Akteursrechtecken fuellen, statt je
+	// Vordergrundpixel alle Akteure zu pruefen. Gemessen (Raum 85, 150 Bilder):
+	// Schritt 2 205 ms, ohne diesen Block 72 ms - 133.767 Vordergrundpixel x
+	// Akteurschleife waren der Posten. Absteigend malen, damit wie bisher der
+	// kleinste Akteursindex gewinnt; beide Leser in Schritt 2.6 pruefen die
+	// 8-Bit-Silhouette (hdFg8Map) selbst, ein Eintrag ausserhalb wird nicht gelesen
+	// (nachgeprueft an gfx.cpp:3694 und :3753).
+	if (!getenv("HD_NO_ACTORMAP")) {
+		for (int ai = (int)_numActors - 1; ai >= 1; ai--) {
+			const Actor *ac = _actors[ai];
+			if (!ac || !ac->isInCurrentRoom() || ac->_costume == 0)
+				continue;
+			const Common::Point op = ac->getPos();
+			const int ohw = ac->_width / 2;
+			const int ohh = MAX(1, ac->_bottom - ac->_top);
+			const int ax0 = MAX(0, op.x - ohw - sdLeft);
+			const int ax1 = MIN(visX, op.x + ohw - sdLeft);
+			const int ay0 = MAX(0, op.y - ohh - sdTop);
+			const int ay1 = MIN(visH, op.y - sdTop);
+			if (ax1 <= ax0 || ay1 <= ay0)
+				continue;
+			for (int ay = ay0; ay < ay1; ay++)
+				memset(hdActorMap + (size_t)ay * visW + ax0, (byte)ai, (size_t)(ax1 - ax0));
+		}
+	}
 	// Eigene Spur der 8-Bit-Ebene (Vordergrund gegen die saubere Vorlage). Schritt 2 fuellt
 	// sie, Schritt 2.6 liest sie als Silhouette: was das Original nicht malt, malt das
 	// HD-Kostuem auch nicht (HD_CLIP_8BIT).
@@ -1815,13 +2003,23 @@ void ScummEngine::renderHDComposite() {
 	}
 	memset(hdMissingMask, 0, (size_t)visW * visH);
 	int hdMissingRects = 0;
+	long hdMaskPx = 0;
 	if (_hdObjectManager && _hdObjectManager->isEnabled()) {
 		for (int oi = _numLocalObjects - 1; oi > 0; oi--) {
 			ObjectData &mod = _objs[oi];
 			// (Rechteck unten aus x_pos/y_pos und Groesse)
 			if (mod.obj_nr == 0)
 				continue;
-			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, mod.state & 0xF))
+			// HD_TRACE_MISSING=1: jeden Kandidaten nennen. Ohne diese Zeile war nicht zu
+			// sehen, warum ein Objekt ohne HD-Bild keine Maske bekommt (Raum 70: die
+			// blasse Figur steht im 8-Bit-Bild, aber in keiner HD-Stufe).
+			if (getenv("HD_TRACE_MISSING"))
+				hdPrintf("MASKE? obj=%d state=%d p=(%d,%d) sz=%dx%d hd=%d bild=%d",
+				         mod.obj_nr, mod.state, mod.x_pos - sdLeft, mod.y_pos - sdTop,
+				         mod.width, mod.height,
+				         _hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, hdPackState(mod.state & 0xF)) ? 1 : 0,
+				         getObjectImage(getOBIMFromObjectData(mod), mod.state & 0xF) ? 1 : 0);
+			if (_hdObjectManager->getObjectSurface(mod.obj_nr, _currentRoom, hdPackState(mod.state & 0xF)))
 				continue;
 			// Hat das Objekt in den Spieldaten ueberhaupt ein Bild? Viele OBIM tragen nur einen
 			// Kopf; ScummVM zeichnet sie dann nicht, sie sind Teil des Raumbilds und die
@@ -1836,7 +2034,7 @@ void ScummEngine::renderHDComposite() {
 			// 114) hat rund 640 sichtbare Pixel, offen sechsstellig; unter einem Viertel
 			// gilt es als nicht sichtbar. Ohne diese Pruefung deckt die Maske den ganzen
 			// Bildschirm, weil die deklarierte Groesse 640x472 ist.
-			if (_hdCleanValid && _hdCleanBackground.getPixels() &&
+			if (!getenv("HD_MASK_ALLE") && _hdCleanValid && _hdCleanBackground.getPixels() &&
 			    _hdCleanBackground.w == visW && _hdCleanBackground.h == visH) {
 				int sichtbar = 0, geprueft = 0;
 				for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y += 4) {
@@ -1848,8 +2046,12 @@ void ScummEngine::renderHDComposite() {
 							sichtbar++;
 					}
 				}
-				if (geprueft > 0 && sichtbar * 4 < geprueft)
+				if (geprueft > 0 && sichtbar * 4 < geprueft) {
+					if (getenv("HD_TRACE_MISSING"))
+						hdPrintf("MASKE obj=%d verworfen sichtbar=%d/%d p=(%d,%d) sz=%dx%d",
+						         mod.obj_nr, sichtbar, geprueft, rx, ry, mod.width, mod.height);
 					continue;
+				}
 			}
 			// HD_SPY=1: welches Objekt die Maske fuellt (Nummer, Groesse, Lage).
 			if (getenv("HD_SPY")) {
@@ -1864,6 +2066,10 @@ void ScummEngine::renderHDComposite() {
 			for (int y = MAX(0, ry); y < MIN(visH, ry + mod.height); y++)
 				for (int x = MAX(0, rx); x < MIN(visW, rx + mod.width); x++)
 					hdMissingMask[y * visW + x] = 1;
+			// Flaechensumme der Masken: nur damit laesst sich pruefen, ob ein hoher
+			// Vordergrundanteil aus der Vorlage stammt oder aus einem Objekt ohne HD-Bild.
+			hdMaskPx += MAX(0, MIN(visH, ry + mod.height) - MAX(0, ry)) *
+			            MAX(0, MIN(visW, rx + mod.width) - MAX(0, rx));
 			hdMissingRects++;
 		}
 	}
@@ -1872,6 +2078,8 @@ void ScummEngine::renderHDComposite() {
 
 int step2_fgPixels = 0;
 	int step2_invFg = 0, step2_invTotal = 0;
+	hdMaskSum += g_system->getMillis() - hdMaskT0;
+	hdMaskN++;
 	uint32 hdStep2T0 = g_system->getMillis();
 	static uint32 hdStep2Sum = 0, hdStep2Max = 0, hdStep2N = 0;
 
@@ -1936,10 +2144,31 @@ int step2_fgPixels = 0;
 					// "Ich weiss es nicht" darf nicht "alles in 8 Bit" bedeuten.
 					isForeground = false;
 				}
+				// HD_FG_DIRTY=1: Vordergrund zusaetzlich an die Schmutzbereiche binden.
+				// Die Pixel-Schwelle gegen die Vorlage allein haelt jede veraltete Stelle der
+				// Vorlage fuer Vordergrund; die Streifen sagen, wo in diesem Bild ueberhaupt
+				// gezeichnet wurde. Nur dort darf 8-Bit-Inhalt ueber den HD-Hintergrund.
+				if (isForeground) {
+					static int fgDirty = -1;
+					if (fgDirty < 0)
+						fgDirty = getenv("HD_FG_DIRTY") ? 1 : 0;
+					if (fgDirty) {
+						const int strip = sx >> 3;
+						const int vy = sy + sdTop;
+						const bool dirty = _hdDirtyValid && strip < (int)_gdi->_numStrips
+							&& vy >= _hdDirtyTop[strip] && vy < _hdDirtyBot[strip];
+						if (!dirty)
+							isForeground = false;
+					}
+				}
 				// HD_SPY=1: die ersten 20 Vordergrundpixel mit Koordinaten und beiden
 				// Farbindizes mitschreiben. Damit ist belegt, was der Vergleich wirklich
 				// sieht, statt die naechste Hypothese zu bauen.
-				if (isForeground && getenv("HD_SPY")) {
+				// HD_SPY: je Pixel ein getenv zu fragen kostet messbar (Raum 85: 75.019
+				// Vordergrundpixel, je Aufruf ein Durchlauf durch die Umgebung). Einmal
+				// lesen statt je Pixel.
+				static const bool hdSpy = getenv("HD_SPY") != nullptr;
+				if (isForeground && hdSpy) {
 					static int fgSpy = 0;
 					if (fgSpy < 20) {
 						FILE *df = fopen("/opt/data/projects/comi-hd/work/dumps/hd_fgspy.log", "a");
@@ -1968,25 +2197,8 @@ int step2_fgPixels = 0;
 				if (isForeground) {
 					rowHadFg = true;
 					step2_fgPixels++;
-					// Besitzer merken (Raumkoordinaten, wie im Tint-Zaehler weiter unten):
-					// das Rechteck des Akteurs, nicht sein Bild. Schritt 2.6 braucht die
-					// Angabe, um den eigenen 8-Bit-Saum von fremdem Inhalt zu trennen.
-					if (!getenv("HD_NO_ACTORMAP")) {
-						const int owx = sx + sdLeft, owy = sy + sdTop;
-						for (int ai = 1; ai < _numActors; ai++) {
-							const Actor *ac = _actors[ai];
-							if (!ac || !ac->isInCurrentRoom() || ac->_costume == 0)
-								continue;
-							const Common::Point op = ac->getPos();
-							const int ohw = ac->_width / 2;
-							const int ohh = MAX(1, ac->_bottom - ac->_top);
-							if (owx >= op.x - ohw && owx < op.x + ohw &&
-							    owy >= op.y - ohh && owy < op.y) {
-								hdActorMap[sy * visW + sx] = (byte)ai;
-								break;
-							}
-						}
-					}
+					// Die Besitzerkarte wird oben einmal je Bild gefuellt; hier blieb
+					// frueher eine Akteurschleife je Vordergrundpixel (Raum 85: 133 ms).
 					// HD_TINT_8BIT faerbt jedes Pixel aus der 8-Bit-Ebene magenta. Damit ist
 					// exakt sichtbar und zaehlbar, wo noch 8-Bit-Grafik im Bild steht — ohne
 					// Schaetzung, ohne statistisches Mass. Standardverfahren fuer fehlende
@@ -2056,10 +2268,14 @@ int step2_fgPixels = 0;
 		hdStep2Sum += hdStep2T;
 		hdStep2N++;
 		if (hdStep2T > hdStep2Max) hdStep2Max = hdStep2T;
-		if (hdStep2N % 30 == 0)
+		if (hdStep2N >= 30) {
 			hdPrintf("hdperf: vordergrund %u ms im Schnitt, max %u ms, %d Vordergrundpixel (%u Bilder)",
 			         hdStep2Sum / hdStep2N, hdStep2Max, step2_fgPixels, hdStep2N);
+			hdStep2Sum = 0; hdStep2Max = 0; hdStep2N = 0;
+		}
 	}
+
+	uint32 hdMidT0 = g_system->getMillis();
 
 	if (_hdFrameCount % 30 == 0) {
 		// Eigene Datei mit Flush: das grosse Protokoll wird erst beim Beenden
@@ -2113,6 +2329,19 @@ int step2_fgPixels = 0;
 	// Allocate HD alpha mask early — Step 2.5 (objects) and Step 2.6 (costumes)
 	// both need to mark their pixels so Step 2.6b doesn't overwrite them.
 	// Pool-reuse: _hdAlphaMask persists across frames to avoid calloc/free per frame.
+	{
+		static uint32 hdMidSum = 0;
+		static int hdMidN = 0;
+		hdMidSum += g_system->getMillis() - hdMidT0;
+		hdMidN++;
+		if (hdVorN >= 30) {
+			hdPrintf("hdperf: vorstufe %u ms, maskenaufbau %u ms, zwischenschritt %u ms (%d Bilder)",
+			         hdVorSum / hdVorN, hdMaskSum / MAX(1, hdMaskN), hdMidSum / MAX(1, hdMidN), hdVorN);
+			hdVorSum = 0; hdVorN = 0;
+			hdMaskSum = 0; hdMaskN = 0;
+			hdMidSum = 0; hdMidN = 0;
+		}
+	}
 	int alphaMaskBytes = hdW * hdH;
 	if (alphaMaskBytes > _hdAlphaMaskSize) {
 		free(_hdAlphaMask);
@@ -2129,6 +2358,7 @@ int step2_fgPixels = 0;
 	// Schrift und Overlays. Die beiden Kopierschritte oben sind mit je 1-2 ms gemessen,
 	// die Gesamtzeit der Komposition liegt aber bei 36 bis 56 ms, also steckt sie hier.
 	uint32 hdObjT0 = g_system->getMillis();
+	uint32 hd25T0 = hdObjT0;	// Aufteilung: 2.5 (Objekte) gegen 2.6 (Kostueme)
 	static uint32 hdObjSum = 0, hdObjMax = 0, hdObjN = 0;
 	int step25_randOpak = 0;   // Randpunkte mit Teilalpha, die deckend geschrieben wurden
 	int step25_randHalb = 0;   // Randpunkte mit Teilalpha, die geblendet wurden
@@ -2230,6 +2460,9 @@ int step2_fgPixels = 0;
 			// other rooms' objects load lazily in the background when
 			// the prefetch budget has nothing better to do.
 			static bool hdObjQueueInit = false;
+			const uint32 hdEntryPrewarmT0 = g_system->getMillis();
+			if (hdEntryFrameT0 != 0)
+				hdEntryPrewarmStart = hdEntryPrewarmT0;
 			if (!hdObjQueueInit && _hdObjectManager) {
 				hdObjQueueInit = true;
 				_hdObjectManager->queueAllObjects();
@@ -2264,11 +2497,36 @@ int step2_fgPixels = 0;
 							prewarmCostumes++;
 						}
 					}
-					prewarmCostumes += _hdCostumeManager->preloadCostumeRange(a->_costume, maxCel + 1, maxCel + 8);
+					// A/B aus Aufgabe 11 Schritt 11: HD_PF_SET=<n> laedt beim Raumeintritt
+					// bis zu n noch fehlende Cels der Figur gebatcht in vier Threads vor,
+					// statt nur 8 Rahmen. Ohne den Schalter unveraendert.
+					const char *pfSetEnv = getenv("HD_PF_SET");
+					const int pfSet = pfSetEnv ? atoi(pfSetEnv) : 0;
+					// A/B aus Aufgabe 11 Schritt 17: dieselben acht Rahmen, aber im
+					// Hintergrund-Worker (Weg (b) aus Schritt 12) statt im ersten Bild.
+					// Der Wert ist die Zahl der Cels, 0 schaltet den Schalter ab.
+					static const int pfEntryAsync = getenv("HD_PF_ENTRY_ASYNC") ? atoi(getenv("HD_PF_ENTRY_ASYNC")) : 0;
+					if (pfSet > 0) {
+						const uint64 pfT0 = hdUsNow();
+						const int n = _hdCostumeManager->preloadCostumeSet(a->_costume, pfSet);
+						hdPrintf("hdperf: vorladesatz akos=%d cels=%d ms=%d deckel=%d",
+						         a->_costume, n, (int)((hdUsNow() - pfT0) / 1000), pfSet);
+						prewarmCostumes += n;
+					} else if (pfEntryAsync > 0) {
+						const uint64 pfT0 = hdUsNow();
+						const int n = _hdCostumeManager->requestAsync(a->_costume, maxCel + 1, pfEntryAsync);
+						hdPrintf("hdperf: vorlade_async akos=%d cels=%d ms=%d ziel=%d",
+						         a->_costume, n, (int)((hdUsNow() - pfT0) / 1000), pfEntryAsync);
+						prewarmCostumes += n;
+					} else {
+						prewarmCostumes += _hdCostumeManager->preloadCostumeRange(a->_costume, maxCel + 1, maxCel + 8);
+					}
 				}
 			}
 			if (prewarmObjs || prewarmCostumes)
 				hdPrintf("PREWARM: room %d — %d objects, %d costume frames cached", _currentRoom, prewarmObjs, prewarmCostumes);
+			if (hdEntryPrewarmStart != 0)
+				hdEntryPrewarmMs = g_system->getMillis() - hdEntryPrewarmStart;
 		}
 	// ── Inventory Active Detection ──────────────────────────
 		// Uses cursor (obj=105) visibility in the 8-bit composite:
@@ -2350,6 +2608,7 @@ int step2_fgPixels = 0;
 			int objRoom = _currentRoom;
 			int objState = getState(od.obj_nr);
 			if (objState < 0) objState = 0;
+			objState = hdPackState(objState);
 
 			if (!_hdObjectManager->hasObject(od.obj_nr, objRoom, objState)) {
 				// Fallback: try state=0 if the exact state isn't available.
@@ -2398,7 +2657,10 @@ int step2_fgPixels = 0;
 			// are meant to replace the entire background, not to be
 			// rendered as standalone object overlays.
 			if (hdObjSurfPtr->w >= _hdBackgroundSurface.w && hdObjSurfPtr->h >= _hdBackgroundSurface.h && od.fl_object_index == 0) {
-				
+				if (getenv("HD_TRACE_DRAW"))
+					hdPrintf("SKIP raumobj obj=%d grund=ebenenbild surf=%dx%d bg=%dx%d room=%d",
+					         od.obj_nr, (int)hdObjSurfPtr->w, (int)hdObjSurfPtr->h,
+					         (int)_hdBackgroundSurface.w, (int)_hdBackgroundSurface.h, _currentRoom);
 				continue;
 			}
 
@@ -2656,7 +2918,14 @@ int step2_fgPixels = 0;
 							treffer++;
 					}
 				}
-				if (proben >= 8 && treffer * 100 / proben < 35) {
+				// Schwelle fuer "Objekt im Original verdeckt" env-steuerbar machen, damit
+				// sich eine Lockerung messen laesst statt zu raten. Vorgabe unveraendert 35.
+				static int trefferMin = -1;
+				if (trefferMin < 0) {
+					const char *vm = getenv("HD_OBJ_TREFFER_MIN");
+					trefferMin = (vm && *vm) ? atoi(vm) : 35;
+				}
+				if (proben >= 8 && treffer * 100 / proben < trefferMin) {
 					if (getenv("HD_TRACE_DRAW"))
 						hdPrintf("SKIP obj=%d verdeckt (Treffer %d von %d)", od.obj_nr, treffer, proben);
 					continue;
@@ -2675,6 +2944,15 @@ int step2_fgPixels = 0;
 			const int ox0 = MAX<int>(0, (int)hdX), ox1 = MIN<int>((int)hdW, (int)hdX + hdObjW);
 			if (oy0 >= oy1 || ox0 >= ox1)
 				continue;
+			// Spur fuer Raumobjekte (fl==0). Bis hier gab es nur "DRAW kostuem" und
+			// "DRAW objekt" (Inventar/Blast), deshalb war bei einem Raumobjekt nicht zu
+			// trennen, ob es gar nicht gezeichnet wurde oder falsch. Mit dieser Zeile
+			// steht je Bild das endgueltige HD-Rechteck neben dem 8-Bit-Rechteck.
+			if (getenv("HD_TRACE_DRAW"))
+				hdPrintf("DRAW raumobj obj=%d room=%d state=%d hd=(%d,%d) 8bit=(%d,%d) sz=%dx%d surf=%dx%d fl=%d",
+				         od.obj_nr, objRoom, objState, (int)hdX, (int)hdY, xPos, yPos,
+				         hdObjW, hdObjH, (int)hdObjSurfPtr->w, (int)hdObjSurfPtr->h,
+				         od.fl_object_index);
 			for (int my = oy0; my < oy1; my++) {
 				uint32 *srcRow = (uint32 *)hdObjSurfPtr->getBasePtr(0, my - (int)hdY);
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
@@ -2779,6 +3057,7 @@ int step2_fgPixels = 0;
 		hdPrintf("step2.5 objects: loaded=%d skipped=%d culled=%d randdeckend=%d randhalb=%d",
 			step25_loaded, step25_skipped, step25_culled, step25_randOpak, step25_randHalb);
 
+	uint32 hd25T = g_system->getMillis() - hd25T0;
 	// Step 2.5b: Render inventory items from blast queue
 	// Inventory items (obj_nr 117-274) are NOT in _objs[] for the current room.
 	// They exist only in the blast queue, drawn by superBlastObject().
@@ -2789,10 +3068,33 @@ int step2_fgPixels = 0;
 		for (int bi = 0; bi < blastCount; bi++) {
 			const auto &eo = v6->getBlastObject(bi);
 			int obj_nr = eo.number;
-			if (obj_nr < 105 || obj_nr > 274 )
-				continue;
-			int objState = getState(obj_nr);
+			// Zwei Arten von Eintraegen:
+			//  - Inventar/Cursor (105..274): stehen NICHT in _objs, existieren nur hier.
+			//  - Raumobjekte (z.B. die Windsaecke der Schiffskampfkarten 829..842): haben
+			//    ObjectData, aber mit x_pos/y_pos = 0 und Zustand 0; gezeichnet werden sie
+			//    ausschliesslich ueber das Blast-Verzeichnis. Der gezeichnete Zustand steht
+			//    nur im Eintrag selbst (eo.image ist derselbe Index, den drawBlastObject an
+			//    getObjectImage gibt), die Textur liegt unter dem fuehrenden Raum 39. Vorher
+			//    fielen diese Eintraege am Filter 105..274 heraus und in HD zeichnete sie
+			//    niemand, waehrend die 8-Bit-Ebene sie malte.
+			const bool inventar = (obj_nr >= 105 && obj_nr <= 274);
+			int objState;
+			if (inventar) {
+				objState = getState(obj_nr);
+			} else {
+				if (getObjectIndex(obj_nr) < 0)           // kein Objekt dieses Raums
+					continue;
+				if (eo.mode == 3)                         // Schatten: eigene Remap, keine Textur
+					continue;
+				// Skalierte Eintraege bleiben aussen vor: fuer sie gibt es in HD keinen
+				// belegten Zeichenweg, und ein falsch skalierter Kasten waere schlechter
+				// als der 8-Bit-Rest.
+				if (eo.scaleX != 255 || eo.scaleY != 255)
+					continue;
+				objState = (int)eo.image;
+			}
 			if (objState < 0) objState = 0;
+			objState = hdPackState(objState);
 			int objRoom = _hdObjectManager->findObjectRoom(obj_nr);
 			if (objRoom < 0) objRoom = _currentRoom;
 			if (!_hdObjectManager->hasObject(obj_nr, objRoom, objState)) {
@@ -2806,6 +3108,12 @@ int step2_fgPixels = 0;
 			}
 			int blastX = eo.rect.left;
 			int blastY = eo.rect.top;
+			// Inventar steht in Bildschirmkoordinaten. Bei Raumobjekten traegt rect.top
+			// bereits _screenTop (enqueueObject) und ist damit eine Raumzeile, waehrend die
+			// Komposition beim Fensteranfang sdTop beginnt. X laesst die Engine unveraendert
+			// (sie addiert nur _screenTop), also bleibt X in beiden Faellen Bildschirmspalte.
+			if (!inventar)
+				blastY -= sdTop;
 			int64 hdX = (int64)blastX * hdW / MAX(1, visW);
 			int64 hdY = (int64)blastY * hdH / MAX(1, visH);
 			int hdObjW = MIN<int>(hdObjSurfPtr->w, (int)(hdW - hdX));
@@ -2831,14 +3139,23 @@ int step2_fgPixels = 0;
 				uint32 *dstRow = (uint32 *)_hdComposite.getBasePtr(0, my);
 				for (int mx = ox0; mx < ox1; mx++) {
 					uint32 pix = srcRow[mx - ox0];
-					if (((pix >> 24) & 0xFF) >= 128)
+					const bool deckend = ((pix >> 24) & 0xFF) >= 128;
+					if (deckend)
 						dstRow[mx] = pix;
-					hdAlphaMask[my * hdW + mx] = 1;
+					// Die Maske sagt dem 8-Bit-Rest "hier steht schon HD". Fuer Inventar
+					// wird der ganze Kasten markiert, fuer Raumobjekte nur die wirklich
+					// geschriebenen Pixel: die Windsack-Textur ist zu grossen Teilen
+					// durchsichtig, und ein vollflaechig markierter Kasten unterdrueckt
+					// dort den 8-Bit-Inhalt, der dann ersatzlos fehlt (Segel am unteren
+					// Bildrand in Raum 42, gemessen 1210 Pixel Abweichung).
+					if (inventar || deckend)
+						hdAlphaMask[my * hdW + mx] = 1;
 				}
 			}
 			
-			hdPrintf("INV-BLAST obj=%d mode=%d pos=(%d,%d) loaded=%d skip=%d sz=(%dx%d)",
-				obj_nr, eo.mode, blastX, blastY, step25b_loaded, step25b_skipped, hdObjW, hdObjH);
+			hdPrintf("INV-BLAST obj=%d art=%s room=%d img=%d pstate=%d mode=%d pos=(%d,%d) loaded=%d skip=%d sz=(%dx%d)",
+				obj_nr, inventar ? "inv" : "raum", objRoom, (int)eo.image, objState, eo.mode,
+				blastX, blastY, step25b_loaded, step25b_skipped, hdObjW, hdObjH);
 		}
 		// Debug: dump ALL blast entries every 30 frames (including skipped/non-inventory)
 		if (_hdFrameCount % 30 == 0 && blastCount > 0) {
@@ -2859,6 +3176,7 @@ int step2_fgPixels = 0;
 		hdDumpStep(&_hdComposite, "3_objekte");
 	if (hdDumpNow() && getenv("HD_DUMP_MASK") && _gdi->_numZBuffer > 0)
 		hdDumpMaskPlanes(this, visW, visH);
+	uint32 hd26T0 = g_system->getMillis();
 	// Step 2.6: Overlay HD costume textures on top of composite
 	// Uses AKOS-determined cel index (_hdCurrentCel) and relX/relY offsets.
 	// Transparency is derived from the original extracted 8-bit PNG's palette
@@ -2872,7 +3190,14 @@ int step2_fgPixels = 0;
 	// geblendet (richtig). Zahl je Bild, damit vorher/nachher vergleichbar ist.
 	int step26_randOpak = 0, step26_randHalb = 0;
 	int step26_ring = 0;
+	// Besuchte HD-Bildpunkte und aus dem 8-Bit-Rest zurueckgeholte Punkte. Ohne diese
+	// Zahl ist eine Beschleunigung nur eine Behauptung (Backlog 11).
+	int step26_px = 0, step26_rest8 = 0;
 	int step26_noCostume = 0, step26_noCel = 0, step26_noHdCostume = 0, step26_loadFail = 0;
+	// Feinaufteilung des Kostuempfads je Eintrag (Backlog 11, Schritt 3): erst damit ist
+	// "10 ms je Eintrag" belegt statt vermutet. Summen seit Start, Ausgabe alle 30 Bilder.
+	static uint64 s26LoadUs = 0, s26PrepUs = 0, s26LoopUs = 0, s26Rest8Us = 0;
+	static int s26Eintraege = 0, s26PxSum = 0, s26Zeilen = 0, s26RestFlaeche = 0;
 	// HD alpha mask was allocated before Step 2.5; objects already marked it.
 	// Dump all actors with costumes on first frame for debugging
 	if (_hdFrameCount == 1 || _hdFrameCount == 30) {
@@ -3021,6 +3346,9 @@ int step2_fgPixels = 0;
 			}
 		}
 
+		// Treffer und Dekodes dieses Bildes festhalten, damit die Ladezeit zuordenbar ist.
+		int s26HitStart = 0, s26DekStart = 0;
+		HdCostumeManager::hdCostumeStats(s26HitStart, s26DekStart);
 		// Composite in z-sorted order
 		for (int ei = 0; ei < numEntries; ei++) {
 			Actor *a = entries[ei].actor;
@@ -3043,7 +3371,18 @@ int step2_fgPixels = 0;
 
 			Graphics::Surface hdCostumeScratch;
 			const Graphics::Surface *hdCostumeSurfPtr = nullptr;
-			if (!_hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeScratch, &hdCostumeSurfPtr)) {
+			// Zeilenbereiche des Bildes, das loadCostume wirklich zurueckgibt (erste und
+			// letzte gedeckte Spalte je Quellzeile). Passend zum geladenen Unterbild, damit
+			// die Begrenzung im Zeichenweg nicht auf ein anderes Koerperteil zeigt.
+			const uint16 *rowFirst = nullptr, *rowLast = nullptr;
+			int spanRows = 0;
+			const uint64 s26T0 = hdUsNow();
+			const int s26PxVorher = step26_px;
+			const bool s26Geladen = _hdCostumeManager->loadCostume(a->_costume, cel, hdCostumeScratch, &hdCostumeSurfPtr,
+			                                    &rowFirst, &rowLast, &spanRows);
+			s26LoadUs += hdUsNow() - s26T0;
+			const uint64 s26T1 = hdUsNow();
+			if (!s26Geladen) {
 				// Diagnose: hasCostume() sagt "vorhanden", das Laden scheitert trotzdem — dann
 				// bleibt die Figur in 8 Bit, ohne dass irgendwo etwas auffaellt.
 				if (getenv("HD_SPY")) {
@@ -3065,6 +3404,7 @@ int step2_fgPixels = 0;
 				schattenKopie.copyFrom(*hdCostumeSurfPtr);
 			const Graphics::Surface &hdCostumeSurf = hdCostumeOwn ? hdCostumeScratch
 				: (istSchatten ? schattenKopie : *hdCostumeSurfPtr);
+			uint32 hdShT0 = g_system->getMillis();
 			if (istSchatten) {
 				// Abdunkeln: RGB auf knapp die Haelfte, Deckkraft auf 150/255. Damit wirkt die
 				// Figur als Schatten auf dem HD-Hintergrund, unabhaengig von dessen Farben.
@@ -3081,6 +3421,19 @@ int step2_fgPixels = 0;
 						const uint32 a = (c >> 24) * 55 / 100;
 						row[sx2] = (a << 24);
 					}
+				}
+			}
+			// Schatten kosten eine Vollbildkopie und einen Vollbilddurchlauf je Eintrag und
+			// Bild (2560x1920). Ohne diese Zahl ist "Kostuempfad ist teuer" nur eine Annahme.
+			if (istSchatten) {
+				static uint32 hdShSum = 0;
+				static int hdShN = 0;
+				hdShSum += g_system->getMillis() - hdShT0;
+				hdShN++;
+				if (hdShN >= 5) {
+					hdPrintf("hdperf: schatten %u ms im Schnitt, %d Eintraege (letzte 5)",
+					         hdShSum / hdShN, hdShN);
+					hdShSum = 0; hdShN = 0;
 				}
 			}
 
@@ -3191,6 +3544,13 @@ int step2_fgPixels = 0;
 			// (srcOffX + ox) * 255 / sclX pro Pixel, bei einem 200x300-Bild also 60000
 			// Divisionen je Einzelbild und Figur. Der Zeiger auf die Zielzeile wird
 			// ebenfalls einmal geholt und dann über den Zeilenabstand weitergezählt.
+			// Gedeckte Spalten je Quellzeile, beim Laden bestimmt (hdComputeRowSpans).
+			// Die Texturen sind Vollbildaufnahmen: die Figur belegt darin oft nur ein
+			// Zwanzigstel, die Schleife lief aber ueber alle 4,9 Mio Punkte je Figur und
+			// Bild. HD_NO_ROWSPAN=1 stellt den alten vollen Durchlauf fuer den A/B her.
+			const bool haveSpans = getenv("HD_NO_ROWSPAN") == nullptr &&
+				rowFirst && rowLast && spanRows >= hdCostumeSurf.h &&
+				hdCostumeSurf.w > 0 && blitW > 0;
 			Common::Array<int> srcCols;
 			srcCols.resize(blitW);
 			for (int ox = 0; ox < blitW; ox++) {
@@ -3246,6 +3606,14 @@ int step2_fgPixels = 0;
 			// Mauerwerk. HD_CLIP8_TOL ist die Toleranz in 8-Bit-Punkten (Standard 1), damit
 			// ein Punkt Versatz zwischen Cel und Textur die Silhouette nicht aushoehlt.
 			const bool clip8 = getenv("HD_CLIP_8BIT") != nullptr;
+			// Diagnose (Backlog 11): die beiden Schreibpfade einzeln abschaltbar, um ihren
+			// Anteil an den Punkten zu messen. Vorgabe: beide an, Bild unveraendert.
+			const bool keinA0Restore = getenv("HD_NO_A0RESTORE") != nullptr;
+			const bool keineMaske = getenv("HD_NO_MASKW") != nullptr;
+			const bool ringAn = getenv("HD_NO_RING") == nullptr;
+			const int bgBpp = _hdBackgroundSurface.format.bytesPerPixel;
+			const int bgBreite = (int)_hdBackgroundSurface.w;
+			const int spanRand = getenv("HD_SPAN_MARGIN") ? atoi(getenv("HD_SPAN_MARGIN")) : 1;
 			const int clip8Tol = getenv("HD_CLIP8_TOL") ? atoi(getenv("HD_CLIP8_TOL")) : 1;
 			int geclippt8 = 0;
 			const int hdDstStride = _hdComposite.pitch / 4;
@@ -3255,17 +3623,67 @@ int step2_fgPixels = 0;
 			// Alpha-Kanal ueberhaupt ausgewertet wird.
 			const bool alphaSpy = getenv("HD_ALPHA_SPY") != nullptr;
 			int spyA0 = 0, spyA0Bg = 0, spyA0Keep = 0, spyA0Hd = 0, spyOpak = 0, spyHalb = 0;
+			const uint64 s26T2 = hdUsNow();
+			s26PrepUs += s26T2 - s26T1;
 			for (int oy = 0; oy < blitH; oy++) {
 				int srcY = MIN(hdCostumeSurf.h - 1, (srcOffY + oy) * 255 / sclY);
 				uint32 *srcRow = (uint32 *)hdCostumeSurf.getBasePtr(0, srcY);
 				uint32 *dstRow = hdDstBase + oy * hdDstStride;
 				const byte *maskRow = clipZ ? _gdi->getMaskBuffer(0, (blitY + oy) / scale, clipZ) : nullptr;
-				for (int ox = 0; ox < blitW; ox++) {
+				// Der durchsichtige Zweig (alpha == 0) kostete je Bildpunkt zwei Divisionen,
+				// ein getenv, mehrere getBasePtr und Multiplikationen, obwohl Zeile und
+				// 8-Bit-Zeile feststehen. Alles Zeilenfeste hier einmal rechnen (Backlog 11).
+				const int maskY = blitY + oy;
+				uint8 *maskDst = hdAlphaMask + (size_t)maskY * hdW + blitX;
+				const int sy8Zeile = maskY / scale;
+				const bool zeile8Ok = sy8Zeile >= 0 && sy8Zeile < visH && hdActorMap && _hdCleanValid &&
+				                      _hdCleanBackground.getPixels() && _hdBackgroundSurface.getPixels();
+				const size_t zeile8Basis = zeile8Ok ? (size_t)sy8Zeile * visW : 0;
+				const byte *actorRow8 = zeile8Ok ? hdActorMap + zeile8Basis : nullptr;
+				const byte *cleanValidRow = zeile8Ok ? _hdCleanValid + zeile8Basis : nullptr;
+				const byte *cleanRowBasis = zeile8Ok ? (const byte *)_hdCleanBackground.getBasePtr(0, sy8Zeile) : nullptr;
+				const byte *src8Row = zeile8Ok ? (const byte *)vs->getBasePtr(0, sy8Zeile + sdTop) : nullptr;
+				const int bgRY = zeile8Ok ? MIN(MAX(0, maskY + camY), _hdBackgroundSurface.h - 1) : 0;
+				const byte *bgZeile = zeile8Ok ? (const byte *)_hdBackgroundSurface.getBasePtr(0, bgRY) : nullptr;
+				// Zielspalten, die in dieser Zeile ueberhaupt Deckung haben. srcCols ist
+				// monoton, deshalb ist der Bereich zusammenhaengend; ein Punkt Rand je
+				// Seite bleibt als Reserve gegen die Rundung von (sx * 255 / sclX).
+				int oxA = 0, oxB = blitW;
+				if (haveSpans) {
+					const int sf = (int)rowFirst[srcY];
+					const int sl = (int)rowLast[srcY];
+					if (sf > sl) {
+						oxA = oxB = 0;
+					} else {
+						int qf = sf, ql = sl;
+						if (mirror) {
+							qf = hdCostumeSurf.w - 1 - sl;
+							ql = hdCostumeSurf.w - 1 - sf;
+						}
+						// srcCols[ox] = (srcOffX + ox) * 255 / sclX, also ist
+						// ox = srcX * sclX / 255 - srcOffX. Die Umkehrung darf srcOffX NICHT
+						// mit skalieren: bei sclX != 255 (Schiffskampf, 100 bis 220) sass der
+						// Bereich sonst um (sclX/255 - 1) * srcOffX daneben, und ein Teil der
+						// Figur wurde nicht mehr gezeichnet (Raum 10, gemessen).
+						oxA = CLIP(qf * sclX / 255 - srcOffX - spanRand, 0, blitW);
+						oxB = CLIP(ql * sclX / 255 - srcOffX + spanRand + 1, 0, blitW);
+						if (oxB <= oxA)
+							oxA = oxB = 0;
+					}
+					step26_px += oxB - oxA;
+				}
+				// 8-Bit-Spalte dieses Punktes: blitX/scale einmal, danach hochzaehlen.
+				int x8Lauf = (blitX + oxA) / scale;
+				int remLauf = (blitX + oxA) - x8Lauf * scale;
+				for (int ox = oxA; ox < oxB; ox++, remLauf++) {
+					if (remLauf == scale) {
+						remLauf = 0;
+						x8Lauf++;
+					}
 					int srcX = srcCols[ox];
 					uint32 pix = srcRow[srcX];
 					uint8 alpha = (pix >> 24) & 0xFF;
-					int maskX = blitX + ox;
-					int maskY = blitY + oy;
+					const int maskX = blitX + ox;
 					if (maskRow && maskSpy && maskAltOfs[ox] >= 0 && alpha > 0) {
 						const bool neu = (maskRow[maskOfs[ox]] & maskBit[ox]) != 0;
 						const bool alt = (maskRow[maskAltOfs[ox]] & maskBit[ox]) != 0;
@@ -3313,7 +3731,8 @@ int step2_fgPixels = 0;
 						// Gemessen in Raum 44: 25.264 solche Punkte je Bild.
 						spyOpak++;
 						dstRow[ox] = pix;
-						hdAlphaMask[maskY * hdW + maskX] = 1;
+						if (!keineMaske)
+							hdAlphaMask[maskY * hdW + maskX] = 1;
 					} else if (alpha > 0) {
 						spyHalb++;
 						step26_randHalb++;
@@ -3332,14 +3751,15 @@ int step2_fgPixels = 0;
 							(((sg * alpha + dg * (255 - alpha)) / 255) << 8) |
 							(((sb * alpha + db * (255 - alpha)) / 255) << 16) |
 							(0xFF << 24);
-						hdAlphaMask[maskY * hdW + maskX] = 1;
+						if (!keineMaske)
+							hdAlphaMask[maskY * hdW + maskX] = 1;
 					} else {
 						// alpha == 0: check if something is behind (HD object or
 						// earlier z-sorted HD costume). If so, preserve it.
 						// Otherwise, restore HD background to prevent 8-bit artifacts.
 						spyA0++;
-						if (maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH) {
-							if (hdAlphaMask[maskY * hdW + maskX] == 0) {
+						if (!keinA0Restore && maskX >= 0 && maskX < hdW && maskY >= 0 && maskY < hdH) {
+							if (maskDst[ox] == 0) {
 								// Liegt darunter 8-Bit-Vordergrund (Figur, Objekt), bleibt er
 								// stehen. Sonst wird eine Figur, die unter einem durchsichtigen
 								// Teil eines grossen Kostuems liegt, durch Hintergrund ersetzt
@@ -3347,15 +3767,11 @@ int step2_fgPixels = 0;
 								// Raum 89: die Hand ist ein 1296x1164 grosses HD-Kostuem, die
 								// Figur steckt in der 8-Bit-Ebene darunter.
 								bool foregroundBelow = false;
-								int sx8 = maskX / scale;
-								int sy8 = maskY / scale;
-								if (_hdCleanValid && sx8 >= 0 && sx8 < visX && sy8 >= 0 && sy8 < visH) {
-									int pos8 = sy8 * visW + sx8;
-									if (pos8 < _hdCleanValidSize && _hdCleanValid[pos8]) {
-										byte curP = *(const byte *)vs->getBasePtr(sdX + sx8, sy8 + sdTop);
-										const byte *clRow = (const byte *)_hdCleanBackground.getBasePtr(sx8, sy8);
-										foregroundBelow = (curP != clRow[0]);
-									}
+								const int sx8 = x8Lauf;
+								if (zeile8Ok && (size_t)zeile8Basis + (size_t)sx8 < (size_t)_hdCleanValidSize &&
+								    cleanValidRow[sx8]) {
+									const byte curP = src8Row[sdX + sx8];
+									foregroundBelow = (curP != cleanRowBasis[sx8]);
 								}
 								// Der eigene 8-Bit-Rest ist kein "Inhalt darunter": das HD-Kostuem
 								// ist die Fassung derselben Figur, nur ein paar Bildpunkte
@@ -3363,24 +3779,21 @@ int step2_fgPixels = 0;
 								// (Raum 44 mit HD_TINT_8BIT: 342 Magenta-Punkte, 96 Prozent
 								// davon in der Figur). Fremder Inhalt (andere Figur, Objekt
 								// ohne HD-Bild) bleibt weiterhin stehen.
-								const byte besitzer =
-									(!getenv("HD_NO_RING") && sx8 >= 0 && sx8 < visW && sy8 >= 0 && sy8 < visH)
-									? hdActorMap[sy8 * visW + sx8] : (byte)255;
+								const byte besitzer = (ringAn && sx8 >= 0 && sx8 < visW) ? actorRow8[sx8] : (byte)255;
 								if (besitzer == (byte)ai) {
 									step26_ring++;
 									foregroundBelow = false;
 								}
 								if (!foregroundBelow) {
 									// Nothing behind → restore HD background
-									int bgRX = MIN(maskX + camX, _hdBackgroundSurface.w - 1);
 									// Senkrecht gehoert der Kameraversatz ebenfalls dazu. Ohne ihn
 									// wird der Ozean aus einer ganz anderen Zeile zurueckgeholt und
 									// um das Boot herum erscheint ein Rechteck mit anderem Wasser.
-									int bgRY = MIN(MAX(0, maskY + camY), _hdBackgroundSurface.h - 1);
-									const byte *bgRowRaw = (const byte *)_hdBackgroundSurface.getBasePtr(bgRX, bgRY);
-									uint8 bgR = bgRowRaw[0], bgG = bgRowRaw[1], bgB = bgRowRaw[2];
-									dstRow[ox] = bgR | (bgG << 8) | (bgB << 16) | (0xFF << 24);
-									hdAlphaMask[maskY * hdW + maskX] = 1;
+									const int bgRX = MIN(maskX + camX, bgBreite - 1);
+									const byte *bgPix = bgZeile + (size_t)bgRX * bgBpp;
+									dstRow[ox] = bgPix[0] | (bgPix[1] << 8) | (bgPix[2] << 16) | (0xFF << 24);
+									if (!keineMaske)
+										maskDst[ox] = 1;
 									spyA0Bg++;
 								} else {
 									spyA0Keep++;
@@ -3388,7 +3801,6 @@ int step2_fgPixels = 0;
 							} else {
 								spyA0Hd++;
 							}
-							// else: leave existing (something behind)
 						}
 					}
 					// Die Maske wird jetzt nur dort gesetzt, wo das Kostuem wirklich
@@ -3400,6 +3812,64 @@ int step2_fgPixels = 0;
 					// (alpha == 0) weiterhin den HD-Hintergrund zurueck.
 				}
 			}
+
+			const uint64 s26T3 = hdUsNow();
+			s26LoopUs += s26T3 - s26T2;
+
+			// Der 8-Bit-Rest derselben Figur ausserhalb der gedeckten Stellen wurde oben
+			// Punkt fuer Punkt ueber die ganze Textur zurueckgeholt. Das geht in
+			// 8-Bit-Aufloesung: nur wo die 8-Bit-Ebene wirklich Vordergrund dieses
+			// Akteurs zeigt (hdActorMap, aus Schritt 2), wird der 4x4-Block aus dem
+			// HD-Hintergrund wiederhergestellt. Dieselben Bedingungen wie im Zweig
+			// alpha == 0 oben: nichts wiederherstellen, was hinter einer Maske steht
+			// oder wo schon eine HD-Ebene liegt.
+			if (haveSpans && !getenv("HD_NO_REST8") && hdFg8Map && hdActorMap && _hdCleanValid && _hdBackgroundSurface.getPixels()) {
+				const int y8a = MAX(0, blitY / scale);
+				const int y8b = MIN(visH, (blitY + blitH + scale - 1) / scale);
+				const int x8a = MAX(0, blitX / scale);
+				const int x8b = MIN(visX, (blitX + blitW + scale - 1) / scale);
+				s26RestFlaeche += (y8b - y8a) * (x8b - x8a);
+				const int bgBpp2 = _hdBackgroundSurface.format.bytesPerPixel;
+				const int bgW = (int)_hdBackgroundSurface.w, bgH = (int)_hdBackgroundSurface.h;
+				for (int y8 = y8a; y8 < y8b; y8++) {
+					const int hy0 = y8 * hdH / MAX(1, visH);
+					const int hy1 = MIN(hdH, (y8 + 1) * hdH / MAX(1, visH));
+					const int bgY0 = MIN(MAX(0, hy0 + camY), bgH - 1);
+					const byte *maskRow8 = clipZ ? _gdi->getMaskBuffer(0, y8, clipZ) : nullptr;
+					for (int x8 = x8a; x8 < x8b; x8++) {
+						const int p8 = y8 * visW + x8;
+						if (!hdFg8Map[p8] || hdActorMap[p8] != (byte)ai)
+							continue;
+						if (!_hdCleanValid[p8] || p8 >= _hdCleanValidSize)
+							continue;
+						if (maskRow8 && (maskRow8[stripBase + (x8 >> 3)] & revBitMask(x8 & 7)))
+							continue;
+						const int hx0 = x8 * hdW / MAX(1, visW);
+						const int hx1 = MIN(hdW, (x8 + 1) * hdW / MAX(1, visW));
+						const int bgX0 = MIN(hx0 + camX, MAX(0, bgW - (hx1 - hx0)));
+						for (int hy = hy0; hy < hy1; hy++) {
+							const int by = MIN(bgY0 + (hy - hy0), bgH - 1);
+							const byte *brow = (const byte *)_hdBackgroundSurface.getBasePtr(bgX0, by);
+							uint32 *dstRow8 = (uint32 *)_hdComposite.getBasePtr(0, hy);
+							const int maskOff = hy * hdW;
+							for (int hx = hx0; hx < hx1; hx++) {
+								if (hdAlphaMask[maskOff + hx])
+									continue;
+								const byte *b = brow + (size_t)(hx - hx0) * bgBpp2;
+								dstRow8[hx] = b[0] | (b[1] << 8) | (b[2] << 16) | (0xFFu << 24);
+								hdAlphaMask[maskOff + hx] = 1;
+								step26_rest8++;
+							}
+						}
+					}
+				}
+			}
+
+			const uint64 s26T4 = hdUsNow();
+			s26Rest8Us += s26T4 - s26T3;
+			s26Eintraege++;
+			s26PxSum += step26_px - s26PxVorher;
+			s26Zeilen += blitH;
 
 			if (alphaSpy) {
 				// Nur Eintraege mit durchsichtigen Bildpunkten protokollieren, sonst
@@ -3428,11 +3898,24 @@ int step2_fgPixels = 0;
 			if (hdCostumeOwn) hdCostumeScratch.free();
 		}
 		if (_hdFrameCount % 30 == 0)
-			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d) maskiert=%d saum=%d randdeckend=%d randhalb=%d", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail, step26_clipped, step26_ring, step26_randOpak, step26_randHalb);
+			hdPrintf("step2.6 costumes: loaded=%d skipped=%d (noCostume=%d noCel=%d noHdCostume=%d loadFail=%d) maskiert=%d saum=%d randdeckend=%d randhalb=%d px=%d rest8=%d", step26_loaded, step26_skipped, step26_noCostume, step26_noCel, step26_noHdCostume, step26_loadFail, step26_clipped, step26_ring, step26_randOpak, step26_randHalb, step26_px, step26_rest8);
 
 		// ── HD Debug Overlay ──────────────────────────────────────
 		// Visualizes costume entry positioning on screen.
 		// Gated behind 'hd_debug_overlay' config (set it like 'hd_trace').
+		if (_hdFrameCount % 30 == 0) {
+			int s26H = 0, s26D = 0;
+			HdCostumeManager::hdCostumeStats(s26H, s26D);
+			hdPrintf("hdperf: kostuempfad je Eintrag laden=%llu vorbereiten=%llu punkte=%llu rest8=%llu us",
+			         (unsigned long long)(s26LoadUs / (uint64)MAX(1, s26Eintraege)),
+			         (unsigned long long)(s26PrepUs / (uint64)MAX(1, s26Eintraege)),
+			         (unsigned long long)(s26LoopUs / (uint64)MAX(1, s26Eintraege)),
+			         (unsigned long long)(s26Rest8Us / (uint64)MAX(1, s26Eintraege)));
+			hdPrintf("hdperf: kostuempfad %d Eintraege, %d Punkte, %d Zeilen, rest8-Flaeche=%d, gesamt %llu ms, dies Bild Treffer %d Dekodes %d",
+			         s26Eintraege, s26PxSum, s26Zeilen, s26RestFlaeche,
+			         (unsigned long long)((s26LoadUs + s26PrepUs + s26LoopUs + s26Rest8Us) / 1000),
+			         s26H - s26HitStart, s26D - s26DekStart);
+		}
 		if (ConfMan.getBool("hd_debug_overlay", _targetName)) {
 			auto drawRect = [&](int x, int y, int w, int h, uint32 color) {
 				int l = MAX(0, x), t = MAX(0, y);
@@ -3483,6 +3966,7 @@ int step2_fgPixels = 0;
 			}
 		}
 	}
+	uint32 hd26T = g_system->getMillis() - hd26T0;
 	// Step 2.6b: Re-overlay 8-bit UI on top of HD costumes. [OPTIMIZED]
 	// Instead of scanning all 4.8M HD pixels, iterate 8-bit pixels (302K)
 	// Only pixels that differ from the clean background are processed.
@@ -3726,6 +4210,7 @@ int step2_fgPixels = 0;
 		// _hdCursorObject persists across frames; setCursorFromImg clears it
 		int objState = getState(cursorObj);
 		if (objState < 0) objState = 0;
+		objState = hdPackState(objState);
 		int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
 		if (objRoom < 0) objRoom = _currentRoom;
 
@@ -3760,9 +4245,36 @@ int step2_fgPixels = 0;
 		hdObjSum += hdObjT;
 		hdObjN++;
 		if (hdObjT > hdObjMax) hdObjMax = hdObjT;
-		if (hdObjN % 30 == 0)
+		// Aufteilung des Blocks: ohne sie ist "Objekte oder Kostueme" nur eine Vermutung.
+		static uint32 hd25Sum = 0, hd26Sum = 0;
+		hd25Sum += hd25T;
+		hd26Sum += hd26T;
+		if (hdObjN >= 30) {
 			hdPrintf("hdperf: objekte+kostueme+schrift %u ms im Schnitt, max %u ms (%u Bilder)",
 			         hdObjSum / hdObjN, hdObjMax, hdObjN);
+			{
+				// Trennt "Bild wird jedes Mal neu dekodiert" von "Zeichnen ist teuer".
+				int hdKt = 0, hdKd = 0;
+				HdCostumeManager::hdCostumeStats(hdKt, hdKd);
+				hdPrintf("hdperf: kostuemzugriffe treffer=%d dekode=%d (seit Start)", hdKt, hdKd);
+				uint64 dpPng = 0, dpFill = 0, dpCopy = 0, dpDest = 0, dpPrune = 0, dpPix = 0;
+				uint64 dpDek = 0, dpKonv = 0, dpFringe = 0;
+				hdCostumeLoadDetail(dpPng, dpFill, dpCopy, dpDest, dpPrune, dpPix, dpDek, dpKonv, dpFringe);
+				if (hdKd > 0)
+					hdPrintf("hdperf: celdekode je Cel laden=%.1f (png=%.1f konv=%.1f franse=%.1f) "
+					         "loecher=%.1f kopie=%.1f dest=%.1f prune=%.1f ms, %.2f MPix je Cel, "
+					         "%.2f ms/MPix Dekode",
+					         dpPng / 1000.0 / hdKd, dpDek / 1000.0 / hdKd, dpKonv / 1000.0 / hdKd,
+					         dpFringe / 1000.0 / hdKd, dpFill / 1000.0 / hdKd, dpCopy / 1000.0 / hdKd,
+					         dpDest / 1000.0 / hdKd, dpPrune / 1000.0 / hdKd,
+					         dpPix / 1e6 / hdKd,
+					         dpPix > 0 ? (dpDek / 1000.0) / (dpPix / 1e6) : 0.0);
+			}
+			hdPrintf("hdperf: step2.5 objekte %u ms, step2.6 kostueme %u ms (%u Bilder)",
+			         hd25Sum / hdObjN, hd26Sum / hdObjN, hdObjN);
+			hdObjSum = 0; hdObjMax = 0; hdObjN = 0;
+			hd25Sum = 0; hd26Sum = 0;
+		}
 	}
 
 	// Step 3: Copy the entire HD composite to the system buffer
@@ -3788,6 +4300,7 @@ int step2_fgPixels = 0;
 		int curState = getState(_hdCursorObject);
 		if (curState < 0)
 			curState = 0;
+		curState = hdPackState(curState);
 		int curRoom = _hdObjectManager ? _hdObjectManager->findObjectRoom(_hdCursorObject) : -1;
 		if (curRoom < 0)
 			curRoom = _currentRoom;
@@ -3813,9 +4326,31 @@ int step2_fgPixels = 0;
 		hdUpSum += hdUpT;
 		hdUpN++;
 		if (hdUpT > hdUpMax) hdUpMax = hdUpT;
-		if (hdUpN % 30 == 0)
+		if (hdUpN >= 30) {
 			hdPrintf("hdperf: uebergabe an die grafik %u ms im Schnitt, max %u ms (%u Bilder)",
 			         hdUpSum / hdUpN, hdUpMax, hdUpN);
+			hdUpSum = 0; hdUpMax = 0; hdUpN = 0;
+		}
+	}
+	// Erste fertige Bild des Raums: alle Abschnitte des Eintritts in einer Zeile.
+	// bg = HD-Hintergrund (room.cpp), davor = Bildbeginn bis zum Start der Vorladung
+	// (Hintergrundkopie, Vordergrund, Objektmasken dieses Bildes), vorladung = Vorladung
+	// selbst, erstes_bild = ab Raumeintritt, dekodes = Kostuem-Dekodes seit dem
+	// Raumeintritt (Erstzugriffe).
+	if (hdEntryFrameT0 != 0) {
+		const uint32 hdEntryNow = g_system->getMillis();
+		int hdEntryKt = 0, hdEntryKd = 0;
+		HdCostumeManager::hdCostumeStats(hdEntryKt, hdEntryKd);
+		const uint32 hdEntryTotal = hdEntryNow - _hdEntryStartMs;
+		const uint32 hdEntryBefore = hdEntryPrewarmStart > hdEntryFrameT0
+		                             ? hdEntryPrewarmStart - hdEntryFrameT0 : 0;
+		const uint32 hdEntryAfter = hdEntryTotal > _hdEntryBgMs + hdEntryBefore + hdEntryPrewarmMs
+		                            ? hdEntryTotal - _hdEntryBgMs - hdEntryBefore - hdEntryPrewarmMs : 0;
+		hdPrintf("hdperf: raumeintritt room=%d t0=%u bg=%u ms davor=%u ms vorladung=%u ms "
+		         "rest=%u ms erstes_bild=%u ms dekodes=%d",
+		         _currentRoom, _hdEntryStartMs, _hdEntryBgMs, hdEntryBefore, hdEntryPrewarmMs,
+		         hdEntryAfter, hdEntryTotal, hdEntryKd - _hdEntryDecodes0);
+		hdEntryFrameT0 = 0;
 	}
 
 	// HD debug dump — trigger dump when _hdDebugDumpCount >= 3
@@ -3858,9 +4393,11 @@ int step2_fgPixels = 0;
 	}
 	// Debug: die Vergleichsvorlage einmal ablegen (HD_DUMP_CLEAN=1).
 	if (getenv("HD_DUMP_CLEAN")) {
-		static bool cleanDumped = false;
-		if (!cleanDumped && _hdCleanBackground.getPixels()) {
-			cleanDumped = true;
+		// Je Raum einmal statt nur einmal im Lauf: sonst entsteht die Aufnahme fuer
+		// Raum 87 (Titelszene) und der angefragte Raum bleibt ohne Beleg.
+		static int cleanDumpedRoom = -1;
+		if (cleanDumpedRoom != _currentRoom && _hdCleanBackground.getPixels()) {
+			cleanDumpedRoom = _currentRoom;
 			hdWriteCompositeShotScaled(&_hdCleanBackground, "/opt/data/projects/comi-hd/work/dumps/hd_clean.ppm", 2);
 			// Zusaetzlich in voller Groesse und mit Palette: die Vorlage ist CLUT8, ein
 			// Abdumpen als 32-Bit-Bild ergibt nur Rauschen. Diese Fassung ist der Rauminhalt
@@ -3915,24 +4452,138 @@ int step2_fgPixels = 0;
 	// Debug: fuer Aufnahmen eine Bildfolge ablegen (HD_DUMP_SEQ=1). Jedes 20. Bild eins,
 	// hoechstens 200, in /tmp/hd_seq. Paarweise mit dem Original, damit sich jedes Bild
 	// gegen die SD-Engine stellen laesst.
-	if (getenv("HD_DUMP_SEQ") && !_hdInventoryOpen && _hdCaptureArmed) {
+	// Spur, warum trotz HD_DUMP_SEQ kein Bild entsteht: offenes Inventar ist der stille
+	// Ausstieg (der Sprung per boot-param laesst die Oberflaeche offen).
+	if (getenv("HD_TRACE_SKIP") && getenv("HD_DUMP_SEQ") && _hdInventoryOpen && _hdCaptureArmed) {
+		static int m = 0;
+		if (m++ % 30 == 0)
+			hdSkipReasonf("capture-skip inv=1 frame=%d room=%d comp=%dx%d",
+			              (int)_hdFrameCount, _currentRoom, _hdComposite.w, _hdComposite.h);
+	}
+	// Aufgabe 5: das Inventar ist der zweite Zustand je Raum. Ohne HD_CAPTURE_INV bleibt es
+	// beim alten Verhalten (kein Bild bei offener Oberflaeche); mit der Variable wird
+	// aufgenommen, damit sich der Inventarzustand ueberhaupt messen laesst.
+	static int hdCapInv = -1;
+	if (hdCapInv < 0)
+		hdCapInv = getenv("HD_CAPTURE_INV") ? 1 : 0;
+	// Aufgabe 5a: Aufnahme an einen Frame-Zaehler ab Raumeintritt binden statt an "jedes
+	// dritte komponierte Bild" (HD_CAPTURE_FRAME=1). Anker ist _hdCaptureArmFrame, also die
+	// Bildnummer beim startScene des Zielraums. Mit HD_FIXED_DELTA ist die Spielzeit dann
+	// eine reine Funktion der Bildnummer. Ohne die Variable bleibt es beim alten Verhalten.
+	// Erste Messung mit dem Anker "erste Komposition" war NICHT reproduzierbar (Raum 40,
+	// zwei Laeufe: Kamera fenster 640 gegen 486 px breit bei gleicher Bildnummer); der
+	// Versatz zwischen Raumeintritt und erster Komposition ist die Ladezeit.
+	// Die Komposition muss zum angefragten Raum gehoeren (_hdCurrentRoom), sonst steht dort
+	// noch das Bild des vorigen Raums. Solche Bilder werden uebersprungen, nicht verschoben,
+	// damit die Phasen erhalten bleiben.
+	static int hdCapFrame = -1;      // 1 = Frame-Takt
+	static int hdCapStep = 0;        // Abstand in Bildern
+	static int hdCapTime = -1;       // 1 = Zeit-Takt (Spielzeit ab Raumeintritt)
+	static int hdCapMs = 0;          // Abstand im Zeit-Takt in ms Spielzeit
+	static int hdCapLastK = -1;      // zuletzt aufgenommener Zeitabschnitt
+	if (hdCapFrame < 0) {
+		const char *capFrame = getenv("HD_CAPTURE_FRAME");
+		const char *capTime = getenv("HD_CAPTURE_TIME");
+		hdCapFrame = (capFrame && *capFrame && strcmp(capFrame, "0") != 0) ? 1 : 0;
+		hdCapTime = (capTime && *capTime && strcmp(capTime, "0") != 0) ? 1 : 0;
+		hdCapStep = getenv("HD_CAPTURE_STEP") ? atoi(getenv("HD_CAPTURE_STEP")) : 3;
+		if (hdCapStep < 1)
+			hdCapStep = 1;
+		hdCapMs = getenv("HD_CAPTURE_MS") ? atoi(getenv("HD_CAPTURE_MS")) : 45;
+		if (hdCapMs < 1)
+			hdCapMs = 1;
+	}
+	if (getenv("HD_DUMP_SEQ") && (hdCapInv || !_hdInventoryOpen) && _hdCaptureArmed) {
 		static int hdSeqNo = 0, hdSeqTick = 0;
-		// Jede dritte Komposition ein Bild. Ein fester Abstand nach _hdFrameCount liefert in
-		// kurzen Laeufen nur ein oder zwei Bilder, weil die HD-Schicht langsam rechnet.
-		if (hdSeqTick++ % 3 == 0 && hdSeqNo < 200) {
+		bool nimm;
+		if (hdCapTime && _hdCaptureArmTime >= 0) {
+			// Zeit-Takt: ein Bild je Zeitabschnitt, gezaehlt in Spielzeit ab Raumeintritt.
+			// Nur die Spielzeit treibt Skripte, Kamera und Animationen; der Bildzaehler
+			// laeuft je nach Rechenlast nicht synchron dazu.
+			nimm = _hdCurrentRoom == _currentRoom && _hdComposite.w > 0 && _hdComposite.h > 0;
+			if (nimm) {
+				const int t = _hdGameMs - _hdCaptureArmTime;
+				// HD_CAPTURE_SKIP_MS: die ersten Millisekunden nach dem Sprung ueberspringen.
+				// In dieser Zeit ist die HD-Ebene noch nicht auf den neuen Raum umgestellt; die
+				// Bilder sind punktgleich mit der 8-Bit-Ebene und lesen sich als 0,000 Prozent
+				// (Raum 40: 5 von 12 Aufnahmen bei 250 ms Takt).
+				static int hdCapSkip = -1;
+				if (hdCapSkip < 0)
+					hdCapSkip = getenv("HD_CAPTURE_SKIP_MS") ? atoi(getenv("HD_CAPTURE_SKIP_MS")) : 0;
+				if (t < 0 || t < hdCapSkip) {
+					nimm = false;
+				} else {
+					const int k = t / hdCapMs;
+					nimm = (k != hdCapLastK);
+					if (nimm)
+						hdCapLastK = k;
+				}
+			}
+		} else if (hdCapFrame) {
+			nimm = _hdCaptureArmFrame >= 0 && _hdCurrentRoom == _currentRoom
+			        && _hdComposite.w > 0 && _hdComposite.h > 0
+			        && ((int)_hdFrameCount - _hdCaptureArmFrame) % hdCapStep == 0;
+		} else {
+			// Jede dritte Komposition ein Bild. Ein fester Abstand nach _hdFrameCount liefert in
+			// kurzen Laeufen nur ein oder zwei Bilder, weil die HD-Schicht langsam rechnet.
+			// Nur im geladenen HD-Raum aufnehmen. Ohne diese Bedingung schrieb der Lauf
+			// Bilder, bevor die HD-Ebene den neuen Raum uebernommen hatte; die waren
+			// punktgleich mit der 8-Bit-Ebene und lasen sich als perfekte 0,000 Prozent
+			// (Raum 40, zwei von fuenf Laeufen am 22.11.).
+			nimm = _hdCurrentRoom == _currentRoom && hdSeqTick++ % 3 == 0;
+		}
+		if (nimm && hdSeqNo < 200) {
 			char spath[128], rpath[128];
 			snprintf(spath, sizeof(spath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/h%05d.ppm", hdSeqNo);
 			snprintf(rpath, sizeof(rpath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/r%05d.ppm", hdSeqNo);
-			hdWriteCompositeShotScaled(&_hdComposite, spath, 2);
-			// Nur eine Flaeche mit echter Hoehe ist eine Aufnahme. Eine 0 hohe Flaeche
+			const bool geschrieben = hdWriteCompositeShotScaled(&_hdComposite, spath, 2);
+			// Nur eine Flaeche mit echter Hoehe ist eine Aufnahme; eine 0 hohe Flaeche
 			// schreibt eine Kopfzeile ohne Bildpunkte — genau das sah wie "Bilder da" aus.
-			if (_hdComposite.w > 0 && _hdComposite.h > 0)
+			// Und seit 22.11. zaehlt nur, was wirklich auf der Platte liegt: fehlte das
+			// Aufnahmeverzeichnis, meldete der Lauf vorher "36 Aufnahmen" ohne eine Datei.
+			if (geschrieben && _hdComposite.w > 0 && _hdComposite.h > 0)
 				_hdSeqWritten++;
-			int seqW = MIN(_screenWidth, (int)vs->w - (int)vs->xstart);
-			int seqH = MIN(_screenHeight, (int)vs->h);
+			// Referenz muss dasselbe Fenster sein, das die Komposition liest (sdX, sdTop).
+			// Vorher stand hier (0,0); in scrollenden und hohen Raeumen lag die Vorlage damit
+			// eine Kamerabreite bzw. einen Kameraabschnitt neben dem HD-Bild, und der
+			// Vergleich meldete Vollbildfehler, die keine waren.
+			int seqW = MIN(_screenWidth, (int)vs->w - sdX);
+			int seqH = MIN(_screenHeight, (int)vs->h - sdTop);
 			if (seqW > 0 && seqH > 0)
-				hdDumpReference(rpath, (const byte *)vs->getBasePtr(0, 0),
+				hdDumpReference(rpath, (const byte *)vs->getBasePtr(sdX, sdTop),
 				                vs->pitch, seqW, seqH, _currentPalette);
+			// Kamera des Bildes mitschreiben: fuer Raeume, die breiter oder hoeher als der
+			// Schirm sind, laesst sich der Hintergrund nur mit dem Fenster des jeweiligen
+			// Bildes reparieren. Ohne diese Zeile ist der Bezug zwischen Bild und Raumstelle
+			// unbekannt und jeder Patch waere geraten.
+			{
+				FILE *cf = fopen("/opt/data/projects/comi-hd/work/dumps/hd_seq/cam.txt", hdSeqNo == 0 ? "w" : "a");
+				if (cf) {
+					// Aktivkennzeichen je Aufnahme (fg=, clean=): Anteil der 8-Bit-Vordergrundpixel
+					// an der Komposition. Steht er bei 100 Prozent, besteht das Bild nur aus der
+					// 8-Bit-Ebene und die HD-Schicht ist inaktiv; solche Aufnahmen sind punktgleich
+					// mit der hochskalierten Vorlage und von einem perfekten Raum durch
+					// Pixelvergleich nicht zu trennen (WORKLOG 22.11. 01:00). clean= sagt, ob die
+					// saubere Vergleichsvorlage fuer dieses Bild ueberhaupt galt.
+					fprintf(cf, "%05d %d %d %d %d fg=%.1f clean=%d heal=%d mask=%d ref=%dx%d cw=%dx%d maskpx=%ld",
+					        hdSeqNo, sdX, sdTop, (int)_screenWidth, (int)_screenHeight,
+					        100.0 * step2_fgPixels / MAX(1, visW * visH),
+					        (_hdCurrentRoom == _currentRoom && _hdCleanValid &&
+					         _hdCleanBackground.getPixels()) ? 1 : 0,
+					        hdHealPct, hdMissingRects, hdRefW, hdRefH, hdCw, hdCh, hdMaskPx);
+					fputc(10, cf);
+					fclose(cf);
+				}
+			}
+			// Bildnummer mitschreiben: nur damit laesst sich pruefen, ob zwei Laeufe wirklich
+			// dieselbe Spielzeit aufgenommen haben (Frame-Takt ab Raumeintritt).
+			{
+				FILE *ff = fopen("/opt/data/projects/comi-hd/work/dumps/hd_seq/frames.txt", hdSeqNo == 0 ? "w" : "a");
+				if (ff) {
+					fprintf(ff, "%05d frame=%d arm=%d t=%d\n", hdSeqNo, (int)_hdFrameCount, _hdCaptureArmFrame, _hdGameMs - _hdCaptureArmTime);
+					fclose(ff);
+				}
+			}
 			hdSeqNo++;
 		}
 	}
@@ -4066,19 +4717,37 @@ int step2_fgPixels = 0;
 		const uint32 hdFrameTargetMs = 33;
 		uint32 hdFrameUsed = _system->getMillis() - g_hdFrameStartMs;
 		const uint32 pfSliceMs = hdFrameUsed < hdFrameTargetMs ? (hdFrameTargetMs - hdFrameUsed) : 0;
-		bool pfBudget = true;
+		// Reihenfolge: Vorgabe prueft die Restzeit VOR dem Laden. Vorher stand die Pruefung
+		// danach, damit hat jeder sichtbare Akteur auch in einem Bild ohne Restzeit noch ein
+		// Cel geladen (Raum 85: 85 ms Nachladung nach 250 ms Komposition, also 335 ms Runde).
+		// HD_PF_FEST=1 stellt das alte Verhalten zum Nachmessen wieder her (auch ohne Restzeit).
+		static const bool pfFest = getenv("HD_PF_FEST") != nullptr;
+		// Weg (b) aus Aufgabe 11: ein Hintergrund-Worker dekodiert die naechsten Cels,
+		// unabhaengig vom Bildtakt. Im kalten Raum ist die Restzeit null, der Vorlauf
+		// stand dort bisher still und der Zeichenweg dekodierte jedes Cel selbst.
+		// HD_PF_ASYNC=<n> Cels je Auftrag, 0 schaltet den Worker ab (A/B).
+		static const int pfAsync = getenv("HD_PF_ASYNC") ? atoi(getenv("HD_PF_ASYNC")) : 32;
+		// Fertige Hintergrund-Cels eintragen (nur Cache-Eintraege, kein Dekode). Die Wirkung
+		// steht in der Zeile "kostuemzugriffe": Dekodes im Zeichenweg, Raum 84 98 -> 12.
+		if (_hdCostumeManager && _hdCostumeManager->isEnabled())
+			_hdCostumeManager->pumpAsync();
+		bool pfBudget = pfFest || pfSliceMs > 0;
 		if (_hdCostumeManager && _hdCostumeManager->isEnabled()) {
-			for (int ai = 0; ai < _numActors && pfBudget; ai++) {
+			for (int ai = 0; ai < _numActors; ai++) {
 				Actor *a = _actors[ai];
 				if (!a || a->_costume == 0 || !a->_visible)
 					continue;
 				// 1) current cels first — the animation needs them NOW
 				Graphics::Surface tmpSurf;
-				for (int li = 0; li < a->_hdNumLimbs && li < 16; li++) {
+				for (int li = 0; li < a->_hdNumLimbs && li < 16 && pfBudget; li++) {
 					int cel = a->_hdLimbCel[li];
 					if (cel <= 0)
 						continue;
 					if (!_hdCostumeManager->isFrameCached(a->_costume, cel)) {
+						if (!pfFest && _system->getMillis() - pfStart >= pfSliceMs) {
+							pfBudget = false;
+							break;
+						}
 						_hdCostumeManager->loadCostume(a->_costume, cel, tmpSurf);
 						tmpSurf.free();
 						if (_system->getMillis() - pfStart >= pfSliceMs) {
@@ -4087,8 +4756,17 @@ int step2_fgPixels = 0;
 						}
 					}
 				}
-				// 2) future frames (time permitting)
-				if (pfBudget && _hdCostumeManager->preloadNext(a->_costume)) {
+				// 2) future frames: im kalten Raum (keine Restzeit) uebernimmt das der
+				// Hintergrund-Worker, sonst wie bisher ein Cel je Bild im Takt.
+				if (pfAsync > 0 && pfSliceMs == 0) {
+					int cel = 0;
+					for (int li = 0; li < a->_hdNumLimbs && li < 16; li++)
+						if (a->_hdLimbCel[li] > 0) {
+							cel = a->_hdLimbCel[li];
+							break;
+						}
+					_hdCostumeManager->requestAsync(a->_costume, cel, pfAsync);
+				} else if (pfBudget && _hdCostumeManager->preloadNext(a->_costume)) {
 					if (_system->getMillis() - pfStart >= pfSliceMs)
 						pfBudget = false;
 				}
@@ -4111,9 +4789,11 @@ int step2_fgPixels = 0;
 		hdPfSum += pfT;
 		hdPfN++;
 		if (pfT > hdPfMax) hdPfMax = pfT;
-		if (hdPfN % 30 == 0)
+		if (hdPfN >= 30) {
 			hdPrintf("hdperf: vorladung %u ms im Schnitt, max %u ms (%u Bilder)",
 			         hdPfSum / hdPfN, hdPfMax, hdPfN);
+			hdPfSum = 0; hdPfMax = 0; hdPfN = 0;
+		}
 	}
 }
 
