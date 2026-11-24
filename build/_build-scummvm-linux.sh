@@ -39,7 +39,7 @@ NATIVE_PREFIX="$INSTALL_DIR/native-prefix"
 # obwohl zlib1g-dev und libpng-dev installiert waren.
 if [ ! -d "$DEPS_DIR/zlib-1.3.1" ] || [ ! -d "$DEPS_DIR/libpng-1.6.44" ]; then
     info "zlib/libpng sources not present, using system libraries"
-    export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 elif [ ! -f "$NATIVE_PREFIX/lib/libpng16.a" ] || [ ! -f "$NATIVE_PREFIX/lib/libz.a" ]; then
     info "Building zlib natively..."
     cd "$DEPS_DIR/zlib-1.3.1"
