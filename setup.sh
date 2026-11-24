@@ -137,6 +137,21 @@ else
     done
     COUNT=$(find "$OUTPUT_DIR/hd" -type f 2>/dev/null | wc -l)
     echo "  ✅ $COUNT HD texture files extracted"
+    # Pack-Manifest pruefen: sagt, ob Version, Raumabdeckung und Objektzahl zum Verzeichnis passen.
+    # Ohne diese Pruefung blieb ein unvollstaendiges Setup stumm (Issue #32).
+    MANIFEST_PY="$(dirname "$0")/scripts/pack_manifest.py"
+    if [ -f "$OUTPUT_DIR/hd/hd.json" ] && [ -f "$MANIFEST_PY" ]; then
+        echo "  Checking HD pack manifest..."
+        if python3 "$MANIFEST_PY" --pack "$OUTPUT_DIR/hd" --check; then
+            echo "  ✅ HD pack manifest OK"
+        else
+            echo "  ⚠️  HD pack manifest reports differences (see above). The game will still start."
+        fi
+    elif [ -f "$MANIFEST_PY" ]; then
+        echo "  ℹ️  No hd.json in the HD pack; writing one..."
+        python3 "$MANIFEST_PY" --pack "$OUTPUT_DIR/hd" --name "downloaded-pack" --version "$ASSETS_TAG" \
+            && echo "  ✅ hd.json written"
+    fi
 fi
 
 # --- Step 5: Copy game files ---

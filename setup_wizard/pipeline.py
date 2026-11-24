@@ -288,6 +288,32 @@ def step_videos(cfg, progress):
     return True
 
 
+def step_packcheck(cfg, progress):
+    """HD-Pack-Manifest pruefen: Version, Raumabdeckung, Objektzahl."""
+    import os
+    task = progress.add_task("  Checking HD pack manifest...", total=1)
+    script = _p("scripts", "pack_manifest.py")
+    hd = _p("ScummVM", "monkey3", "hd")
+    if not os.path.exists(script):
+        ui.warn("pack_manifest.py not found, skipping pack check")
+        progress.advance(task)
+        return
+    if not os.path.isdir(hd):
+        ui.warn("HD directory not found at %s" % hd)
+        progress.advance(task)
+        return
+    man = os.path.join(hd, "hd.json")
+    args = [_py(), script, "--pack", hd, "--check"] if os.path.exists(man) else \
+           [_py(), script, "--pack", hd, "--name", "downloaded-pack"]
+    res = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=120)
+    for line in (res.stdout or "").splitlines():
+        ui.info("  " + line)
+    if res.returncode == 0:
+        ui.success("HD pack manifest OK")
+    else:
+        ui.warn("HD pack manifest reports differences; the game will still start")
+    progress.advance(task)
+
 def step_summary(cfg, progress):
     """Show final asset counts."""
     task = progress.add_task("  Final summary...", total=1)
@@ -341,6 +367,7 @@ PIPELINE_STEPS = [
     ("✨  Alpha Fixup",            step_alpha),
     ("📋  Deploy",                 step_deploy),
     ("📝  Manifest",               step_manifest),
+    ("📦  Pack Check",            step_packcheck),
     ("📊  Summary",                step_summary),
 ]
 

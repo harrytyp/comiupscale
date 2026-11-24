@@ -46,6 +46,11 @@ Desktop.ini
 *.exe
 *.raw
 *.zip
+!scummvm/fork/**/*.zip
+!gui/themes/*.zip
+!backends/vkeybd/packs/*.zip
+!dists/**/*.zip
+!backends/platform/**/*.zip
 *.o
 *.d
 *.a

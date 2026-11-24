@@ -1,3 +1,5 @@
 numpy
 pillow
 typer
+rich
+pyfiglet

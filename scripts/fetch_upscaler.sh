@@ -20,16 +20,16 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="0.2.0"
+VERSION="0.2.5.0"
 PLATFORM="${1:---windows}"
 
 case "$PLATFORM" in
   --windows)
-    ARCHIVE="realesrgan-ncnn-vulkan-${VERSION}-windows.zip"
-    TARGET="$ROOT/tools/realesrgan-ncnn-vulkan-v${VERSION}-windows"
+    ARCHIVE="realesrgan-ncnn-vulkan-20220424-windows.zip"  # Release v0.2.5.0, Datei ist datiert
+    TARGET="$ROOT/tools/realesrgan-ncnn-vulkan-v0.2.0-windows"  # Pfad bleibt stabil, config/upscale/*.sh verweisen darauf
     ;;
   --linux)
-    ARCHIVE="realesrgan-ncnn-vulkan-${VERSION}-ubuntu.zip"
+    ARCHIVE="realesrgan-ncnn-vulkan-20220424-ubuntu.zip"
     TARGET="$ROOT/tools/realesrgan-ncnn-vulkan"
     ;;
   *)

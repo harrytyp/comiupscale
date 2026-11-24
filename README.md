@@ -305,6 +305,26 @@ Key options in `scummvm.ini` under `[comi]`:
 - **Objects:** 600 foreground + 234 layer textures
 - **Videos:** HNM → MP4 → 4x upscale (Topaz) → MP4
 
+### HD Pack Manifest
+An HD pack is a directory with `backgrounds/`, `objects/` and optionally `costumes/`, `fonts/`,
+`videos/`, plus an `hd.json` describing it (name, version, scale, room count, object count).
+
+```bash
+# write a manifest for a pack
+python3 scripts/pack_manifest.py --pack ~/comi/hd --name esrgan-anime --version 1.0.5
+
+# check it against the directory contents
+python3 scripts/pack_manifest.py --pack ~/comi/hd --check
+
+# list and check every pack below a directory
+python3 scripts/pack_manifest.py --list --pack ~/comi/packs
+```
+
+`setup.sh` and `setup_wizard` run the check automatically after downloading a pack, so an
+incomplete download is reported instead of silently producing a half-HD game. Videos are matched
+by the game's SAN base name (`<SAN>.mp4`), not by a language suffix; missing ones fall back to the
+original animation.
+
 ### Known Issues
 - **Inventory FLOBJ positioning:** Inventory HD textures all render at (0,0) because V8 uses a draw queue for positioning, not object coordinates. Items are visible but at the wrong position.
 - **SMUSH video skip:** Fixed in latest build. `_hdDebugDumpCount` no longer affects the SMUSH player.
