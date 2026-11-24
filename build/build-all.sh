@@ -23,11 +23,33 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/_common.sh"
 
 # ── Parse target ────────────────────────────────────────
-TARGET="${1:-all}"
+for arg in "$@"; do
+    case "$arg" in
+        --no-deps) NO_DEPS=1 ;;
+        linux|windows|all) TARGET="$arg" ;;
+        -h|--help) sed -n "2,12p" "$0"; exit 0 ;;
+        *) err "Usage: bash build/build-all.sh [linux|windows|all] [--no-deps]"; exit 1 ;;
+    esac
+done
+TARGET="${TARGET:-all}"
 case "$TARGET" in
     all|linux|windows) ;;
-    *) err "Usage: bash build/build-all.sh [linux|windows|all]"; exit 1 ;;
+    *) err "Usage: bash build/build-all.sh [linux|windows|all] [--no-deps]"; exit 1 ;;
 esac
+export NO_DEPS="${NO_DEPS:-0}"
+
+# ── System-Abhaengigkeiten ─────────────────────────────
+# Ein Befehl fuer den Nutzer: fehlt etwas, wird es hier installiert. Wer das nicht will,
+# ruft mit --no-deps auf und bekommt nur die Liste.
+if [ "${NO_DEPS:-0}" != "1" ] && [ -x "$(dirname "$0")/install-deps.sh" ]; then
+    if ! bash "$(dirname "$0")/install-deps.sh" --check >/dev/null 2>&1; then
+        info "Missing build dependencies, installing them now (this asks for sudo once)..."
+        bash "$(dirname "$0")/install-deps.sh" || {
+            error "Dependency install failed. Run it yourself: bash build/install-deps.sh"
+            exit 1
+        }
+    fi
+fi
 
 # ── Check system tools ─────────────────────────────────
 info "Checking system build tools..."
