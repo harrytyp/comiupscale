@@ -36,7 +36,7 @@ if ! has_pkg x11; then
     err "  sudo apt install libx11-dev libxext-dev libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxinerama-dev libxss-dev"
     exit 1
 fi
-if ! has_pkg alsound; then
+if ! has_pkg alsa; then
     err "ALSA development headers not found (libasound2-dev)"
     err "Audio is required. Install:"
     err "  sudo apt install libasound2-dev"
