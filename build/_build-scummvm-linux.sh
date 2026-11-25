@@ -98,6 +98,11 @@ if [ ! -f "config.mk" ]; then
 # --with-sdl-prefix: ohne diese Angabe findet configure das selbst gebaute SDL2 nicht und
 #   faellt auf "Checking for SDL... no" zurueck. --enable-engine braucht den Bindestrich:
 #   "scumm_7_8" wird stillschweigend ignoriert, dann fehlt genau der Engine-Teil fuer COMI.
+    # --disable-jpeg: COMI braucht kein JPEG (HD-Texturen sind PNG). Ohne den Schalter haengt das
+    # Binary an libjpeg.so.8 aus dem Build-System, eine SONAME, die Debian so nicht hat -
+    # das Spiel startet dort dann nicht.
+    # Achtung: keine Kommentarzeilen zwischen die mit \ fortgesetzten Argumente schreiben,
+    # das beendet den Befehl und endet in "command not found" (Exit 127).
     # --enable-static: ScummVM holt SDL dann ueber "sdl2-config --static-libs", also aus der
     # selbst gebauten libSDL2.a. Ohne das haengt das Linux-Binary an libSDL2-2.0.so.0 und
     # startet nur, wo das Paket installiert ist. Auf macOS ist es umgekehrt (Brew-SDL2, dynamic).
@@ -111,9 +116,6 @@ if [ ! -f "config.mk" ]; then
         --disable-all-engines \
         --enable-engine=scumm,scumm-7-8 \
         --with-sdl-prefix="$SDL2_NATIVE_DIR" \
-        # COMI braucht kein JPEG (die HD-Texturen sind PNG). Ohne diesen Schalter haengt das
-        # Binary an libjpeg.so.8 aus dem Build-System, das es auf Debian nicht in dieser
-        # SONAME gibt - das Spiel startet dort dann nicht.
         --disable-jpeg \
         --with-png-prefix="$NATIVE_PREFIX" \
         --with-zlib-prefix="$NATIVE_PREFIX" \
