@@ -131,7 +131,12 @@ fi
 
 # ── Build ───────────────────────────────────────────────
 info "Building ScummVM (Windows cross-compile)..."
-make -j$(ncores) 2>&1 | tail -5
+if ! make -j$(ncores) > "$FORK_DIR/build-windows/make.log" 2>&1; then
+    err "make failed — last lines of build-windows/make.log:"
+    tail -40 "$FORK_DIR/build-windows/make.log"
+    exit 1
+fi
+tail -5 "$FORK_DIR/build-windows/make.log"
 
 if [ ! -f "scummvm.exe" ]; then
     err "Build failed — scummvm.exe not found"
