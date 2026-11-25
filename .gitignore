@@ -136,3 +136,8 @@ game/
 
 # .gitattributes muss getrackt sein, sonst wandelt der Checkout Zeilenenden je Plattform anders
 !.gitattributes
+
+# Die erprobte SDL2.dll und ihre Abhaengigkeit muessen im Repo liegen, sonst hat ein frischer
+# Build keine lauffaehige Windows-Bibliothek (Issue #32)
+!release/windows/SDL2.dll
+!release/windows/zlib1.dll
