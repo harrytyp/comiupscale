@@ -56,17 +56,21 @@ cmake "$SDL2_SRC" \
     -DSDL_WAYLAND=OFF \
     -DSDL_VIDEO_DRIVER_WINDOWS=ON \
     -DSDL_VIDEO_OPENGL=ON \
+# SDL2 kennt die Namen SDL_AUDIO_DRIVER_* NICHT, das ist die SDL3-Schreibweise. Mit den
+# falschen Namen wurden die Windows-Audiotreiber still weggelassen (cmake warnt nur), und die
+# DLL kam ohne Ton und ohne Cutscenes heraus - Fehler aus Issue #32. Richtig sind die
+# SDL2-Namen ohne AUDIO_DRIVER.
     -DSDL_AUDIO=ON \
-    -DSDL_AUDIO_DRIVER_WINMM=ON \
-    -DSDL_AUDIO_DRIVER_DSOUND=ON \
-    -DSDL_AUDIO_DRIVER_WASAPI=ON \
+    -DSDL_WINMM=ON \
+    -DSDL_DIRECTSOUND=ON \
+    -DSDL_WASAPI=ON \
     -DSDL_HIDAPI=OFF \
     -DSDL_JOYSTICK=OFF \
     -DSDL_GAMEPAD=OFF \
     -DSDL_HAPTIC=OFF \
     -DSDL_POWER=OFF \
     -DSDL_SENSOR=OFF \
-    -DSDL_RENDER=OFF \
+    -DSDL_RENDER=ON \
     -DSDL_TIMERS=ON \
     -DSDL_FILE=ON \
     -DSDL_LOADSO=ON \
