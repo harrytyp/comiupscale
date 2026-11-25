@@ -56,7 +56,7 @@ export SDL_CONFIG="$SDL2_MINGW_DIR/bin/sdl2-config"
 # x86_64-w64-mingw32-pkg-config (configure Zeile ~3973). Gibt es das nicht, faellt die
 # pkg-config-Pruefung auf "no" und danach auch SDL. Ein duenner Wrapper loest das, ohne
 # dass am Fremdcode etwas geaendert werden muss.
-SHIM_DIR="$BUILD_DIR_WIN/shim"
+SHIM_DIR="$FORK_DIR/build-windows/shim"
 mkdir -p "$SHIM_DIR"
 printf "#!/bin/sh\nexec pkg-config \"\$@\"\n" > "$SHIM_DIR/x86_64-w64-mingw32-pkg-config"
 chmod +x "$SHIM_DIR/x86_64-w64-mingw32-pkg-config"
