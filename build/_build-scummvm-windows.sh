@@ -33,10 +33,10 @@ fi
 ZNG_PREFIX="$INSTALL_DIR/zlib-ng-2.3.3-mingw"
 if [ -f "$ZNG_PREFIX/lib/libz.a" ]; then
     info "zlib-ng (MinGW) gefunden: $ZNG_PREFIX"
-    export LDFLAGS="-L$ZNG_PREFIX/lib -L$MINGW_PREFIX/lib"
+    export LDFLAGS="-L$SDL2_MINGW_DIR/lib -L$ZNG_PREFIX/lib -L$MINGW_PREFIX/lib"
 else
     warn "zlib-ng (MinGW) fehlt, nehme zlib aus mingw-prefix (langsamerer Dekode)"
-    export LDFLAGS="-L$MINGW_PREFIX/lib"
+    export LDFLAGS="-L$SDL2_MINGW_DIR/lib -L$MINGW_PREFIX/lib"
 fi
 # SDL2 fuer MinGW liegt in einem eigenen Prefix, nicht im mingw-prefix. Ohne diesen
 # Include-Pfad scheitert der Test-Compile von configure, und die Meldung lautet nur
