@@ -54,8 +54,12 @@ if [ "$(uname -s)" = "Linux" ] && ! has_pkg gl; then
 fi
 
 cd "$BUILD_DIR_SDL2"
+# Auf macOS scheitert das Linken der dylib an fehlenden Symbolen; wir brauchen nur die
+# statische Bibliothek, also dort ohne Shared Library bauen.
+if [ "$(uname -s)" = "Darwin" ]; then SDL_SHARED_OPT=OFF; else SDL_SHARED_OPT=ON; fi
 cmake "$SDL2_SRC" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DSDL_SHARED="$SDL_SHARED_OPT" \
     -DCMAKE_INSTALL_PREFIX="$SDL2_NATIVE_DIR" \
     -DSDL_X11="$X11_OPT" \
     -DSDL_WAYLAND=OFF \
@@ -110,7 +114,9 @@ fi
 
 # Verify X11 made it into the static lib (the whole point of this build)
 # NOTE: grep -c, not grep -q (pipefail + SIGPIPE issue, see windows script).
-if [ "$(strings "$SDL2_NATIVE_DIR/lib/libSDL2.a" 2>/dev/null | grep -c XOpenDisplay)" -eq 0 ]; then
+# Nur unter Linux pruefen: X11 ist dort Pflicht. Auf macOS und MSYS2 gibt es kein X11,
+# dort brach diese Pruefung einen voellig korrekten Build ab.
+if [ "$(uname -s)" = "Linux" ] && [ "$(strings "$SDL2_NATIVE_DIR/lib/libSDL2.a" 2>/dev/null | grep -c XOpenDisplay)" -eq 0 ]; then
     err "SDL2 static lib built WITHOUT X11 support — check the cmake output above"
     exit 1
 fi
