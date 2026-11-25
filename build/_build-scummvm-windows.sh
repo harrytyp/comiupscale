@@ -38,7 +38,10 @@ else
     warn "zlib-ng (MinGW) fehlt, nehme zlib aus mingw-prefix (langsamerer Dekode)"
     export LDFLAGS="-L$MINGW_PREFIX/lib"
 fi
-export CPPFLAGS="-I$MINGW_PREFIX/include"
+# SDL2 fuer MinGW liegt in einem eigenen Prefix, nicht im mingw-prefix. Ohne diesen
+# Include-Pfad scheitert der Test-Compile von configure, und die Meldung lautet nur
+# "Checking for SDL... no" (pkg-config findet sdl2 dabei problemlos).
+export CPPFLAGS="-I$SDL2_MINGW_DIR/include -I$SDL2_MINGW_DIR/include/SDL2 -I$MINGW_PREFIX/include"
 # SDL2 fuer MinGW liegt NICHT im mingw-prefix, sondern in sdl2-mingw. Ohne diesen Pfad
 # findet configure per pkg-config kein sdl2 und meldet "Checking for SDL... no".
 export PKG_CONFIG_PATH="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgconfig"
