@@ -133,3 +133,6 @@ scummvm.ini
 hd_state.log
 
 game/
+
+# .gitattributes muss getrackt sein, sonst wandelt der Checkout Zeilenenden je Plattform anders
+!.gitattributes

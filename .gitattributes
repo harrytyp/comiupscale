@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.rc text eol=lf
+*.rh text eol=lf
+*.manifest text eol=lf
+*.bat text eol=crlf
