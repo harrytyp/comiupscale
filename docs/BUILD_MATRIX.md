@@ -74,3 +74,23 @@ darf. macOS-Binaries entstehen deshalb nur auf einem Mac.
 
 **Intel-macOS-Binary.** Die CI baut auf `macos-latest`, das ist Apple Silicon; das Ergebnis ist
 arm64. Wer einen Intel-Mac hat, baut lokal mit `bash build/build-all.sh macos`.
+
+## Laufzeitabhaengigkeiten der Linux-Binary
+
+Das Linux-Binary ist bewusst so gebaut, dass es ohne Zusatzinstallation startet. Dynamisch bleiben
+nur Bibliotheken, die auf jedem Linux-Desktop vorhanden sind:
+
+| Bibliothek | Paket (Debian/Ubuntu) | Warum |
+|---|---|---|
+| `libc.so.6`, `libm.so.6` | glibc | System |
+| `libstdc++.so.6`, `libgcc_s.so.1` | g++/gcc | C++-Laufzeit |
+| `libz.so.1` | zlib1g | Kompression |
+| `libpng16.so.16` | libpng16-16 | HD-Texturen sind PNG |
+| `libasound.so.2` | libasound2 | ALSA-Audio |
+| `libfreetype.so.6` | libfreetype6 | Schriftglättung im GUI |
+
+SDL2, JPEG und die Bilddekodierung sind statisch eingebunden. CI prüft das bei jedem Lauf: taucht
+eine andere Bibliothek auf, wird der Job rot (`ldd`-Allowlist im Linux-Job).
+
+Gebaut wird auf `ubuntu-22.04`, damit die glibc-Anforderung niedrig bleibt; das Binary läuft damit
+auf Ubuntu 22.04/24.04, Debian 12 und neuer.

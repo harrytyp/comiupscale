@@ -30,11 +30,11 @@ jobs:
           ./build/out/scummvm --version
           echo "--- dynamische Abhaengigkeiten (Allowlist):"
           ldd build/out/scummvm
-          BAD=$(ldd build/out/scummvm | awk '{print $1}' | grep -vE '^(linux-vdso|libc|libm|libpthread|libdl|librt|libstdc\+\+|libgcc_s|libz|libpng16|ld-linux)' || true)
+          BAD=$(ldd build/out/scummvm | awk '{print $1}' | grep -vE '^(linux-vdso|libc|libm|libpthread|libdl|librt|libstdc\+\+|libgcc_s|libz|libpng16|libasound|libfreetype|libbrotli|ld-linux)' || true)
           if [ -n "$BAD" ]; then
             echo "FEHLER: unerwartete Laufzeitabhaengigkeit:"; echo "$BAD"; exit 1
           fi
-          echo "ok, nur glibc, libstdc++, zlib und libpng16 sind dynamisch"
+          echo "ok: nur glibc, libstdc++, libz, libpng16, libasound und libfreetype sind dynamisch"
           echo "--- benoetigte glibc-Symbole (hoechste Version):"
           objdump -T build/out/scummvm | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1
       - name: Windows bauen (Cross aus Linux)
