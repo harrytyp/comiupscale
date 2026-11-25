@@ -56,8 +56,11 @@ elif [ ! -f "$NATIVE_PREFIX/lib/libpng16.a" ] || [ ! -f "$NATIVE_PREFIX/lib/libz
 
     ok "libpng + zlib built natively"
 fi
-export CPPFLAGS="-I$NATIVE_PREFIX/include"
-export LDFLAGS="-L$NATIVE_PREFIX/lib"
+# Das selbst gebaute SDL2 liegt in einem eigenen Prefix. Ohne diese beiden Pfade scheitert der
+# Test-Link von configure auf macOS an fehlenden Symbolen und meldet "Checking for SDL... no"
+# (Linux faellt zurueck auf die Systembibliothek und merkt es nicht).
+export CPPFLAGS="-I$SDL2_NATIVE_DIR/include -I$SDL2_NATIVE_DIR/include/SDL2 -I$NATIVE_PREFIX/include"
+export LDFLAGS="-L$SDL2_NATIVE_DIR/lib -L$NATIVE_PREFIX/lib"
 export PKG_CONFIG_PATH="$NATIVE_PREFIX/lib/pkgconfig"
 
 # Create build directory in fork
