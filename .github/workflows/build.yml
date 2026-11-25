@@ -37,6 +37,13 @@ jobs:
           echo "ok: nur glibc, libstdc++, libz, libpng16, libasound und libfreetype sind dynamisch"
           echo "--- benoetigte glibc-Symbole (hoechste Version):"
           objdump -T build/out/scummvm | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1
+      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+        run: |
+          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm | tee hdcheck.txt
+          grep -q "hd-check: ok 2560x1920" hdcheck.txt
+          grep -q "px(10,20)=10,20,3,128" hdcheck.txt
+          echo "ok: HD-Textur dekodiert, Alpha erhalten"
+
       - name: Windows bauen (Cross aus Linux)
         run: bash build/build-all.sh windows
       - name: Windows-Artefakte pruefen
@@ -65,6 +72,13 @@ jobs:
         run: bash build/build-all.sh macos
       - name: macOS-Binary pruefen
         run: ./build/out/scummvm --version
+      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+        run: |
+          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm | tee hdcheck.txt
+          grep -q "hd-check: ok 2560x1920" hdcheck.txt
+          grep -q "px(10,20)=10,20,3,128" hdcheck.txt
+          echo "ok: HD-Textur dekodiert, Alpha erhalten"
+
       - name: Windows bauen (Cross aus macOS)
         id: win
         continue-on-error: true
@@ -117,6 +131,13 @@ jobs:
         run: bash build/build-all.sh native
       - name: Binary pruefen
         run: ./build/out/scummvm.exe --version
+      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+        run: |
+          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm.exe | tee hdcheck.txt
+          grep -q "hd-check: ok 2560x1920" hdcheck.txt
+          grep -q "px(10,20)=10,20,3,128" hdcheck.txt
+          echo "ok: HD-Textur dekodiert, Alpha erhalten"
+
       - uses: actions/upload-artifact@v4
         with:
           name: windows-binary-native

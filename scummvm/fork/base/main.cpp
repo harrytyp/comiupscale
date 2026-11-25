@@ -43,6 +43,8 @@
 #include "common/events.h"
 #include "gui/EventRecorder.h"
 #include "common/fs.h"
+#include "common/file.h"
+#include "image/png.h"
 #ifdef ENABLE_EVENTRECORDER
 #include "common/recorderfile.h"
 #endif
@@ -417,6 +419,30 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 	// Verify that the backend has been initialized (i.e. g_system has been set).
 	assert(g_system);
 	OSystem &system = *g_system;
+
+	// HD self-test: decode a PNG through exactly the decoder the HD asset loader uses.
+	// CI runs this on every platform build so that "loads HD textures" is proven, not assumed.
+	// Needs no game data and no video output, so it works headless in a container.
+	if (const char *hdCheck = getenv("HD_CHECK_PNG")) {
+		Common::File hdFile;
+		if (!hdFile.open(hdCheck)) {
+			printf("hd-check: FAIL cannot open %s\n", hdCheck);
+			return 1;
+		}
+		Image::PNGDecoder hdDec;
+		if (!hdDec.loadStream(hdFile)) {
+			printf("hd-check: FAIL cannot decode %s\n", hdCheck);
+			return 1;
+		}
+		const Graphics::Surface *hs = hdDec.getSurface();
+		const byte *hp = (const byte *)hs->getBasePtr(10, 20);
+		printf("hd-check: ok %ux%u bpp=%u px(10,20)=%u,%u,%u,%u alpha=%s\n",
+		       hs->w, hs->h, (unsigned)hs->format.bytesPerPixel,
+		       hp[0], hp[1], hp[2],
+		       hs->format.bytesPerPixel >= 4 ? hp[3] : 0u,
+		       hs->format.bytesPerPixel >= 4 ? "yes" : "no");
+		return 0;
+	}
 
 	// Register config manager defaults
 	Base::registerDefaults();
