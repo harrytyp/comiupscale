@@ -85,15 +85,16 @@ case "$pm" in
 esac
 
 if [ "$DRY" = 1 ]; then
-  echo "[DRY]   sudo $cmd"
+  echo "[DRY]   ${SUDO:-sudo} $cmd"
   exit 0
 fi
 
-if [ "$(id -u)" = "0" ]; then
-  echo "[INFO]  $cmd"
-  $cmd
-else
-  echo "[INFO]  sudo $cmd"
-  sudo $cmd
+# sudo gibt es nicht ueberall: MSYS2 hat keins, und brew als root ist verboten. Also nur
+# voranstellen, wenn sudo existiert UND wir nicht schon root sind. brew laeuft nie mit sudo.
+SUDO=""
+if [ "$pm" != "brew" ] && [ "$(id -u)" != "0" ] && command -v sudo >/dev/null 2>&1; then
+  SUDO="sudo"
 fi
+echo "[INFO]  ${SUDO:+$SUDO }$cmd"
+${SUDO:+$SUDO }$cmd
 echo "[OK]    Abhaengigkeiten installiert. Jetzt: bash build/build-all.sh linux"
