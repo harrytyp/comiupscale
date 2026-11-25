@@ -138,7 +138,14 @@ fi
 
 # ── Build ───────────────────────────────────────────────
 info "Building ScummVM (Windows cross-compile)..."
-if ! make -j$(ncores) > "$FORK_DIR/build-windows/make.log" 2>&1; then
+# WINDRES per Make-Variable setzen: config.mk schreibt "WINDRES := ..." und ueberschreibt
+# eine reine Umgebungsvariable. Auf macOS muss der Preprocessor der Toolchain genannt werden,
+# sonst nimmt llvm-windres den Apple-clang und llvm-rc kann dessen Ausgabe nicht lesen.
+MAKE_WINDRES=()
+if [ "$(uname -s)" = "Darwin" ]; then
+    MAKE_WINDRES=("WINDRES=$LLVM_TOOLCHAIN/x86_64-w64-mingw32-windres --preprocessor=$LLVM_TOOLCHAIN/x86_64-w64-mingw32-gcc --preprocessor-arg=-E")
+fi
+if ! make -j$(ncores) "${MAKE_WINDRES[@]}" > "$FORK_DIR/build-windows/make.log" 2>&1; then
     err "make failed — last lines of build-windows/make.log:"
     tail -40 "$FORK_DIR/build-windows/make.log"
     exit 1
