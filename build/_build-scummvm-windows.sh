@@ -179,17 +179,26 @@ if [ "$(strings "$SCUMMVM_WIN" 2>/dev/null | grep -c "zlib-ng")" -eq 0 ]; then
     warn "  Behebung: bash build/_build-zlibng-mingw.sh, dann neu linken."
 fi
 
-# Die selbst gebaute SDL2.dll (1.5 MB) laeuft nicht: kein Ton, keine Cutscenes, Einfrieren beim
-# Blick vom Schiff (siehe Issue #32). Die erprobte Fassung (7.3 MB) liegt mit ihrer Abhaengigkeit
-# zlib1.dll in release/windows/. Deshalb wird sie hier ins Ausgabeverzeichnis gelegt, damit ein
-# frischer Build dieselben Dateien erzeugt wie das Release.
-RELEASE_WIN="$REPO_DIR/release/windows"
-for dep in SDL2.dll zlib1.dll; do
-    if [ -f "$RELEASE_WIN/$dep" ]; then
-        cp -f "$RELEASE_WIN/$dep" "$BUILD_DIR/out/$dep"
-        ok "shipped $dep from release/windows ($(du -h "$BUILD_DIR/out/$dep" | cut -f1))"
-    else
-        warn "release/windows/$dep fehlt — der Build ist ohne diese Datei nicht lauffaehig"
-    fi
-done
+# Welche SDL2.dll wird ausgeliefert? Die frisch gebaute, wenn sie die Windows-Audiotreiber
+# wirklich enthaelt. Fehlen sie (falsche cmake-Flags, siehe Issue #32), wird die erprobte
+# Fassung aus release/windows/ genommen und laut gewarnt - nie still das Falsche ausliefern.
+BUILT_SDL="$SDL2_MINGW_DIR/bin/SDL2.dll"
+drivers=$(strings "$BUILT_SDL" 2>/dev/null | grep -ciE "^(wasapi|directsound|winmm)$" || true)
+if [ -f "$BUILT_SDL" ] && [ "${drivers:-0}" -ge 3 ]; then
+    cp -f "$BUILT_SDL" "$BUILD_DIR/out/SDL2.dll"
+    ok "shipped freshly built SDL2.dll ($(du -h "$BUILD_DIR/out/SDL2.dll" | cut -f1), $drivers Audiotreiber)"
+    cp -f "$BUILD_DIR/out/SDL2.dll" "$REPO_DIR/release/windows/SDL2.dll"
+    info "release/windows/SDL2.dll auf die frische Fassung aktualisiert"
+else
+    err "die gebaute SDL2.dll hat keine Windows-Audiotreiber ($drivers von 3 erwartet)"
+    for dep in SDL2.dll zlib1.dll; do
+        if [ -f "$REPO_DIR/release/windows/$dep" ]; then
+            cp -f "$REPO_DIR/release/windows/$dep" "$BUILD_DIR/out/$dep"
+            warn "Rueckfall: $dep aus release/windows uebernommen"
+        else
+            err "release/windows/$dep fehlt — der Build ist nicht lauffaehig"
+            exit 1
+        fi
+    done
+fi
 ok "Windows binary: $SCUMMVM_WIN ($(du -h "$SCUMMVM_WIN" | cut -f1))"
