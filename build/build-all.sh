@@ -44,12 +44,19 @@ esac
 # welcher Zielname zu seinem Rechner passt.
 HOST_OS="$(uname -s)"
 case "${MSYSTEM:-}" in MINGW*|MSYS*|UCRT*) HOST_OS="Windows" ;; esac
-if [ "$TARGET" = "native" ] || [ "$TARGET" = "all" ]; then
-    if [ "$HOST_OS" = "Darwin" ]; then NATIVE_TARGET="macos"; else NATIVE_TARGET="linux"; fi
-    [ "$HOST_OS" = "Windows" ] && NATIVE_TARGET="windows"
-fi
-[ "$TARGET" = "linux" ] && NATIVE_TARGET="linux"
-[ "$TARGET" = "macos" ] && NATIVE_TARGET="macos"
+# Wichtig: keine "test && zuweisung"-Ketten. Unter set -e beendet ein fehlgeschlagener
+# Test die ganze Liste und damit das Skript, ohne jede Meldung.
+NATIVE_TARGET=""
+case "$TARGET" in
+    native|all)
+        case "$HOST_OS" in
+            Darwin)  NATIVE_TARGET="macos" ;;
+            Windows) NATIVE_TARGET="windows" ;;
+            *)       NATIVE_TARGET="linux" ;;
+        esac ;;
+    linux) NATIVE_TARGET="linux" ;;
+    macos) NATIVE_TARGET="macos" ;;
+esac
 
 # Windows-Cross nur, wenn wir nicht schon auf Windows sind (dort ist der native Build
 # bereits ein Windows-Binary).
@@ -156,7 +163,7 @@ echo "============================================"
 echo -e "${GREEN}  COMI-HD Build Complete!${NC}"
 echo "============================================"
 if [ -f "$BUILD_DIR/out/scummvm" ]; then
-    echo "  Native:  build/out/scummvm ($NATIVE_TARGET)"
+    echo "  Native:  build/out/scummvm (${NATIVE_TARGET:-keins})"
 fi
 if [ -f "$BUILD_DIR/out/scummvm.exe" ]; then
     echo "  Windows: build/out/scummvm.exe"
