@@ -31,8 +31,16 @@ ZYPP_PKGS="gcc-c++ make cmake pkg-config curl unzip python3 \
 libX11-devel libXext-devel libXcursor-devel libXi-devel libXfixes-devel libXrandr-devel libXinerama-devel libXScrnSaver-devel \
 alsa-devel zlib-devel libpng-devel"
 
-pm=""
-if command -v apt-get >/dev/null; then pm="apt"; pkgs="$APT_PKGS"
+# macOS und MSYS2 zuerst, sonst greift der Linux-Zweig auf einem Mac nie.
+pm=""; pkgs=""
+if [ "$(uname -s)" = "Darwin" ] && command -v brew >/dev/null; then
+    pm="brew"
+    pkgs="cmake pkg-config curl unzip sdl2 libpng"
+elif [ -n "${MSYSTEM:-}" ] && command -v pacman >/dev/null; then
+    pm="pacman"
+    pkgs="mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-pkgconf \
+mingw-w64-x86_64-SDL2 mingw-w64-x86_64-zlib mingw-w64-x86_64-libpng unzip"
+elif command -v apt-get >/dev/null; then pm="apt"; pkgs="$APT_PKGS"
 elif command -v dnf >/dev/null; then pm="dnf"; pkgs="$DNF_PKGS"
 elif command -v pacman >/dev/null; then pm="pacman"; pkgs="$PAC_PKGS"
 elif command -v zypper >/dev/null; then pm="zypper"; pkgs="$ZYPP_PKGS"
@@ -50,6 +58,7 @@ fi
 missing=""
 for p in ${pkgs}; do
   case "$pm" in
+    brew) brew list --versions "$p" >/dev/null 2>&1 || missing="$missing $p" ;;
     apt) dpkg -s "$p" >/dev/null 2>&1 || missing="$missing $p" ;;
     dnf|zypper) rpm -q "$p" >/dev/null 2>&1 || missing="$missing $p" ;;
     pacman) pacman -Q "$p" >/dev/null 2>&1 || missing="$missing $p" ;;
@@ -68,6 +77,7 @@ if [ "$CHECK" = 1 ]; then
 fi
 
 case "$pm" in
+  brew)   cmd="brew install$missing" ;;
   apt)    cmd="apt-get install -y --no-install-recommends$missing" ;;
   dnf)    cmd="dnf install -y$missing" ;;
   pacman) cmd="pacman -S --needed --noconfirm$missing" ;;
