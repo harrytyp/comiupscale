@@ -429,14 +429,23 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 	// HD self-test: decode a PNG through exactly the decoder the HD asset loader uses.
 	// CI runs this on every platform build so that "loads HD textures" is proven, not assumed.
 	// Needs no game data and no video output, so it works headless in a container.
+	// HD self-test: decode a PNG through exactly the decoder the HD asset loader uses.
+	// CI runs this on every platform build so that "loads HD textures" is proven, not assumed.
+	// Needs no game data and no video output, so it works headless in a container.
 	if (const char *hdCheck = getenv("HD_CHECK_PNG")) {
-		Common::File hdFile;
-		if (!hdFile.open(hdCheck)) {
+		// Direkt ueber FSNode lesen: der Pfad kommt absolut von aussen, SearchMan wuerde nur
+		// registrierte Verzeichnisse durchsuchen.
+		Common::Path hdPath(hdCheck);
+		Common::FSNode hdNode(hdPath);
+		Common::SeekableReadStream *hdStream = hdNode.createReadStream();
+		if (!hdStream) {
 			printf("hd-check: FAIL cannot open %s\n", hdCheck);
 			return 1;
 		}
 		Image::PNGDecoder hdDec;
-		if (!hdDec.loadStream(hdFile)) {
+		bool hdOk = hdDec.loadStream(*hdStream);
+		delete hdStream;
+		if (!hdOk) {
 			printf("hd-check: FAIL cannot decode %s\n", hdCheck);
 			return 1;
 		}

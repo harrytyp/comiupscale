@@ -37,13 +37,14 @@ jobs:
           echo "ok: nur glibc, libstdc++, libz, libpng16, libasound und libfreetype sind dynamisch"
           echo "--- benoetigte glibc-Symbole (hoechste Version):"
           objdump -T build/out/scummvm | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1
-      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+      - name: HD-Textur dekodieren
         run: |
-          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm | tee hdcheck.txt
+          export HD_CHECK_PNG="$PWD/tests/data/hd_check.png"
+          ls -l "$HD_CHECK_PNG"
+          ./build/out/scummvm | tee hdcheck.txt
           grep -q "hd-check: ok 2560x1920" hdcheck.txt
           grep -q "px(10,20)=10,20,3,128" hdcheck.txt
           echo "ok: HD-Textur dekodiert, Alpha erhalten"
-
       - name: Windows bauen (Cross aus Linux)
         run: bash build/build-all.sh windows
       - name: Windows-Artefakte pruefen
@@ -72,31 +73,16 @@ jobs:
         run: bash build/build-all.sh macos
       - name: macOS-Binary pruefen
         run: ./build/out/scummvm --version
-      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+      - name: HD-Textur dekodieren
         run: |
-          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm | tee hdcheck.txt
+          export HD_CHECK_PNG="$PWD/tests/data/hd_check.png"
+          ls -l "$HD_CHECK_PNG"
+          ./build/out/scummvm | tee hdcheck.txt
           grep -q "hd-check: ok 2560x1920" hdcheck.txt
           grep -q "px(10,20)=10,20,3,128" hdcheck.txt
           echo "ok: HD-Textur dekodiert, Alpha erhalten"
-
       - name: Windows bauen (Cross aus macOS)
-        id: win
-        continue-on-error: true
         run: bash build/build-all.sh windows
-      - name: Diagnose Resource-Schritt
-        if: steps.win.outcome == 'failure'
-        run: |
-          cd scummvm/fork/build-windows
-          echo "--- WINDRES aus config.mk:"
-          grep -E "^WINDRES|^WINDRESFLAGS|^CPPFLAGS" config.mk || true
-          echo "--- windres Version:"
-          x86_64-w64-mingw32-windres --version || true
-          echo "--- llvm-rc Version:"
-          "$(dirname "$(command -v x86_64-w64-mingw32-windres)")/llvm-rc" --version || true
-          echo "--- make.log Ende:"
-          tail -30 make.log || true
-          echo "--- Einzelaufruf:"
-          make dists/scummvm.o 2>&1 | tail -40 || true
       - name: Windows-Artefakte pruefen
         run: |
           test -f build/out/scummvm.exe
@@ -131,13 +117,16 @@ jobs:
         run: bash build/build-all.sh native
       - name: Binary pruefen
         run: ./build/out/scummvm.exe --version
-      - name: HD-Textur dekodieren (gleicher PNG-Pfad wie der HD-Loader)
+      - name: HD-Textur dekodieren
         run: |
-          HD_CHECK_PNG=tests/data/hd_check.png ./build/out/scummvm.exe | tee hdcheck.txt
+          # Native Windows-exe: der Pfad muss in Windows-Form uebergeben werden, sonst
+          # versteht das Programm /d/a/... nicht.
+          export HD_CHECK_PNG="$(cygpath -w "$PWD/tests/data/hd_check.png")"
+          ls -l "$HD_CHECK_PNG"
+          ./build/out/scummvm.exe | tee hdcheck.txt
           grep -q "hd-check: ok 2560x1920" hdcheck.txt
           grep -q "px(10,20)=10,20,3,128" hdcheck.txt
           echo "ok: HD-Textur dekodiert, Alpha erhalten"
-
       - uses: actions/upload-artifact@v4
         with:
           name: windows-binary-native
