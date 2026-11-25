@@ -179,4 +179,17 @@ if [ "$(strings "$SCUMMVM_WIN" 2>/dev/null | grep -c "zlib-ng")" -eq 0 ]; then
     warn "  Behebung: bash build/_build-zlibng-mingw.sh, dann neu linken."
 fi
 
+# Die selbst gebaute SDL2.dll (1.5 MB) laeuft nicht: kein Ton, keine Cutscenes, Einfrieren beim
+# Blick vom Schiff (siehe Issue #32). Die erprobte Fassung (7.3 MB) liegt mit ihrer Abhaengigkeit
+# zlib1.dll in release/windows/. Deshalb wird sie hier ins Ausgabeverzeichnis gelegt, damit ein
+# frischer Build dieselben Dateien erzeugt wie das Release.
+RELEASE_WIN="$REPO_DIR/release/windows"
+for dep in SDL2.dll zlib1.dll; do
+    if [ -f "$RELEASE_WIN/$dep" ]; then
+        cp -f "$RELEASE_WIN/$dep" "$BUILD_DIR/out/$dep"
+        ok "shipped $dep from release/windows ($(du -h "$BUILD_DIR/out/$dep" | cut -f1))"
+    else
+        warn "release/windows/$dep fehlt — der Build ist ohne diese Datei nicht lauffaehig"
+    fi
+done
 ok "Windows binary: $SCUMMVM_WIN ($(du -h "$SCUMMVM_WIN" | cut -f1))"
