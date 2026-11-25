@@ -42,6 +42,11 @@ export CPPFLAGS="-I$MINGW_PREFIX/include"
 # SDL2 fuer MinGW liegt NICHT im mingw-prefix, sondern in sdl2-mingw. Ohne diesen Pfad
 # findet configure per pkg-config kein sdl2 und meldet "Checking for SDL... no".
 export PKG_CONFIG_PATH="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgconfig"
+# Cross-Sonderfall in configure (Zeile ~4457): fuer einen Host != Build-Host sucht es
+# "$host-pkg-config", also x86_64-w64-mingw32-pkg-config, das es nicht gibt. Ergebnis:
+# "Checking for pkg-config... no" und danach "Checking for SDL... no". Ist PKG_CONFIG_LIBDIR
+# gesetzt, bleibt es bei pkg-config und durchsucht genau diese Verzeichnisse.
+export PKG_CONFIG_LIBDIR="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgconfig"
 
 # Add toolchain to PATH
 export PATH="$LLVM_TOOLCHAIN:$SDL2_MINGW_DIR/bin:$PATH"
