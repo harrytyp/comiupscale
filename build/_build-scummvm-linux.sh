@@ -131,7 +131,14 @@ else
 fi
 
 info "Building ScummVM (Linux)..."
-make -j$(ncores) 2>&1 | tail -5
+# Vollstaendiges Log mitschreiben: "| tail -5" verschluckt bei einem Link-Fehler genau die
+# Zeile mit der Ursache (auf MSYS2 war im CI nichts mehr zu sehen ausser "exit code 2").
+if ! make -j$(ncores) > "$BUILD_DIR_LINUX/make.log" 2>&1; then
+    err "make failed — last lines of $BUILD_DIR_LINUX/make.log:"
+    tail -40 "$BUILD_DIR_LINUX/make.log"
+    exit 1
+fi
+tail -5 "$BUILD_DIR_LINUX/make.log"
 
 # Check result
 if [ ! -f "scummvm" ]; then
