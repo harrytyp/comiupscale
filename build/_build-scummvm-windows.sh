@@ -70,7 +70,14 @@ if [ ! -f "config.mk" ]; then
         --enable-engine=scumm,scumm-7-8
     )
 
-    "$FORK_DIR/configure" "${CONFIG_ARGS[@]}" 2>&1 | tail -5
+    # Vollstaendige Ausgabe mitschreiben. "| tail -5" hat bei der Fehlersuche genau die Zeile
+# verschluckt, die den Grund nennt (warum pkg-config/SDL nicht gefunden wurde).
+"$FORK_DIR/configure" "${CONFIG_ARGS[@]}" > "$BUILD_DIR_WIN/configure.log" 2>&1 || {
+        err "configure failed, full output: $BUILD_DIR_WIN/configure.log"
+        tail -20 "$BUILD_DIR_WIN/configure.log"
+        exit 1
+    }
+    tail -5 "$BUILD_DIR_WIN/configure.log"
 
     # Verify scumm_7_8 is enabled
     if ! grep -q "ENABLE_SCUMM_7_8 = 1" config.mk 2>/dev/null; then
