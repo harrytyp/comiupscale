@@ -12,7 +12,13 @@ source "$SCRIPT_DIR/_common.sh"
 mkdir -p "$BUILD_DIR/out"
 
 # Check if already built and up to date
-SCUMMVM_LINUX="$BUILD_DIR/out/scummvm"
+# Unter MSYS2 heisst das Ergebnis scummvm.exe. Ohne diese Unterscheidung liegt das Binary
+# als "scummvm" im out-Verzeichnis, obwohl es eine Windows-exe ist.
+if [ -n "${MSYSTEM:-}" ]; then
+    SCUMMVM_LINUX="$BUILD_DIR/out/scummvm.exe"
+else
+    SCUMMVM_LINUX="$BUILD_DIR/out/scummvm"
+fi
 if [ -f "$SCUMMVM_LINUX" ]; then
     info "Linux binary already exists at $SCUMMVM_LINUX"
     info "Remove it to rebuild, or run: make -C $FORK_DIR/build-linux"
