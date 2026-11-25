@@ -52,6 +52,16 @@ export PKG_CONFIG_LIBDIR="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgcon
 export PATH="$LLVM_TOOLCHAIN:$SDL2_MINGW_DIR/bin:$PATH"
 export SDL_CONFIG="$SDL2_MINGW_DIR/bin/sdl2-config"
 
+# configure benennt das Werkzeug fuer Cross-Builds um: es sucht "$host-pkg-config", also
+# x86_64-w64-mingw32-pkg-config (configure Zeile ~3973). Gibt es das nicht, faellt die
+# pkg-config-Pruefung auf "no" und danach auch SDL. Ein duenner Wrapper loest das, ohne
+# dass am Fremdcode etwas geaendert werden muss.
+SHIM_DIR="$BUILD_DIR_WIN/shim"
+mkdir -p "$SHIM_DIR"
+printf "#!/bin/sh\nexec pkg-config \"\$@\"\n" > "$SHIM_DIR/x86_64-w64-mingw32-pkg-config"
+chmod +x "$SHIM_DIR/x86_64-w64-mingw32-pkg-config"
+export PATH="$SHIM_DIR:$PATH"
+
 # ── Configure ───────────────────────────────────────────
 BUILD_DIR_WIN="$FORK_DIR/build-windows"
 mkdir -p "$BUILD_DIR_WIN"
