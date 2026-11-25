@@ -40,41 +40,22 @@ mkdir -p "$BUILD_DIR_SDL2"
 
 info "Configuring SDL2 (MinGW cross-compile)..."
 cd "$BUILD_DIR_SDL2"
-# SDL2 bietet fuer die einzelnen Audiotreiber KEINE cmake-Schalter (weder SDL_AUDIO_DRIVER_*
-# noch SDL_DIRECTSOUND/SDL_WASAPI). Die Treiber werden plattformabhaengig automatisch erkannt.
-# Frueher standen hier wirkungslose Flags; zwischen \-Fortsetzungen duerfen keine Kommentare
-# stehen, das beendet den Befehl (Exit 127).
-cmake "$SDL2_SRC" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="$SDL2_MINGW_DIR" \
-    -DCMAKE_SYSTEM_NAME=Windows \
-    -DCMAKE_SYSTEM_PROCESSOR=x86_64 \
-    -DCMAKE_C_COMPILER="$LLVM_TOOLCHAIN/x86_64-w64-mingw32-gcc" \
-    -DCMAKE_CXX_COMPILER="$LLVM_TOOLCHAIN/x86_64-w64-mingw32-g++" \
-    -DCMAKE_RC_COMPILER="$LLVM_TOOLCHAIN/x86_64-w64-mingw32-windres" \
-    -DCMAKE_FIND_ROOT_PATH="$LLVM_MINGW_DIR/x86_64-w64-mingw32" \
-    -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
-    -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
-    -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
-    -DSDL_X11=OFF \
-    -DSDL_WAYLAND=OFF \
-    -DSDL_VIDEO_DRIVER_WINDOWS=ON \
-    -DSDL_VIDEO_OPENGL=ON \
-    -DSDL_AUDIO=ON \
-    -DSDL_HIDAPI=OFF \
-    -DSDL_JOYSTICK=OFF \
-    -DSDL_GAMEPAD=OFF \
-    -DSDL_HAPTIC=OFF \
-    -DSDL_POWER=OFF \
-    -DSDL_SENSOR=OFF \
-    -DSDL_RENDER=ON \
-    -DSDL_TIMERS=ON \
-    -DSDL_FILE=ON \
-    -DSDL_LOADSO=ON \
-    -DSDL_CPUINFO=OFF \
-    -DSDL_IMMEVENT=OFF \
-    2>&1 | tail -5
-
+# Autotools statt cmake. Cmake baut fuer MinGW nur wasapi/disk/dummy; autotools baut
+# winmm, directsound und wasapi - nachgewiesen: 7.75 MB DLL gegen 1.66 MB, und nur mit
+# diesen Treibern hat das Spiel Ton (Issue #32). Der Aufruf ist der im Repo und im Skill
+# dokumentierte Weg (SKILL.md, "SDL2 Audio Build (Windows)").
+SDL2_CONF_LOG="$BUILD_DIR_SDL2/configure.log"
+if ! "$SDL2_SRC/configure" \
+        --host=x86_64-w64-mingw32 \
+        --prefix="$SDL2_MINGW_DIR" \
+        --enable-audio --enable-wasapi \
+        --disable-joystick --disable-haptic --disable-hidapi \
+        > "$SDL2_CONF_LOG" 2>&1 ; then
+    err "SDL2 configure failed, last lines of $SDL2_CONF_LOG:"
+    tail -20 "$SDL2_CONF_LOG"
+    exit 1
+fi
+grep -E "Audio drivers" "$SDL2_CONF_LOG" | tail -1
 info "Building SDL2 (MinGW cross-compile)..."
 make -j$(ncores) 2>&1 | tail -5
 
