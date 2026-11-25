@@ -22,6 +22,7 @@
 #define FORBIDDEN_SYMBOL_ALLOW_ALL
 
 #include "scumm/hd_batch_decode.h"
+#include "scumm/hd_asset_manager.h"
 #include "scumm/hd_costume_manager.h"
 #include "scumm/hd_fringe.h"
 #include "scumm/scumm.h"
@@ -115,7 +116,7 @@ struct HdCelLoadDetail {
 // Bild laden und aufbereiten: PNG-Dekode, Umwandlung in RGBA8888, Randfarben-Heuristik,
 // Fransen. Reine Funktion auf einer lokalen Flaeche - dafuer im Vorlade-Thread benutzbar.
 static bool hdCelLoadImage(const Common::String &path, Graphics::Surface &surf, HdCelLoadDetail *detail) {
-	Common::FSNode fileNode(Common::Path(path, Common::Path::kNativeSeparator));
+	Common::FSNode fileNode(Common::Path(hdNativePath(path), Common::Path::kNativeSeparator));
 	if (!fileNode.exists()) {
 		if (detail)
 			HD_TRACE(path, false);
@@ -296,7 +297,7 @@ bool HdCostumeManager::init(const Common::String &hdPath) {
 		_hdPath.deleteLastChar();
 
 	Common::String costumesDir = _hdPath + "/costumes";
-	Common::FSNode dirNode(Common::Path(costumesDir, Common::Path::kNativeSeparator));
+	Common::FSNode dirNode(Common::Path(hdNativePath(costumesDir), Common::Path::kNativeSeparator));
 	if (!dirNode.exists() || !dirNode.isDirectory()) {
 		debug(1, "HdCostumeManager: costumes directory not found at %s, HD costumes disabled", costumesDir.c_str());
 		_enabled = false;

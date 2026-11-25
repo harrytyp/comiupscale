@@ -52,7 +52,7 @@ void HDAssetManager::setHDPath(const Common::String &path) {
 	debug(1, "HDAssetManager: HD path set to %s", _hdPath.c_str());
 
 	// Check if HD directory exists
-	Common::FSNode dir(Common::Path(_hdPath, Common::Path::kNativeSeparator));
+	Common::FSNode dir(Common::Path(hdNativePath(_hdPath), Common::Path::kNativeSeparator));
 	if (!dir.exists() || !dir.isDirectory()) {
 		debug(1, "HDAssetManager: HD directory not found, HD mode disabled");
 		_hdPath.clear();
@@ -68,7 +68,7 @@ void HDAssetManager::scanBackgrounds() {
 	_bgFiles.clear();
 
 	Common::String bgDirPath = _hdPath + "/backgrounds";
-	Common::FSNode bgDir(Common::Path(bgDirPath, Common::Path::kNativeSeparator));
+	Common::FSNode bgDir(Common::Path(hdNativePath(bgDirPath), Common::Path::kNativeSeparator));
 	if (!bgDir.exists() || !bgDir.isDirectory()) {
 		debug(1, "HDAssetManager: No backgrounds/ subdirectory at %s", bgDirPath.c_str());
 		return;
@@ -115,7 +115,7 @@ bool HDAssetManager::loadBackground(int room, Graphics::Surface &surf) {
 	}
 
 	Common::String bgPath = _bgFiles[room];
-	Common::FSNode fileNode(Common::Path(bgPath, Common::Path::kNativeSeparator));
+	Common::FSNode fileNode(Common::Path(hdNativePath(bgPath), Common::Path::kNativeSeparator));
 	if (!fileNode.exists()) {
 		HD_TRACE(bgPath, false);
 		return false;

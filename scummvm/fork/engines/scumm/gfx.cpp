@@ -4824,7 +4824,7 @@ void ScummEngine::hdDebugDump() {
 	// Write dumps to <project>/logs/ (resolve from hd_path up to project root)
 	Common::String dumpDir;
 	if (_hdAssetManager->isEnabled()) {
-		Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
+		Common::FSNode hdNode(Common::Path(hdNativePath(_hdAssetManager->getHDPath()), Common::Path::kNativeSeparator));
 		// Use Common::Path for safe string-based directory traversal instead of
 		// FSNode::getParent(), which can assert on empty paths at Windows UNC
 		// share roots (e.g. \\server\share). On such paths, getParent().getParent()
@@ -4844,7 +4844,7 @@ void ScummEngine::hdDebugDump() {
 		dumpDir = ".";
 	}
 	// Ensure logs/ directory exists
-	Common::FSNode logDir(Common::Path(dumpDir, Common::Path::kNativeSeparator));
+	Common::FSNode logDir(Common::Path(hdNativePath(dumpDir), Common::Path::kNativeSeparator));
 	if (!logDir.exists())
 		logDir.createDirectory();
 
@@ -5031,7 +5031,7 @@ void ScummEngine::hdDumpSDComposite() {
     char path[256];
     Common::String dumpDir;
     if (_hdAssetManager->isEnabled()) {
-        Common::FSNode hdNode(Common::Path(_hdAssetManager->getHDPath(), Common::Path::kNativeSeparator));
+        Common::FSNode hdNode(Common::Path(hdNativePath(_hdAssetManager->getHDPath()), Common::Path::kNativeSeparator));
         // Use Common::Path for safe string-based directory traversal instead of
         // FSNode::getParent(), which can assert on empty paths at Windows UNC
         // share roots (e.g. \\server\share). On such paths, getParent().getParent()

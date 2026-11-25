@@ -29,6 +29,21 @@
 
 namespace Scumm {
 
+/** Pfad auf den nativen Trenner bringen, bevor er in Common::Path geht.
+ *  Ohne das enthaelt der String unter Windows beide Trenner und Common::Path warnt
+ *  "Collision in path" und kann an der falschen Stelle trennen (Issue #39). */
+static inline Common::String hdNativePath(const Common::String &p) {
+#ifdef WIN32
+	Common::String s(p);
+	for (uint i = 0; i < s.size(); ++i)
+		if (s[i] == '/')
+			s[i] = '\\';
+	return s;
+#else
+	return p;
+#endif
+}
+
 class ScummEngine;
 
 /**
