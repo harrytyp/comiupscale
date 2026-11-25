@@ -40,6 +40,10 @@ mkdir -p "$BUILD_DIR_SDL2"
 
 info "Configuring SDL2 (MinGW cross-compile)..."
 cd "$BUILD_DIR_SDL2"
+# SDL2 bietet fuer die einzelnen Audiotreiber KEINE cmake-Schalter (weder SDL_AUDIO_DRIVER_*
+# noch SDL_DIRECTSOUND/SDL_WASAPI). Die Treiber werden plattformabhaengig automatisch erkannt.
+# Frueher standen hier wirkungslose Flags; zwischen \-Fortsetzungen duerfen keine Kommentare
+# stehen, das beendet den Befehl (Exit 127).
 cmake "$SDL2_SRC" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="$SDL2_MINGW_DIR" \
@@ -56,14 +60,7 @@ cmake "$SDL2_SRC" \
     -DSDL_WAYLAND=OFF \
     -DSDL_VIDEO_DRIVER_WINDOWS=ON \
     -DSDL_VIDEO_OPENGL=ON \
-# SDL2 kennt die Namen SDL_AUDIO_DRIVER_* NICHT, das ist die SDL3-Schreibweise. Mit den
-# falschen Namen wurden die Windows-Audiotreiber still weggelassen (cmake warnt nur), und die
-# DLL kam ohne Ton und ohne Cutscenes heraus - Fehler aus Issue #32. Richtig sind die
-# SDL2-Namen ohne AUDIO_DRIVER.
     -DSDL_AUDIO=ON \
-    -DSDL_WINMM=ON \
-    -DSDL_DIRECTSOUND=ON \
-    -DSDL_WASAPI=ON \
     -DSDL_HIDAPI=OFF \
     -DSDL_JOYSTICK=OFF \
     -DSDL_GAMEPAD=OFF \

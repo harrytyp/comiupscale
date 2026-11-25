@@ -183,7 +183,8 @@ fi
 # wirklich enthaelt. Fehlen sie (falsche cmake-Flags, siehe Issue #32), wird die erprobte
 # Fassung aus release/windows/ genommen und laut gewarnt - nie still das Falsche ausliefern.
 BUILT_SDL="$SDL2_MINGW_DIR/bin/SDL2.dll"
-drivers=$(strings "$BUILT_SDL" 2>/dev/null | grep -ciE "^(wasapi|directsound|winmm)$" || true)
+# grep -a statt strings: binutils fehlt auf dem CI-Runner, grep kann Binaerdateien lesen
+drivers=$(grep -ac -E "^(wasapi|directsound|winmm)$" "$BUILT_SDL" 2>/dev/null || echo 0)
 if [ -f "$BUILT_SDL" ] && [ "${drivers:-0}" -ge 3 ]; then
     cp -f "$BUILT_SDL" "$BUILD_DIR/out/SDL2.dll"
     ok "shipped freshly built SDL2.dll ($(du -h "$BUILD_DIR/out/SDL2.dll" | cut -f1), $drivers Audiotreiber)"
