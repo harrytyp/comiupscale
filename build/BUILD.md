@@ -219,11 +219,16 @@ bash build/install-deps.sh --dry-run  # shows the package manager command
 
 ## Status je System
 
-| System | Bauen | Wofuer | Stand |
-|---|---|---|---|
-| Linux (Debian/Ubuntu, Fedora, Arch, openSUSE) | `bash build/build-all.sh` | Linux + Windows (Cross) | getestet, frischer Clone baut durch |
-| macOS | `bash build/install-deps.sh` (brew), dann `bash build/build-all.sh linux` | nur Linux-Binary, kein Windows-Cross | Abhaengigkeiten automatisch, Build noch nicht durchgetestet |
-| Windows (MSYS2) | `bash build/install-deps.sh` (pacman), dann `bash build/build-all.sh linux` | natives Windows-Binary | Abhaengigkeiten automatisch, Build noch nicht durchgetestet |
-| Windows (WSL) | wie Linux | Windows-Cross-Binary | getestet ueber den Linux-Cross-Build |
+Verbindlich ist `docs/BUILD_MATRIX.md`. Kurzfassung: alle drei Hosts bauen, jeder Job der CI läuft
+auf einem frisch installierten Runner.
 
-Was automatisch passiert: `install-deps.sh` erkennt brew (macOS), MSYS2-pacman (Windows), apt, dnf, pacman und zypper und installiert die fehlenden Pakete. `build-all.sh` ruft das selbst auf, `--no-deps` schaltet es ab.
+| System | Bauen | Wofür | Stand |
+|---|---|---|---|
+| Linux (Debian/Fedora/Arch/openSUSE) | `bash build/build-all.sh` | Linux + Windows (Cross) | CI grün |
+| macOS (Apple Silicon) | `bash build/build-all.sh` | macOS + Windows (Cross) | CI grün |
+| Windows (MSYS2, MINGW64) | `bash build/build-all.sh native` | Windows nativ | CI grün |
+| Windows (WSL) | wie Linux | Linux + Windows | gleiche Skripte wie Linux |
+
+Windows-Cross läuft von Linux **und** macOS; die Toolchain wird in `build/deps.list` nach Host
+gewählt. Was dabei schiefgehen kann, steht in `docs/WINDOWS-CROSS-PITFALLS.md`.
+

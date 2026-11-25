@@ -203,25 +203,43 @@ handling. Do not point it at `/tmp`: provenance must survive a reboot.
 
 ### B3. Build the ScummVM Fork
 
-See [`build/BUILD.md`](build/BUILD.md) for the complete build guide.
+See [`build/BUILD.md`](build/BUILD.md) for the complete build guide and
+[`docs/BUILD_MATRIX.md`](docs/BUILD_MATRIX.md) for what builds on which host.
 
 ```bash
-# Prerequisites (Ubuntu/Debian)
-sudo apt install build-essential cmake pkg-config curl
-
-# Build both Linux + Windows binaries
+# One command. Installs missing system dependencies itself, then builds.
 bash build/build-all.sh
+```
 
-# Build individually:
-bash build/build-all.sh linux    # Linux only
-bash build/build-all.sh windows  # Windows only (cross-compile from Linux)
+That builds everything the current machine can produce:
+
+| You are on | You get |
+|---|---|
+| Linux | Linux binary **and** Windows `.exe` (cross-compiled) |
+| macOS | macOS binary **and** Windows `.exe` (cross-compiled) |
+| Windows (MSYS2, MINGW64) | Windows `.exe`, native |
+
+Individual targets:
+
+```bash
+bash build/build-all.sh native   # just this machine
+bash build/build-all.sh linux    # Linux binary, also from macOS
+bash build/build-all.sh macos    # macOS binary
+bash build/build-all.sh windows  # Windows .exe via llvm-mingw, from Linux or macOS
 ```
 
 **Artifacts appear in `build/out/`:**
-- `build/out/scummvm`: Linux binary
+- `build/out/scummvm`: Linux or macOS binary
 - `build/out/scummvm.exe`: Windows binary
 
-The build system is fully self-contained. It downloads LLVM MinGW, SDL2, zlib, and libpng from source. No system packages beyond build-essential are required.
+The build system is fully self-contained. It downloads the LLVM MinGW toolchain matching your host,
+plus SDL2, zlib and libpng, and builds them from source. Only the basic toolchain (gcc/g++, make,
+cmake, pkg-config, curl) has to be present; `build/install-deps.sh` installs it for apt, dnf,
+pacman, zypper, brew and MSYS2.
+
+Every one of those paths runs in CI on a fresh runner (`.github/workflows/build.yml`), so a broken
+platform shows up as a red job instead of a support request.
+
 
 #### Building SDL2 for Windows
 
