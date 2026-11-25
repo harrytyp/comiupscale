@@ -53,6 +53,13 @@ export PKG_CONFIG_LIBDIR="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgcon
 
 # Add toolchain to PATH
 export PATH="$LLVM_TOOLCHAIN:$SDL2_MINGW_DIR/bin:$PATH"
+
+# Auf macOS findet llvm-windres den Apple-clang in /usr/bin und preprocessed damit fuer
+# Darwin statt fuer Windows; llvm-rc bricht dann mit "expected int or identifier, got -" ab.
+# Der Preprocessor wird deshalb fest auf den MinGW-clang der Toolchain gelegt.
+if [ "$(uname -s)" = "Darwin" ]; then
+    export WINDRES="x86_64-w64-mingw32-windres --preprocessor=$LLVM_TOOLCHAIN/x86_64-w64-mingw32-gcc --preprocessor-arg=-E"
+fi
 export SDL_CONFIG="$SDL2_MINGW_DIR/bin/sdl2-config"
 
 # Cross-Compiler explizit setzen. Ohne diese zwei Zeilen nahm configure den Host-g++
