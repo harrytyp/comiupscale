@@ -55,6 +55,14 @@ export PKG_CONFIG_LIBDIR="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgcon
 export PATH="$LLVM_TOOLCHAIN:$SDL2_MINGW_DIR/bin:$PATH"
 export SDL_CONFIG="$SDL2_MINGW_DIR/bin/sdl2-config"
 
+# Cross-Compiler explizit setzen. Ohne diese zwei Zeilen nahm configure den Host-g++
+# (config.log: "g++: error: unrecognized command-line option '-mwindows'"), und der
+# SDL-Test scheiterte, obwohl der MinGW-Compiler daneben liegt.
+if [ -x "$LLVM_TOOLCHAIN/x86_64-w64-mingw32-g++" ]; then
+    export CC="$LLVM_TOOLCHAIN/x86_64-w64-mingw32-gcc"
+    export CXX="$LLVM_TOOLCHAIN/x86_64-w64-mingw32-g++"
+fi
+
 # configure benennt das Werkzeug fuer Cross-Builds um: es sucht "$host-pkg-config", also
 # x86_64-w64-mingw32-pkg-config (configure Zeile ~3973). Gibt es das nicht, faellt die
 # pkg-config-Pruefung auf "no" und danach auch SDL. Ein duenner Wrapper loest das, ohne
