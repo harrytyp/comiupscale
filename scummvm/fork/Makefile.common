@@ -234,12 +234,12 @@ endif
 	$(QUIET)$(MKDIR) $(*D)
 	$(QUIET)$(MKDIR) $(*D)/$(DEPDIR)
 	$(QUIET)echo "$@: $< config.h config.mk \\" > $(*D)/$(DEPDIR)/scummvm.d
-	-$(QUIET)sed -n 's|^\#include[[:space:]][[:space:]]*"\([^"]*\.h\)".*$$|    $(srcdir)/\1 \\|p; ' $(<) | \
-		-sed '/winresrc\.h\|config\.h/d' >> $(*D)/$(DEPDIR)/scummvm.d
-	-$(QUIET)sed -n 's|^\#include[[:space:]][[:space:]]*"\([^"]*\.rh\)".*$$|    \1 \\|p; ' $(<) \
-		>> $(*D)/$(DEPDIR)/scummvm.d
-	-$(QUIET)sed -n 's:^\(.*[[:space:]]\(FILE\|ICON\|RT_MANIFEST\|DATA\)\)[[:space:]][[:space:]]*"\([^"]*\)".*$$:    $(srcdir)/\3 \\:p; ' $(<) | \
-		-sed '$$ s/ \\//' >> $(*D)/$(DEPDIR)/scummvm.d
+	$(QUIET){ sed -n 's|^\#include[[:space:]][[:space:]]*"\([^"]*\.h\)".*$$|    $(srcdir)/\1 \\|p; ' $(<) | \
+		sed '/winresrc\.h\|config\.h/d' >> $(*D)/$(DEPDIR)/scummvm.d ; } || :
+	$(QUIET){ sed -n 's|^\#include[[:space:]][[:space:]]*"\([^"]*\.rh\)".*$$|    \1 \\|p; ' $(<) \
+		>> $(*D)/$(DEPDIR)/scummvm.d ; } || :
+	$(QUIET){ sed -n 's|^\(.*[[:space:]]\(FILE\|ICON\|RT_MANIFEST\|DATA\)\)[[:space:]][[:space:]]*"\([^"]*\)".*$$|    $(srcdir)/\3 \\|p; ' $(<) | \
+		sed '$$ s/ \\//' >> $(*D)/$(DEPDIR)/scummvm.d ; } || :
 	$(QUIET_WINDRES)$(WINDRES) $(WINDRESFLAGS) $(CPPFLAGS) $(<) -o $@
 
 ifdef USE_NASM
