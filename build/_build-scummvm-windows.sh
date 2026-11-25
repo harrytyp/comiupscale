@@ -58,6 +58,9 @@ if [ ! -f "config.mk" ]; then
         --host=x86_64-w64-mingw32
         --with-zlib-prefix="$MINGW_PREFIX"
         --with-png-prefix="$MINGW_PREFIX"
+        # Ohne diese Zeile findet configure das eben gebaute SDL2 nicht und meldet
+        # "Checking for SDL... no", obwohl sdl2-config daneben liegt.
+        --with-sdl-prefix="$SDL2_MINGW_DIR"
         --opengl-mode=gl
         --enable-verbose-build
         --disable-nasm
