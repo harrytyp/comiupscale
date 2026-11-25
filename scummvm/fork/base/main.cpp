@@ -30,6 +30,12 @@
 // FIXME: Avoid using printf
 #define FORBIDDEN_SYMBOL_EXCEPTION_printf
 
+// Der HD-Selbsttest liest eine Umgebungsvariable. ScummVM verbietet getenv normalerweise
+// (common/forbidden.h); die Ausnahme ist hier bewusst und lokal begrenzt, wie in den
+// Backends, die auf Umgebungsvariablen angewiesen sind.
+#define FORBIDDEN_SYMBOL_EXCEPTION_getenv
+// printf nur fuer diese eine Zeile Ausgabe im Selbsttest; der Rest nutzt debug()/warning().
+#define FORBIDDEN_SYMBOL_EXCEPTION_printf
 #include "engines/engine.h"
 #include "engines/metaengine.h"
 #include "base/commandLine.h"
