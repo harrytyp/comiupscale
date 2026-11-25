@@ -73,10 +73,12 @@ cmake "$SDL2_SRC" \
     2>&1 | tail -5
 
 info "Building SDL2 (native)..."
-make -j$(ncores) 2>&1 | tail -5
+# cmake --build statt "make": auf MSYS2 waehlt cmake einen anderen Generator, dann gibt es
+# kein Makefile und "make" bricht mit "No targets specified and no makefile found" ab.
+cmake --build . --parallel "$(ncores)" 2>&1 | tail -5
 
 info "Installing SDL2 (native)..."
-make install 2>&1 | tail -5
+cmake --install . 2>&1 | tail -5
 
 # Create sdl2-config if cmake didn't
 if [ ! -f "$SDL2_NATIVE_DIR/bin/sdl2-config" ]; then
