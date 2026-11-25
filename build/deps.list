@@ -4,8 +4,14 @@
 
 # ── LLVM MinGW (Windows cross-compiler) ────────────────
 # Prebuilt toolchain for Linux → Windows cross-compilation
-DEP_LLVM_MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/20260616/llvm-mingw-20260616-ucrt-ubuntu-22.04-x86_64.tar.xz"
-DEP_LLVM_MINGW_DIR="llvm-mingw-20260616-ucrt-ubuntu-22.04-x86_64"
+DEP_LLVM_MINGW_VERSION="20260616"
+DEP_LLVM_MINGW_BASE="https://github.com/mstorsjo/llvm-mingw/releases/download"
+DEP_LLVM_MINGW_LINUX_X64="$DEP_LLVM_MINGW_BASE/$DEP_LLVM_MINGW_VERSION/llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-ubuntu-22.04-x86_64.tar.xz"
+DEP_LLVM_MINGW_LINUX_X64_DIR="llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-ubuntu-22.04-x86_64"
+DEP_LLVM_MINGW_LINUX_ARM64="$DEP_LLVM_MINGW_BASE/$DEP_LLVM_MINGW_VERSION/llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-ubuntu-22.04-aarch64.tar.xz"
+DEP_LLVM_MINGW_LINUX_ARM64_DIR="llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-ubuntu-22.04-aarch64"
+DEP_LLVM_MINGW_MACOS_URL="$DEP_LLVM_MINGW_BASE/$DEP_LLVM_MINGW_VERSION/llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-macos-universal.tar.xz"
+DEP_LLVM_MINGW_MACOS_DIR="llvm-mingw-$DEP_LLVM_MINGW_VERSION-ucrt-macos-universal"
 
 # ── SDL2 (needed for both Linux AND Windows builds) ────
 DEP_SDL2_VERSION="2.30.11"

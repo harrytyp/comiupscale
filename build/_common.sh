@@ -110,3 +110,12 @@ ncores() {
 
 # ── Auto-load dependency versions ──────────────────────
 source "$BUILD_DIR/deps.list"
+
+# Werkzeugkette fuer den Windows-Cross-Build passend zum Host waehlen. llvm-mingw gibt es
+# fuer Linux (x86_64 und aarch64) und fuer macOS (universal). Damit ist Windows-Cross auch
+# von macOS aus moeglich, nicht nur von Linux.
+case "$(uname -s)/$(uname -m)" in
+    Linux/x86_64)   DEP_LLVM_MINGW_URL="$DEP_LLVM_MINGW_LINUX_X64" ; DEP_LLVM_MINGW_DIR="$DEP_LLVM_MINGW_LINUX_X64_DIR" ;;
+    Linux/aarch64)  DEP_LLVM_MINGW_URL="$DEP_LLVM_MINGW_LINUX_ARM64" ; DEP_LLVM_MINGW_DIR="$DEP_LLVM_MINGW_LINUX_ARM64_DIR" ;;
+    Darwin/*)       DEP_LLVM_MINGW_URL="$DEP_LLVM_MINGW_MACOS_URL" ; DEP_LLVM_MINGW_DIR="$DEP_LLVM_MINGW_MACOS_DIR" ;;
+esac
