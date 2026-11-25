@@ -98,7 +98,13 @@ if [ ! -f "config.mk" ]; then
 # --with-sdl-prefix: ohne diese Angabe findet configure das selbst gebaute SDL2 nicht und
 #   faellt auf "Checking for SDL... no" zurueck. --enable-engine braucht den Bindestrich:
 #   "scumm_7_8" wird stillschweigend ignoriert, dann fehlt genau der Engine-Teil fuer COMI.
+    # --enable-static: ScummVM holt SDL dann ueber "sdl2-config --static-libs", also aus der
+    # selbst gebauten libSDL2.a. Ohne das haengt das Linux-Binary an libSDL2-2.0.so.0 und
+    # startet nur, wo das Paket installiert ist. Auf macOS ist es umgekehrt (Brew-SDL2, dynamic).
+    STATIC_OPT=""
+    if [ "$(uname -s)" = "Linux" ]; then STATIC_OPT="--enable-static"; fi
     "$FORK_DIR/configure" \
+        $STATIC_OPT \
         --opengl-mode=gl \
         --enable-verbose-build \
         --disable-nasm \

@@ -16,7 +16,9 @@ on:
 jobs:
   linux:
     name: Linux -> Linux + Windows
-    runs-on: ubuntu-latest
+    # 22.04 statt latest: das Binary soll auch auf aelteren Distributionen laufen.
+    # ubuntu-latest bringt eine neuere glibc, dann startet es nur dort.
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Abhaengigkeiten
@@ -24,7 +26,15 @@ jobs:
       - name: Linux bauen
         run: bash build/build-all.sh linux
       - name: Linux-Binary pruefen
-        run: ./build/out/scummvm --version
+        run: |
+          ./build/out/scummvm --version
+          echo "--- SDL darf nicht dynamisch dranhaengen:"
+          if ldd build/out/scummvm | grep -q libSDL2; then
+            echo "FEHLER: Binary linkt dynamisch gegen SDL2"; ldd build/out/scummvm; exit 1
+          fi
+          echo "ok, SDL2 ist statisch eingebunden"
+          echo "--- benoetigte glibc-Symbole (hoechste Version):"
+          objdump -T build/out/scummvm | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1
       - name: Windows bauen (Cross aus Linux)
         run: bash build/build-all.sh windows
       - name: Windows-Artefakte pruefen
