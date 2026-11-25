@@ -51,6 +51,17 @@ jobs:
         run: |
           test -f build/out/scummvm.exe
           python3 -c "assert open('build/out/scummvm.exe','rb').read(2)==b'MZ'; print('PE ok')"
+      - name: Windows-exe unter Wine starten
+        run: |
+          # Erster echter Laufzeittest der Windows-Artefakte: startet die exe mit der
+          # ausgelieferten SDL2.dll daneben und prueft, ob die COMI-Engine drin ist.
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq wine64
+          export WINEDEBUG=-all
+          wine build/out/scummvm.exe --version
+          wine build/out/scummvm.exe --list-games | grep -qi "scumm:comi"
+          echo "ok: exe laeuft unter Wine und kennt scumm:comi"
+
       - uses: actions/upload-artifact@v4
         with:
           name: linux-binary
