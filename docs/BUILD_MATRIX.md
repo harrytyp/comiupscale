@@ -94,3 +94,24 @@ eine andere Bibliothek auf, wird der Job rot (`ldd`-Allowlist im Linux-Job).
 
 Gebaut wird auf `ubuntu-22.04`, damit die glibc-Anforderung niedrig bleibt; das Binary läuft damit
 auf Ubuntu 22.04/24.04, Debian 12 und neuer.
+
+## HD-Texturen: wie das pro Plattform nachgewiesen wird
+
+Jeder CI-Job dekodiert nach dem Build eine echte HD-Textur durch **denselben Decoder, den der
+HD-Loader benutzt** (`Image::PNGDecoder`). Der Aufruf braucht keine Spieldaten:
+
+```bash
+HD_CHECK_PNG="$PWD/tests/data/hd_check.png" ./build/out/scummvm
+# hd-check: ok 2560x1920 bpp=4 px(10,20)=10,20,3,128 alpha=yes
+```
+
+`tests/data/hd_check.png` ist eine selbst erzeugte 2560x1920-RGBA-Textur (29 KB) mit halbtransparenter
+oberer Hälfte. Geprüft werden Größe, Kanaltiefe, ein bekannter Pixelwert und dass der Alphakanal
+erhalten bleibt. Schlägt das fehl, wird der Job rot.
+
+Nachweis vom Lauf `45633662512`: alle drei Jobs melden
+`hd-check: ok 2560x1920 bpp=4 px(10,20)=10,20,3,128 alpha=yes`.
+
+Zusätzlich, mit echten Spieldaten auf Linux: das ausgelieferte Binary meldet
+`HDAssetManager: HD mode ENABLED at ./hd`, `HD: loaded bg for room 87 (2560x1920)` und
+`OBJQUEUE: 982 object textures queued`.
