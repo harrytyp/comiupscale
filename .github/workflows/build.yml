@@ -1,0 +1,93 @@
+name: build
+
+# Baut auf drei frischen Runnern. Jeder Runner ist ein frisch installiertes System,
+# damit ist "baut auf frischen Systemen" hier belegbar und nicht nur behauptet.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  linux:
+    name: Linux (nativ) + Windows (Cross)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Abhaengigkeiten
+        run: bash build/install-deps.sh
+
+      - name: Linux bauen
+        run: bash build/build-all.sh linux
+
+      - name: Linux-Binary pruefen
+        run: ./build/out/scummvm --version
+
+      - name: Windows bauen (Cross)
+        run: bash build/build-all.sh windows
+
+      - name: Windows-Artefakte pruefen
+        run: |
+          test -f build/out/scummvm.exe
+          python3 -c "print('PE:', open('build/out/scummvm.exe','rb').read(2))"
+          ls -lh build/out/scummvm.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-binary
+          path: build/out/scummvm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-binary
+          path: |
+            build/out/scummvm.exe
+            build/install/sdl2-mingw/bin/SDL2.dll
+
+  macos:
+    name: macOS (nativ)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Abhaengigkeiten
+        run: bash build/install-deps.sh
+
+      - name: Bauen
+        run: bash build/build-all.sh linux
+
+      - name: Binary pruefen
+        run: ./build/out/scummvm --version
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-binary
+          path: build/out/scummvm
+
+  windows-msys2:
+    name: Windows (MSYS2, nativ)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          path-type: inherit
+
+      - name: Abhaengigkeiten
+        run: bash build/install-deps.sh
+
+      - name: Bauen
+        run: bash build/build-all.sh linux
+
+      - name: Binary pruefen
+        run: ./build/out/scummvm --version
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-msys2-binary
+          path: build/out/scummvm.exe
