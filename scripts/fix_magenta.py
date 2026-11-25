@@ -14,6 +14,12 @@ Aufruf:
     python3 scripts/fix_magenta.py <hd-verzeichnis> [--apply] [--report datei.csv]
 
 Ohne --apply wird nur gezaehlt. Aenderungen werden vorher als .bak gesichert.
+
+WARNUNG, aus der Praxis: Farbe allein reicht als Kriterium nicht. In 0073_stump.png ist die
+Gegenstandsliste auf dem Baumstumpf selbst magenta ("378 pieces of eight", "fish", "hunk of meat",
+"map", "yellow petal"). Ein Filter, der auf Reinmagenta reagiert, glaettet dort echte Schrift. In
+Hintergruenden deshalb nur mit --artwork-ok anwenden, und nur nach Sichtpruefung des
+Vorher/Nachher-Bildes. Der Aufruf in der Pipeline wurde genau deshalb wieder entfernt.
 """
 import argparse
 import csv
@@ -85,7 +91,13 @@ def main():
     ap.add_argument("root")
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--report", default=None)
+    ap.add_argument("--artwork-ok", action="store_true",
+                    help="erlaubt Aenderungen an Hintergruenden, wo Magenta auch Schrift sein kann")
     args = ap.parse_args()
+    if args.apply and "background" in args.root and not args.artwork_ok:
+        print("Abbruch: in Hintergruenden kann Magenta echte Schrift sein. Erst Sichtpruefung, "
+              "dann mit --artwork-ok.")
+        return 2
 
     rows = []
     total = 0

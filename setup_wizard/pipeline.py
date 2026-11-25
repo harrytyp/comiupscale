@@ -149,21 +149,6 @@ def step_upscale(cfg, progress):
     else:
         progress.update(task_ob, completed=834)
 
-    # ── Magenta entfernen (#22) ──
-    # Der SCUMM-Maskenindex 255 wird beim Upscaling als Bildinhalt behandelt. In Hintergruenden
-    # ist das Bild deckend, dort bleibt Magenta als Farbe sichtbar. Nach dem Upscaling aufraeumen.
-    magenta_tool = _p("scripts", "fix_magenta.py")
-    if os.path.exists(magenta_tool):
-        cleaned = 0
-        for sub in ("backgrounds", "objects", "objects_layers"):
-            d = _p("assets", "upscaled", sub)
-            if os.path.isdir(d):
-                subprocess.run([sys.executable, magenta_tool, d, "--apply"],
-                               cwd=ROOT, capture_output=True, timeout=3600)
-                cleaned += 1
-        if cleaned:
-            ui.success("Magenta in HD-Texturen entfernt")
-
     # ── Costumes (batch RealESRGAN) ──
     task_co = progress.add_task("  [bold]Costumes[/]", total=25_304)
     esrgan = _p("tools", "realesrgan-ncnn-vulkan-v0.2.0-windows", "realesrgan-ncnn-vulkan.exe")
