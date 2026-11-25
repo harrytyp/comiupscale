@@ -54,7 +54,23 @@ jobs:
       - name: macOS-Binary pruefen
         run: ./build/out/scummvm --version
       - name: Windows bauen (Cross aus macOS)
+        id: win
+        continue-on-error: true
         run: bash build/build-all.sh windows
+      - name: Diagnose Resource-Schritt
+        if: steps.win.outcome == 'failure'
+        run: |
+          cd scummvm/fork/build-windows
+          echo "--- WINDRES aus config.mk:"
+          grep -E "^WINDRES|^WINDRESFLAGS|^CPPFLAGS" config.mk || true
+          echo "--- windres Version:"
+          x86_64-w64-mingw32-windres --version || true
+          echo "--- llvm-rc Version:"
+          "$(dirname "$(command -v x86_64-w64-mingw32-windres)")/llvm-rc" --version || true
+          echo "--- make.log Ende:"
+          tail -30 make.log || true
+          echo "--- Einzelaufruf:"
+          make dists/scummvm.o 2>&1 | tail -40 || true
       - name: Windows-Artefakte pruefen
         run: |
           test -f build/out/scummvm.exe
