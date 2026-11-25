@@ -39,7 +39,9 @@ else
     export LDFLAGS="-L$MINGW_PREFIX/lib"
 fi
 export CPPFLAGS="-I$MINGW_PREFIX/include"
-export PKG_CONFIG_PATH="$MINGW_PREFIX/lib/pkgconfig"
+# SDL2 fuer MinGW liegt NICHT im mingw-prefix, sondern in sdl2-mingw. Ohne diesen Pfad
+# findet configure per pkg-config kein sdl2 und meldet "Checking for SDL... no".
+export PKG_CONFIG_PATH="$SDL2_MINGW_DIR/lib/pkgconfig:$MINGW_PREFIX/lib/pkgconfig"
 
 # Add toolchain to PATH
 export PATH="$LLVM_TOOLCHAIN:$SDL2_MINGW_DIR/bin:$PATH"
