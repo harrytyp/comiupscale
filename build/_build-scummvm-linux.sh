@@ -63,8 +63,25 @@ export CPPFLAGS="-I$SDL2_NATIVE_DIR/include -I$SDL2_NATIVE_DIR/include/SDL2 -I$N
 export LDFLAGS="-L$SDL2_NATIVE_DIR/lib -L$NATIVE_PREFIX/lib"
 export PKG_CONFIG_PATH="$NATIVE_PREFIX/lib/pkgconfig"
 
+# macOS: Homebrew-SDL2 benutzen. Der lokale SDL2-Bau laesst sich dort nicht durch den
+# Configure-Test von ScummVM bringen ("Checking for SDL... no"), die Brew-Fassung schon.
+if [ "$(uname -s)" = "Darwin" ] && command -v brew >/dev/null 2>&1; then
+    SDL2_NATIVE_DIR="$(brew --prefix sdl2)"
+    export CPPFLAGS="-I$SDL2_NATIVE_DIR/include -I$SDL2_NATIVE_DIR/include/SDL2"
+    export LDFLAGS="-L$SDL2_NATIVE_DIR/lib"
+    export SDL_CONFIG="$SDL2_NATIVE_DIR/bin/sdl2-config"
+    export PKG_CONFIG_PATH="$SDL2_NATIVE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+    info "Using Homebrew SDL2: $SDL2_NATIVE_DIR"
+fi
+
 # Create build directory in fork
-BUILD_DIR_LINUX="$FORK_DIR/build-linux"
+# MSYS2: im Quellbaum bauen. Out-of-tree schreibt configure einen Makefile, der auf
+# /d/a/.../scummvm/fork/Makefile zeigt, und Windows-make findet diesen Pfad nicht.
+if [ -n "${MSYSTEM:-}" ]; then
+    BUILD_DIR_LINUX="$FORK_DIR"
+else
+    BUILD_DIR_LINUX="$FORK_DIR/build-linux"
+fi
 mkdir -p "$BUILD_DIR_LINUX"
 
 cd "$BUILD_DIR_LINUX"

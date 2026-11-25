@@ -25,6 +25,13 @@ mkdir -p "$SDL2_NATIVE_DIR"
 BUILD_DIR_SDL2="$SDL2_SRC/build-native"
 mkdir -p "$BUILD_DIR_SDL2"
 
+# Auf macOS nehmen wir Homebrew-SDL2 (siehe _build-scummvm-linux.sh), der Eigenbau
+# laesst sich dort nicht durch den Configure-Test bringen.
+if [ "$(uname -s)" = "Darwin" ]; then
+    info "macOS: using Homebrew SDL2, skipping local build"
+    exit 0
+fi
+
 info "Configuring SDL2 (native)..."
 # Build SDL2 with X11 and OpenGL support. X11 is REQUIRED — a build
 # without it produces a binary that cannot open a window on desktop
