@@ -111,6 +111,10 @@ if [ ! -f "config.mk" ]; then
         --disable-all-engines \
         --enable-engine=scumm,scumm-7-8 \
         --with-sdl-prefix="$SDL2_NATIVE_DIR" \
+        # COMI braucht kein JPEG (die HD-Texturen sind PNG). Ohne diesen Schalter haengt das
+        # Binary an libjpeg.so.8 aus dem Build-System, das es auf Debian nicht in dieser
+        # SONAME gibt - das Spiel startet dort dann nicht.
+        --disable-jpeg \
         --with-png-prefix="$NATIVE_PREFIX" \
         --with-zlib-prefix="$NATIVE_PREFIX" \
         2>&1 | tail -5

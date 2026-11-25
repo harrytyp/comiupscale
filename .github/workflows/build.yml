@@ -28,11 +28,13 @@ jobs:
       - name: Linux-Binary pruefen
         run: |
           ./build/out/scummvm --version
-          echo "--- SDL darf nicht dynamisch dranhaengen:"
-          if ldd build/out/scummvm | grep -q libSDL2; then
-            echo "FEHLER: Binary linkt dynamisch gegen SDL2"; ldd build/out/scummvm; exit 1
+          echo "--- dynamische Abhaengigkeiten (Allowlist):"
+          ldd build/out/scummvm
+          BAD=$(ldd build/out/scummvm | awk '{print $1}' | grep -vE '^(linux-vdso|libc|libm|libpthread|libdl|librt|libstdc\+\+|libgcc_s|libz|libpng16|ld-linux)' || true)
+          if [ -n "$BAD" ]; then
+            echo "FEHLER: unerwartete Laufzeitabhaengigkeit:"; echo "$BAD"; exit 1
           fi
-          echo "ok, SDL2 ist statisch eingebunden"
+          echo "ok, nur glibc, libstdc++, zlib und libpng16 sind dynamisch"
           echo "--- benoetigte glibc-Symbole (hoechste Version):"
           objdump -T build/out/scummvm | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1
       - name: Windows bauen (Cross aus Linux)
