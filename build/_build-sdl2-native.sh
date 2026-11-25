@@ -29,14 +29,17 @@ info "Configuring SDL2 (native)..."
 # Build SDL2 with X11 and OpenGL support. X11 is REQUIRED — a build
 # without it produces a binary that cannot open a window on desktop
 # systems. Fail hard instead of silently degrading.
-X11_OPT="ON"
-if ! has_pkg x11; then
+# X11 und ALSA gibt es nur unter Linux. Auf macOS und MSYS2 bringt SDL2 seine eigenen
+# Video- und Audio-Treiber mit (Cocoa/CoreAudio bzw. Win32/DirectSound), dort waeren diese
+# Pruefungen falsch und brachen den Build ab.
+if [ "$(uname -s)" = "Linux" ]; then X11_OPT="ON"; else X11_OPT="OFF"; fi
+if [ "$(uname -s)" = "Linux" ] && ! has_pkg x11; then
     err "X11 development headers not found (libx11-dev / libX11-devel)"
     err "Desktop users need X11 video support. Install:"
     err "  sudo apt install libx11-dev libxext-dev libxcursor-dev libxi-dev libxfixes-dev libxrandr-dev libxinerama-dev libxss-dev"
     exit 1
 fi
-if ! has_pkg alsa; then
+if [ "$(uname -s)" = "Linux" ] && ! has_pkg alsa; then
     err "ALSA development headers not found (libasound2-dev)"
     err "Audio is required. Install:"
     err "  sudo apt install libasound2-dev"
@@ -44,7 +47,7 @@ if ! has_pkg alsa; then
 fi
 
 # OpenGL check (needed by ScummVM)
-if ! has_pkg gl; then
+if [ "$(uname -s)" = "Linux" ] && ! has_pkg gl; then
     warn "OpenGL development headers not found (libgl-dev / Mesa)"
     warn "The HD renderer needs OpenGL. Install with:"
     warn "  sudo apt install libgl-dev libglu1-mesa-dev"
