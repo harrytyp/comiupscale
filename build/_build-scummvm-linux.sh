@@ -162,11 +162,14 @@ if [ "$(ldd scummvm 2>/dev/null | grep -c libSDL2)" -ne 0 ]; then
 fi
 ok "Linux binary built: $(ls -lh scummvm | awk '{print $5}')"
 
-# Copy to output
-cp scummvm "$SCUMMVM_LINUX"
+# Copy to output. Unter MSYS2 heisst das Ergebnis scummvm.exe, das Skript hat aber bisher
+# immer "scummvm" kopiert — deshalb fand der Strip die Datei nicht.
+BIN_SRC=scummvm
+[ -f scummvm.exe ] && BIN_SRC=scummvm.exe
+cp "$BIN_SRC" "$SCUMMVM_LINUX"
 
 # Strip
-info "Stripping Linux binary..."
-strip "$SCUMMVM_LINUX"
+info "Stripping binary..."
+strip "$SCUMMVM_LINUX" || warn "strip fehlgeschlagen, Binary bleibt ungestrippt"
 
 ok "Linux binary: $SCUMMVM_LINUX ($(du -h "$SCUMMVM_LINUX" | cut -f1))"
