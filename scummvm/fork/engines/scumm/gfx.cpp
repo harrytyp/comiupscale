@@ -4298,6 +4298,14 @@ int step2_fgPixels = 0;
 		int v = atoi(hdCO);
 		if (v > 0) _hdCursorObject = v;
 	}
+	// Ladecursor beenden, sobald der HD-Hintergrund des Raums steht. Die Sanduhr (257) gehoert
+	// in die Ladezeit; bleibt sie danach stehen, liegt sie ueber der fertigen Szene (Issue #35).
+	if (_hdCursorObject == 257 && _hdCurrentRoom == _currentRoom && _hdBackgroundSurface.getPixels()) {
+		hdPrintf("CURSOR_HD_LOADENDE obj=257 room=%d", _currentRoom);
+		_hdCursorObject = 0;
+		_hdCursorRoom = 0;
+	}
+
 	// Vor dem Blanken pruefen, ob es fuer das Cursorobjekt in diesem Raum eine Flaeche gibt.
 	// Fehlte sie, blieb der Systemcursor geblankt stehen und das Symbol war weg (Issue #35).
 	if (_hdCursorObject > 0) {
