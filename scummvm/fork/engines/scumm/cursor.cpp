@@ -797,18 +797,16 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 							// (mean RGB ~185,43,161; 3 gold pixels). Routing the coin through this
 							// path therefore painted a purple shape over the cursor. Once the asset is
 							// regenerated from the SD coin image, extend the range to img >= 105.
-							// Nur Objekte, die der Spieler wirklich im Inventar hat, duerfen als HD-Cursor
-							// gezeichnet werden. Der fruehere Nummernbereich 106..274 enthielt auch
-							// Systembilder (z.B. 257 system-wait-icon, 320x224, und 114 inventory-bg);
-							// die erschienen dann als Bildfetzen an der Maus (Issue #35).
-							bool imInventar = false;
-							for (int inv = 0, n = getInventoryCount(0); inv < n; ++inv) {
-								if (findInventory(0, inv) == (int)img) {
-									imInventar = true;
-									break;
-								}
+							// Zwei Arten von Objekten ersetzen den Cursor: Inventargegenstaende, die der
+							// Spieler aufgenommen hat, und das Ladesymbol (257, system-wait-icon), das
+							// das Original waehrend des Nachladens zeigt, etwa vor und nach einem
+							// Raumwechsel. Alles andere ist kein Cursor und wird nicht gezeichnet.
+							bool istCursor = (img == 257);
+							for (int inv = 0; !istCursor && inv < getInventoryCount(0); ++inv) {
+								if (findInventory(0, inv) == (int)img)
+									istCursor = true;
 							}
-							if (imInventar) {
+							if (istCursor) {
 								_hdCursorObject = img;
 								_hdCursorImage = imgindex;
 								_hdLastCursorObject = img;
