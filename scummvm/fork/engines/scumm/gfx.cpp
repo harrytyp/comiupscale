@@ -593,8 +593,31 @@ void ScummEngine::drawDirtyScreenParts() {
 
 	// HD composite: replace system buffer with native-resolution 32-bit composite
 	if (_hdScale > 1 && _hdBackgroundSurface.getPixels()) {
+		// Maus fuer den Test setzen: HD_MOUSE_AT="x,y", optional HD_MOUSE_AT2="x,y" ab Frame 5.
+		if (const char *hdMA = getenv("HD_MOUSE_AT")) {
+			static int hdFrameNo = 0;
+			int hx = 0, hy = 0;
+			if (sscanf(hdMA, "%d,%d", &hx, &hy) == 2) {
+				if (const char *hdMB = getenv("HD_MOUSE_AT2")) {
+					int hx2 = 0, hy2 = 0;
+					if (hdFrameNo >= 5 && sscanf(hdMB, "%d,%d", &hx2, &hy2) == 2) {
+						hx = hx2; hy = hy2;
+					}
+				}
+				g_system->warpMouse(hx, hy);
+			}
+			hdFrameNo++;
+		}
+
 		uint32 hdCompT0 = g_system->getMillis();
 		renderHDComposite();
+		// Der Systemcursor muss nach jedem HD-Neuaufbau neu gezeichnet werden. Sonst bleibt das
+		// alte Cursorbild als Rest stehen, bis sich das Cursor-Bild selbst aendert (Issue #35).
+		if (CursorMan.isVisible()) {
+			CursorMan.showMouse(false);
+			CursorMan.showMouse(true);
+		}
+
 		// Anteil der HD-Komposition an der Bildzeit, damit klar ist, wo die Zeit bleibt.
 		static uint32 hdCompSum = 0, hdCompMax = 0, hdCompN = 0;
 		uint32 hdCompT = g_system->getMillis() - hdCompT0;
@@ -1631,6 +1654,18 @@ int ScummEngine::hdPackState(int objState) const {
 }
 
 void ScummEngine::renderHDComposite() {
+	if (!getenv("HD_STATE_LOG_OFF")) {
+		static FILE *hdStateFile = nullptr;
+		if (!hdStateFile)
+			hdStateFile = fopen("hd_state.log", "a");
+		if (hdStateFile) {
+			fprintf(hdStateFile, "FRAMESTATE mx=%d my=%d userPut=%d inv=%d verb=%dx%d\n",
+			        _mouse.x, _mouse.y, (int)_userPut, _hdVerbSurface.w > 0 ? 1 : 0,
+			        _hdVerbSurface.w, _hdVerbSurface.h);
+			fflush(hdStateFile);
+		}
+	}
+
 	// Waehrend einer Zwischensequenz zeigt das Spiel ein Video. Dann darf keine HD-Ebene
 	// darueber: der HD-Hintergrund des Raums und die HD-Figuren kaemen ueber das Videobild,
 	// und es entstuende eine Mischung aus zwei Szenen (Banjo-Sequenz: Banjo in HD, dahinter
