@@ -44,6 +44,11 @@ public:
 	/** Return whether the mouse cursor is visible. */
 	bool isVisible();
 
+	/** Aktuelles Cursorsymbol als Rohdaten, fuer Aufnahmen und Tests (Issue #35). */
+	bool getCursorData(const byte **surface, const byte **mask, const byte **palette,
+	                   int *w, int *h, int *hotspotX, int *hotspotY, int *keyColor,
+	                   int *palStart, int *palCount, int *bpp) const;
+
 	/**
 	 * Show or hide the mouse cursor.
 	 *

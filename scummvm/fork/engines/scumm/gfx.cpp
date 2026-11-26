@@ -613,7 +613,7 @@ void ScummEngine::drawDirtyScreenParts() {
 		renderHDComposite();
 		// Der Systemcursor muss nach jedem HD-Neuaufbau neu gezeichnet werden. Sonst bleibt das
 		// alte Cursorbild als Rest stehen, bis sich das Cursor-Bild selbst aendert (Issue #35).
-		if (CursorMan.isVisible()) {
+		if (!getenv("HD_CURSOR_FIX_OFF") && CursorMan.isVisible()) {
 			CursorMan.showMouse(false);
 			CursorMan.showMouse(true);
 		}
@@ -1341,6 +1341,59 @@ void ScummEngine::redrawBGStrip(int start, int num) {
  */
 // Debug-Helfer: verkleinerte Ausgabe (Box-Filter), damit eine Frameaufnahme nicht
 // gigabyteweise Daten schreibt.
+
+// Cursor ins Bild malen, nur fuer Aufnahmen. Ohne das zeigt keine Aufnahme, was der
+// Cursor gerade anzeigt, und Cursorfehler sind nicht ueberpruefbar (Issue #35).
+static void hdDrawCursorInto(Graphics::Surface *surf, int k, int mx, int my) {
+	const byte *px = nullptr, *mask = nullptr, *pal = nullptr;
+	int cw = 0, ch = 0, hsx = 0, hsy = 0, key = -1, pstart = 0, pcount = 0, bpp = 1;
+	if (!CursorMan.getCursorData(&px, &mask, &pal, &cw, &ch, &hsx, &hsy, &key, &pstart, &pcount, &bpp))
+		{ static int miss = 0; if (++miss % 30 == 1) warning("CURSORDUMP: kein Cursor (%d. Aufruf)", miss); }
+		return;
+	{ static int hit = 0; if (++hit % 30 == 1) warning("CURSORDUMP: da w=%d h=%d bpp=%d pal=%d vis=%d", cw, ch, bpp, pal ? 1 : 0, (int)CursorMan.isVisible()); }
+	if (!px || !cw || !ch)
+		return;
+	const int ox = (mx - hsx) * k;
+	const int oy = (my - hsy) * k;
+	for (int y = 0; y < ch; ++y) {
+		for (int x = 0; x < cw; ++x) {
+			uint32 col = 0;
+			bool skip = false;
+			if (bpp >= 4) {
+				const uint32 *p32 = (const uint32 *)px;
+				col = p32[y * cw + x];
+			} else {
+				const byte idx = px[y * cw + x];
+				if (mask) {
+					if (!mask[y * cw + x])
+						skip = true;
+				} else if ((int)idx == key) {
+					skip = true;
+				}
+				if (!skip && pal) {
+					const int ci = (idx - pstart) * 3;
+					col = (uint32)pal[ci] | ((uint32)pal[ci + 1] << 8) | ((uint32)pal[ci + 2] << 16) | (0xFFu << 24);
+				} else if (!skip) {
+					col = 0xFF00FFu;
+				}
+			}
+			if (skip)
+				continue;
+			for (int dy = 0; dy < k; ++dy) {
+				const int ty = oy + y * k + dy;
+				if (ty < 0 || ty >= surf->h)
+					continue;
+				uint32 *row = (uint32 *)surf->getBasePtr(0, ty);
+				for (int dx = 0; dx < k; ++dx) {
+					const int tx = ox + x * k + dx;
+					if (tx >= 0 && tx < surf->w)
+						row[tx] = col;
+				}
+			}
+		}
+	}
+}
+
 static bool hdWriteCompositeShotScaled(Graphics::Surface *surf, const char *path, int step) {
 	Common::String tmpPath = Common::String(path) + ".part";
 	FILE *f = fopen(tmpPath.c_str(), "wb");
@@ -4239,6 +4292,28 @@ int step2_fgPixels = 0;
 	// When an inventory item is dragged (setCursorFromImg fired with obj_nr > 105),
 	// render its HD texture at the cursor position with hotspot offset.
 	// MUST be last rendering step (before copy to screen) to appear on top of everything.
+	if (const char *hdCO = getenv("HD_CURSOR_OBJ")) {
+		int v = atoi(hdCO);
+		if (v > 0) _hdCursorObject = v;
+	}
+	// Vor dem Blanken pruefen, ob es fuer das Cursorobjekt in diesem Raum eine Flaeche gibt.
+	// Fehlte sie, blieb der Systemcursor geblankt stehen und das Symbol war weg (Issue #35).
+	if (_hdCursorObject > 0) {
+		int probeState = getState(_hdCursorObject);
+		if (probeState < 0) probeState = 0;
+		probeState = hdPackState(probeState);
+		int probeRoom = _hdObjectManager ? _hdObjectManager->findObjectRoom(_hdCursorObject) : -1;
+		// Kein Rueckfall auf den aktuellen Raum: genau der lieferte in Raum 9 eine 320x224
+		// grosse Objektflaeche als "Cursor" (Issue #35).
+		const Graphics::Surface *probeSurf = (probeRoom >= 0 && _hdObjectManager)
+			? _hdObjectManager->getObjectSurface(_hdCursorObject, probeRoom, probeState) : nullptr;
+		if (!probeSurf) {
+			hdPrintf("CURSOR_HD_DROP obj=%d room=%d cur=%d sz=%dx%d", _hdCursorObject, probeRoom,
+			         _currentRoom, probeSurf ? probeSurf->w : 0, probeSurf ? probeSurf->h : 0);
+			_hdCursorObject = 0;
+			_hdCursorRoom = 0;
+		}
+	}
 	if (_hdCursorObject > 0) {
 		byte blank[4] = {0,0,0,0}; CursorMan.replaceCursor(blank, 1, 1, 0, 0, 0, true);																																																																																										// blank cursor instead of hiding
 		int cursorObj = _hdCursorObject;
@@ -4247,7 +4322,6 @@ int step2_fgPixels = 0;
 		if (objState < 0) objState = 0;
 		objState = hdPackState(objState);
 		int objRoom = _hdObjectManager->findObjectRoom(cursorObj);
-		if (objRoom < 0) objRoom = _currentRoom;
 
 		const Graphics::Surface *hdObjSurfPtr = _hdObjectManager->getObjectSurface(cursorObj, objRoom, objState);
 		if (hdObjSurfPtr) {
@@ -4572,6 +4646,15 @@ int step2_fgPixels = 0;
 			snprintf(spath, sizeof(spath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/h%05d.ppm", hdSeqNo);
 			snprintf(rpath, sizeof(rpath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/r%05d.ppm", hdSeqNo);
 			const bool geschrieben = hdWriteCompositeShotScaled(&_hdComposite, spath, 2);
+			if (getenv("HD_DUMP_CURSOR")) {
+				Graphics::Surface mitCursor;
+				mitCursor.copyFrom(_hdComposite);
+				hdDrawCursorInto(&mitCursor, 4, _mouse.x, _mouse.y);
+				char cpath[160];
+				snprintf(cpath, sizeof(cpath), "/opt/data/projects/comi-hd/work/dumps/hd_seq/h%05d_cur.ppm", hdSeqNo);
+				hdWriteCompositeShotScaled(&mitCursor, cpath, 2);
+				mitCursor.free();
+			}
 			// Nur eine Flaeche mit echter Hoehe ist eine Aufnahme; eine 0 hohe Flaeche
 			// schreibt eine Kopfzeile ohne Bildpunkte — genau das sah wie "Bilder da" aus.
 			// Und seit 22.11. zaehlt nur, was wirklich auf der Platte liegt: fehlte das

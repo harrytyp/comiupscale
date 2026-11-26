@@ -393,3 +393,37 @@ CursorManager::Palette::~Palette() {
 }
 
 } // End of namespace Graphics
+
+namespace Graphics {
+bool CursorManager::getCursorData(const byte **surface, const byte **mask, const byte **palette,
+                                  int *w, int *h, int *hotspotX, int *hotspotY, int *keyColor,
+                                  int *palStart, int *palCount, int *bpp) const {
+	if (_cursorStack.empty())
+		return false;
+	const Cursor *c = _cursorStack.top();
+	if (!c || !c->_surf.getPixels())
+		return false;
+	*surface = (const byte *)c->_surf.getPixels();
+	*w = c->_surf.w;
+	*h = c->_surf.h;
+	*bpp = c->_surf.format.bytesPerPixel;
+	*mask = c->_mask;
+	*hotspotX = c->_hotspotX;
+	*hotspotY = c->_hotspotY;
+	*keyColor = (int)c->_keycolor;
+	warning("CURSORDATA w=%d h=%d bpp=%d vis=%d mask=%d pal=%d", c->_surf.w, c->_surf.h,
+	        c->_surf.format.bytesPerPixel, (int)c->_visible, c->_mask ? 1 : 0,
+	        _cursorPaletteStack.empty() ? 0 : 1);
+	const Palette *pal = _cursorPaletteStack.empty() ? nullptr : _cursorPaletteStack.top();
+	if (pal && pal->_data) {
+		*palette = pal->_data;
+		*palStart = (int)pal->_start;
+		*palCount = (int)pal->_num;
+	} else {
+		*palette = nullptr;
+		*palStart = 0;
+		*palCount = 0;
+	}
+	return true;
+}
+} // End of namespace Graphics
