@@ -4292,6 +4292,8 @@ int step2_fgPixels = 0;
 	// When an inventory item is dragged (setCursorFromImg fired with obj_nr > 105),
 	// render its HD texture at the cursor position with hotspot offset.
 	// MUST be last rendering step (before copy to screen) to appear on top of everything.
+	if (!_hdCursorObject && _hdLastCursorObject > 0 && getenv("HD_CURSOR_HOLD"))
+		_hdCursorObject = _hdLastCursorObject;
 	if (const char *hdCO = getenv("HD_CURSOR_OBJ")) {
 		int v = atoi(hdCO);
 		if (v > 0) _hdCursorObject = v;

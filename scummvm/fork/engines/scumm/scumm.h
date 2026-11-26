@@ -691,7 +691,8 @@ public:
 	int _hdAlphaMaskSize = 0; // Allocated size of _hdAlphaMask
 	int _hdCursorObject = 0; // Inventory item obj_nr currently shown on cursor (set by setCursorFromImg)
 	int _hdCursorImage = 0; // Original image index for cursor
-	int _hdCursorRoom = 0;  // Room the cursor image belongs to (coin lives in room 3)
+	int _hdCursorRoom = 0;
+	int _hdLastCursorObject = 0; // zuletzt gesetztes Inventar-Cursorobjekt (fuer Testaufnahmen)  // Room the cursor image belongs to (coin lives in room 3)
 
 	// Inventory HD position cache: populated by superBlastObject() for obj_nr 105-274
 	Common::HashMap<int, Common::Point> _inventoryHDPositions;

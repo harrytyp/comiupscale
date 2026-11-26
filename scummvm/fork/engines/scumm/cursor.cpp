@@ -797,9 +797,13 @@ void ScummEngine_v7::setCursorFromImg(uint img, uint room, uint imgindex) {
 							// (mean RGB ~185,43,161; 3 gold pixels). Routing the coin through this
 							// path therefore painted a purple shape over the cursor. Once the asset is
 							// regenerated from the SD coin image, extend the range to img >= 105.
-							if (img > 105 && img <= 274) {
+							// 257 ist das Warte-Symbol (system-wait-icon, Raum 3) und kein Inventarobjekt. Es stand
+							// in diesem Bereich und wurde deshalb an der Maus gezeichnet: der Cursor bestand
+							// dann aus einem 320x224 grossen Bild (Issue #35).
+							if (img > 105 && img <= 274 && img != 257) {
 								_hdCursorObject = img;
 								_hdCursorImage = imgindex;
+								_hdLastCursorObject = img;
 								hdPrintf("CURSOR_ITEM obj=%d room=%d img=%d pos=(%d,%d)",
 									img, room, imgindex, _mouse.x, _mouse.y);
 							} else {
