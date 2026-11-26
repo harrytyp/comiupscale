@@ -372,6 +372,10 @@ void ScummEngine::startScene(int room, Actor *a, int objectNr) {
 				// ist. Dann greift die Regel "Vollbild-Objekt nicht ueber HD zeichnen"
 				// nicht, und die 8-Bit-Fassung bleibt liegen. Ein Neuzeichnen nach dem
 				// Laden raeumt das auf.
+				// Testbremse: verzoegert das Fertigwerden des HD-Hintergrunds, damit sich der
+				// Ladecursor pruefen laesst (Issue #35). Ohne die Variable keine Aenderung.
+				if (const char *slow = getenv("HD_LOAD_SLOW_MS"))
+					g_system->delayMillis(atoi(slow));
 				_bgNeedsRedraw = true;
 				// Tatsaechlich geladenen Raum festhalten. Zweimal habe ich Reihen ueber
 				// Raeume gerechnet, in denen der Sprung woanders landete — das Protokoll
