@@ -1,0 +1,16 @@
+# Ablauf vom Menue bis in die Schiffskajüte und wieder hinaus.
+# Format: <sekunden zu warten> <kommando>
+12 menu
+0  click 346 187
+10 wait
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  click 320 240
+6  shot raum_vorher
+4  click 320 400
+4  shot draussen

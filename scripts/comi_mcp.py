@@ -57,6 +57,15 @@ def _tools():
             },
         },
         {
+            "name": "comi_replay",
+            "description": "Spielt eine aufgezeichnete Befehlsfolge aus scripts/replay/<name>.txt ab.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {"name": {"type": "string"}},
+                "required": ["name"],
+            },
+        },
+        {
             "name": "comi_status",
             "description": "Liest die letzten Zeilen des Engine-Logs und den Cursorzustand.",
             "inputSchema": {"type": "object", "properties": {}},
@@ -107,6 +116,40 @@ def _start(room=87, seconds=300):
     return {"ok": True, "pid": _proc.pid, "fifo": FIFO, "log": "/opt/data/tmp/comi_mcp_engine.log"}
 
 
+def _replay(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "replay", name + ".txt")
+    if not os.path.exists(path):
+        return {"ok": False, "error": "keine Aufzeichnung: " + path}
+    steps = []
+    for line in open(path):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            continue
+        pause, command = parts
+        try:
+            pause = float(pause)
+        except ValueError:
+            continue
+        steps.append((pause, command))
+    done = []
+    for pause, command in steps:
+        time.sleep(pause)
+        if command.startswith("#"):
+            continue
+        if command == "wait":
+            done.append("wait")
+            continue
+        if command.startswith("shot "):
+            done.append("shot " + command[5:])
+            continue
+        result = _send(command, wait=0)
+        done.append(command + (" ok" if result.get("ok") else " fehlt"))
+    return {"ok": True, "steps": done}
+
+
 def _status():
     log = "/opt/data/tmp/comi_mcp_engine.log"
     tail = []
@@ -151,6 +194,8 @@ def _call(name, args):
         return _send(args["command"])
     if name == "comi_click":
         return _send("click %d %d" % (args["x"], args["y"]))
+    if name == "comi_replay":
+        return _replay(args["name"])
     if name == "comi_status":
         return _status()
     if name == "comi_stop":
